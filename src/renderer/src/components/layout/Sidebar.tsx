@@ -89,28 +89,37 @@ export function Sidebar(): React.JSX.Element {
         'h-screen bg-sidebar-bg text-sidebar-text flex flex-col shadow-xl shrink-0 transition-all duration-300 relative z-50 border-r border-sidebar-border',
         isCollapsed ? 'w-20' : 'w-64'
       )}
+      onClick={(e) => {
+        // Boş bir alana tıklandıysa (link veya buton değilse) sidebar'ı aç/kapat
+        const target = e.target as HTMLElement
+        if (!target.closest('a') && !target.closest('button')) {
+          setIsCollapsed(!isCollapsed)
+        }
+      }}
     >
       {/* Toggle Button Wrapper (No-Drag) */}
       <button
         type="button"
         className={cn(
-          "absolute -right-2.5 top-1/2 -translate-y-1/2 z-50",
+          "absolute -right-3.5 top-1/2 -translate-y-1/2 z-50",
           "flex items-center justify-center",
-          "w-5 h-5 rounded-full cursor-pointer group",
-          "bg-sidebar-bg hover:bg-sidebar-hover-bg",
-          "text-sidebar-text hover:text-sidebar-hover-text",
-          "border border-sidebar-border",
-          "shadow-md hover:shadow-lg hover:scale-105 active:scale-95",
+          "w-7 h-7 rounded-full cursor-pointer group",
+          "bg-cyan-600 hover:bg-cyan-500 text-white",
+          "border-2 border-white dark:border-slate-900",
+          "shadow-lg hover:shadow-xl hover:scale-110 active:scale-95",
           "transition-all duration-300 ease-out"
         )}
         style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-        onClick={() => setIsCollapsed(!isCollapsed)}
+        onClick={(e) => {
+          e.stopPropagation()
+          setIsCollapsed(!isCollapsed)
+        }}
         title={isCollapsed ? "Menüyü Genişlet" : "Menüyü Daralt"}
       >
         {isCollapsed ? (
-          <ChevronRight size={10} className="transition-transform duration-200 group-hover:translate-x-0.5" />
+          <ChevronRight size={16} className="transition-transform duration-200 group-hover:translate-x-0.5" />
         ) : (
-          <ChevronLeft size={10} className="transition-transform duration-200 group-hover:-translate-x-0.5" />
+          <ChevronLeft size={16} className="transition-transform duration-200 group-hover:-translate-x-0.5" />
         )}
       </button>
 

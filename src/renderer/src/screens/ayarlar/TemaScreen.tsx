@@ -871,38 +871,41 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
           </div>
         </div>
       ) : (
-        <div className="space-y-6 animate-in fade-in duration-300">
+        <div className="space-y-8 animate-in fade-in duration-300">
           {/* Tasarımcı Araç Çubuğu */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-sm">
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-bold text-slate-600 dark:text-slate-400">Tasarım Modu:</span>
-              <div className="flex bg-slate-100 dark:bg-slate-950 p-1 rounded-xl border border-slate-200/50 dark:border-slate-800/50">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-5">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+              <div className="space-y-1">
+                <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">Tasarım Modu</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Düzenlemek istediğiniz tema modunu seçin</p>
+              </div>
+              <div className="flex bg-slate-100 dark:bg-slate-950 p-1.5 rounded-xl border border-slate-200/50 dark:border-slate-800/50">
                 <button
                   type="button"
                   onClick={() => setDesignerMode('light')}
-                  className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  className={`px-5 py-2 rounded-lg text-xs font-semibold transition-all ${
                     designerMode === 'light'
                       ? 'bg-white dark:bg-slate-850 text-slate-900 dark:text-slate-150 shadow-sm'
                       : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-350'
                   }`}
                 >
-                  Aydınlık Tema (Light)
+                  ☀️ Aydınlık Tema
                 </button>
                 <button
                   type="button"
                   onClick={() => setDesignerMode('dark')}
-                  className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  className={`px-5 py-2 rounded-lg text-xs font-semibold transition-all ${
                     designerMode === 'dark'
                       ? 'bg-white dark:bg-slate-850 text-slate-900 dark:text-slate-150 shadow-sm'
                       : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-350'
                   }`}
                 >
-                  Karanlık Tema (Dark)
+                  🌙 Karanlık Tema
                 </button>
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
               <Button
                 type="button"
                 onClick={() => {
@@ -910,108 +913,106 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
                   setAiThemeDesc('')
                   setGeneratedPrompt('')
                 }}
-                className="flex items-center gap-1.5 bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 dark:bg-purple-950/20 dark:hover:bg-purple-900/30 dark:border-purple-900/40 dark:text-purple-450 rounded-xl px-3 py-2 text-xs font-semibold transition-all shadow-sm"
+                className="flex items-center gap-2 bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 dark:bg-purple-950/20 dark:hover:bg-purple-900/30 dark:border-purple-900/40 dark:text-purple-450 rounded-xl px-4 py-2.5 text-xs font-semibold transition-all shadow-sm"
               >
-                <Sparkles className="w-3.5 h-3.5 text-purple-500" />
+                <Sparkles className="w-4 h-4 text-purple-500" />
                 AI Prompt Yardımcısı
               </Button>
               <Button
                 type="button"
                 onClick={applyPlaygroundToEditor}
-                className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl px-3 py-2 text-xs font-semibold border border-slate-200/50 dark:border-slate-800/50 transition-all shadow-sm"
+                className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl px-4 py-2.5 text-xs font-semibold border border-slate-200/50 dark:border-slate-800/50 transition-all shadow-sm"
               >
-                <RefreshCw className="w-3.5 h-3.5" />
+                <RefreshCw className="w-4 h-4" />
                 Editöre Aktar
               </Button>
               <Button
                 type="button"
                 onClick={savePlaygroundDirectly}
                 disabled={saving}
-                className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-2 text-xs font-semibold transition-all shadow-md shadow-blue-500/10"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-5 py-2.5 text-xs font-semibold transition-all shadow-md shadow-blue-500/10"
               >
-                <Save className="w-3.5 h-3.5" />
+                <Save className="w-4 h-4" />
                 Kaydet & Uygula
               </Button>
             </div>
           </div>
 
-          {/* Tasarımcı İçerik Alanı: Tablo ve Önizleme */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Sol Panel: Değişkenler Tablosu */}
-            <div className="lg:col-span-7 space-y-4">
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-xs font-bold text-slate-650 dark:text-slate-350">
-                  Renk Değişkenleri Tablosu
-                </span>
-                <div className="flex gap-1 bg-slate-100/80 dark:bg-slate-950/80 p-1 rounded-xl border border-slate-200/40 dark:border-slate-800/40 w-fit">
-                  {(['all', 'primary', 'text-bg', 'sidebar'] as const).map((cat) => (
-                    <button
-                      key={cat}
-                      type="button"
-                      onClick={() => setSelectedCategory(cat)}
-                      className={`px-3 py-1 rounded-lg text-[10px] font-bold transition-all ${
-                        selectedCategory === cat
-                          ? 'bg-white dark:bg-slate-850 text-cyan-600 dark:text-cyan-400 shadow-sm'
-                          : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-350'
-                      }`}
-                    >
-                      {cat === 'all' && 'Tümü'}
-                      {cat === 'primary' && 'Renkler'}
-                      {cat === 'text-bg' && 'Yazı/Arkaplan'}
-                      {cat === 'sidebar' && 'Menü'}
-                    </button>
-                  ))}
-                </div>
-              </div>
+          {/* Kategori Filtreleri */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-400 mr-2">Filtre:</span>
+            {(['all', 'primary', 'text-bg', 'sidebar'] as const).map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
+                  selectedCategory === cat
+                    ? 'bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-900/50 shadow-sm'
+                    : 'bg-slate-50 dark:bg-slate-950 text-slate-500 hover:text-slate-700 dark:hover:text-slate-350 border-slate-200/50 dark:border-slate-800/50 hover:border-slate-300 dark:hover:border-slate-700'
+                }`}
+              >
+                {cat === 'all' && '🎨 Tümü'}
+                {cat === 'primary' && '🔵 Renkler'}
+                {cat === 'text-bg' && '📝 Yazı / Arkaplan'}
+                {cat === 'sidebar' && '📋 Menü'}
+              </button>
+            ))}
+          </div>
 
-              <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-white dark:bg-slate-900 shadow-sm">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
-                    <thead>
-                      <tr className="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        <th className="py-2.5 px-4 w-1/3">Değişken</th>
-                        <th className="py-2.5 px-4 w-2/5">Açıklama</th>
-                        <th className="py-2.5 px-4">Renk Ayarı</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-150 dark:divide-slate-850 text-xs">
-                      {themeVariablesMeta
-                        .filter((v) => selectedCategory === 'all' || v.category === selectedCategory)
-                        .map((v) => {
-                          const val = playgroundVars[v.key] || ''
-                          return (
-                            <tr key={v.key} className="hover:bg-slate-50/50 dark:hover:bg-slate-955/10 transition-all">
-                              <td className="py-2.5 px-4">
-                                <div className="font-mono font-bold text-slate-700 dark:text-slate-300 select-all text-[11px]">
-                                  {v.key}
-                                </div>
-                                <div className="text-[9px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
-                                  {v.name}
-                                </div>
-                              </td>
-                              <td className="py-2.5 px-4 text-slate-500 dark:text-slate-400 leading-normal text-[10px]">
-                                {v.description}
-                              </td>
-                              <td className="py-2.5 px-4">
-                                {renderColorInput(v.key, val)}
-                              </td>
-                            </tr>
-                          )
-                        })}
-                    </tbody>
-                  </table>
-                </div>
+          {/* Ana İçerik: Renk Kartları + Önizleme */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Sol Panel: Renk Kartları */}
+            <div className="lg:col-span-7 space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {themeVariablesMeta
+                  .filter((v) => selectedCategory === 'all' || v.category === selectedCategory)
+                  .map((v) => {
+                    const val = playgroundVars[v.key] || ''
+                    return (
+                      <div
+                        key={v.key}
+                        className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all space-y-3 group"
+                      >
+                        {/* Renk Önizleme ve Başlık */}
+                        <div className="flex items-start gap-3">
+                          <div
+                            className="w-10 h-10 rounded-xl border-2 border-white dark:border-slate-800 shadow-md shrink-0 mt-0.5"
+                            style={{ backgroundColor: val.startsWith('rgba') ? val : (val || '#cccccc') }}
+                          />
+                          <div className="min-w-0 flex-1">
+                            <div className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
+                              {v.name}
+                            </div>
+                            <div className="font-mono text-[10px] text-cyan-600 dark:text-cyan-400 mt-0.5 select-all">
+                              {v.key}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Açıklama */}
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                          {v.description}
+                        </p>
+
+                        {/* Renk Seçici */}
+                        <div className="pt-2 border-t border-slate-100 dark:border-slate-800/50">
+                          {renderColorInput(v.key, val)}
+                        </div>
+                      </div>
+                    )
+                  })}
               </div>
             </div>
 
             {/* Sağ Panel: Canlı Önizleme Sandbox */}
             <div className="lg:col-span-5 lg:sticky lg:top-6 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
-                  <Eye className="w-4 h-4 text-cyan-500" />
-                  Canlı Önizleme (Oyun Alanı Sandbox)
+                <span className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                  <Eye className="w-5 h-5 text-cyan-500" />
+                  Canlı Önizleme
                 </span>
-                <span className="text-[10px] text-slate-400 bg-slate-100 dark:bg-slate-800 dark:text-slate-500 px-2 py-0.5 rounded-full border border-slate-200/50 dark:border-slate-800/50">
+                <span className="text-[10px] text-slate-400 bg-slate-100 dark:bg-slate-800 dark:text-slate-500 px-3 py-1 rounded-full border border-slate-200/50 dark:border-slate-800/50 font-medium">
                   İzole Arayüz
                 </span>
               </div>
@@ -1019,113 +1020,113 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
               {/* The Sandbox Container */}
               <div
                 style={playgroundVars as React.CSSProperties}
-                className="w-full border border-slate-250 dark:border-slate-800 rounded-2xl overflow-hidden shadow-md flex flex-col h-[420px] text-[10px] leading-relaxed transition-all"
+                className="w-full border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col h-[520px] text-[11px] leading-relaxed transition-all"
               >
                 {/* Mock Application Layout */}
                 <div className="flex flex-1 overflow-hidden" style={{ backgroundColor: 'var(--bg-100)', color: 'var(--text-100)' }}>
                   {/* Mock Sidebar */}
                   <div
-                    className="w-1/3 border-r flex flex-col p-2.5 justify-between select-none"
+                    className="w-[35%] border-r flex flex-col p-3 justify-between select-none"
                     style={{
                       backgroundColor: 'var(--sidebar-bg)',
                       color: 'var(--sidebar-text)',
                       borderColor: 'var(--sidebar-border)'
                     }}
                   >
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                       {/* Sidebar Logo */}
-                      <div className="font-bold flex items-center gap-1.5 px-2 py-1" style={{ color: 'var(--sidebar-active-text)' }}>
-                        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'var(--sidebar-active-text)' }} />
-                        Evraktron Mini
+                      <div className="font-bold flex items-center gap-2 px-2 py-1.5" style={{ color: 'var(--sidebar-active-text)' }}>
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--sidebar-active-text)' }} />
+                        <span className="text-xs">Evraktron</span>
                       </div>
 
                       {/* Navigation Items */}
-                      <div className="space-y-1">
+                      <div className="space-y-1.5">
                         {/* Normal Item */}
-                        <div className="px-2 py-1.5 rounded-lg cursor-default flex items-center gap-2 transition-all">
-                          <div className="w-1.5 h-1.5 rounded-full opacity-45" style={{ backgroundColor: 'var(--sidebar-text)' }} />
+                        <div className="px-2.5 py-2 rounded-lg cursor-default flex items-center gap-2.5 transition-all">
+                          <div className="w-2 h-2 rounded-full opacity-45" style={{ backgroundColor: 'var(--sidebar-text)' }} />
                           Gelen Evraklar
                         </div>
 
                         {/* Hover Item */}
                         <div
-                          className="px-2 py-1.5 rounded-lg cursor-default flex items-center gap-2 transition-all"
+                          className="px-2.5 py-2 rounded-lg cursor-default flex items-center gap-2.5 transition-all"
                           style={{
                             backgroundColor: 'var(--sidebar-hover-bg)',
                             color: 'var(--sidebar-hover-text)'
                           }}
                         >
-                          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--sidebar-hover-text)' }} />
+                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--sidebar-hover-text)' }} />
                           Giden Evraklar
                         </div>
 
                         {/* Active Item */}
                         <div
-                          className="px-2 py-1.5 rounded-lg cursor-default flex items-center gap-2 font-bold border-l-2 transition-all"
+                          className="px-2.5 py-2 rounded-lg cursor-default flex items-center gap-2.5 font-bold border-l-2 transition-all"
                           style={{
                             backgroundColor: 'var(--sidebar-active-bg)',
                             color: 'var(--sidebar-active-text)',
                             borderLeftColor: 'var(--sidebar-active-border)'
                           }}
                         >
-                          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--sidebar-active-text)' }} />
+                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--sidebar-active-text)' }} />
                           Tema Ayarları
                         </div>
                       </div>
                     </div>
 
-                    <div className="text-[8px] opacity-50 px-2 py-1">
-                      v1.0.0-alpha.2
+                    <div className="text-[9px] opacity-50 px-2 py-1">
+                      v1.0.0-beta.1
                     </div>
                   </div>
 
                   {/* Mock Main Area */}
-                  <div className="w-2/3 flex flex-col p-3 overflow-y-auto gap-3 custom-scrollbar">
+                  <div className="w-[65%] flex flex-col p-4 overflow-y-auto gap-4 custom-scrollbar">
                     {/* Header */}
-                    <div className="space-y-0.5">
-                      <h4 className="font-bold text-xs tracking-tight" style={{ color: 'var(--primary-300)' }}>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-sm tracking-tight" style={{ color: 'var(--primary-300)' }}>
                         Tasarım Stüdyosu
                       </h4>
-                      <p style={{ color: 'var(--text-200)' }} className="text-[9px] leading-tight">
+                      <p style={{ color: 'var(--text-200)' }} className="text-[10px] leading-tight">
                         Değişkenler anında simüle edilir.
                       </p>
                     </div>
 
                     {/* Cards grid */}
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-3">
                       {/* Stat Card */}
                       <div
-                        className="p-2.5 border rounded-xl space-y-1"
+                        className="p-3 border rounded-xl space-y-1.5"
                         style={{
                           backgroundColor: 'var(--bg-200)',
                           borderColor: 'var(--bg-300)'
                         }}
                       >
-                        <div style={{ color: 'var(--text-200)' }} className="text-[8px] uppercase font-bold tracking-wider">
+                        <div style={{ color: 'var(--text-200)' }} className="text-[9px] uppercase font-bold tracking-wider">
                           Evrak Sayısı
                         </div>
-                        <div className="text-sm font-black" style={{ color: 'var(--text-100)' }}>
-                          1,482 adet
+                        <div className="text-base font-black" style={{ color: 'var(--text-100)' }}>
+                          1,482
                         </div>
-                        <div className="px-1 py-0.5 rounded text-[8px] font-bold w-fit" style={{ backgroundColor: 'var(--primary-100)', color: 'var(--primary-300)' }}>
+                        <div className="px-1.5 py-0.5 rounded text-[9px] font-bold w-fit" style={{ backgroundColor: 'var(--primary-100)', color: 'var(--primary-300)' }}>
                           +12% Bugün
                         </div>
                       </div>
 
                       {/* Action Card */}
                       <div
-                        className="p-2.5 border rounded-xl space-y-2 flex flex-col justify-between"
+                        className="p-3 border rounded-xl space-y-3 flex flex-col justify-between"
                         style={{
                           backgroundColor: 'var(--bg-200)',
                           borderColor: 'var(--bg-300)'
                         }}
                       >
-                        <div style={{ color: 'var(--text-200)' }} className="text-[8px] uppercase font-bold tracking-wider">
+                        <div style={{ color: 'var(--text-200)' }} className="text-[9px] uppercase font-bold tracking-wider">
                           Eylemler
                         </div>
                         <button
                           type="button"
-                          className="w-full py-1 text-center font-bold text-white rounded-lg cursor-default shadow-sm text-[9px]"
+                          className="w-full py-1.5 text-center font-bold text-white rounded-lg cursor-default shadow-sm text-[10px]"
                           style={{ backgroundColor: 'var(--accent-200)' }}
                         >
                           Yeni Kayıt
@@ -1135,33 +1136,33 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
 
                     {/* Table Card */}
                     <div
-                      className="border rounded-xl p-2.5 space-y-1.5"
+                      className="border rounded-xl p-3 space-y-2"
                       style={{
                         backgroundColor: 'var(--bg-200)',
                         borderColor: 'var(--bg-300)'
                       }}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-[9px]" style={{ color: 'var(--text-100)' }}>
+                        <span className="font-bold text-[10px]" style={{ color: 'var(--text-100)' }}>
                           Son Evraklar
                         </span>
-                        <span className="px-1.5 py-0.2 rounded text-[7px] font-semibold" style={{ backgroundColor: 'var(--accent-100)', color: 'var(--primary-300)' }}>
+                        <span className="px-2 py-0.5 rounded text-[8px] font-semibold" style={{ backgroundColor: 'var(--accent-100)', color: 'var(--primary-300)' }}>
                           Bakanlık
                         </span>
                       </div>
 
                       {/* Mock Table */}
-                      <div className="space-y-1 border-t pt-1.5" style={{ borderColor: 'var(--bg-300)' }}>
-                        <div className="flex justify-between font-bold text-[8px] opacity-75" style={{ color: 'var(--text-200)' }}>
+                      <div className="space-y-1.5 border-t pt-2" style={{ borderColor: 'var(--bg-300)' }}>
+                        <div className="flex justify-between font-bold text-[9px] opacity-75" style={{ color: 'var(--text-200)' }}>
                           <span>Evrak Adı</span>
                           <span>Durum</span>
                         </div>
                         {/* Selected Row */}
-                        <div className="flex justify-between p-1 rounded" style={{ backgroundColor: 'var(--primary-100)' }}>
+                        <div className="flex justify-between p-1.5 rounded-lg" style={{ backgroundColor: 'var(--primary-100)' }}>
                           <span style={{ color: 'var(--primary-300)' }} className="font-bold">#2026/05 Onay</span>
                           <span style={{ color: 'var(--primary-300)' }} className="font-semibold">İmzalı</span>
                         </div>
-                        <div className="flex justify-between p-1">
+                        <div className="flex justify-between p-1.5">
                           <span style={{ color: 'var(--text-100)' }}>#2026/04 Dilekçe</span>
                           <span style={{ color: 'var(--text-200)' }}>Arşivde</span>
                         </div>
@@ -1169,15 +1170,15 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
                     </div>
 
                     {/* Input field mock */}
-                    <div className="space-y-1">
-                      <div style={{ color: 'var(--text-200)' }} className="text-[8px] font-semibold">
+                    <div className="space-y-1.5">
+                      <div style={{ color: 'var(--text-200)' }} className="text-[9px] font-semibold">
                         Hızlı Arama
                       </div>
                       <input
                         type="text"
                         placeholder="Evrak arayın..."
                         disabled
-                        className="w-full px-2 py-1 border rounded-lg cursor-default text-[9px]"
+                        className="w-full px-3 py-1.5 border rounded-lg cursor-default text-[10px]"
                         style={{
                           backgroundColor: 'var(--bg-300)',
                           borderColor: 'var(--bg-300)',
