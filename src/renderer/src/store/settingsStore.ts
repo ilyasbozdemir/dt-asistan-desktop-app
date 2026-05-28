@@ -13,6 +13,7 @@ interface SettingsState {
   themeDarkVars: string
   limitType: string
   finansmanKodu: string
+  institutionType: string
   setInstitutionName: (name: string) => void
   setInstitutionLogo: (logo: string | null) => void
   setAdminName: (name: string) => void
@@ -23,6 +24,7 @@ interface SettingsState {
   setThemeDarkVars: (vars: string) => void
   setLimitType: (limitType: string) => void
   setFinansmanKodu: (finansmanKodu: string) => void
+  setInstitutionType: (type: string) => void
   loadSettings: () => Promise<void>
 }
 
@@ -39,6 +41,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   themeDarkVars: '',
   limitType: 'diger',
   finansmanKodu: '5',
+  institutionType: 'belediye',
   setInstitutionName: (name) => set({ institutionName: name }),
   setInstitutionLogo: (logo) => set({ institutionLogo: logo }),
   setAdminName: (name) => set({ adminName: name }),
@@ -49,6 +52,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   setThemeDarkVars: (vars) => set({ themeDarkVars: vars }),
   setLimitType: (limitType) => set({ limitType }),
   setFinansmanKodu: (finansmanKodu) => set({ finansmanKodu }),
+  setInstitutionType: (type) => set({ institutionType: type }),
   loadSettings: async () => {
     try {
       const settings = await window.electron.ipcRenderer.invoke('db:get-settings')
@@ -64,7 +68,8 @@ export const useSettingsStore = create<SettingsState>((set) => ({
         themeLightVars: settings.themeLightVars || '',
         themeDarkVars: settings.themeDarkVars || '',
         limitType: settings.limitType || 'diger',
-        finansmanKodu: settings.finansmanKodu || '5'
+        finansmanKodu: settings.finansmanKodu || '5',
+        institutionType: settings.institutionType || 'belediye'
       })
     } catch (error) {
       console.error('Ayarlar yüklenemedi:', error)
@@ -80,7 +85,8 @@ export const useSettingsStore = create<SettingsState>((set) => ({
         themeLightVars: '',
         themeDarkVars: '',
         limitType: 'diger',
-        finansmanKodu: '5'
+        finansmanKodu: '5',
+        institutionType: 'belediye'
       })
     }
   }

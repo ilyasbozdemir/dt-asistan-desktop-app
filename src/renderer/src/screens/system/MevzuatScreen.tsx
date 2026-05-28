@@ -225,6 +225,27 @@ export function MevzuatScreen(): React.JSX.Element {
   const [kurumsalKod2, setKurumsalKod2] = useState('')
   const [kurumsalKod3, setKurumsalKod3] = useState('')
   const [kurumsalKod4, setKurumsalKod4] = useState('')
+  const [institutionType, setInstitutionType] = useState('belediye')
+
+  const handleInstitutionTypeChange = (type: string) => {
+    setInstitutionType(type)
+    if (type === 'belediye') {
+      setFinansalKod('5')
+      if (!kurumsalKod1) setKurumsalKod1('30')
+    } else if (type === 'genel_butce') {
+      setFinansalKod('1')
+      if (kurumsalKod1 === '30') setKurumsalKod1('')
+    } else if (type === 'ozel_butce') {
+      setFinansalKod('2')
+      if (kurumsalKod1 === '30') setKurumsalKod1('')
+    } else if (type === 'duzenleyici') {
+      setFinansalKod('3')
+      if (kurumsalKod1 === '30') setKurumsalKod1('')
+    } else if (type === 'diger') {
+      setFinansalKod('8')
+      if (kurumsalKod1 === '30') setKurumsalKod1('')
+    }
+  }
 
   const [fonksiyonelKod1, setFonksiyonelKod1] = useState('')
   const [fonksiyonelKod2, setFonksiyonelKod2] = useState('')
@@ -286,6 +307,7 @@ export function MevzuatScreen(): React.JSX.Element {
 
       setFinansalKod(settings.finansalKod || settings.financialCode || '5')
       setBirimKodu(settings.birimKodu || settings.departmentCode || '')
+      setInstitutionType(settings.institutionType || 'belediye')
 
       try {
         const parsed = settings.ekonomikKodlarList ? JSON.parse(settings.ekonomikKodlarList) : []
@@ -333,6 +355,7 @@ export function MevzuatScreen(): React.JSX.Element {
         departmentCode: birimKodu,
         ekonomikKodlarList: JSON.stringify(economicCodes),
         accountingCode,
+        institutionType,
         accountingName,
         expenseCode,
         expenseName,
@@ -742,6 +765,43 @@ export function MevzuatScreen(): React.JSX.Element {
             ) : (
               <>
                 <div className="space-y-5">
+                  {/* Kurum Tipi Selector */}
+                  <div className="border border-slate-150 dark:border-slate-800 rounded-xl p-4 bg-slate-50/50 dark:bg-slate-955/20">
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-350 mb-1.5">
+                      Kurum Tipi (Bütçeleme Şablonu)
+                    </label>
+                    <select
+                      value={institutionType}
+                      onChange={(e) => handleInstitutionTypeChange(e.target.value)}
+                      title="Kurum Tipi Seçin"
+                      className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs rounded-xl py-2 px-3 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    >
+                      <option value="belediye">Belediye / Mahalli İdare (Finansman Kodu: 5)</option>
+                      <option value="genel_butce">Bakanlık / İl-İlçe Müdürlüğü / Genel Bütçe (Finansman Kodu: 1)</option>
+                      <option value="ozel_butce">Üniversite / Özel Bütçeli İdare (Finansman Kodu: 2)</option>
+                      <option value="duzenleyici">Düzenleyici ve Denetleyici Kurum (Finansman Kodu: 3)</option>
+                      <option value="diger">Diğer İdareler / Kamu İktisadi Teşebbüsü (Finansman Kodu: 8)</option>
+                    </select>
+
+                    {institutionType === 'belediye' && (
+                      <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed font-medium">
+                        💡 Mahalli İdare şablonu aktif. 5018 sayılı kanun gereği kurumsal kod prefixi <strong>"30"</strong> (Mahalli İdareler) ve finansal kod <strong>"5"</strong> olmalıdır.
+                        <br />Örnek Kurumsal Kod Yapısı: <strong>30 . [İl Kodu] . [Belediye Kodu] . [Müdürlük/Birim Kodu]</strong> (Örn: 30.06.01.30)
+                      </div>
+                    )}
+                    {institutionType === 'genel_butce' && (
+                      <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed font-medium">
+                        💡 Genel Bütçe şablonu aktif. Finansal kod <strong>"1"</strong> (Genel Bütçe) olmalıdır. Kurumsal Kod1 alanına ilgili Bakanlık / İdare kodu yazılmalıdır.
+                        <br />Örnek Kurumsal Kod Yapısı: <strong>[Bakanlık Kodu] . [Genel Müdürlük] . [İl Kodu] . [İlçe/Birim]</strong> (Örn: 18.01.06.00 - Sağlık Bakanlığı)
+                      </div>
+                    )}
+                    {institutionType === 'ozel_butce' && (
+                      <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed font-medium">
+                        💡 Özel Bütçe şablonu aktif. Özel Bütçeli İdareler (Örn: Üniversiteler) için finansal kod <strong>"2"</strong> olmalıdır. Üniversiteler için kurumsal kod prefixi <strong>"38"</strong> ile başlar.
+                        <br />Örnek Kurumsal Kod Yapısı: <strong>38 . [Üniversite Kodu] . [Fakülte/Bölüm] . [Birim]</strong> (Örn: 38.08.01.00)
+                      </div>
+                    )}
+                  </div>
                   {/* Kurumsal Kod — 4 düzey hiyerarşik */}
                   <div>
                     <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">

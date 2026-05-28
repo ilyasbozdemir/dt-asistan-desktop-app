@@ -26,6 +26,27 @@ export default function KurumScreen(): React.JSX.Element {
   const [institutionLogo, setInstitutionLogo] = useState('')
   const [limitType, setLimitType] = useState('diger')
   const [finansmanKodu, setFinansmanKodu] = useState('5')
+  const [institutionType, setInstitutionType] = useState('belediye')
+
+  const handleInstitutionTypeChange = (type: string) => {
+    setInstitutionType(type)
+    if (type === 'belediye') {
+      setFinansmanKodu('5')
+      setLimitType('buyuksehir')
+    } else if (type === 'genel_butce') {
+      setFinansmanKodu('1')
+      setLimitType('diger')
+    } else if (type === 'ozel_butce') {
+      setFinansmanKodu('2')
+      setLimitType('diger')
+    } else if (type === 'duzenleyici') {
+      setFinansmanKodu('3')
+      setLimitType('diger')
+    } else if (type === 'diger') {
+      setFinansmanKodu('8')
+      setLimitType('diger')
+    }
+  }
 
   // Tab 2: İletişim & Konum
   const [address, setAddress] = useState('')
@@ -50,6 +71,7 @@ export default function KurumScreen(): React.JSX.Element {
         setInstitutionLogo(settings.institutionLogo || '')
         setLimitType(settings.limitType || 'diger')
         setFinansmanKodu(settings.finansmanKodu || '5')
+        setInstitutionType(settings.institutionType || 'belediye')
 
         setAddress(settings.address || '')
         setDistrict(settings.district || '')
@@ -79,6 +101,7 @@ export default function KurumScreen(): React.JSX.Element {
         dataToSave.institutionLogo = institutionLogo
         dataToSave.limitType = limitType
         dataToSave.finansmanKodu = finansmanKodu
+        dataToSave.institutionType = institutionType
       } else if (tab === 'iletisim') {
         dataToSave.address = address
         dataToSave.district = district
@@ -219,6 +242,39 @@ export default function KurumScreen(): React.JSX.Element {
                         />
                       </div>
                       
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+                          Kurum Tipi (Bütçeleme ve Limit Şablonu) *
+                        </label>
+                        <select
+                          value={institutionType}
+                          onChange={(e) => handleInstitutionTypeChange(e.target.value)}
+                          title="Kurum Tipini Seçin"
+                          className="w-full bg-slate-55 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 text-xs rounded-xl py-2.5 px-3 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        >
+                          <option value="belediye">Belediye / Mahalli İdare (Finansman Kodu: 5)</option>
+                          <option value="genel_butce">Bakanlık / İl-İlçe Müdürlüğü / Genel Bütçe (Finansman Kodu: 1)</option>
+                          <option value="ozel_butce">Üniversite / Özel Bütçeli İdare (Finansman Kodu: 2)</option>
+                          <option value="duzenleyici">Düzenleyici ve Denetleyici Kurum (Finansman Kodu: 3)</option>
+                          <option value="diger">Diğer İdareler / Kamu İktisadi Teşebbüsü (Finansman Kodu: 8)</option>
+                        </select>
+                        {institutionType === 'belediye' && (
+                          <p className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-1 leading-normal font-medium">
+                            💡 Mahalli İdare şablonu aktif. Kurumsal kodunuzun "30" (Mahalli İdareler) ile başlaması ve bütçe kodlarında "5" Finansman Kodu kullanılması tavsiye edilir.
+                          </p>
+                        )}
+                        {institutionType === 'genel_butce' && (
+                          <p className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-1 leading-normal font-medium">
+                            💡 Genel Bütçe şablonu aktif. Kurumsal kodunuzun ilgili Bakanlık koduyla başlaması (örn. Sağlık: 18) ve "1" Finansman Kodu kullanılması tavsiye edilir.
+                          </p>
+                        )}
+                        {institutionType === 'ozel_butce' && (
+                          <p className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-1 leading-normal font-medium">
+                            💡 Özel Bütçe şablonu aktif. Yükseköğretim ve üniversite kurumsal kodları genellikle "38" ile başlar ve "2" Finansman Kodu kullanılır.
+                          </p>
+                        )}
+                      </div>
+
                       <div className="md:col-span-2">
                         <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
                           Kamu İhale Mevzuatı Limit Tipi (K.İ.K 22/d Doğrudan Temin Sınırı)
