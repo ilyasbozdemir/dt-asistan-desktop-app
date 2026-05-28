@@ -26,7 +26,7 @@ export default function KurumScreen(): React.JSX.Element {
   const [institutionLogo, setInstitutionLogo] = useState('')
   const [limitType, setLimitType] = useState('diger')
   const [finansmanKodu, setFinansmanKodu] = useState('5')
-  const [institutionType, setInstitutionType] = useState('belediye')
+  const [institutionType, setInstitutionType] = useState('')
 
   const handleInstitutionTypeChange = (type: string) => {
     setInstitutionType(type)
@@ -71,7 +71,7 @@ export default function KurumScreen(): React.JSX.Element {
         setInstitutionLogo(settings.institutionLogo || '')
         setLimitType(settings.limitType || 'diger')
         setFinansmanKodu(settings.finansmanKodu || '5')
-        setInstitutionType(settings.institutionType || 'belediye')
+        setInstitutionType(settings.institutionType || '')
 
         setAddress(settings.address || '')
         setDistrict(settings.district || '')
@@ -252,6 +252,7 @@ export default function KurumScreen(): React.JSX.Element {
                           title="Kurum Tipini Seçin"
                           className="w-full bg-slate-55 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 text-xs rounded-xl py-2.5 px-3 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
                         >
+                          <option value="" disabled>Lütfen Kurum Tipini Seçin...</option>
                           <option value="belediye">Belediye / Mahalli İdare (Finansman Kodu: 5)</option>
                           <option value="genel_butce">Bakanlık / İl-İlçe Müdürlüğü / Genel Bütçe (Finansman Kodu: 1)</option>
                           <option value="ozel_butce">Üniversite / Özel Bütçeli İdare (Finansman Kodu: 2)</option>

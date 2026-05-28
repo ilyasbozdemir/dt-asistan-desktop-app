@@ -41,7 +41,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   themeDarkVars: '',
   limitType: 'diger',
   finansmanKodu: '5',
-  institutionType: 'belediye',
+  institutionType: '',
   setInstitutionName: (name) => set({ institutionName: name }),
   setInstitutionLogo: (logo) => set({ institutionLogo: logo }),
   setAdminName: (name) => set({ adminName: name }),
@@ -69,7 +69,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
         themeDarkVars: settings.themeDarkVars || '',
         limitType: settings.limitType || 'diger',
         finansmanKodu: settings.finansmanKodu || '5',
-        institutionType: settings.institutionType || 'belediye'
+        institutionType: settings.institutionType || ''
       })
     } catch (error) {
       console.error('Ayarlar yüklenemedi:', error)
@@ -86,7 +86,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
         themeDarkVars: '',
         limitType: 'diger',
         finansmanKodu: '5',
-        institutionType: 'belediye'
+        institutionType: ''
       })
     }
   }

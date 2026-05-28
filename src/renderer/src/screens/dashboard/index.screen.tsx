@@ -63,10 +63,11 @@ export default function DashboardScreen(): React.JSX.Element {
       case 'genel_butce': return 'Bakanlık / Genel Bütçe'
       case 'ozel_butce': return 'Üniversite / Özel Bütçe'
       case 'duzenleyici': return 'Düzenleyici / Denetleyici Kurum'
-      default: return 'Diğer Kurum'
+      case 'diger': return 'Diğer Kurum'
+      default: return 'Kurum Tipi Belirtilmedi'
     }
   }
-  const kurumTuruLabel = getInstitutionTypeLabel(institutionType || 'belediye')
+  const kurumTuruLabel = getInstitutionTypeLabel(institutionType || '')
 
   // Mock Data for Active Procurements
   const [activeFiles] = useState<ActiveProcurement[]>([
@@ -179,7 +180,7 @@ export default function DashboardScreen(): React.JSX.Element {
         <div>
           <div className="flex items-center gap-2 mb-2">
             <span className="text-[10px] font-bold text-blue-600 dark:text-blue-450 uppercase tracking-widest bg-blue-100/40 dark:bg-blue-950/40 px-2.5 py-1 rounded-full border border-blue-500/15">
-              {institutionName || 'T.C. Güneyyurt Belediyesi'}
+              {institutionName || 'Kurum Adı Bekleniyor...'}
             </span>
             <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest bg-indigo-100/40 dark:bg-indigo-950/40 px-2.5 py-1 rounded-full border border-indigo-500/15">
               {kurumTuruLabel}
