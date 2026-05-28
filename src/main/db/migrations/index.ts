@@ -1,9 +1,9 @@
 import Database from 'better-sqlite3'
-import { migration as v1_to_v2 } from './v1_to_v2'
-import { migration as v2_to_v3 } from './v2_to_v3'
-import { migration as v3_to_v4 } from './v3_to_v4'
-import { migration as v4_to_v5 } from './v4_to_v5'
-import { migration as v5_to_v6 } from './v5_to_v6'
+import { migration as alpha1_step1 } from './v1.0.0-alpha.1-step1'
+import { migration as alpha1_step2 } from './v1.0.0-alpha.1-step2'
+import { migration as alpha1_step3 } from './v1.0.0-alpha.1-step3'
+import { migration as alpha1_to_alpha2 } from './v1.0.0-alpha.1_to_alpha.2'
+import { migration as alpha2_to_alpha3 } from './v1.0.0-alpha.2_to_alpha.3'
 
 export interface Migration {
   from: number
@@ -16,9 +16,9 @@ export interface Migration {
  * Automatically sorted sequentially by starting version.
  */
 export const migrations: Migration[] = [
-  v1_to_v2,
-  v2_to_v3,
-  v3_to_v4,
-  v4_to_v5,
-  v5_to_v6
+  alpha1_step1,
+  alpha1_step2,
+  alpha1_step3,
+  alpha1_to_alpha2,
+  alpha2_to_alpha3
 ].sort((a, b) => a.from - b.from)
