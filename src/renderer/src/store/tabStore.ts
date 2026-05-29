@@ -56,6 +56,8 @@ export const useTabStore = create<TabState>((set, get) => ({
   },
 
   closeTab: (path) => {
+    if (path === '/') return null
+
     const { tabs, activeTabPath } = get()
     const newTabs = tabs.filter((t) => t.path !== path)
     

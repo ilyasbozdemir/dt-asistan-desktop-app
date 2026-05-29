@@ -121,49 +121,53 @@ export function TabsBar(): React.JSX.Element {
 
             <Icon className={cn('w-3.5 h-3.5 shrink-0', isActive ? 'text-blue-500' : 'text-slate-400 group-hover:text-slate-500')} />
             
-            <span className="truncate pr-10">{tab.label}</span>
+            <span className={cn('truncate', tab.path !== '/' ? 'pr-10' : '')}>{tab.label}</span>
 
             {/* Open in Window button */}
-            <span
-              role="button"
-              tabIndex={0}
-              title="Pencerede Aç"
-              onClick={(e) => handleOpenInWindow(e, tab.path, tab.label)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  handleOpenInWindow(e as any, tab.path, tab.label)
-                }
-              }}
-              className={cn(
-                'absolute right-7 p-0.5 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/40 hover:text-blue-600 dark:hover:text-blue-400 transition-all flex items-center justify-center cursor-pointer',
-                isActive
-                  ? 'opacity-60 hover:opacity-100'
-                  : 'opacity-0 group-hover:opacity-40 hover:opacity-100'
-              )}
-            >
-              <ExternalLink className="w-3 h-3" />
-            </span>
+            {tab.path !== '/' && (
+              <span
+                role="button"
+                tabIndex={0}
+                title="Pencerede Aç"
+                onClick={(e) => handleOpenInWindow(e, tab.path, tab.label)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    handleOpenInWindow(e as any, tab.path, tab.label)
+                  }
+                }}
+                className={cn(
+                  'absolute right-7 p-0.5 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/40 hover:text-blue-600 dark:hover:text-blue-400 transition-all flex items-center justify-center cursor-pointer',
+                  isActive
+                    ? 'opacity-60 hover:opacity-100'
+                    : 'opacity-0 group-hover:opacity-40 hover:opacity-100'
+                )}
+              >
+                <ExternalLink className="w-3 h-3" />
+              </span>
+            )}
 
             {/* Close button */}
-            <span
-              role="button"
-              tabIndex={0}
-              title="Sekmeyi Kapat"
-              onClick={(e) => handleCloseClick(e, tab.path)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  handleCloseClick(e as any, tab.path)
-                }
-              }}
-              className={cn(
-                'absolute right-2 p-0.5 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-red-500 dark:hover:text-red-400 transition-all flex items-center justify-center cursor-pointer',
-                isActive 
-                  ? 'opacity-80 hover:opacity-100' 
-                  : 'opacity-0 group-hover:opacity-60 hover:opacity-100'
-              )}
-            >
-              <X className="w-3 h-3" />
-            </span>
+            {tab.path !== '/' && (
+              <span
+                role="button"
+                tabIndex={0}
+                title="Sekmeyi Kapat"
+                onClick={(e) => handleCloseClick(e, tab.path)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    handleCloseClick(e as any, tab.path)
+                  }
+                }}
+                className={cn(
+                  'absolute right-2 p-0.5 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-red-500 dark:hover:text-red-400 transition-all flex items-center justify-center cursor-pointer',
+                  isActive 
+                    ? 'opacity-80 hover:opacity-100' 
+                    : 'opacity-0 group-hover:opacity-60 hover:opacity-100'
+                )}
+              >
+                <X className="w-3 h-3" />
+              </span>
+            )}
           </button>
         )
       })}
