@@ -275,6 +275,109 @@ if (!gotTheLock) {
       return { canceled, filePath: filePaths && filePaths.length > 0 ? filePaths[0] : null }
     })
 
+    ipcMain.handle('export-docx', async (_, htmlContent: string) => {
+      try {
+        const { canceled, filePath } = await dialog.showSaveDialog({
+          title: 'DOCX Olarak Kaydet',
+          defaultPath: 'Cikti.docx',
+          filters: [{ name: 'Word Document', extensions: ['docx'] }]
+        })
+        if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
+        
+        // html-docx-js dynamically required to avoid breaking main if not fully installed yet
+        const htmlDocx = require('html-docx-js')
+        const docx = htmlDocx.asBlob(htmlContent)
+        
+        // If it returns a Buffer or Blob
+        const buffer = docx.arrayBuffer ? Buffer.from(await docx.arrayBuffer()) : Buffer.from(docx)
+        fs.writeFileSync(filePath, buffer)
+        
+        return { success: true, filePath }
+      } catch (err: any) {
+        return { success: false, error: err.message }
+      }
+    })
+
+    ipcMain.handle('export-xlsx', async (_, bufferData: Uint8Array | ArrayBuffer) => {
+      try {
+        const { canceled, filePath } = await dialog.showSaveDialog({
+          title: 'XLSX Olarak Kaydet',
+          defaultPath: 'Tablo.xlsx',
+          filters: [{ name: 'Excel Dosyası', extensions: ['xlsx'] }]
+        })
+        if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
+        
+        fs.writeFileSync(filePath, Buffer.from(bufferData))
+        
+        return { success: true, filePath }
+      } catch (err: any) {
+        return { success: false, error: err.message }
+      }
+    })
+
+    ipcMain.handle('import-docx', async () => {
+      try {
+        const { canceled, filePaths } = await dialog.showOpenDialog({
+          title: 'DOCX Seç',
+          filters: [{ name: 'Word Document', extensions: ['docx'] }],
+          properties: ['openFile']
+        })
+        if (canceled || !filePaths || filePaths.length === 0) return { success: false, error: 'İptal edildi' }
+        
+        const mammoth = require('mammoth')
+        const result = await mammoth.convertToHtml({ path: filePaths[0] })
+        return { success: true, html: result.value, messages: result.messages }
+      } catch (err: any) {
+        return { success: false, error: err.message }
+      }
+    })
+
+    ipcMain.handle('import-xlsx', async () => {
+      try {
+        const { canceled, filePaths } = await dialog.showOpenDialog({
+          title: 'XLSX Seç',
+          filters: [{ name: 'Excel Dosyası', extensions: ['xlsx', 'xls'] }],
+          properties: ['openFile']
+        })
+        if (canceled || !filePaths || filePaths.length === 0) return { success: false, error: 'İptal edildi' }
+        
+        const buffer = fs.readFileSync(filePaths[0])
+        return { success: true, data: buffer }
+      } catch (err: any) {
+        return { success: false, error: err.message }
+      }
+    })
+
+    ipcMain.handle('template:export', async (_, payloadStr: string) => {
+      try {
+        const { canceled, filePath } = await dialog.showSaveDialog({
+          title: 'Şablonu Dışa Aktar',
+          defaultPath: 'Yeni_Sablon.dtm.template',
+          filters: [{ name: 'DTM Template', extensions: ['dtm.template'] }]
+        })
+        if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
+        fs.writeFileSync(filePath, payloadStr, 'utf-8')
+        return { success: true, filePath }
+      } catch (err: any) {
+        return { success: false, error: err.message }
+      }
+    })
+
+    ipcMain.handle('template:import', async () => {
+      try {
+        const { canceled, filePaths } = await dialog.showOpenDialog({
+          title: 'Şablonu İçe Aktar',
+          filters: [{ name: 'DTM Template', extensions: ['dtm.template'] }],
+          properties: ['openFile']
+        })
+        if (canceled || !filePaths || filePaths.length === 0) return { success: false, error: 'İptal edildi' }
+        const content = fs.readFileSync(filePaths[0], 'utf-8')
+        return { success: true, data: content, filePath: filePaths[0] }
+      } catch (err: any) {
+        return { success: false, error: err.message }
+      }
+    })
+
     ipcMain.handle('db:get-settings', async () => {
       try {
         const db = workspaceManager.getDb()
