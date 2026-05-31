@@ -15,6 +15,7 @@ import { SABLON_Placeholder } from './tables/SABLON_Placeholder'
 import { TANIM_Kalem } from './tables/TANIM_Kalem'
 import { TANIM_TasinirKod } from './tables/TANIM_TasinirKod'
 import { TANIM_OkasKod } from './tables/TANIM_OkasKod'
+import { TANIM_KodSozlugu } from './tables/TANIM_KodSozlugu'
 import { CURRENT_SCHEMA_VERSION } from './migrate'
 
 export const TablePrefixLogic = {
@@ -52,6 +53,7 @@ export const schema = {
     TANIM_Placeholder, // Dinamik alanlar
     TANIM_AlimTuru_Sablon, // Alım türü ve şablon eşleşmeleri
     SABLON_Placeholder, // Şablon içi alan eşleşmeleri
+    TANIM_KodSozlugu, // Kurumsal ve Mali Kod Sözlüğü
     // --- Operasyonel Veriler ---
     DATA_TeminDosyasi // Her bir temin kaydı
   ]

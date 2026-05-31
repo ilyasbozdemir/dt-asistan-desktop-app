@@ -50,20 +50,25 @@ export default function KurumScreen(): React.JSX.Element {
   }
 
   // Yeni Eklenen Mali / Bütçe Kodları
-  const [kurumsalKod1, setKurumsalKod1] = useState('')
-  const [kurumsalKod2, setKurumsalKod2] = useState('')
-  const [kurumsalKod3, setKurumsalKod3] = useState('')
-  const [kurumsalKod4, setKurumsalKod4] = useState('')
-
-  const [fonksiyonelKod1, setFonksiyonelKod1] = useState('')
-  const [fonksiyonelKod2, setFonksiyonelKod2] = useState('')
-  const [fonksiyonelKod3, setFonksiyonelKod3] = useState('')
-  const [fonksiyonelKod4, setFonksiyonelKod4] = useState('')
-
+  const [kurumsalKod, setKurumsalKod] = useState('')
+  const [fonksiyonelKod, setFonksiyonelKod] = useState('')
   const [muhasebeBirimKodu, setMuhasebeBirimKodu] = useState('')
   const [muhasebeBirimAdi, setMuhasebeBirimAdi] = useState('')
   const [harcamaBirimKodu, setHarcamaBirimKodu] = useState('')
   const [harcamaBirimAdi, setHarcamaBirimAdi] = useState('')
+
+  const [sozlukData, setSozlukData] = useState<{ tur: string; kod: string; aciklama: string }[]>([])
+
+  useEffect(() => {
+    // Sözlük verisini çek
+    window.electron.ipcRenderer.invoke('db:query', 'SELECT * FROM TANIM_KodSozlugu WHERE aktif_mi = 1')
+      .then(res => {
+        if (res.success && res.data) {
+          setSozlukData(res.data)
+        }
+      })
+      .catch(console.error)
+  }, [])
 
   // Tab 2: İletişim & Konum
   const [address, setAddress] = useState('')
@@ -99,16 +104,8 @@ export default function KurumScreen(): React.JSX.Element {
         setInstEmail(settings.institutionEmail || '')
         setWebsite(settings.website || '')
 
-        setKurumsalKod1(settings.kurumsalKod1 || '')
-        setKurumsalKod2(settings.kurumsalKod2 || '')
-        setKurumsalKod3(settings.kurumsalKod3 || '')
-        setKurumsalKod4(settings.kurumsalKod4 || '')
-
-        setFonksiyonelKod1(settings.fonksiyonelKod1 || '')
-        setFonksiyonelKod2(settings.fonksiyonelKod2 || '')
-        setFonksiyonelKod3(settings.fonksiyonelKod3 || '')
-        setFonksiyonelKod4(settings.fonksiyonelKod4 || '')
-
+        setKurumsalKod(settings.kurumsalKod || '')
+        setFonksiyonelKod(settings.fonksiyonelKod || '')
         setMuhasebeBirimKodu(settings.muhasebeBirimKodu || '')
         setMuhasebeBirimAdi(settings.muhasebeBirimAdi || '')
         setHarcamaBirimKodu(settings.harcamaBirimKodu || '')
@@ -134,14 +131,8 @@ export default function KurumScreen(): React.JSX.Element {
         dataToSave.limitType = limitType
         dataToSave.finansmanKodu = finansmanKodu
         dataToSave.institutionType = institutionType
-        dataToSave.kurumsalKod1 = kurumsalKod1
-        dataToSave.kurumsalKod2 = kurumsalKod2
-        dataToSave.kurumsalKod3 = kurumsalKod3
-        dataToSave.kurumsalKod4 = kurumsalKod4
-        dataToSave.fonksiyonelKod1 = fonksiyonelKod1
-        dataToSave.fonksiyonelKod2 = fonksiyonelKod2
-        dataToSave.fonksiyonelKod3 = fonksiyonelKod3
-        dataToSave.fonksiyonelKod4 = fonksiyonelKod4
+        dataToSave.kurumsalKod = kurumsalKod
+        dataToSave.fonksiyonelKod = fonksiyonelKod
         dataToSave.muhasebeBirimKodu = muhasebeBirimKodu
         dataToSave.muhasebeBirimAdi = muhasebeBirimAdi
         dataToSave.harcamaBirimKodu = harcamaBirimKodu
@@ -353,52 +344,90 @@ export default function KurumScreen(): React.JSX.Element {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                           
-                          {/* Kurumsal Kod (4 Adet) */}
+                          {/* Kurumsal Kod */}
                           <div>
                             <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
                               Kurumsal Kod (Düzey 1-2-3-4)
                             </label>
-                            <div className="grid grid-cols-4 gap-2">
-                              <Input value={kurumsalKod1} onChange={e => setKurumsalKod1(e.target.value)} placeholder="00" className="text-center px-1 text-xs bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800" title="Düzey 1" />
-                              <Input value={kurumsalKod2} onChange={e => setKurumsalKod2(e.target.value)} placeholder="00" className="text-center px-1 text-xs bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800" title="Düzey 2" />
-                              <Input value={kurumsalKod3} onChange={e => setKurumsalKod3(e.target.value)} placeholder="00" className="text-center px-1 text-xs bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800" title="Düzey 3" />
-                              <Input value={kurumsalKod4} onChange={e => setKurumsalKod4(e.target.value)} placeholder="00" className="text-center px-1 text-xs bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800" title="Düzey 4" />
-                            </div>
+                            <select
+                              value={kurumsalKod}
+                              onChange={e => setKurumsalKod(e.target.value)}
+                              className="w-full bg-slate-55 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 text-xs rounded-xl py-2 px-3 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            >
+                              <option value="">Seçiniz...</option>
+                              {sozlukData.filter(d => d.tur === 'kurumsal').map(item => (
+                                <option key={item.kod} value={item.kod}>
+                                  {item.kod} — {item.aciklama}
+                                </option>
+                              ))}
+                            </select>
                           </div>
 
-                          {/* Fonksiyonel Kod (4 Adet) */}
+                          {/* Fonksiyonel Kod */}
                           <div>
                             <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
                               Fonksiyonel Kod (Düzey 1-2-3-4)
                             </label>
-                            <div className="grid grid-cols-4 gap-2">
-                              <Input value={fonksiyonelKod1} onChange={e => setFonksiyonelKod1(e.target.value)} placeholder="00" className="text-center px-1 text-xs bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800" title="Düzey 1" />
-                              <Input value={fonksiyonelKod2} onChange={e => setFonksiyonelKod2(e.target.value)} placeholder="0" className="text-center px-1 text-xs bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800" title="Düzey 2" />
-                              <Input value={fonksiyonelKod3} onChange={e => setFonksiyonelKod3(e.target.value)} placeholder="00" className="text-center px-1 text-xs bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800" title="Düzey 3" />
-                              <Input value={fonksiyonelKod4} onChange={e => setFonksiyonelKod4(e.target.value)} placeholder="00" className="text-center px-1 text-xs bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800" title="Düzey 4" />
-                            </div>
+                            <select
+                              value={fonksiyonelKod}
+                              onChange={e => setFonksiyonelKod(e.target.value)}
+                              className="w-full bg-slate-55 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 text-xs rounded-xl py-2 px-3 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            >
+                              <option value="">Seçiniz...</option>
+                              {sozlukData.filter(d => d.tur === 'fonksiyonel').map(item => (
+                                <option key={item.kod} value={item.kod}>
+                                  {item.kod} — {item.aciklama}
+                                </option>
+                              ))}
+                            </select>
                           </div>
 
                           {/* Muhasebe Birimi */}
                           <div>
                             <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
-                              Muhasebe Birim Kodu / Adı
+                              Muhasebe Birimi (Birim Kodu & Adı)
                             </label>
-                            <div className="flex gap-2">
-                              <Input value={muhasebeBirimKodu} onChange={e => setMuhasebeBirimKodu(e.target.value)} placeholder="Kod" className="w-1/3 text-xs bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800" />
-                              <Input value={muhasebeBirimAdi} onChange={e => setMuhasebeBirimAdi(e.target.value)} placeholder="Birim Adı" className="flex-1 text-xs bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800" />
-                            </div>
+                            <select
+                              value={muhasebeBirimKodu}
+                              onChange={e => {
+                                const val = e.target.value;
+                                setMuhasebeBirimKodu(val);
+                                const selected = sozlukData.find(d => d.tur === 'muhasebe_birimi' && d.kod === val);
+                                setMuhasebeBirimAdi(selected ? selected.aciklama : '');
+                              }}
+                              className="w-full bg-slate-55 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 text-xs rounded-xl py-2 px-3 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            >
+                              <option value="">Seçiniz...</option>
+                              {sozlukData.filter(d => d.tur === 'muhasebe_birimi').map(item => (
+                                <option key={item.kod} value={item.kod}>
+                                  {item.kod} — {item.aciklama}
+                                </option>
+                              ))}
+                            </select>
                           </div>
 
                           {/* Harcama Birimi */}
                           <div>
                             <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
-                              Harcama Birim Kodu / Adı
+                              Harcama Birimi (Birim Kodu & Adı)
                             </label>
-                            <div className="flex gap-2">
-                              <Input value={harcamaBirimKodu} onChange={e => setHarcamaBirimKodu(e.target.value)} placeholder="Kod" className="w-1/3 text-xs bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800" />
-                              <Input value={harcamaBirimAdi} onChange={e => setHarcamaBirimAdi(e.target.value)} placeholder="Birim Adı" className="flex-1 text-xs bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800" />
-                            </div>
+                            <select
+                              value={harcamaBirimKodu}
+                              onChange={e => {
+                                const val = e.target.value;
+                                setHarcamaBirimKodu(val);
+                                const selected = sozlukData.find(d => d.tur === 'harcama_birimi' && d.kod === val);
+                                setHarcamaBirimAdi(selected ? selected.aciklama : '');
+                              }}
+                              className="w-full bg-slate-55 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 text-xs rounded-xl py-2 px-3 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            >
+                              <option value="">Seçiniz...</option>
+                              {sozlukData.filter(d => d.tur === 'harcama_birimi').map(item => (
+                                <option key={item.kod} value={item.kod}>
+                                  {item.kod} — {item.aciklama}
+                                </option>
+                              ))}
+                            </select>
                           </div>
 
                         </div>

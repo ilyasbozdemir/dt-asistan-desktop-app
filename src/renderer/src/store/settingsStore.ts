@@ -14,14 +14,8 @@ interface SettingsState {
   limitType: string
   finansmanKodu: string
   institutionType: string
-  kurumsalKod1: string
-  kurumsalKod2: string
-  kurumsalKod3: string
-  kurumsalKod4: string
-  fonksiyonelKod1: string
-  fonksiyonelKod2: string
-  fonksiyonelKod3: string
-  fonksiyonelKod4: string
+  kurumsalKod: string
+  fonksiyonelKod: string
   muhasebeBirimKodu: string
   muhasebeBirimAdi: string
   harcamaBirimKodu: string
@@ -37,14 +31,8 @@ interface SettingsState {
   setLimitType: (limitType: string) => void
   setFinansmanKodu: (finansmanKodu: string) => void
   setInstitutionType: (type: string) => void
-  setKurumsalKod1: (val: string) => void
-  setKurumsalKod2: (val: string) => void
-  setKurumsalKod3: (val: string) => void
-  setKurumsalKod4: (val: string) => void
-  setFonksiyonelKod1: (val: string) => void
-  setFonksiyonelKod2: (val: string) => void
-  setFonksiyonelKod3: (val: string) => void
-  setFonksiyonelKod4: (val: string) => void
+  setKurumsalKod: (val: string) => void
+  setFonksiyonelKod: (val: string) => void
   setMuhasebeBirimKodu: (val: string) => void
   setMuhasebeBirimAdi: (val: string) => void
   setHarcamaBirimKodu: (val: string) => void
@@ -66,14 +54,8 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   limitType: 'diger',
   finansmanKodu: '5',
   institutionType: '',
-  kurumsalKod1: '',
-  kurumsalKod2: '',
-  kurumsalKod3: '',
-  kurumsalKod4: '',
-  fonksiyonelKod1: '',
-  fonksiyonelKod2: '',
-  fonksiyonelKod3: '',
-  fonksiyonelKod4: '',
+  kurumsalKod: '',
+  fonksiyonelKod: '',
   muhasebeBirimKodu: '',
   muhasebeBirimAdi: '',
   harcamaBirimKodu: '',
@@ -89,14 +71,8 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   setLimitType: (limitType) => set({ limitType }),
   setFinansmanKodu: (finansmanKodu) => set({ finansmanKodu }),
   setInstitutionType: (type) => set({ institutionType: type }),
-  setKurumsalKod1: (val) => set({ kurumsalKod1: val }),
-  setKurumsalKod2: (val) => set({ kurumsalKod2: val }),
-  setKurumsalKod3: (val) => set({ kurumsalKod3: val }),
-  setKurumsalKod4: (val) => set({ kurumsalKod4: val }),
-  setFonksiyonelKod1: (val) => set({ fonksiyonelKod1: val }),
-  setFonksiyonelKod2: (val) => set({ fonksiyonelKod2: val }),
-  setFonksiyonelKod3: (val) => set({ fonksiyonelKod3: val }),
-  setFonksiyonelKod4: (val) => set({ fonksiyonelKod4: val }),
+  setKurumsalKod: (val) => set({ kurumsalKod: val }),
+  setFonksiyonelKod: (val) => set({ fonksiyonelKod: val }),
   setMuhasebeBirimKodu: (val) => set({ muhasebeBirimKodu: val }),
   setMuhasebeBirimAdi: (val) => set({ muhasebeBirimAdi: val }),
   setHarcamaBirimKodu: (val) => set({ harcamaBirimKodu: val }),
@@ -118,14 +94,8 @@ export const useSettingsStore = create<SettingsState>((set) => ({
         limitType: settings.limitType || 'diger',
         finansmanKodu: settings.finansmanKodu || '5',
         institutionType: settings.institutionType || '',
-        kurumsalKod1: settings.kurumsalKod1 || '',
-        kurumsalKod2: settings.kurumsalKod2 || '',
-        kurumsalKod3: settings.kurumsalKod3 || '',
-        kurumsalKod4: settings.kurumsalKod4 || '',
-        fonksiyonelKod1: settings.fonksiyonelKod1 || '',
-        fonksiyonelKod2: settings.fonksiyonelKod2 || '',
-        fonksiyonelKod3: settings.fonksiyonelKod3 || '',
-        fonksiyonelKod4: settings.fonksiyonelKod4 || '',
+        kurumsalKod: settings.kurumsalKod || '',
+        fonksiyonelKod: settings.fonksiyonelKod || '',
         muhasebeBirimKodu: settings.muhasebeBirimKodu || '',
         muhasebeBirimAdi: settings.muhasebeBirimAdi || '',
         harcamaBirimKodu: settings.harcamaBirimKodu || '',
@@ -147,14 +117,8 @@ export const useSettingsStore = create<SettingsState>((set) => ({
         limitType: 'diger',
         finansmanKodu: '5',
         institutionType: '',
-        kurumsalKod1: '',
-        kurumsalKod2: '',
-        kurumsalKod3: '',
-        kurumsalKod4: '',
-        fonksiyonelKod1: '',
-        fonksiyonelKod2: '',
-        fonksiyonelKod3: '',
-        fonksiyonelKod4: '',
+        kurumsalKod: '',
+        fonksiyonelKod: '',
         muhasebeBirimKodu: '',
         muhasebeBirimAdi: '',
         harcamaBirimKodu: '',

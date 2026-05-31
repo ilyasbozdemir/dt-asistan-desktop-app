@@ -239,46 +239,15 @@ export function MevzuatScreen(): React.JSX.Element {
   ])
   const [yeniAlimTuru, setYeniAlimTuru] = useState('')
 
-  // Mali & Kurumsal Kodlar States
-  const [kurumsalKod1, setKurumsalKod1] = useState('')
-  const [kurumsalKod2, setKurumsalKod2] = useState('')
-  const [kurumsalKod3, setKurumsalKod3] = useState('')
-  const [kurumsalKod4, setKurumsalKod4] = useState('')
   const [institutionType, setInstitutionType] = useState('belediye')
 
-  const handleInstitutionTypeChange = (type: string) => {
-    setInstitutionType(type)
-    if (type === 'belediye') {
-      setFinansalKod('5')
-      if (!kurumsalKod1) setKurumsalKod1('30')
-    } else if (type === 'genel_butce') {
-      setFinansalKod('1')
-      if (kurumsalKod1 === '30') setKurumsalKod1('')
-    } else if (type === 'ozel_butce') {
-      setFinansalKod('2')
-      if (kurumsalKod1 === '30') setKurumsalKod1('')
-    } else if (type === 'duzenleyici') {
-      setFinansalKod('3')
-      if (kurumsalKod1 === '30') setKurumsalKod1('')
-    } else if (type === 'diger') {
-      setFinansalKod('8')
-      if (kurumsalKod1 === '30') setKurumsalKod1('')
-    }
-  }
+  const [kurumsalCodes, setKurumsalCodes] = useState<CodeItem[]>([])
+  const [fonksiyonelCodes, setFonksiyonelCodes] = useState<CodeItem[]>([])
+  const [muhasebeBirimleri, setMuhasebeBirimleri] = useState<CodeItem[]>([])
+  const [harcamaBirimleri, setHarcamaBirimleri] = useState<CodeItem[]>([])
 
-  const [fonksiyonelKod1, setFonksiyonelKod1] = useState('')
-  const [fonksiyonelKod2, setFonksiyonelKod2] = useState('')
-  const [fonksiyonelKod3, setFonksiyonelKod3] = useState('')
-  const [fonksiyonelKod4, setFonksiyonelKod4] = useState('')
-
-  const [finansalKod, setFinansalKod] = useState('')
-  const [birimKodu, setBirimKodu] = useState('')
   const [economicCodes, setEconomicCodes] = useState<CodeItem[]>([])
-
-  const [accountingCode, setAccountingCode] = useState('')
-  const [accountingName, setAccountingName] = useState('')
-  const [expenseCode, setExpenseCode] = useState('')
-  const [expenseName, setExpenseName] = useState('')
+  
   const [taxOffice, setTaxOffice] = useState('')
   const [taxNumber, setTaxNumber] = useState('')
 
@@ -314,18 +283,17 @@ export function MevzuatScreen(): React.JSX.Element {
         return []
       }
 
-      setKurumsalKod1(settings.kurumsalKod1 || '')
-      setKurumsalKod2(settings.kurumsalKod2 || '')
-      setKurumsalKod3(settings.kurumsalKod3 || '')
-      setKurumsalKod4(settings.kurumsalKod4 || '')
+      window.electron.ipcRenderer.invoke('db:query', 'SELECT * FROM TANIM_KodSozlugu WHERE aktif_mi = 1')
+        .then(res => {
+          if (res.success && res.data) {
+            setKurumsalCodes(res.data.filter((d: any) => d.tur === 'kurumsal').map((d: any) => ({ code: d.kod, description: d.aciklama })))
+            setFonksiyonelCodes(res.data.filter((d: any) => d.tur === 'fonksiyonel').map((d: any) => ({ code: d.kod, description: d.aciklama })))
+            setMuhasebeBirimleri(res.data.filter((d: any) => d.tur === 'muhasebe_birimi').map((d: any) => ({ code: d.kod, description: d.aciklama })))
+            setHarcamaBirimleri(res.data.filter((d: any) => d.tur === 'harcama_birimi').map((d: any) => ({ code: d.kod, description: d.aciklama })))
+          }
+        })
+        .catch(console.error)
 
-      setFonksiyonelKod1(settings.fonksiyonelKod1 || '01')
-      setFonksiyonelKod2(settings.fonksiyonelKod2 || '')
-      setFonksiyonelKod3(settings.fonksiyonelKod3 || '')
-      setFonksiyonelKod4(settings.fonksiyonelKod4 || '')
-
-      setFinansalKod(settings.finansalKod || settings.financialCode || '5')
-      setBirimKodu(settings.birimKodu || settings.departmentCode || '')
       setInstitutionType(settings.institutionType || 'belediye')
 
       try {
@@ -344,10 +312,6 @@ export function MevzuatScreen(): React.JSX.Element {
         )
       }
 
-      setAccountingCode(settings.accountingCode || '')
-      setAccountingName(settings.accountingName || '')
-      setExpenseCode(settings.expenseCode || '')
-      setExpenseName(settings.expenseName || '')
       setTaxOffice(settings.taxOffice || '')
       setTaxNumber(settings.taxNumber || '')
     }
@@ -357,29 +321,23 @@ export function MevzuatScreen(): React.JSX.Element {
     setSavingMali(true)
     try {
       const dataToSave: Record<string, string> = {
-        kurumsalKod1,
-        kurumsalKod2,
-        kurumsalKod3,
-        kurumsalKod4,
-        institutionalCode: [kurumsalKod1, kurumsalKod2, kurumsalKod3, kurumsalKod4]
-          .filter(Boolean)
-          .join('.'),
-        fonksiyonelKod1,
-        fonksiyonelKod2,
-        fonksiyonelKod3,
-        fonksiyonelKod4,
-        finansalKod,
-        financialCode: finansalKod,
-        birimKodu,
-        departmentCode: birimKodu,
         ekonomikKodlarList: JSON.stringify(economicCodes),
-        accountingCode,
         institutionType,
-        accountingName,
-        expenseCode,
-        expenseName,
         taxOffice,
         taxNumber
+      }
+
+      await window.electron.ipcRenderer.invoke('db:query', 'DELETE FROM TANIM_KodSozlugu')
+      
+      const insertQueries = [
+        ...kurumsalCodes.map(c => `INSERT INTO TANIM_KodSozlugu (tur, kod, aciklama) VALUES ('kurumsal', '${c.code}', '${c.description}')`),
+        ...fonksiyonelCodes.map(c => `INSERT INTO TANIM_KodSozlugu (tur, kod, aciklama) VALUES ('fonksiyonel', '${c.code}', '${c.description}')`),
+        ...muhasebeBirimleri.map(c => `INSERT INTO TANIM_KodSozlugu (tur, kod, aciklama) VALUES ('muhasebe_birimi', '${c.code}', '${c.description}')`),
+        ...harcamaBirimleri.map(c => `INSERT INTO TANIM_KodSozlugu (tur, kod, aciklama) VALUES ('harcama_birimi', '${c.code}', '${c.description}')`)
+      ]
+      
+      for (const query of insertQueries) {
+        await window.electron.ipcRenderer.invoke('db:query', query)
       }
 
       await saveSettings(dataToSave)
@@ -721,7 +679,7 @@ export function MevzuatScreen(): React.JSX.Element {
                     </label>
                     <select
                       value={institutionType}
-                      onChange={(e) => handleInstitutionTypeChange(e.target.value)}
+                      onChange={(e) => setInstitutionType(e.target.value)}
                       title="Kurum Tipi Seçin"
                       className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs rounded-xl py-2 px-3 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
                     >
@@ -751,120 +709,56 @@ export function MevzuatScreen(): React.JSX.Element {
                       </div>
                     )}
                   </div>
-                  {/* Kurumsal Kod — 4 düzey hiyerarşik */}
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
-                      Kurumsal Kod
-                      <span className="text-[10px] font-normal text-slate-400 dark:text-slate-500 ml-2">
-                        4 düzey hiyerarşi (KOD1 . KOD2 . KOD3 . KOD4)
-                      </span>
-                    </label>
-                    <div className="flex items-center gap-2">
-                      <Input
-                        value={kurumsalKod1}
-                        onChange={(e) => setKurumsalKod1(e.target.value)}
-                        placeholder="KOD1"
-                        className="bg-slate-55 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-center font-mono w-24"
-                      />
-                      <span className="text-slate-400 font-bold">.</span>
-                      <Input
-                        value={kurumsalKod2}
-                        onChange={(e) => setKurumsalKod2(e.target.value)}
-                        placeholder="KOD2"
-                        className="bg-slate-55 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-center font-mono w-20"
-                      />
-                      <span className="text-slate-400 font-bold">.</span>
-                      <Input
-                        value={kurumsalKod3}
-                        onChange={(e) => setKurumsalKod3(e.target.value)}
-                        placeholder="KOD3"
-                        className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-center font-mono w-20"
-                      />
-                      <span className="text-slate-400 font-bold">.</span>
-                      <Input
-                        value={kurumsalKod4}
-                        onChange={(e) => setKurumsalKod4(e.target.value)}
-                        placeholder="KOD4"
-                        className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-center font-mono w-20"
-                      />
-                    </div>
-                  </div>
 
-                  {/* Birim Kodu — tek input */}
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
-                      Birim Kodu
-                    </label>
-                    <Input
-                      value={birimKodu}
-                      onChange={(e) => setBirimKodu(e.target.value)}
-                      placeholder="Birim Kodu"
-                      className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 max-w-sm"
+                  {/* Kurumsal Kodlar */}
+                  <div className="mt-4">
+                    <CodeListEditor
+                      title="Kurumsal Kodlar (Kurum Birimleri)"
+                      description="Kurumunuza ait ana birim ve müdürlük kodları (Örn: 30.11.01.22 - Mali Hizmetler)"
+                      codes={kurumsalCodes}
+                      onChange={setKurumsalCodes}
+                      placeholderCode="Örn: 30.11.01.22"
+                      placeholderDesc="Birim Adı..."
                     />
                   </div>
 
-                  {/* Fonksiyonel Kod — 4 düzey hiyerarşik */}
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
-                      Fonksiyonel Kod (Düzey 1 ve Alt Düzeyler)
-                    </label>
-                    <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
-                      <select
-                        value={fonksiyonelKod1}
-                        onChange={(e) => setFonksiyonelKod1(e.target.value)}
-                        title="Fonksiyonel Kod Düzey 1"
-                        className="bg-slate-55 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs rounded-xl py-2 px-3 focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200 w-full sm:w-64"
-                      >
-                        {FONKSIYONEL_KODLAR.map((item) => (
-                          <option key={item.kod} value={item.kod}>
-                            {item.kod} - {item.aciklama}
-                          </option>
-                        ))}
-                      </select>
-                      <div className="flex items-center gap-1.5 w-full sm:w-auto">
-                        <span className="text-slate-400 font-bold hidden sm:inline">.</span>
-                        <Input
-                          value={fonksiyonelKod2}
-                          onChange={(e) => setFonksiyonelKod2(e.target.value)}
-                          placeholder="KOD2"
-                          className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-center font-mono w-16"
-                        />
-                        <span className="text-slate-400 font-bold">.</span>
-                        <Input
-                          value={fonksiyonelKod3}
-                          onChange={(e) => setFonksiyonelKod3(e.target.value)}
-                          placeholder="KOD3"
-                          className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-center font-mono w-16"
-                        />
-                        <span className="text-slate-400 font-bold">.</span>
-                        <Input
-                          value={fonksiyonelKod4}
-                          onChange={(e) => setFonksiyonelKod4(e.target.value)}
-                          placeholder="KOD4"
-                          className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-center font-mono w-16"
-                        />
-                      </div>
-                    </div>
+                  {/* Fonksiyonel Kodlar */}
+                  <div className="mt-4">
+                    <CodeListEditor
+                      title="Fonksiyonel Kodlar"
+                      description="Birimlerin fonksiyonel sınıflandırma kodları (Örn: 01.1.2.00)"
+                      codes={fonksiyonelCodes}
+                      onChange={setFonksiyonelCodes}
+                      placeholderCode="Örn: 01.1.2.00"
+                      placeholderDesc="Fonksiyon Açıklaması..."
+                      presets={FONKSIYONEL_KODLAR.map(k => ({ kod: k.kod, aciklama: k.aciklama }))}
+                    />
                   </div>
 
-                  {/* Finansal Kod — tek input */}
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
-                      Finansal Kod (Finansman Tipi)
-                    </label>
-                    <select
-                      value={finansalKod}
-                      onChange={(e) => setFinansalKod(e.target.value)}
-                      title="Finansal Kod"
-                      className="bg-slate-55 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs rounded-xl py-2 px-3 focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200 w-full max-w-sm"
-                    >
-                      {FINANSMAN_KODLARI.map((item) => (
-                        <option key={item.kod} value={item.kod}>
-                          {item.kod} - {item.aciklama}
-                        </option>
-                      ))}
-                    </select>
+                  {/* Muhasebe Birimleri */}
+                  <div className="mt-4">
+                    <CodeListEditor
+                      title="Muhasebe Birimleri"
+                      description="Muhasebe işlem fişleri (ÖEB) için kullanılacak birim kodları ve adları."
+                      codes={muhasebeBirimleri}
+                      onChange={setMuhasebeBirimleri}
+                      placeholderCode="Kod..."
+                      placeholderDesc="Muhasebe Birim Adı..."
+                    />
                   </div>
+
+                  {/* Harcama Birimleri */}
+                  <div className="mt-4">
+                    <CodeListEditor
+                      title="Harcama Birimleri"
+                      description="Harcama yetkilisi birim kodları ve adları."
+                      codes={harcamaBirimleri}
+                      onChange={setHarcamaBirimleri}
+                      placeholderCode="Kod..."
+                      placeholderDesc="Harcama Birim Adı..."
+                    />
+                  </div>
+
                 </div>
 
                 {/* Gider Ekonomik Kodları */}
@@ -885,51 +779,7 @@ export function MevzuatScreen(): React.JSX.Element {
                     Muhasebe ve Vergi Detayları
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
-                        Muhasebe Birim Kodu
-                      </label>
-                      <Input
-                        value={accountingCode}
-                        onChange={(e) => setAccountingCode(e.target.value)}
-                        placeholder="Muhasebe Kodu"
-                        className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800"
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
-                        Muhasebe Birim Adı
-                      </label>
-                      <Input
-                        value={accountingName}
-                        onChange={(e) => setAccountingName(e.target.value)}
-                        placeholder="Muhasebe Birim Adı"
-                        className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
-                        Harcama Birim Kodu
-                      </label>
-                      <Input
-                        value={expenseCode}
-                        onChange={(e) => setExpenseCode(e.target.value)}
-                        placeholder="Harcama Birim Kodu"
-                        className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800"
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
-                        Harcama Birim Adı
-                      </label>
-                      <Input
-                        value={expenseName}
-                        onChange={(e) => setExpenseName(e.target.value)}
-                        placeholder="Harcama Birim Adı"
-                        className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800"
-                      />
-                    </div>
-                    <div>
+                    <div className="md:col-span-3">
                       <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
                         Vergi Dairesi
                       </label>
@@ -940,7 +790,7 @@ export function MevzuatScreen(): React.JSX.Element {
                         className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800"
                       />
                     </div>
-                    <div className="md:col-span-2">
+                    <div className="md:col-span-3">
                       <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
                         Vergi Numarası
                       </label>
