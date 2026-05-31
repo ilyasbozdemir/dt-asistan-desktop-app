@@ -19,9 +19,9 @@ import {
 } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { useSettingsStore } from '../../store/settingsStore'
+import { useWorkspaceStore } from '../../store/workspaceStore'
 import { Button } from '../../components/ui/Button'
-import { useDashboardStats } from './dashboard.hooks'
-
+import { useDashboardStats, useActiveDosyaSummary } from './dashboard.hooks'
 // Types for Mock Data
 interface ActiveProcurement {
   id: string
@@ -37,6 +37,7 @@ interface ActiveProcurement {
 
 export default function DashboardScreen(): React.JSX.Element {
   const { institutionName, limitType, institutionType } = useSettingsStore()
+  const { activeDosyaId } = useWorkspaceStore()
   const { stats, isLoading } = useDashboardStats()
   
   // Dynamic Greeting based on time
@@ -71,6 +72,8 @@ export default function DashboardScreen(): React.JSX.Element {
     }
   }
   const kurumTuruLabel = getInstitutionTypeLabel(institutionType || '')
+
+  const { summary: activeSummary, isLoading: isActiveSummaryLoading } = useActiveDosyaSummary(activeDosyaId, institutionName, kurumTuruLabel)
 
   // Mock Data for Active Procurements
   const [activeFiles] = useState<ActiveProcurement[]>([
@@ -329,6 +332,72 @@ export default function DashboardScreen(): React.JSX.Element {
           </div>
         </div>
       </div>
+
+      {/* ACTIVE FILE SUMMARY WIDGET */}
+      {activeDosyaId && (
+        <div className="bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-900/50 rounded-3xl p-6 shadow-sm mb-6 relative overflow-hidden">
+          {/* Background Decoration */}
+          <div className="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+              <FileText className="w-4 h-4" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">Çalışılan Aktif İhale Dosyası</h3>
+              <p className="text-[10px] text-slate-500">Şu anda üzerinde işlem yaptığınız dosyanın özet bilgileri</p>
+            </div>
+          </div>
+
+          {isActiveSummaryLoading ? (
+            <div className="h-24 flex items-center justify-center text-xs font-semibold text-slate-500 animate-pulse">Yükleniyor...</div>
+          ) : activeSummary ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 items-stretch">
+              
+              <div className="flex flex-col gap-1 p-3 rounded-xl bg-slate-50/50 dark:bg-slate-950/20 border border-slate-100/50 dark:border-slate-800/50">
+                <span className="text-[9px] font-bold text-slate-400 uppercase">Kurum Adı</span>
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 line-clamp-2">{activeSummary.kurumAdi}</span>
+              </div>
+              
+              <div className="flex flex-col gap-1 p-3 rounded-xl bg-slate-50/50 dark:bg-slate-950/20 border border-slate-100/50 dark:border-slate-800/50">
+                <span className="text-[9px] font-bold text-slate-400 uppercase">Kurum Türü</span>
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{activeSummary.kurumTuru}</span>
+              </div>
+
+              <div className="flex flex-col gap-1 p-3 rounded-xl bg-slate-50/50 dark:bg-slate-950/20 border border-slate-100/50 dark:border-slate-800/50">
+                <span className="text-[9px] font-bold text-slate-400 uppercase">Dosya Adı & No</span>
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-mono text-blue-600 dark:text-blue-450">{activeSummary.dosyaNo}</span>
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 line-clamp-1" title={activeSummary.konu}>{activeSummary.konu}</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1 p-3 rounded-xl bg-slate-50/50 dark:bg-slate-950/20 border border-slate-100/50 dark:border-slate-800/50">
+                <span className="text-[9px] font-bold text-slate-400 uppercase">İhale & Alım Türü</span>
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 capitalize">{activeSummary.tur} Alımı</span>
+              </div>
+
+              <div className="flex flex-col gap-1 p-3 rounded-xl bg-emerald-50/30 dark:bg-emerald-950/10 border border-emerald-100/50 dark:border-emerald-900/30">
+                <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-500 uppercase">Seçilen Firma</span>
+                <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 line-clamp-2">{activeSummary.secilenFirma}</span>
+              </div>
+
+              <div className="flex flex-col gap-1 p-3 rounded-xl bg-indigo-50/30 dark:bg-indigo-950/10 border border-indigo-100/50 dark:border-indigo-900/30">
+                <span className="text-[9px] font-bold text-indigo-600 dark:text-indigo-500 uppercase">Katılan Firmalar</span>
+                <span className="text-lg font-extrabold text-indigo-700 dark:text-indigo-400">{activeSummary.katilanFirmaSayisi} <span className="text-[10px] font-semibold text-indigo-500 dark:text-indigo-600">Firma</span></span>
+              </div>
+
+              <div className="flex flex-col gap-1 p-3 rounded-xl bg-amber-50/30 dark:bg-amber-950/10 border border-amber-100/50 dark:border-amber-900/30">
+                <span className="text-[9px] font-bold text-amber-600 dark:text-amber-500 uppercase">Malzeme Sayısı</span>
+                <span className="text-lg font-extrabold text-amber-700 dark:text-amber-400">{activeSummary.malzemeSayisi} <span className="text-[10px] font-semibold text-amber-500 dark:text-amber-600">Kalem</span></span>
+              </div>
+
+            </div>
+          ) : (
+             <div className="h-16 flex items-center justify-center text-xs font-semibold text-slate-500">Aktif dosya bilgisi bulunamadı.</div>
+          )}
+        </div>
+      )}
 
       {/* NEW STATS & DUYURULAR GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

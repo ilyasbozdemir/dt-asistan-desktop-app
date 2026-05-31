@@ -62,3 +62,74 @@ export function useDashboardStats() {
 
   return { stats, isLoading, refetch: loadStats }
 }
+
+export interface ActiveDosyaSummary {
+  kurumAdi: string
+  kurumTuru: string
+  dosyaNo: string
+  konu: string
+  tur: string
+  birimAdi: string
+  secilenFirma: string
+  katilanFirmaSayisi: number
+  malzemeSayisi: number
+}
+
+export function useActiveDosyaSummary(activeDosyaId: number | null, institutionName: string, institutionTypeLabel: string) {
+  const [summary, setSummary] = useState<ActiveDosyaSummary | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const loadSummary = useCallback(async () => {
+    if (!activeDosyaId) {
+      setSummary(null)
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      const q = `
+        SELECT 
+          d.temin_no, d.konu, d.tur,
+          b.birim_adi,
+          f.unvan as firma_unvani
+        FROM DATA_TeminDosyasi d
+        LEFT JOIN TANIM_Birim b ON d.birim_id = b.id
+        LEFT JOIN TANIM_Firma f ON d.firma_id = f.id
+        WHERE d.id = ?
+      `
+      const res = await window.electron.ipcRenderer.invoke('db:query', q, [activeDosyaId])
+      
+      if (res.success && res.data.length > 0) {
+        const row = res.data[0]
+        
+        // Mocking unimplemented fields as 0 for now until tables are created
+        const katilanFirmaSayisi = 0 
+        const malzemeSayisi = 0
+
+        setSummary({
+          kurumAdi: institutionName,
+          kurumTuru: institutionTypeLabel,
+          dosyaNo: row.temin_no,
+          konu: row.konu,
+          tur: row.tur,
+          birimAdi: row.birim_adi || 'Birim Seçilmedi',
+          secilenFirma: row.firma_unvani || 'Henüz Seçilmedi',
+          katilanFirmaSayisi,
+          malzemeSayisi
+        })
+      } else {
+        setSummary(null)
+      }
+    } catch (e) {
+      console.error('Failed to load active dosya summary', e)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [activeDosyaId, institutionName, institutionTypeLabel])
+
+  useEffect(() => {
+    loadSummary()
+  }, [loadSummary])
+
+  return { summary, isLoading, refetch: loadSummary }
+}
