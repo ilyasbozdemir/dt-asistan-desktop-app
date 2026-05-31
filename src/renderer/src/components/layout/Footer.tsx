@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Info, ExternalLink, Bug, Star } from 'lucide-react'
+import packageJson from '../../../../../package.json'
 
 export function Footer(): React.JSX.Element {
   const [showAbout, setShowAbout] = useState(false)
@@ -33,7 +34,7 @@ export function Footer(): React.JSX.Element {
       </div>
 
       <div className="flex items-center space-x-2 relative" ref={aboutRef}>
-        <span>v1.1.2</span>
+        <span>v{packageJson.version}</span>
 
         <button
           onClick={() => setShowAbout(!showAbout)}
@@ -50,7 +51,7 @@ export function Footer(): React.JSX.Element {
               <h4 className="text-slate-800 dark:text-white font-bold text-sm">
                 DT Asistan (Doğrudan Temin)
               </h4>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400">Sürüm 1.1.2</p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400">Sürüm {packageJson.version}</p>
             </div>
             
             <div className="p-3 text-[10px] text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-750/60 leading-relaxed font-medium">

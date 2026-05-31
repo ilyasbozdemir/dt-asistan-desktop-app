@@ -9,8 +9,6 @@ import icon from '../../resources/icon.png?asset'
 import { workspaceManager } from './db/workspace'
 import { CURRENT_SCHEMA_VERSION } from './db/migrate'
 import nodemailer from 'nodemailer'
-
-import fs from 'fs'
 import {
   isSupportedFile,
   allFormatsFilter,
@@ -310,7 +308,7 @@ if (!gotTheLock) {
         })
         if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
         
-        fs.writeFileSync(filePath, Buffer.from(bufferData))
+        fs.writeFileSync(filePath, Buffer.from(bufferData as ArrayBuffer))
         
         return { success: true, filePath }
       } catch (err: any) {
@@ -930,9 +928,14 @@ if (!gotTheLock) {
     // --- Auto Updater Logic ---
     // Uygulama açıldıktan saniyeler sonra güncellemeleri kontrol et
     if (isDev) {
-      setTimeout(async () => {
+      const checkInterval = setInterval(async () => {
         try {
+          // If getDb() throws an error, the catch block will suppress it and we'll try again in 5s
           const db = workspaceManager.getDb()
+          
+          // Database is ready, stop checking
+          clearInterval(checkInterval)
+
           const testModeRow = db.prepare("SELECT value FROM settings WHERE key = 'devUpdateTestMode'").get() as { value: string } | undefined
           const devVersionRow = db.prepare("SELECT value FROM settings WHERE key = 'devUpdateVersion'").get() as { value: string } | undefined
           
@@ -940,7 +943,7 @@ if (!gotTheLock) {
             autoUpdater.forceDevUpdateConfig = true
 
             if (devVersionRow?.value) {
-              autoUpdater.currentVersion = devVersionRow.value
+              Object.defineProperty(autoUpdater, 'currentVersion', { value: devVersionRow.value })
             } else {
               // Read dev-app-update.yml to get owner and repo
               const ymlPath = join(__dirname, '../../dev-app-update.yml')
@@ -954,7 +957,7 @@ if (!gotTheLock) {
                     releases.forEach((r, i) => console.log(`[${i}] ${r.tag_name}`))
                     if (releases.length > 0) {
                       const targetVersion = releases[releases.length - 1].tag_name.replace('v', '')
-                      autoUpdater.currentVersion = targetVersion
+                      Object.defineProperty(autoUpdater, 'currentVersion', { value: targetVersion })
                     }
                   }
                 }
@@ -964,7 +967,7 @@ if (!gotTheLock) {
             autoUpdater.checkForUpdatesAndNotify()
           }
         } catch (e) {
-          console.error('Dev update check failed:', e)
+          // Keep waiting for DB to be initialized by the user
         }
       }, 5000)
     } else {
