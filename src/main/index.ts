@@ -964,14 +964,18 @@ if (!gotTheLock) {
               }
             }
             
-            autoUpdater.checkForUpdatesAndNotify()
+            autoUpdater.checkForUpdatesAndNotify().catch(e => {
+              console.error('Update check error:', e.message)
+            })
           }
         } catch (e) {
           // Keep waiting for DB to be initialized by the user
         }
       }, 5000)
     } else {
-      autoUpdater.checkForUpdatesAndNotify()
+      autoUpdater.checkForUpdatesAndNotify().catch(e => {
+        console.error('Update check error:', e.message)
+      })
     }
 
     autoUpdater.on('checking-for-update', () => {
