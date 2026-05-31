@@ -12,6 +12,7 @@ import {
   Palette,
   Code
 } from 'lucide-react'
+import { InnerMenu, InnerMenuItem } from '../../components/ui/InnerMenu'
 import TemaScreen from './TemaScreen'
 import { useLocation } from '@tanstack/react-router'
 
@@ -134,6 +135,14 @@ export default function AyarlarScreen(): React.ReactNode {
     }
   }
 
+  const menuItems: InnerMenuItem[] = [
+    { id: 'smtp', label: 'SMTP Ayarları', icon: <Mail className="w-4 h-4 shrink-0" /> },
+    { id: 'div1', label: '', icon: null, isDivider: true },
+    { id: 'tema', label: 'Renk & Tema', icon: <Palette className="w-4 h-4 shrink-0" /> },
+    { id: 'div2', label: '', icon: null, isDivider: true },
+    { id: 'developer', label: 'Geliştirici & Test', icon: <Code className="w-4 h-4 shrink-0" /> }
+  ]
+
   return (
     <div className="p-8 max-w-6xl mx-auto flex flex-col gap-6 w-full animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-y-auto max-h-full">
       <div className="flex justify-between items-end border-b border-slate-200 dark:border-slate-800 pb-4">
@@ -150,47 +159,12 @@ export default function AyarlarScreen(): React.ReactNode {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* SOL MENÜ (DİKEY SEKME LİSTESİ) */}
-        <div className="lg:col-span-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm flex flex-col gap-1.5">
-          <button
-            onClick={() => setActiveTab('smtp')}
-            className={`flex items-center gap-3 w-full text-left py-2.5 px-4 text-xs font-bold rounded-xl transition-all ${
-              activeTab === 'smtp'
-                ? 'bg-primary text-primary-foreground shadow-md'
-                : 'text-slate-650 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
-            }`}
-          >
-            <Mail className="w-4 h-4 shrink-0" />
-            <span>SMTP Ayarları</span>
-          </button>
-
-          <div className="h-px bg-slate-100 dark:bg-slate-800 my-2" />
-
-          <button
-            onClick={() => setActiveTab('tema')}
-            className={`flex items-center gap-3 w-full text-left py-2.5 px-4 text-xs font-bold rounded-xl transition-all ${
-              activeTab === 'tema'
-                ? 'bg-primary text-primary-foreground shadow-md'
-                : 'text-slate-650 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
-            }`}
-          >
-            <Palette className="w-4 h-4 shrink-0" />
-            <span>Renk & Tema</span>
-          </button>
-
-          <div className="h-px bg-slate-100 dark:bg-slate-800 my-2" />
-
-          <button
-            onClick={() => setActiveTab('developer')}
-            className={`flex items-center gap-3 w-full text-left py-2.5 px-4 text-xs font-bold rounded-xl transition-all ${
-              activeTab === 'developer'
-                ? 'bg-primary text-primary-foreground shadow-md'
-                : 'text-slate-650 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
-            }`}
-          >
-            <Code className="w-4 h-4 shrink-0" />
-            <span>Geliştirici & Test</span>
-          </button>
-        </div>
+        <InnerMenu
+          className="lg:col-span-3"
+          items={menuItems}
+          activeId={activeTab}
+          onChange={(id) => setActiveTab(id as TabType)}
+        />
 
         {/* SAĞ PANEL (İÇERİK ALANI) */}
         <div className="lg:col-span-9 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm min-h-[450px] flex flex-col justify-between">

@@ -176,6 +176,7 @@ function CodeListEditor({
   )
 }
 
+import { InnerMenu, InnerMenuItem } from '../../components/ui/InnerMenu'
 import {
   FONKSIYONEL_KODLAR,
   FINANSMAN_KODLARI,
@@ -427,6 +428,16 @@ export function MevzuatScreen(): React.JSX.Element {
     setTimeout(() => setIsSaving(false), 800)
   }
 
+  const menuItems: InnerMenuItem[] = [
+    { id: 'limitler', label: '4734 Sayılı Kanun Limitleri', icon: <Scale className="w-4 h-4 shrink-0" /> },
+    { id: 'oranlar', label: 'Vergi & Kesinti Oranları', icon: <Calculator className="w-4 h-4 shrink-0" /> },
+    { id: 'mali', label: 'Mali & Kurumsal Kodlar', icon: <FileCode className="w-4 h-4 shrink-0" /> },
+    { id: 'rehber', label: 'Alım Türü Rehberi', icon: <FileText className="w-4 h-4 shrink-0" /> },
+    { id: 'asamalar', label: 'İşlem Aşamaları (Status)', icon: <Info className="w-4 h-4 shrink-0" /> },
+    { id: 'bentler', label: 'Madde 22 Bentleri', icon: <BookOpen className="w-4 h-4 shrink-0" /> },
+    { id: 'butcekodlari', label: 'Bütçe Kodları (ABS)', icon: <FileText className="w-4 h-4 shrink-0" /> }
+  ]
+
   return (
     <div className="flex flex-col h-full space-y-6">
       <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
@@ -468,92 +479,12 @@ export function MevzuatScreen(): React.JSX.Element {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start flex-1 min-h-0">
         {/* SOL MENÜ */}
-        <div className="lg:col-span-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm flex flex-col gap-1.5 shrink-0">
-          <button
-            onClick={() => setActiveTab('limitler')}
-            className={cn(
-              'flex items-center gap-3 w-full text-left py-2.5 px-4 text-xs font-bold rounded-xl transition-all border border-transparent cursor-pointer',
-              activeTab === 'limitler'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                : 'text-slate-655 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
-            )}
-          >
-            <Scale className="w-4 h-4 shrink-0" />
-            <span>4734 Sayılı Kanun Limitleri</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('oranlar')}
-            className={cn(
-              'flex items-center gap-3 w-full text-left py-2.5 px-4 text-xs font-bold rounded-xl transition-all border border-transparent cursor-pointer',
-              activeTab === 'oranlar'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                : 'text-slate-655 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
-            )}
-          >
-            <Calculator className="w-4 h-4 shrink-0" />
-            <span>Vergi & Kesinti Oranları</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('mali')}
-            className={cn(
-              'flex items-center gap-3 w-full text-left py-2.5 px-4 text-xs font-bold rounded-xl transition-all border border-transparent cursor-pointer',
-              activeTab === 'mali'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                : 'text-slate-655 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
-            )}
-          >
-            <FileCode className="w-4 h-4 shrink-0" />
-            <span>Mali & Kurumsal Kodlar</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('rehber')}
-            className={cn(
-              'flex items-center gap-3 w-full text-left py-2.5 px-4 text-xs font-bold rounded-xl transition-all border border-transparent cursor-pointer',
-              activeTab === 'rehber'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                : 'text-slate-655 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
-            )}
-          >
-            <FileText className="w-4 h-4 shrink-0" />
-            <span>Alım Türü Rehberi</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('asamalar')}
-            className={cn(
-              'flex items-center gap-3 w-full text-left py-2.5 px-4 text-xs font-bold rounded-xl transition-all border border-transparent cursor-pointer',
-              activeTab === 'asamalar'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                : 'text-slate-655 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
-            )}
-          >
-            <Info className="w-4 h-4 shrink-0" />
-            <span>İşlem Aşamaları (Status)</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('bentler')}
-            className={cn(
-              'flex items-center gap-3 w-full text-left py-2.5 px-4 text-xs font-bold rounded-xl transition-all border border-transparent cursor-pointer',
-              activeTab === 'bentler'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                : 'text-slate-655 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
-            )}
-          >
-            <BookOpen className="w-4 h-4 shrink-0" />
-            <span>Madde 22 Bentleri</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('butcekodlari')}
-            className={cn(
-              'flex items-center gap-3 w-full text-left py-2.5 px-4 text-xs font-bold rounded-xl transition-all border border-transparent cursor-pointer',
-              activeTab === 'butcekodlari'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                : 'text-slate-655 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
-            )}
-          >
-            <FileText className="w-4 h-4 shrink-0" />
-            <span>Bütçe Kodları (ABS)</span>
-          </button>
-        </div>
+        <InnerMenu
+          className="lg:col-span-3 shrink-0"
+          items={menuItems}
+          activeId={activeTab}
+          onChange={(id) => setActiveTab(id as any)}
+        />
 
         {/* SAĞ PANEL */}
         <div className="lg:col-span-9 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm min-h-[450px] flex flex-col justify-between overflow-y-auto max-h-[calc(100vh-220px)] custom-scrollbar flex-1">

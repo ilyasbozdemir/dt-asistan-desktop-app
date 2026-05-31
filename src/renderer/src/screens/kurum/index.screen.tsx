@@ -5,6 +5,7 @@ import { Input } from '../../components/ui/Input'
 import { useSettingsStore } from '../../store/settingsStore'
 import { Building2, Save, Upload, MapPin, ImageIcon, Info, X } from 'lucide-react'
 import { FINANSMAN_KODLARI } from '../../constants/butce-kodlari'
+import { InnerMenu, InnerMenuItem } from '../../components/ui/InnerMenu'
 
 type TabType = 'idari' | 'iletisim'
 
@@ -123,6 +124,11 @@ export default function KurumScreen(): React.JSX.Element {
     }
   }
 
+  const menuItems: InnerMenuItem[] = [
+    { id: 'idari', label: 'İdari Bilgiler', icon: <Building2 className="w-4 h-4 shrink-0" /> },
+    { id: 'iletisim', label: 'İletişim & Konum', icon: <MapPin className="w-4 h-4 shrink-0" /> }
+  ]
+
   return (
     <div className="p-8 max-w-6xl mx-auto flex flex-col gap-6 w-full animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-y-auto max-h-full">
       <div className="flex justify-between items-end border-b border-slate-200 dark:border-slate-800 pb-4">
@@ -139,31 +145,12 @@ export default function KurumScreen(): React.JSX.Element {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* SOL MENÜ */}
-        <div className="lg:col-span-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm flex flex-col gap-1.5">
-          <button
-            onClick={() => setActiveTab('idari')}
-            className={`flex items-center gap-3 w-full text-left py-2.5 px-4 text-xs font-bold rounded-xl transition-all ${
-              activeTab === 'idari'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                : 'text-slate-650 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
-            }`}
-          >
-            <Building2 className="w-4 h-4 shrink-0" />
-            <span>İdari Bilgiler</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('iletisim')}
-            className={`flex items-center gap-3 w-full text-left py-2.5 px-4 text-xs font-bold rounded-xl transition-all ${
-              activeTab === 'iletisim'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                : 'text-slate-650 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
-            }`}
-          >
-            <MapPin className="w-4 h-4 shrink-0" />
-            <span>İletişim & Konum</span>
-          </button>
-        </div>
+        <InnerMenu
+          className="lg:col-span-3"
+          items={menuItems}
+          activeId={activeTab}
+          onChange={(id) => setActiveTab(id as TabType)}
+        />
 
         {/* SAĞ PANEL */}
         <div className="lg:col-span-9 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm min-h-[450px] flex flex-col justify-between">
@@ -655,7 +642,7 @@ export default function KurumScreen(): React.JSX.Element {
                 <Button
                   onClick={() => handleSaveTab(activeTab)}
                   disabled={saving}
-                  className="gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-2.5 px-6 text-sm font-semibold transition-all shadow-md shadow-blue-500/10 shrink-0"
+                  className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl py-2.5 px-6 text-sm font-semibold transition-all shadow-md shadow-primary/20 shrink-0"
                 >
                   <Save className="w-4 h-4" />
                   Değişiklikleri Kaydet
