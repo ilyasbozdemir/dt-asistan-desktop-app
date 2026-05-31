@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import Editor, { loader } from '@monaco-editor/react'
 import * as monaco from 'monaco-editor'
 import * as XLSX from 'xlsx'
+import Mustache from 'mustache'
 import { Panel, Group as PanelGroup, Separator as PanelResizeHandle } from 'react-resizable-panels'
 import {
   Code,
@@ -41,9 +42,12 @@ export default function SablonlarScreen(): React.JSX.Element {
       const doc = iframeRef.current.contentDocument
       if (doc) {
         doc.open()
-        // Replace placeholders {{key}}
-        const finalHtml = htmlCode.replace(/\{\{(\w+)\}\}/g, (_, key) => parsedData[key] ?? '')
-        doc.write(finalHtml)
+        try {
+          const finalHtml = Mustache.render(htmlCode, parsedData)
+          doc.write(finalHtml)
+        } catch (e) {
+          doc.write(`<div style="color:red;padding:20px;">Şablon Hatası: ${e}</div>`)
+        }
         doc.close()
       }
     }
@@ -89,7 +93,7 @@ export default function SablonlarScreen(): React.JSX.Element {
 
   const handleExportDocx = async () => {
     try {
-      const finalHtml = htmlCode.replace(/\{\{(\w+)\}\}/g, (_, key) => parsedData[key] ?? '')
+      const finalHtml = Mustache.render(htmlCode, parsedData)
       const res = await window.electron.ipcRenderer.invoke('export-docx', finalHtml)
       if (res.success) {
         alert('Şablon başarıyla DOCX olarak dışa aktarıldı.')
