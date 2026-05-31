@@ -1,61 +1,86 @@
 import React, { useState } from 'react'
-import { PackageSearch, Plus, Trash2, Edit2, FileText, Tag, Filter, Search } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
+import { PackageSearch, Plus, Trash2, Edit2, FileText, Tag, Search, ListFilter, FolderTree } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { Modal } from '../../components/ui/Modal'
-
-interface MalzemeMock {
-  id: number
-  pozNo: string
-  ad: string
-  birim: string
-  kategori: string
-}
+import { useMalzemelerHooks } from './malzemeler.hooks'
+import { useTasinirKodHooks } from '../tasinirkod/tasinirkod.hooks'
+import { cn } from '../../utils/cn'
 
 export default function MalzemelerScreen(): React.JSX.Element {
-  const [malzemeler, setMalzemeler] = useState<MalzemeMock[]>([
-    { id: 1, pozNo: '03.01.01', ad: 'A4 Fotokopi Kağıdı (80 gr/m2) Beyaz', birim: 'Kutu', kategori: 'Kırtasiye' },
-    { id: 2, pozNo: '04.250/1', ad: 'Portlant Çimento (CEM I 42,5 R)', birim: 'Torba (50kg)', kategori: 'İnşaat Malzemesi' },
-    { id: 3, pozNo: 'HIZ-005', ad: 'Klima Cihazı Yıllık Bakım ve Onarım Hizmeti', birim: 'Adet/Yıl', kategori: 'Hizmet Alımı' },
-    { id: 4, pozNo: '03.05.02', ad: 'Plastik Klasör Dar Tip A4 Mavi', birim: 'Adet', kategori: 'Kırtasiye' },
-    { id: 5, pozNo: '04.012', ad: 'Hazır Beton (C 25/30 Transmikserle Teslim)', birim: 'm3', kategori: 'İnşaat Malzemesi' }
-  ])
+  const { kalemList, isLoading: isKalemLoading, addKalem, deleteKalem } = useMalzemelerHooks()
+  const { tasinirKodList } = useTasinirKodHooks()
 
-  const [pozNo, setPozNo] = useState('')
-  const [ad, setAd] = useState('')
+  const [barkodId, setBarkodId] = useState('')
+  const [tasinirKodu, setTasinirKodu] = useState('')
+  const [kalemAdi, setKalemAdi] = useState('')
+  const [tipi, setTipi] = useState('Mal Alımı')
   const [birim, setBirim] = useState('Adet')
-  const [kategori, setKategori] = useState('Kırtasiye')
+  const [kategori, setKategori] = useState('')
+  
   const [search, setSearch] = useState('')
+  const [activeTab, setActiveTab] = useState('Tümü') // Tümü, Mal Alımı, Hizmet Alımı, Yapım İşi
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const handleAdd = (e: React.FormEvent): void => {
+  const generateBarcode = () => {
+    // Basic 13-digit generator for ease of use
+    return Math.floor(1000000000000 + Math.random() * 9000000000000).toString()
+  }
+
+  const handleOpenModal = () => {
+    setBarkodId(generateBarcode())
+    setTasinirKodu('')
+    setKalemAdi('')
+    setTipi('Mal Alımı')
+    setBirim('Adet')
+    setKategori('')
+    setIsModalOpen(true)
+  }
+
+  const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!ad.trim()) return
-    const newMalzeme: MalzemeMock = {
-      id: Date.now(),
-      pozNo: pozNo.trim() || 'POZ-YOK',
-      ad: ad.trim(),
-      birim: birim.trim(),
-      kategori: kategori
-    }
-    setMalzemeler([...malzemeler, newMalzeme])
-    setPozNo('')
-    setAd('')
-    setIsModalOpen(false)
-    alert('Yeni malzeme kaydı eklendi (Mock).')
-  }
+    if (!kalemAdi.trim() || !barkodId.trim()) return
 
-  const handleDelete = (id: number): void => {
-    if (confirm('Bu malzeme kaydını silmek istediğinize emin misiniz?')) {
-      setMalzemeler(malzemeler.filter((m) => m.id !== id))
+    try {
+      await addKalem({
+        barkod_id: barkodId.trim(),
+        tasinir_kodu: tasinirKodu.trim() || null,
+        kalem_adi: kalemAdi.trim(),
+        tipi: tipi,
+        birim: birim,
+        kategori: kategori.trim() || null
+      })
+      setIsModalOpen(false)
+    } catch (error: any) {
+      alert('Kayıt eklenirken hata oluştu: ' + error.message)
     }
   }
 
-  const filtered = malzemeler.filter(
-    (m) =>
-      m.ad.toLowerCase().includes(search.toLowerCase()) ||
-      m.pozNo.toLowerCase().includes(search.toLowerCase())
-  )
+  const handleDelete = async (id: number) => {
+    if (confirm('Bu malzeme/hizmet kaydını silmek istediğinize emin misiniz?')) {
+      try {
+        await deleteKalem(id)
+      } catch (error: any) {
+        alert('Silinirken hata oluştu: ' + error.message)
+      }
+    }
+  }
+
+  const filteredList = kalemList.filter((m) => {
+    const matchesSearch =
+      m.kalem_adi.toLowerCase().includes(search.toLowerCase()) ||
+      (m.tasinir_kodu || '').toLowerCase().includes(search.toLowerCase()) ||
+      m.barkod_id.toLowerCase().includes(search.toLowerCase())
+    
+    const matchesTab = activeTab === 'Tümü' || m.tipi === activeTab
+
+    return matchesSearch && matchesTab
+  })
+
+  if (isKalemLoading) {
+    return <div className="p-8 text-slate-500">Yükleniyor...</div>
+  }
 
   return (
     <div className="p-8 max-w-7xl mx-auto flex flex-col gap-6 w-full animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-y-auto max-h-full">
@@ -66,20 +91,38 @@ export default function MalzemelerScreen(): React.JSX.Element {
             Malzeme & Hizmet Tanımları
           </h1>
           <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">
-            Yaklaşık maliyet hesaplarında ve tekliflerde kullanılan ortak malzeme, hizmet ve poz tanımlarını yönetin.
+            Yaklaşık maliyet hesaplarında ve teklif mektuplarında kullanılacak malzeme, hizmet ve yapım kalemlerini yönetin.
           </p>
+          <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/50 rounded-lg text-xs text-blue-700 dark:text-blue-300 flex flex-col gap-1.5">
+            <p>
+              💡 <strong>İpucu:</strong> Güncel Taşınır Kodları listesine ulaşmak için <a href="https://muhasebat.hmb.gov.tr/tasinir-kod-listesi" target="_blank" rel="noreferrer" className="underline font-semibold hover:text-blue-800 dark:hover:text-blue-200">Muhasebat Genel Müdürlüğü</a> sayfasını ziyaret edebilirsiniz.
+            </p>
+            <p>
+              📣 Uygulama altyapımız bu kodları tamamen desteklemektedir. Hazır malzeme listesi ve kodlarının varsayılan olarak eklenmesi için <a href="https://github.com/ilyasbozdemir/dt-desktop-app" target="_blank" rel="noreferrer" className="underline font-semibold hover:text-blue-800 dark:hover:text-blue-200">GitHub sayfamızdan Issue açarak</a> bize veritabanı taleplerinizi iletebilirsiniz.
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-6">
           <div className="text-right border-r border-slate-200 dark:border-slate-800 pr-6 hidden sm:block">
-            <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{malzemeler.length}</div>
+            <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{kalemList.length}</div>
             <div className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Kayıtlı Kalem</div>
           </div>
-          <Button
-            onClick={() => setIsModalOpen(true)}
-            className="gap-2 bg-blue-600 hover:bg-blue-700 shadow-md flex items-center px-4 py-2 text-sm"
-          >
-            <Plus className="w-4 h-4" /> Yeni Malzeme/Hizmet
-          </Button>
+          <div className="flex gap-3">
+            <Link to="/tasinirkod">
+              <Button
+                variant="outline"
+                className="gap-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 flex items-center px-4 py-2 text-sm"
+              >
+                <FolderTree className="w-4 h-4 text-emerald-600" /> Kod Yönetimi
+              </Button>
+            </Link>
+            <Button
+              onClick={handleOpenModal}
+              className="gap-2 bg-blue-600 hover:bg-blue-700 shadow-md flex items-center px-4 py-2 text-sm"
+            >
+              <Plus className="w-4 h-4" /> Yeni Kalem Ekle
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -90,8 +133,10 @@ export default function MalzemelerScreen(): React.JSX.Element {
             <Tag className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Kayıtlı Malzeme & Hizmet</div>
-            <div className="text-xl font-bold text-slate-800 dark:text-slate-100 mt-0.5">{malzemeler.length} Kalem</div>
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Mal Alımı (Malzeme)</div>
+            <div className="text-xl font-bold text-slate-800 dark:text-slate-100 mt-0.5">
+              {kalemList.filter(m => m.tipi === 'Mal Alımı').length} Kalem
+            </div>
           </div>
         </div>
 
@@ -100,37 +145,51 @@ export default function MalzemelerScreen(): React.JSX.Element {
             <FileText className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Poz Numaralı Kayıtlar</div>
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Hizmet Alımı</div>
             <div className="text-xl font-bold text-slate-800 dark:text-slate-100 mt-0.5">
-              {malzemeler.filter(m => m.pozNo !== 'POZ-YOK' && !m.pozNo.startsWith('HIZ')).length} Kalem
+              {kalemList.filter(m => m.tipi === 'Hizmet Alımı').length} Kalem
             </div>
           </div>
         </div>
 
         <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-450 flex items-center justify-center shrink-0">
-            <Filter className="w-6 h-6" />
+            <PackageSearch className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Ana Kategori Sayısı</div>
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Yapım İşi</div>
             <div className="text-xl font-bold text-slate-800 dark:text-slate-100 mt-0.5">
-              {new Set(malzemeler.map(m => m.kategori)).size} Kategori
+              {kalemList.filter(m => m.tipi === 'Yapım İşi').length} Kalem
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-sm font-bold text-slate-850 dark:text-slate-200">
-            Malzeme & Hizmet Havuzu
-          </h3>
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm flex flex-col flex-1 overflow-hidden">
+        {/* TABS & SEARCH */}
+        <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
+          <div className="flex bg-slate-100 dark:bg-slate-800/50 p-1 rounded-lg">
+            {['Tümü', 'Mal Alımı', 'Hizmet Alımı', 'Yapım İşi'].map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={cn(
+                  "px-4 py-1.5 text-xs font-semibold rounded-md transition-all",
+                  activeTab === tab 
+                    ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm"
+                    : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                )}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
           
           <div className="relative w-72">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
-              placeholder="Kod veya malzeme ara..."
+              placeholder="Ad, Barkod veya Taşınır Kodu ara..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-full text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -138,122 +197,159 @@ export default function MalzemelerScreen(): React.JSX.Element {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filtered.length === 0 ? (
-            <div className="col-span-full p-16 flex flex-col items-center justify-center text-slate-450 bg-slate-50 dark:bg-slate-950 rounded-xl">
-              <PackageSearch className="w-12 h-12 mb-3 text-slate-300 dark:text-slate-700" />
-              <h3 className="text-base font-semibold text-slate-700 dark:text-slate-300">Malzeme Bulunamadı</h3>
-              <p className="text-xs mt-1 text-slate-500">
-                Arama kriterlerinize uygun malzeme kaydı bulunmuyor.
-              </p>
-            </div>
-          ) : (
-            filtered.map((item) => (
-              <div
-                key={item.id}
-                className="flex flex-col p-4 bg-slate-50/50 dark:bg-slate-950/20 border border-slate-150 dark:border-slate-850 rounded-xl hover:border-blue-300 dark:hover:border-blue-800 transition-colors group relative"
-              >
-                <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-slate-400 hover:text-blue-500">
-                    <Edit2 className="w-3.5 h-3.5" />
-                  </Button>
-                  <Button
-                    title="Sil"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleDelete(item.id)}
-                    className="h-7 w-7 p-0 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/15"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </Button>
-                </div>
-
-                <div className="flex items-center gap-2 mb-2 pr-12">
-                  <span className="font-mono font-bold text-[10px] text-blue-606 dark:text-blue-450 bg-blue-50 dark:bg-blue-900/30 border border-blue-100/20 dark:border-blue-900/10 px-1.5 py-0.5 rounded">
-                    {item.pozNo}
-                  </span>
-                  <span className="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded">
-                    {item.kategori}
-                  </span>
-                </div>
-
-                <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-3 leading-snug line-clamp-3">
-                  {item.ad}
-                </h4>
-
-                <div className="mt-auto border-t border-slate-200/60 dark:border-slate-800/60 pt-3 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
-                  <span className="font-semibold text-slate-600 dark:text-slate-300">
-                    Birim: {item.birim}
-                  </span>
-                </div>
+        {/* LIST */}
+        <div className="flex-1 overflow-auto p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {filteredList.length === 0 ? (
+              <div className="col-span-full p-16 flex flex-col items-center justify-center text-slate-450 bg-slate-50 dark:bg-slate-950 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
+                <ListFilter className="w-12 h-12 mb-3 text-slate-300 dark:text-slate-700" />
+                <h3 className="text-base font-semibold text-slate-700 dark:text-slate-300">Kayıt Bulunamadı</h3>
+                <p className="text-xs mt-1 text-slate-500">
+                  Arama veya filtreleme kriterlerine uygun kayıt bulunmuyor.
+                </p>
               </div>
-            ))
-          )}
+            ) : (
+              filteredList.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex flex-col p-4 bg-slate-50/50 dark:bg-slate-950/20 border border-slate-150 dark:border-slate-850 rounded-xl hover:border-blue-300 dark:hover:border-blue-800 transition-colors group relative"
+                >
+                  <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-slate-400 hover:text-blue-500">
+                      <Edit2 className="w-3.5 h-3.5" />
+                    </Button>
+                    <Button
+                      title="Sil"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDelete(item.id)}
+                      className="h-7 w-7 p-0 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/15"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+
+                  <div className="flex flex-col gap-1 mb-2 pr-12">
+                    <span className="font-mono font-bold text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wide">
+                      ID: {item.barkod_id}
+                    </span>
+                    {item.tasinir_kodu && (
+                      <span className="w-fit font-mono font-bold text-[10px] text-blue-606 dark:text-blue-450 bg-blue-50 dark:bg-blue-900/30 border border-blue-100/20 dark:border-blue-900/10 px-1.5 py-0.5 rounded">
+                        T.Kodu: {item.tasinir_kodu}
+                      </span>
+                    )}
+                  </div>
+
+                  <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-3 leading-snug line-clamp-3">
+                    {item.kalem_adi}
+                  </h4>
+
+                  <div className="mt-auto border-t border-slate-200/60 dark:border-slate-800/60 pt-3 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+                    <span className="font-semibold text-slate-600 dark:text-slate-300">
+                      {item.tipi}
+                    </span>
+                    <span className="font-semibold text-slate-600 dark:text-slate-300">
+                      Birim: {item.birim}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
 
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Yeni Malzeme / Hizmet Tanımla"
-        description="Yaklaşık maliyet hesaplarında kullanılacak kalemleri kaydedin."
+        title="Yeni Kayıt Ekle"
+        description="Yaklaşık maliyet hesaplarında ve tekliflerde kullanılacak kalemi tanımlayın."
       >
         <form onSubmit={handleAdd} className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-455 mb-1.5">Poz No / Stok Kodu</label>
-            <Input
-              value={pozNo}
-              onChange={(e) => setPozNo(e.target.value)}
-              placeholder="Örn: 04.250/1"
-              className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-xs py-1.5 h-9"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-455 mb-1.5">Barkod / Benzersiz ID <span className="text-red-500">*</span></label>
+              <Input
+                required
+                value={barkodId}
+                onChange={(e) => setBarkodId(e.target.value)}
+                placeholder="Örn: 8698996516233"
+                className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-xs py-1.5 h-9 font-mono"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-455 mb-1.5">Taşınır Kodu</label>
+              <Input
+                list="tasinir-kodlar"
+                value={tasinirKodu}
+                onChange={(e) => {
+                  const val = e.target.value
+                  setTasinirKodu(val)
+                  // Seçilen koda göre malzeme adını otomatik doldur (eğer malzeme adı boşsa veya sadece otomatik dolmuşsa)
+                  const found = tasinirKodList.find(k => k.tam_kod === val)
+                  if (found && !kalemAdi) {
+                    setKalemAdi(found.aciklama)
+                  }
+                }}
+                placeholder="Örn: 150.01.01.01 (Listeden Seçin)"
+                className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-xs py-1.5 h-9 font-mono"
+              />
+              <datalist id="tasinir-kodlar">
+                {tasinirKodList.map(k => (
+                  <option key={k.id} value={k.tam_kod}>
+                    {k.aciklama}
+                  </option>
+                ))}
+              </datalist>
+            </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-455 mb-1.5">Malzeme / Hizmet Adı <span className="text-red-500">*</span></label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-455 mb-1.5">Malzeme / Hizmet / Yapım Adı <span className="text-red-500">*</span></label>
             <Input
               required
-              value={ad}
-              onChange={(e) => setAd(e.target.value)}
-              placeholder="Malzeme açıklamasını yazın"
+              value={kalemAdi}
+              onChange={(e) => setKalemAdi(e.target.value)}
+              placeholder="Örn: A4 Fotokopi Kağıdı (80 gr/m2) Beyaz"
               className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-xs py-1.5 h-9"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-455 mb-1.5">Tipi</label>
+              <select
+                value={tipi}
+                onChange={(e) => setTipi(e.target.value)}
+                className="w-full bg-slate-55 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 text-xs rounded-lg py-2 px-3 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="Mal Alımı">Mal Alımı</option>
+                <option value="Hizmet Alımı">Hizmet Alımı</option>
+                <option value="Yapım İşi">Yapım İşi</option>
+              </select>
+            </div>
+
+            <div>
               <label className="block text-xs font-semibold text-slate-600 dark:text-slate-455 mb-1.5">Ölçü Birimi</label>
               <select
                 value={birim}
                 onChange={(e) => setBirim(e.target.value)}
-                title="Birim Seçin"
                 className="w-full bg-slate-55 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 text-xs rounded-lg py-2 px-3 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 <option value="Adet">Adet</option>
                 <option value="Kutu">Kutu</option>
                 <option value="Torba (50kg)">Torba (50kg)</option>
                 <option value="m3">m3</option>
+                <option value="m2">m2</option>
                 <option value="kg">kg</option>
+                <option value="Litre">Litre</option>
                 <option value="Metre">Metre</option>
                 <option value="Saat">Saat</option>
                 <option value="Gün">Gün</option>
+                <option value="Ay">Ay</option>
                 <option value="Adet/Yıl">Adet/Yıl</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-455 mb-1.5">Kategori</label>
-              <select
-                value={kategori}
-                onChange={(e) => setKategori(e.target.value)}
-                title="Kategori Seçin"
-                className="w-full bg-slate-55 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 text-xs rounded-lg py-2 px-3 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              >
-                <option value="Kırtasiye">Kırtasiye</option>
-                <option value="İnşaat Malzemesi">İnşaat Malzemesi</option>
-                <option value="Hizmet Alımı">Hizmet Alımı</option>
-                <option value="Bilişim & Teknoloji">Bilişim & Teknoloji</option>
-                <option value="Elektrik & Tesisat">Elektrik & Tesisat</option>
+                <option value="Paket">Paket</option>
+                <option value="Takım">Takım</option>
               </select>
             </div>
           </div>
@@ -263,7 +359,7 @@ export default function MalzemelerScreen(): React.JSX.Element {
               İptal
             </Button>
             <Button type="submit" className="bg-blue-600 hover:bg-blue-700 shadow-md">
-              Malzeme Kaydını Ekle
+              Kaydet
             </Button>
           </div>
         </form>

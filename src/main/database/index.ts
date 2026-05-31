@@ -12,7 +12,9 @@ import { TANIM_Sablon } from './tables/TANIM_Sablon'
 import { TANIM_Placeholder } from './tables/TANIM_Placeholder'
 import { TANIM_AlimTuru_Sablon } from './tables/TANIM_AlimTuru_Sablon'
 import { SABLON_Placeholder } from './tables/SABLON_Placeholder'
-import { CURRENT_SCHEMA_VERSION } from '../db/migrate'
+import { TANIM_Kalem } from './tables/TANIM_Kalem'
+import { TANIM_TasinirKod } from './tables/TANIM_TasinirKod'
+import { CURRENT_SCHEMA_VERSION } from './migrate'
 
 export const TablePrefixLogic = {
   DATA: 'OPERASYONEL SÜREÇLER VE DOSYALAR (Temin Dosyaları, Teklifler, Siparişler)',
@@ -28,7 +30,7 @@ export const schema = {
     web: 'https://ilyasbozdemir.dev',
     github: 'https://github.com/ilyasbozdemir'
   },
-  version: '1.0.0-alpha.4',
+  version: '1.0.0-alpha.6',
   /**
    * Tablo tanımları — sıra önemlidir (FK bağımlılıkları).
    * Tüm tanım (TANIM_*) tabloları DATA_* tablolarından önce oluşturulmalı.
@@ -41,6 +43,8 @@ export const schema = {
     TANIM_Asama, // İşlem aşamaları (Status)
     TANIM_Firma, // Kayıtlı firmalar havuzu
     TANIM_Ambar, // Ambar depoları
+    TANIM_TasinirKod, // Taşınır Kod Ağacı
+    TANIM_Kalem, // Malzeme ve Hizmet Kalemleri
     TANIM_AlimTuru, // Alım Türleri
     TANIM_Sablon, // Şablonlar
     TANIM_Placeholder, // Dinamik alanlar

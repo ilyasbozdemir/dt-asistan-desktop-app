@@ -12,11 +12,8 @@ import {
   Sun,
   Moon,
   Eye,
-  EyeOff,
-  Megaphone,
-  History
+  EyeOff
 } from 'lucide-react'
-import { useEffect } from 'react'
 import { useWorkspaceStore } from '../../store/workspaceStore'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTheme } from '../../components/providers/ThemeProvider'
@@ -33,14 +30,6 @@ export default function LauncherScreen(): React.ReactNode {
   // Migration states
   const [showMigrationModal, setShowMigrationModal] = useState(false)
   const [migrationData, setMigrationData] = useState<{ filePath: string; pendingUpdates: any[] } | null>(null)
-
-  // Changelog states
-  const [showChangelogModal, setShowChangelogModal] = useState(false)
-  const [changelog, setChangelog] = useState<{version: string, notes: string, schema_max: number}[]>([])
-
-  useEffect(() => {
-    window.electron?.ipcRenderer.invoke('get-changelog').then(res => setChangelog(res)).catch(e => console.error(e))
-  }, [])
 
   const [institutionName, setInstitutionName] = useState('')
   const [institutionCode, setInstitutionCode] = useState('')
@@ -234,22 +223,6 @@ export default function LauncherScreen(): React.ReactNode {
               <p className="text-xs opacity-80 mt-0.5">Önceden oluşturulmuş .dtm dosyasını yükle</p>
             </div>
           </button>
-
-          <button
-            onClick={() => setShowChangelogModal(true)}
-            className="w-full flex items-center gap-4 p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-700 dark:text-slate-300 transition-all group"
-          >
-            <div className="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0 group-hover:scale-105 transition-transform">
-              <Megaphone className="w-5 h-5" />
-            </div>
-            <div className="text-left flex-1">
-              <h3 className="font-bold text-base">Güncellemeler ve Sürüm Notları</h3>
-              <p className="text-xs opacity-80 mt-0.5">Yeni versiyonlarda neler değişti?</p>
-            </div>
-            <div className="bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 text-[10px] font-bold px-2 py-1 rounded-full">
-              YENİ
-            </div>
-          </button>
         </div>
       </div>
 
@@ -423,75 +396,6 @@ export default function LauncherScreen(): React.ReactNode {
                 className="flex-1 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 text-white rounded-xl text-sm font-semibold transition-colors"
               >
                 {creating ? 'Güncelleniyor...' : 'Devam Edilsin mi?'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* CHANGELOG MODAL */}
-      {showChangelogModal && (
-        <div
-          className="absolute inset-0 bg-slate-950/40 dark:bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-in fade-in duration-300"
-          style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-        >
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 max-w-lg w-full rounded-3xl p-6 shadow-2xl flex flex-col text-slate-800 dark:text-slate-100 max-h-[80vh]">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-amber-100 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl text-amber-600 dark:text-amber-400">
-                  <History className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                    Sürüm Notları
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    DT Asistan güncellemeleri ve yenilikler
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowChangelogModal(false)}
-                className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto pr-2 space-y-6 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700">
-              {changelog.map((log, index) => (
-                <div key={index} className="relative pl-6">
-                  <div className="absolute left-0 top-1.5 w-2 h-2 rounded-full bg-blue-500 ring-4 ring-blue-50 dark:ring-blue-900/20"></div>
-                  {index !== changelog.length - 1 && (
-                    <div className="absolute left-[3px] top-4 bottom-[-24px] w-0.5 bg-slate-100 dark:bg-slate-800"></div>
-                  )}
-                  <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2">
-                    Versiyon {log.version}
-                    {index === 0 && (
-                      <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400 font-bold">
-                        EN YENİ
-                      </span>
-                    )}
-                  </h4>
-                  <div className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-wrap bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                    {log.notes}
-                  </div>
-                </div>
-              ))}
-              
-              {changelog.length === 0 && (
-                <div className="text-center text-slate-500 dark:text-slate-400 py-8 text-sm">
-                  Henüz bir sürüm notu bulunmuyor.
-                </div>
-              )}
-            </div>
-            
-            <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
-              <button
-                onClick={() => setShowChangelogModal(false)}
-                className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-semibold transition-colors"
-              >
-                Kapat
               </button>
             </div>
           </div>

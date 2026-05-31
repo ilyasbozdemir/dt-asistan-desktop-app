@@ -5,11 +5,13 @@ import DosyalarScreen from './screens/dosyalar/index.screen'
 import FirmalarScreen from './screens/firmalar/index.screen'
 import PersonelScreen from './screens/personel/index.screen'
 import { MevzuatScreen } from './screens/system/MevzuatScreen'
+import ChangelogScreen from './screens/system/ChangelogScreen'
 import AyarlarScreen from './screens/ayarlar/index.screen'
 import TemaScreen from './screens/ayarlar/TemaScreen'
 import BirimlerScreen from './screens/birimler/index.screen'
 import AmbarScreen from './screens/ambar/index.screen'
 import MalzemelerScreen from './screens/malzemeler/index.screen'
+import TasinirKodScreen from './screens/tasinirkod/index.screen'
 import KurumScreen from './screens/kurum/index.screen'
 import ProfilScreen from './screens/profil/index.screen'
 import DosyaScreen from './screens/dosya/index.screen'
@@ -78,6 +80,12 @@ const mevzuatRoute = createRoute({
   component: MevzuatScreen
 })
 
+const changelogRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/changelog',
+  component: ChangelogScreen
+})
+
 const ayarlarRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/ayarlar',
@@ -108,6 +116,12 @@ const malzemelerRoute = createRoute({
   component: MalzemelerScreen
 })
 
+const tasinirkodRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/tasinirkod',
+  component: TasinirKodScreen
+})
+
 const kurumRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/kurum',
@@ -136,11 +150,13 @@ const routeTree = rootRoute.addChildren([
   belgelerRoute,
   raporlarRoute,
   mevzuatRoute,
+  changelogRoute,
   ayarlarRoute,
   temaRoute,
   birimlerRoute,
   ambarRoute,
   malzemelerRoute,
+  tasinirkodRoute,
   kurumRoute,
   profilRoute,
   dosyaRoute

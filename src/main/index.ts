@@ -6,9 +6,9 @@ import isDev from 'electron-is-dev'
 import fs from 'fs'
 import yaml from 'js-yaml'
 import icon from '../../resources/icon.png?asset'
-import { workspaceManager } from './db/workspace'
-import { CURRENT_SCHEMA_VERSION } from './db/migrate'
-import { manifests } from './db/schema-manifest/index'
+import { workspaceManager } from './database/workspace'
+import { CURRENT_SCHEMA_VERSION } from './database/migrate'
+import { manifests } from './database/schema-manifest/index'
 import nodemailer from 'nodemailer'
 import {
   isSupportedFile,
@@ -908,6 +908,69 @@ if (!gotTheLock) {
         }
       } catch (error: any) {
         console.error('Import DTE error:', error)
+        return { success: false, error: error.message }
+      }
+    })
+
+    ipcMain.handle('db:import-tasinir-excel', async () => {
+      try {
+        const { canceled, filePaths } = await dialog.showOpenDialog({
+          title: 'Taşınır Kodları Excel Dosyasını Seçin',
+          filters: [{ name: 'Excel Dosyaları', extensions: ['xls', 'xlsx'] }],
+          properties: ['openFile']
+        })
+
+        if (canceled || !filePaths || filePaths.length === 0) return { success: false, error: 'İptal edildi' }
+
+        const filePath = filePaths[0]
+        const xlsx = require('xlsx')
+        const workbook = xlsx.readFile(filePath)
+        const sheetName = workbook.SheetNames[0]
+        const sheet = workbook.Sheets[sheetName]
+        const data = xlsx.utils.sheet_to_json(sheet, { header: 1 }) as any[][]
+
+        const db = workspaceManager.getDb()
+        
+        const insertStmt = db.prepare(`
+          INSERT INTO TANIM_TasinirKod (tam_kod, hesap_kodu, duzey_1, duzey_2, duzey_3, duzey_4, duzey_5, aciklama)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          ON CONFLICT(tam_kod) DO UPDATE SET aciklama = excluded.aciklama
+        `)
+
+        let count = 0
+        const importTransaction = db.transaction((rows: any[][]) => {
+          for (let i = 1; i < rows.length; i++) {
+            const row = rows[i]
+            // Verify if row has at least an explanation at index 6 and a hesap_kodu at index 0
+            if (row && row.length >= 7 && row[0] && row[6]) {
+              const hesap = String(row[0]).trim()
+              const d1 = row[1] ? String(row[1]).trim() : null
+              const d2 = row[2] ? String(row[2]).trim() : null
+              const d3 = row[3] ? String(row[3]).trim() : null
+              const d4 = row[4] ? String(row[4]).trim() : null
+              const d5 = row[5] ? String(row[5]).trim() : null
+              const aciklama = String(row[6]).trim()
+
+              let tam_kod = hesap
+              if (d1) tam_kod += '.' + d1
+              if (d1 && d2) tam_kod += '.' + d2
+              if (d1 && d2 && d3) tam_kod += '.' + d3
+              if (d1 && d2 && d3 && d4) tam_kod += '.' + d4
+              if (d1 && d2 && d3 && d4 && d5) tam_kod += '.' + d5
+
+              insertStmt.run(tam_kod, hesap, d1, d2, d3, d4, d5, aciklama)
+              count++
+            }
+          }
+        })
+
+        importTransaction(data)
+        workspaceManager.save()
+        broadcastDbChange()
+
+        return { success: true, count }
+      } catch (error: any) {
+        console.error('Excel Import Error:', error)
         return { success: false, error: error.message }
       }
     })

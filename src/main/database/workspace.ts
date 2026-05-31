@@ -4,8 +4,9 @@ import { app } from 'electron'
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
-import { initializeDatabase } from '../database/index'
+import { initializeDatabase } from './index'
 import { runMigrations, CURRENT_SCHEMA_VERSION, getPendingMigrations } from './migrate'
+import tasinirKodlariSeed from './seed/tasinir_kodlari.json'
 
 export interface WorkspaceMeta {
   dtm_version: string
@@ -89,7 +90,7 @@ export class DtmWorkspace {
     }
 
     if (meta.schema_version > CURRENT_SCHEMA_VERSION) {
-      throw new Error(`Bu dosya (v${meta.schema_version}) daha yeni bir uygulama sürümü gerektirir. Lütfen uygulamayı güncelleyin.`)
+      meta.warnings?.push(`UYARI: Bu dosya (v${meta.schema_version}) daha yeni bir uygulama sürümü gerektiriyor olabilir. Uyumsuzluk yaşamamak için lütfen uygulamanızı güncelleyin.`)
     }
 
     const fromVersion = meta.schema_version || 1
@@ -179,6 +180,21 @@ export class DtmWorkspace {
     this.db = new Database(dbPath)
 
     initializeDatabase(this.db, institutionName)
+
+    try {
+      const insertStmt = this.db.prepare(`
+        INSERT OR IGNORE INTO TANIM_TasinirKod (tam_kod, hesap_kodu, duzey_1, duzey_2, duzey_3, duzey_4, duzey_5, aciklama)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `)
+      const seedTx = this.db.transaction((rows: any[]) => {
+        for (const row of rows) {
+          insertStmt.run(row.tam_kod, row.hesap_kodu, row.duzey_1, row.duzey_2, row.duzey_3, row.duzey_4, row.duzey_5, row.aciklama)
+        }
+      })
+      seedTx(tasinirKodlariSeed)
+    } catch (err) {
+      console.error('Tasinir Kodlari tohumlama sirasinda hata:', err)
+    }
 
     const meta: WorkspaceMeta = {
       dtm_version: '1.0',

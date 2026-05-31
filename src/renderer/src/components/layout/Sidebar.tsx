@@ -15,7 +15,9 @@ import {
   LogOut,
   LayoutGrid,
   Database,
-  PackageSearch
+  PackageSearch,
+  FolderTree,
+  Megaphone
 } from 'lucide-react'
 import { cn } from '../../utils/cn'
 import { useSettingsStore } from '../../store/settingsStore'
@@ -41,6 +43,7 @@ const menuGroups = [
       { name: 'Birim Yönetimi', path: '/birimler', icon: LayoutGrid },
       { name: 'Ambar Tanımları', path: '/ambar', icon: Database },
       { name: 'Malzeme Listesi', path: '/malzemeler', icon: PackageSearch },
+      { name: 'Taşınır Kodları', path: '/tasinirkod', icon: FolderTree },
       { name: 'Firmalar / Tedarikçiler', path: '/firmalar', icon: Building2 },
       { name: 'Personel Yönetimi', path: '/personel', icon: Users },
       { name: 'Kurum Bilgileri', path: '/kurum', icon: Building2 }
@@ -52,6 +55,7 @@ const menuGroups = [
       { name: 'Raporlar', path: '/raporlar', icon: BarChart3 },
       { name: 'Şablon Yönetimi', path: '/sablonlar', icon: FileText },
       { name: 'Mevzuat & Limitler', path: '/mevzuat', icon: Scale },
+      { name: 'Sürüm Notları', path: '/changelog', icon: Megaphone },
       { name: 'Ayarlar', path: '/ayarlar', icon: Settings }
     ]
   }
