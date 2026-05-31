@@ -640,8 +640,17 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
         </div>
       )}
 
+      {/* Tema Uyarı Bildirimi */}
+      <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-xl p-4 flex items-start gap-3 shadow-sm">
+        <Info className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+        <div className="text-sm text-amber-800 dark:text-amber-300 leading-relaxed">
+          <strong className="font-semibold block mb-0.5">⚠️ Yeniden Başlatma Gerekebilir</strong>
+          Tema değişikliği sonrasında arayüzün bazı bölümlerinde (özellikle butonlar ve sol menüde) renk kaymaları görebilirsiniz. Yeni temanın her yere kusursuz yansıması için uygulamayı kapatıp <strong>tekrar açmanız (veya Ctrl+R ile sayfayı yenilemeniz)</strong> önerilir. Tekrar açtığınızda düzelecektir.
+        </div>
+      </div>
+
       {/* Tab Seçimi */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 -mt-2">
+      <div className="flex border-b border-slate-200 dark:border-slate-800 mt-2">
         <button
           type="button"
           onClick={() => setActiveTab('presets')}
