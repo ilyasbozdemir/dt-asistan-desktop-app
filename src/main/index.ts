@@ -122,6 +122,10 @@ if (!gotTheLock) {
     // IPC test
     ipcMain.on('ping', () => console.log('pong'))
 
+    ipcMain.on('install-update', () => {
+      autoUpdater.quitAndInstall(false, true)
+    })
+
     // --- Workspace & SQLite Handlers ---
     const broadcastDbChange = () => {
       BrowserWindow.getAllWindows().forEach((win) => {

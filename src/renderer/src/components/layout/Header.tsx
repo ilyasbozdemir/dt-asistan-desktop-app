@@ -46,11 +46,18 @@ export function Header(): React.JSX.Element {
 
         {updateStatus && (updateStatus.status === 'available' || updateStatus.status === 'downloaded') && (
           <button
+            onClick={() => {
+              if (updateStatus.status === 'downloaded') {
+                window.electron?.ipcRenderer.send('install-update')
+              } else {
+                alert('Güncelleme arka planda indiriliyor, lütfen bekleyin...')
+              }
+            }}
             className="relative p-2 text-blue-500 hover:text-blue-600 transition-all rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/30"
-            title={`Yeni sürüm mevcut: ${updateStatus.version}`}
+            title={updateStatus.status === 'downloaded' ? `Yeni sürüm hazır: ${updateStatus.version} (Kurmak için tıkla)` : `Yeni sürüm iniyor: ${updateStatus.version}...`}
           >
             <DownloadCloud className="w-4 h-4" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full border-2 border-white dark:border-slate-900 shadow-sm"></span>
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full border-2 border-white dark:border-slate-900 shadow-sm animate-pulse"></span>
           </button>
         )}
 
