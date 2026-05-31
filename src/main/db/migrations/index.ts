@@ -9,6 +9,7 @@ export interface Migration {
   from: number
   to: number
   up: (db: Database.Database) => void
+  description: string
 }
 
 /**

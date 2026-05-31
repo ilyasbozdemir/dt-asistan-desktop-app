@@ -4,6 +4,7 @@ import { Migration } from './index'
 export const migration: Migration = {
   from: 3,
   to: 4,
+  description: 'v1.0.0-alpha.1-step3 geçiş adımı',
   up: (db: Database.Database): void => {
     console.log('DATA_TeminDosyasi tablosuna bent ve ekap_bildiri kolonları ekleniyor...')
     try {

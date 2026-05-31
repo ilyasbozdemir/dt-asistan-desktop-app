@@ -44,16 +44,24 @@ export function runMigrations(db: Database.Database, fromVersion: number): void 
   // Run migrations within an atomic transaction
   const executeMigrationsTransaction = db.transaction(() => {
     for (const migration of pendingMigrations) {
-      console.log(`v${migration.from} -> v${migration.to} şema geçiş adımı çalıştırılıyor...`)
-      migration.up(db)
-      
-      // Update schema version in the settings table
-      db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('dbSchemaVersion', ?);").run(
-        migration.to.toString()
-      )
+      console.log(`[Migration v${migration.to}] ${migration.description} çalıştırılıyor...`)
+      try {
+        migration.up(db)
+        
+        // Update schema version in the settings table
+        db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('dbSchemaVersion', ?);").run(
+          migration.to.toString()
+        )
+      } catch (error: any) {
+        throw new Error(`[Sürüm ${migration.to} - ${migration.description}] adımı sırasında hata oluştu: ${error.message}`)
+      }
     }
   })
 
-  executeMigrationsTransaction()
+  try {
+    executeMigrationsTransaction()
+  } catch (error: any) {
+    throw error // Yüksek seviyeye fırlatıyoruz, workspace.ts dosyayı rollback yapacak.
+  }
   console.log('Tüm veritabanı göç adımları başarıyla tamamlandı.')
 }

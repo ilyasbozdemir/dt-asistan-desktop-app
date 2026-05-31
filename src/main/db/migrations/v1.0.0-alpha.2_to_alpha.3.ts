@@ -3,6 +3,7 @@ import Database from 'better-sqlite3'
 export const migration = {
   from: 5,
   to: 6,
+  description: 'v1.0.0-alpha.2_to_alpha.3 geçiş adımı',
   up: (db: Database.Database): void => {
     console.log('Running migration v5 -> v6')
     // 1. Önce tabloların var olduğundan emin olalım (Eski sürümlerde oluşturulmamış olabilir)

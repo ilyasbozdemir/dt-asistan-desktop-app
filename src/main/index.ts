@@ -8,6 +8,7 @@ import yaml from 'js-yaml'
 import icon from '../../resources/icon.png?asset'
 import { workspaceManager } from './db/workspace'
 import { CURRENT_SCHEMA_VERSION } from './db/migrate'
+import { schema } from './database/index'
 import nodemailer from 'nodemailer'
 import {
   isSupportedFile,
@@ -227,6 +228,10 @@ if (!gotTheLock) {
         console.error('Create workspace error:', error)
         return { success: false, error: error.message }
       }
+    })
+
+    ipcMain.handle('get-changelog', async () => {
+      return schema.changelog
     })
 
     ipcMain.handle('workspace:open', async (_, filePath: string) => {

@@ -4,6 +4,7 @@ import { Migration } from './index'
 export const migration: Migration = {
   from: 1,
   to: 2,
+  description: 'v1.0.0-alpha.1-step1 geçiş adımı',
   up: (db: Database.Database): void => {
     console.log('TANIM_Firma tablosuna vergi_dairesi kolonu ekleniyor...')
     // TANIM_Firma tablosunu oluştur (varsa es geç)

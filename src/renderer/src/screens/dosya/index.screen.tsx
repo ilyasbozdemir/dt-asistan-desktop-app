@@ -38,6 +38,12 @@ export default function DosyaScreen(): React.JSX.Element {
   
   const queryClient = useQueryClient()
   const [refreshTrigger, setRefreshTrigger] = useState(0)
+  const [changelog, setChangelog] = useState<{version: string, notes: string}[]>([])
+
+  useEffect(() => {
+    if (!window.electron) return
+    window.electron.ipcRenderer.invoke('get-changelog').then((log) => setChangelog(log)).catch(console.error)
+  }, [])
 
   // DTE Data Transfer States
   const [dteContentType, setDteContentType] = useState<'firms' | 'items' | 'all'>('firms')
@@ -272,6 +278,18 @@ export default function DosyaScreen(): React.JSX.Element {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Uyarılar (Varsa) */}
+        {activeMeta?.warnings && activeMeta.warnings.length > 0 && (
+          <div className="lg:col-span-12 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 rounded-2xl p-4 flex flex-col gap-3 shadow-sm mb-2 animate-in slide-in-from-top-2">
+            {activeMeta.warnings.map((warn, i) => (
+               <div key={i} className="flex items-start gap-2 text-rose-700 dark:text-rose-400 text-xs font-bold">
+                 <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                 <p className="leading-relaxed">{warn}</p>
+               </div>
+            ))}
+          </div>
+        )}
+
         {/* SOL KOLON: PAKET YAPISI VE İÇERİK GÖRSELLEŞTİRME */}
         <div className="lg:col-span-5 flex flex-col gap-6">
           {/* Paket Yapısı Kartı */}
@@ -623,6 +641,41 @@ export default function DosyaScreen(): React.JSX.Element {
               </div>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Sürüm Geçmişi (Changelog) */}
+      <div className="border-t border-slate-200 dark:border-slate-800 pt-6 my-2">
+        <h3 className="text-xs font-bold text-slate-700 dark:text-slate-350 flex items-center gap-1.5 uppercase tracking-wider mb-4">
+          <Layers className="w-4 h-4 text-purple-500" />
+          Veritabanı Sürüm Geçmişi
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {changelog.map((log) => {
+            const isActive = log.version === (activeMeta?.app_version || '1.0.0-alpha.3')
+            return (
+              <div key={log.version} className={`p-4 rounded-2xl border flex items-start gap-3 transition-all ${isActive ? 'bg-purple-50/50 border-purple-200 dark:bg-purple-900/20 dark:border-purple-800/60 shadow-sm' : 'bg-slate-50/30 border-slate-200 dark:bg-slate-900/30 dark:border-slate-800/60'}`}>
+                <div className="shrink-0 mt-0.5">
+                   {isActive ? <Check className="w-4 h-4 text-purple-600 dark:text-purple-400" /> : <div className="w-4 h-4 rounded-full border-2 border-slate-300 dark:border-slate-700" />}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className={`font-mono text-xs font-bold ${isActive ? 'text-purple-700 dark:text-purple-400' : 'text-slate-700 dark:text-slate-300'}`}>
+                      {log.version}
+                    </span>
+                    {isActive && (
+                      <span className="text-[9px] bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300 px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">
+                        Aktif
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-450 mt-1.5 leading-relaxed">
+                    {log.notes}
+                  </p>
+                </div>
+              </div>
+            )
+          })}
         </div>
       </div>
 

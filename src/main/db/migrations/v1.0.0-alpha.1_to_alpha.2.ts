@@ -4,6 +4,7 @@ import { Migration } from './index'
 export const migration: Migration = {
   from: 4,
   to: 5,
+  description: 'v1.0.0-alpha.1_to_alpha.2 geçiş adımı',
   up: (db: Database.Database): void => {
     console.log('v4→v5: TANIM_Firma genişletme, TANIM_Birim genişletme, TANIM_Ambar oluşturma...')
 

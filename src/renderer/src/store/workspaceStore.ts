@@ -8,6 +8,7 @@ export interface WorkspaceMeta {
   institution: string
   schema_version: number
   updated_at?: string
+  warnings?: string[]
 }
 
 
