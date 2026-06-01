@@ -72,6 +72,24 @@ export default function DosyalarScreen(): React.ReactNode {
     })
   }
 
+  const clearForm = (): void => {
+    setFormTeminNo('')
+    setFormKonu('')
+    setFormTur('mal')
+    setFormYaklasikMaliyet('')
+    setFormButceKodu('')
+    setFormNotlar('')
+    setFormFonksiyonelKod('')
+    setFormEkonomikKod('')
+  }
+
+  const handleStartCreate = (): void => {
+    setIsCreating(true)
+    setIsEditing(false)
+    setActiveDosyaId(null)
+    clearForm()
+  }
+
   // Listen to global create trigger (e.g. from header selector)
   useEffect(() => {
     if (isCreatingDosya) {
@@ -97,24 +115,6 @@ export default function DosyalarScreen(): React.ReactNode {
       clearForm()
     }
   }, [selectedDosya, isCreating])
-
-  const clearForm = (): void => {
-    setFormTeminNo('')
-    setFormKonu('')
-    setFormTur('mal')
-    setFormYaklasikMaliyet('')
-    setFormButceKodu('')
-    setFormNotlar('')
-    setFormFonksiyonelKod('')
-    setFormEkonomikKod('')
-  }
-
-  const handleStartCreate = (): void => {
-    setIsCreating(true)
-    setIsEditing(false)
-    setActiveDosyaId(null)
-    clearForm()
-  }
 
   const handleStartEdit = (): void => {
     if (selectedDosya) {
@@ -208,10 +208,10 @@ export default function DosyalarScreen(): React.ReactNode {
   ]
 
   return (
-    <div className="flex h-full gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="flex flex-col lg:flex-row h-full gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* SOL: LİSTE (Master) */}
       {!isWindowMode && (
-        <div className="w-1/3 min-w-[320px] max-w-[400px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm flex flex-col overflow-hidden">
+        <div className="w-full lg:w-1/3 lg:min-w-[320px] lg:max-w-[400px] h-[300px] lg:h-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm flex flex-col overflow-hidden shrink-0">
         <div className="p-4 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">

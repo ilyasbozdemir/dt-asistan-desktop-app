@@ -400,7 +400,7 @@ export function MevzuatScreen(): React.JSX.Element {
 
   return (
     <div className="flex flex-col h-full space-y-6">
-      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
             <Scale className="w-6 h-6 text-blue-500" />
@@ -411,7 +411,7 @@ export function MevzuatScreen(): React.JSX.Element {
           </p>
         </div>
         
-        <div className="flex items-center gap-4 shrink-0">
+        <div className="flex flex-wrap items-center gap-4 shrink-0">
           {(activeTab === 'limitler' || activeTab === 'oranlar') && (
             <>
               <label className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 cursor-pointer select-none">
