@@ -63,12 +63,12 @@ const menuGroups: MenuGroup[] = [
       { name: 'Birim Yönetimi', path: '/birimler', icon: LayoutGrid },
       { name: 'Ambar Tanımları', path: '/ambar', icon: Database },
       {
-        name: 'Malzeme Listesi',
+        name: 'Malzeme & Kodlar',
         icon: PackageSearch,
         children: [
+          { name: 'Malzeme Listesi', path: '/malzemeler', icon: PackageSearch },
           { name: 'Taşınır Kodları', path: '/tasinirkod', icon: FolderTree },
-          { name: 'OKAS Kodları', path: '/okaskod', icon: Tag },
-          { name: 'Malzeme Listesi', path: '/malzemeler', icon: PackageSearch }
+          { name: 'OKAS Kodları', path: '/okaskod', icon: Tag }
         ]
       },
       { name: 'Firmalar / Tedarikçiler', path: '/firmalar', icon: Building2 },
@@ -90,7 +90,7 @@ const menuGroups: MenuGroup[] = [
 
 export function Sidebar(): React.JSX.Element {
   const [isCollapsed, setIsCollapsed] = useState(false)
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set(['/malzemeler', 'Malzeme Listesi']))
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set(['/malzemeler', 'Malzeme & Kodlar']))
   const { institutionName, institutionLogo, adminUsername, institutionCode, loadSettings } =
     useSettingsStore()
   const { closeWorkspace, fileName } = useWorkspaceStore()
