@@ -27,7 +27,6 @@ const tabIcons: Record<string, LucideIcon> = {
   '/': Home,
   '/dosyalar': FileText,
   '/takip': ClipboardList,
-  '/belgeler': BookOpen,
   '/birimler': LayoutGrid,
   '/ambar': Database,
   '/malzemeler': PackageSearch,

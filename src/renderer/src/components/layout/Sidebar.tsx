@@ -55,7 +55,6 @@ const menuGroups: MenuGroup[] = [
     items: [
       { name: 'Doğrudan Temin', path: '/dosyalar', icon: FileText },
       { name: 'Takip & Durum', path: '/takip', icon: ClipboardList },
-      { name: 'Belgeler & Formlar', path: '/belgeler', icon: BookOpen }
     ]
   },
   {

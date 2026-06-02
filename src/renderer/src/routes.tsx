@@ -64,13 +64,6 @@ const takipRoute = createRoute({
   )
 })
 
-const belgelerRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/belgeler',
-  component: () => (
-    <div className="p-4 text-slate-500">Belgeler & Formlar ekranı yapım aşamasında...</div>
-  )
-})
 
 const raporlarRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -169,7 +162,6 @@ const routeTree = rootRoute.addChildren([
   personelRoute,
   sablonlarRoute,
   takipRoute,
-  belgelerRoute,
   raporlarRoute,
   okasKodRoute,
   mevzuatRoute,

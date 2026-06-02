@@ -32,7 +32,6 @@ export function getTabLabel(fullPath: string): string {
   if (path.startsWith('/profil')) return 'Kullanıcı Profili'
   if (path.startsWith('/dosya')) return 'Dosya Detayları'
   if (path.startsWith('/takip')) return 'Takip & Durum'
-  if (path.startsWith('/belgeler')) return 'Belgeler & Formlar'
   if (path.startsWith('/raporlar')) return 'Raporlar'
   if (path.startsWith('/tema')) return 'Tema Ayarları'
   if (path.startsWith('/tasinirkod')) return 'Taşınır Kodları'
