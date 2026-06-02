@@ -22,21 +22,18 @@ export function Header(): React.JSX.Element {
 
   return (
     <header
-      className="h-16 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/50 flex items-center justify-between px-6 shrink-0 z-10 shadow-sm transition-all duration-300"
+      className="h-16 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/50 flex items-center justify-between px-6 shrink-0 z-50 shadow-sm transition-all duration-300"
       style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
     >
-      <div
-        className="flex-1 flex items-center gap-6"
-        style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-      >
-        <TeminSelector />
+      <div className="flex-1 flex items-center gap-6">
+        <div style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+          <TeminSelector />
+        </div>
       </div>
 
-      <div
-        className="flex items-center space-x-1 pr-32"
-        style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-      >
+      <div className="flex items-center space-x-1 pr-32">
         <button
+          style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           className="p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-all rounded-xl hover:bg-slate-200/50 dark:hover:bg-slate-800/50"
           title="Tema Değiştir"
@@ -46,6 +43,7 @@ export function Header(): React.JSX.Element {
 
         {updateStatus && (updateStatus.status === 'available' || updateStatus.status === 'downloaded') && (
           <button
+            style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
             onClick={() => {
               if (updateStatus.status === 'downloaded') {
                 window.electron?.ipcRenderer.send('install-update')
@@ -62,7 +60,8 @@ export function Header(): React.JSX.Element {
         )}
 
         <button
-          className="relative p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-all rounded-xl hover:bg-slate-200/50 dark:hover:bg-slate-800/50 mr-2"
+          style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+          className="p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-all rounded-xl hover:bg-slate-200/50 dark:hover:bg-slate-800/50 relative mr-2"
           title="Bildirimler"
         >
           <Bell className="w-4 h-4" />
