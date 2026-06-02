@@ -25,7 +25,7 @@ export function getTabLabel(fullPath: string): string {
   if (path.startsWith('/ayarlar')) return 'Ayarlar'
   if (path.startsWith('/birimler')) return 'Birim Yönetimi'
   if (path.startsWith('/ambar')) return 'Ambar Tanımları'
-  if (path.startsWith('/malzemeler/yeni')) return 'Malzeme Ekle'
+  if (path.startsWith('/malzemeler/yeni')) return 'Yeni Kayıt (Mal/Hizmet/Yapım İşi)'
   if (path.startsWith('/malzemeler')) return 'Kayıtlı Mal / Hizmet / Yapım İşleri Listesi'
   if (path.startsWith('/kurum')) return 'Kurum Bilgileri'
   if (path.startsWith('/olcubirimleri')) return 'Ölçü Birimleri'

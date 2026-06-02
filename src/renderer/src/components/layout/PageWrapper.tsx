@@ -29,7 +29,7 @@ export function PageWrapper(): React.ReactNode {
     else if (path.startsWith('/birimler')) title += ' — Birim Yönetimi'
     else if (path.startsWith('/ambar')) title += ' - Ambar Tanımları'
     else if (path.startsWith('/olcubirimleri')) title += ' - Ölçü Birimleri'
-    else if (path.startsWith('/malzemeler/yeni')) title += ' - Malzeme Ekle'
+    else if (path.startsWith('/malzemeler/yeni')) title += ' - Yeni Kayıt (Mal/Hizmet/Yapım İşi)'
     else if (path.startsWith('/malzemeler')) title += ' - Kayıtlı Mal / Hizmet / Yapım İşleri Listesi'
     else if (path.startsWith('/kurum')) title += ' - Kurum Bilgileri'
     else if (path.startsWith('/profil')) title += ' — Kullanıcı Profili'
