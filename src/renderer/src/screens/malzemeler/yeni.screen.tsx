@@ -1,31 +1,75 @@
-import React, { useState } from 'react'
-import { ArrowLeft, Save, Search, PackageSearch, Barcode, Database, Activity } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { ArrowLeft, Save, Search, PackageSearch, Barcode, Database, Activity, Edit2 } from 'lucide-react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useMalzemelerHooks, Kalem } from './malzemeler.hooks'
 import { useOlcuBirimleri } from '../olcubirimleri/olcubirimleri.hooks'
+import { useOkasKodHooks } from '../okaskod/okaskod.hooks'
+import { useTasinirKodHooks } from '../tasinirkod/tasinirkod.hooks'
 
 export default function YeniMalzemeScreen(): React.JSX.Element {
+  useEffect(() => {
+    document.title = 'Mal/Hizmet/Yapım İşi Ekle - DT'
+  }, [])
+
   const navigate = useNavigate()
   const { addKalem } = useMalzemelerHooks()
   const { data: birimler = [] } = useOlcuBirimleri()
+  const { okasKodList, isLoading: isOkasLoading } = useOkasKodHooks()
+  const { tasinirKodList, isLoading: isTasinirLoading } = useTasinirKodHooks()
 
   // Form State
   const [formData, setFormData] = useState<Partial<Kalem>>(() => ({
     tipi: 'Mal',
     birim: 'Adet',
-    kdv_orani: 20,
+    kdv_orani: 0,
     aktif_mi: 1,
     personel_asgari_fark_oran: 0,
     barkod_id: Math.floor(1000000000000 + Math.random() * 9000000000000).toString()
   }))
 
-  // Mock OKAS and Tasinir selection state
   const [isOkasModalOpen, setIsOkasModalOpen] = useState(false)
   const [isTasinirModalOpen, setIsTasinirModalOpen] = useState(false)
+  
+  const [isEditingBarkod, setIsEditingBarkod] = useState(false)
+  const [barkodError, setBarkodError] = useState('')
+
+  const checkBarkod = async (barkod: string) => {
+    if (!barkod) return
+    try {
+      const res = await window.electron.ipcRenderer.invoke(
+        'db:query', 
+        'SELECT id FROM TANIM_Kalem WHERE barkod_id = ?', 
+        [barkod]
+      )
+      if (res.success && res.data && res.data.length > 0) {
+        setBarkodError('Bu Barkod / ID sistemde zaten kayıtlı!')
+      } else {
+        setBarkodError('')
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const [okasSearch, setOkasSearch] = useState('')
+  const [tasinirSearch, setTasinirSearch] = useState('')
+
+  const filteredOkas = okasKodList.filter(k => 
+    k.kod.includes(okasSearch) || (k.aciklama || '').toLowerCase().includes(okasSearch.toLowerCase())
+  ).slice(0, 50)
+
+  const filteredTasinir = tasinirKodList.filter(k => 
+    k.tam_kod.includes(tasinirSearch) || (k.aciklama || '').toLowerCase().includes(tasinirSearch.toLowerCase())
+  ).slice(0, 50)
 
   const handleSave = async () => {
     if (!formData.kalem_adi || !formData.barkod_id) {
       alert('Lütfen zorunlu alanları (Adı, Kodu/Barkodu) doldurunuz.')
+      return
+    }
+
+    if (barkodError) {
+      alert('Barkod hatasını düzeltmeden kaydedemezsiniz!')
       return
     }
 
@@ -92,13 +136,38 @@ export default function YeniMalzemeScreen(): React.JSX.Element {
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                     Barkod / Benzersiz ID <span className="text-red-500">*</span>
                   </label>
-                  <input
-                    type="text"
-                    value={formData.barkod_id || ''}
-                    onChange={(e) => setFormData({ ...formData, barkod_id: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  />
-                  <p className="text-xs text-slate-500 mt-1">Sistem tarafından otomatik atanmıştır, değiştirebilirsiniz.</p>
+                  {!isEditingBarkod ? (
+                    <div 
+                      onClick={() => setIsEditingBarkod(true)}
+                      className="cursor-pointer group flex items-center gap-2 py-2"
+                      title="Değiştirmek için tıklayın"
+                    >
+                      <span className={`font-mono text-lg tracking-wider ${barkodError ? 'text-red-600 font-bold' : 'text-slate-700 dark:text-slate-300 font-semibold'}`}>
+                        {formData.barkod_id}
+                      </span>
+                      <Edit2 size={14} className="text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  ) : (
+                    <input
+                      type="text"
+                      autoFocus
+                      value={formData.barkod_id || ''}
+                      onChange={(e) => {
+                        setFormData({ ...formData, barkod_id: e.target.value })
+                        setBarkodError('')
+                      }}
+                      onBlur={(e) => {
+                        setIsEditingBarkod(false)
+                        checkBarkod(e.target.value)
+                      }}
+                      className={`w-full px-3 py-2 bg-white border ${barkodError ? 'border-red-500' : 'border-slate-300'} rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/50 font-mono text-lg tracking-wider font-semibold shadow-inner`}
+                    />
+                  )}
+                  {barkodError ? (
+                    <p className="text-xs text-red-500 mt-0.5 font-medium">{barkodError}</p>
+                  ) : (
+                    <p className="text-xs text-slate-400 mt-0.5 italic">Değiştirmek için koda tıklayın.</p>
+                  )}
                 </div>
                 
                 <div>
@@ -207,16 +276,14 @@ export default function YeniMalzemeScreen(): React.JSX.Element {
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                     KDV Oranı (%)
                   </label>
-                  <select
-                    value={formData.kdv_orani || 20}
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={formData.kdv_orani !== undefined ? formData.kdv_orani : 20}
                     onChange={(e) => setFormData({ ...formData, kdv_orani: Number(e.target.value) })}
                     className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  >
-                    <option value={0}>%0</option>
-                    <option value={1}>%1</option>
-                    <option value={10}>%10</option>
-                    <option value={20}>%20</option>
-                  </select>
+                  />
                 </div>
               </div>
 
@@ -237,13 +304,15 @@ export default function YeniMalzemeScreen(): React.JSX.Element {
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                     Menşei
                   </label>
-                  <input
-                    type="text"
+                  <select
                     value={formData.mensei || ''}
                     onChange={(e) => setFormData({ ...formData, mensei: e.target.value })}
                     className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    placeholder="Örn: Yerli, İthal"
-                  />
+                  >
+                    <option value="">(Belirtilmemiş)</option>
+                    <option value="Yerli">Yerli</option>
+                    <option value="İthal">İthal</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -276,19 +345,51 @@ export default function YeniMalzemeScreen(): React.JSX.Element {
         </div>
       </div>
 
-      {/* Mock Modals for Selection (These would be complex components in reality) */}
+      {/* Selection Modals */}
       {isOkasModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col p-6">
-            <h3 className="text-lg font-bold mb-4">OKAS Kodu Seçin</h3>
-            <p className="text-sm text-slate-500 mb-4">Bu özellik yapım aşamasındadır. Şimdilik manuel giriş yapabilirsiniz.</p>
-            <div className="mt-auto flex justify-end">
-              <button 
-                onClick={() => setIsOkasModalOpen(false)}
-                className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200"
-              >
-                Kapat
-              </button>
+          <div className="bg-white dark:bg-slate-900 rounded-xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col border border-slate-200 dark:border-slate-800" style={{ maxHeight: '80vh' }}>
+            <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                <Search size={18} className="text-primary" /> OKAS Kodu Seçin
+              </h3>
+              <button onClick={() => setIsOkasModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">&times;</button>
+            </div>
+            <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <input
+                  type="text"
+                  placeholder="OKAS Kodu veya açıklama ile ara..."
+                  value={okasSearch}
+                  onChange={e => setOkasSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  autoFocus
+                />
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-2 min-h-[300px]">
+              {isOkasLoading ? (
+                <div className="p-8 text-center text-slate-500">Yükleniyor...</div>
+              ) : filteredOkas.length === 0 ? (
+                <div className="p-8 text-center text-slate-500">Aradığınız kriterlere uygun OKAS Kodu bulunamadı.</div>
+              ) : (
+                <div className="space-y-1">
+                  {filteredOkas.map(k => (
+                    <button
+                      key={k.id}
+                      onClick={() => {
+                        setFormData({ ...formData, okas_kodu: k.kod })
+                        setIsOkasModalOpen(false)
+                      }}
+                      className="w-full text-left p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/50 flex flex-col sm:flex-row sm:items-center gap-3 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
+                    >
+                      <span className="font-mono text-sm bg-primary/10 text-primary px-2.5 py-1 rounded shrink-0">{k.kod}</span>
+                      <span className="text-sm text-slate-700 dark:text-slate-300 line-clamp-2">{k.aciklama}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -296,16 +397,48 @@ export default function YeniMalzemeScreen(): React.JSX.Element {
 
       {isTasinirModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col p-6">
-            <h3 className="text-lg font-bold mb-4">Taşınır Kodu Seçin</h3>
-            <p className="text-sm text-slate-500 mb-4">Bu özellik yapım aşamasındadır. Şimdilik manuel giriş yapabilirsiniz.</p>
-            <div className="mt-auto flex justify-end">
-              <button 
-                onClick={() => setIsTasinirModalOpen(false)}
-                className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200"
-              >
-                Kapat
-              </button>
+          <div className="bg-white dark:bg-slate-900 rounded-xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col border border-slate-200 dark:border-slate-800" style={{ maxHeight: '80vh' }}>
+            <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                <Search size={18} className="text-indigo-600 dark:text-indigo-400" /> Taşınır Kodu Seçin
+              </h3>
+              <button onClick={() => setIsTasinirModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">&times;</button>
+            </div>
+            <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <input
+                  type="text"
+                  placeholder="Hesap kodu (örn: 150.01) veya açıklama ile ara..."
+                  value={tasinirSearch}
+                  onChange={e => setTasinirSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  autoFocus
+                />
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-2 min-h-[300px]">
+              {isTasinirLoading ? (
+                <div className="p-8 text-center text-slate-500">Yükleniyor...</div>
+              ) : filteredTasinir.length === 0 ? (
+                <div className="p-8 text-center text-slate-500">Aradığınız kriterlere uygun Taşınır Kodu bulunamadı.</div>
+              ) : (
+                <div className="space-y-1">
+                  {filteredTasinir.map(k => (
+                    <button
+                      key={k.id}
+                      onClick={() => {
+                        setFormData({ ...formData, tasinir_kodu: k.tam_kod })
+                        setIsTasinirModalOpen(false)
+                      }}
+                      className="w-full text-left p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/50 flex flex-col sm:flex-row sm:items-center gap-3 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
+                    >
+                      <span className="font-mono text-sm bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 px-2.5 py-1 rounded shrink-0">{k.tam_kod}</span>
+                      <span className="text-sm text-slate-700 dark:text-slate-300 line-clamp-2">{k.aciklama}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
