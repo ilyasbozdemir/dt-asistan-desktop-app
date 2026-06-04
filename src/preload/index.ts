@@ -1,8 +1,11 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  aiGenerate: (options: { prompt: string; systemInstruction?: string }) => ipcRenderer.invoke('ai:generate', options),
+  aiTest: (provider: string, apiKey: string) => ipcRenderer.invoke('ai:test', provider, apiKey)
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

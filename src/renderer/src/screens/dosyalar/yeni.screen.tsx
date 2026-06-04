@@ -9,12 +9,16 @@ import {
   HelpCircle,
   Copy,
   Search,
+  Sparkles,
+  Loader2,
   ChevronRight
 } from 'lucide-react'
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
 import { useDosyalarHooks, TeminDosyasi } from './dosyalar.hooks'
 import { useTabStore } from '../../store/tabStore'
 import { cn } from '../../utils/cn'
+import { AIFormFillModal, AIFilledValues } from '../../components/ui/AIFormFillModal'
+import { AITextGeneratorModal } from '../../components/ui/AITextGeneratorModal'
 
 interface DBBirim {
   id: number
@@ -181,6 +185,100 @@ export default function YeniDosyaScreen(): React.JSX.Element {
     }))
   }
 
+  // AI Description Generator (single field)
+  const [isAiGeneratingDesc, setIsAiGeneratingDesc] = useState(false)
+
+  // AI Form Fill Modal
+  const [showAIModal, setShowAIModal] = useState(false)
+
+  // Reusable AI Text Generator Modal
+  const [textGenConfig, setTextGenConfig] = useState<{
+    isOpen: boolean
+    title: string
+    fieldName: string
+    targetField: keyof TeminDosyasi
+    systemInstruction?: string
+  }>({
+    isOpen: false,
+    title: '',
+    fieldName: '',
+    targetField: 'isin_aciklamasi'
+  })
+
+  const openTextGenerator = (targetField: keyof TeminDosyasi, title: string, fieldName: string, systemInstruction?: string) => {
+    setTextGenConfig({
+      isOpen: true,
+      title,
+      fieldName,
+      targetField,
+      systemInstruction
+    })
+  }
+
+  const getAIFormContext = () => {
+    const selectedBirim = birimler.find(b => b.id === formData.birim_id)
+    return {
+      formTitle: 'Yeni Doğrudan Temin İhale Dosyası',
+      kurumBilgisi: {
+        birimAdi: selectedBirim?.birim_adi,
+        sunulacakMakam: formData.sunulacak_makam || selectedBirim?.sunum_makami,
+        antetEkSatir: formData.antet_ek_satir || selectedBirim?.antet_ek_satir,
+        ihtiyacYeri: formData.ihtiyac_yeri || selectedBirim?.ihtiyac_yeri_eki,
+        kurumAdi: selectedBirim?.birim_adi
+      },
+      mevcutDegerler: {
+        konu: formData.konu,
+        temin_no: formData.temin_no,
+        sunulacak_makam: formData.sunulacak_makam,
+        birim: selectedBirim?.birim_adi,
+        butce_yili: formData.butce_yili
+      },
+      doldurulacakAlanlar: [
+        { alan: 'konu', etiket: 'İhale / Dosya Konusu', tip: 'text' as const, zorunlu: true, ornekDeger: 'Fen İşleri Kırtasiye Malzemesi Alımı' },
+        { alan: 'isin_aciklamasi', etiket: 'İşin Açıklaması / Kapsamı', tip: 'textarea' as const },
+        { alan: 'temin_no', etiket: 'Doğrudan Temin Numarası', tip: 'text' as const, ornekDeger: '2026/DT-001' },
+        { alan: 'sunulacak_makam', etiket: 'Evrakın Sunulacağı Makam', tip: 'text' as const, ornekDeger: 'BAŞKANLIK MAKAMINA' },
+        { alan: 'ihtiyac_yeri', etiket: 'İhtiyaç Yeri', tip: 'text' as const },
+        { alan: 'antet_ek_satir', etiket: 'İdari Antet Ek Satır', tip: 'text' as const },
+        { alan: 'yaklasik_maliyet', etiket: 'Yaklaşık Maliyet (₺)', tip: 'number' as const },
+        { alan: 'komisyon_takdiri', etiket: 'Komisyon Takdir Yazısı', tip: 'text' as const },
+        { alan: 'hesaplama_esasi', etiket: 'Hesaplama Esası', tip: 'text' as const }
+      ]
+    }
+  }
+
+  const handleAIApply = (values: AIFilledValues) => {
+    setFormData(prev => ({
+      ...prev,
+      ...(values.konu !== undefined && { konu: String(values.konu) }),
+      ...(values.isin_aciklamasi !== undefined && { isin_aciklamasi: String(values.isin_aciklamasi) }),
+      ...(values.temin_no !== undefined && { temin_no: String(values.temin_no) }),
+      ...(values.sunulacak_makam !== undefined && { sunulacak_makam: String(values.sunulacak_makam) }),
+      ...(values.ihtiyac_yeri !== undefined && { ihtiyac_yeri: String(values.ihtiyac_yeri) }),
+      ...(values.antet_ek_satir !== undefined && { antet_ek_satir: String(values.antet_ek_satir) }),
+      ...(values.yaklasik_maliyet !== undefined && { yaklasik_maliyet: Number(values.yaklasik_maliyet) }),
+      ...(values.komisyon_takdiri !== undefined && { komisyon_takdiri: String(values.komisyon_takdiri) }),
+      ...(values.hesaplama_esasi !== undefined && { hesaplama_esasi: String(values.hesaplama_esasi) })
+    }))
+  }
+  const handleAiDescGenerate = () => {
+    openTextGenerator(
+      'isin_aciklamasi',
+      'İşin Açıklamasını Üret',
+      'İşin Açıklaması',
+      `Şu ihale konusu için resmi ve profesyonel bir "İşin Kapsamı ve Tanımı" metni oluştur. İhale/İş Adı: "${formData.konu || ''}". Metin kurumsal bir dilde olmalı, gereksiz yorum içermemeli ve doğrudan idari şartname açıklaması formatında olmalı. Eğer metinde ihale makamı vb. geçecekse yer tutucu olarak köşeli parantez ([KURUM ADI] vb.) kullan, gerçek isim verme.`
+    )
+  }
+
+  const handleAiKomisyonGenerate = () => {
+    openTextGenerator(
+      'komisyon_takdiri',
+      'Komisyon Takdiri Metni Üret',
+      'Komisyon Takdiri',
+      `Kamu ihale doğrudan temin süreci için komisyon karar takdiri veya görevlendirme yazısı metni oluştur. İhale/İş Adı: "${formData.konu || ''}". Resmi ve hukuki bir dil kullan.`
+    )
+  }
+
   // Handle Birim Selection and autofill antet fields
   const handleSelectBirim = (birim: any) => {
     setFormData(prev => ({
@@ -291,6 +389,15 @@ export default function YeniDosyaScreen(): React.JSX.Element {
           </div>
         </div>
         <div className="flex items-center gap-3 w-full md:w-auto justify-end">
+          {/* AI Asistan Butonu */}
+          <button
+            type="button"
+            onClick={() => setShowAIModal(true)}
+            className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-purple-500/20 flex items-center gap-2 cursor-pointer"
+          >
+            <Sparkles size={14} />
+            AI Asistan
+          </button>
           {import.meta.env.DEV && (
             <button
               type="button"
@@ -480,16 +587,28 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                     <div className="md:col-span-2">
                       <div className="flex items-center justify-between mb-1.5">
                         <label className="block text-xs font-bold text-slate-600 dark:text-slate-455">
-                          İşin Açıklaması
+                          İşin Açıklaması / Kapsamı
                         </label>
-                        <button
-                          type="button"
-                          onClick={handleCopyKonuToAciklama}
-                          className="text-[10px] text-blue-600 hover:text-blue-700 font-bold flex items-center gap-1 cursor-pointer bg-blue-50 dark:bg-blue-900/10 px-2 py-1 rounded"
-                        >
-                          <Copy size={11} />
-                          İşin Adını Kopyala
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={handleAiDescGenerate}
+                            disabled={isAiGeneratingDesc}
+                            title="İşin adına göre yapay zeka ile profesyonel açıklama metni oluştur"
+                            className="text-[10px] text-purple-600 hover:text-purple-700 font-bold flex items-center gap-1 cursor-pointer bg-purple-50 dark:bg-purple-900/20 px-2 py-1 rounded disabled:opacity-50"
+                          >
+                            {isAiGeneratingDesc ? <Loader2 size={11} className="animate-spin" /> : <Sparkles size={11} />}
+                            AI ile Üret
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleCopyKonuToAciklama}
+                            className="text-[10px] text-blue-600 hover:text-blue-700 font-bold flex items-center gap-1 cursor-pointer bg-blue-50 dark:bg-blue-900/10 px-2 py-1 rounded"
+                          >
+                            <Copy size={11} />
+                            İşin Adını Kopyala
+                          </button>
+                        </div>
                       </div>
                       <textarea
                         rows={3}
@@ -512,6 +631,29 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
                       />
                     </div>
+
+                     <div className="md:col-span-2">
+                       <div className="flex items-center justify-between mb-1.5">
+                         <label className="block text-xs font-bold text-slate-600 dark:text-slate-455">
+                           Komisyon Karar Takdiri
+                         </label>
+                         <button
+                           type="button"
+                           onClick={handleAiKomisyonGenerate}
+                           className="text-[10px] text-purple-600 hover:text-purple-700 font-bold flex items-center gap-1 cursor-pointer bg-purple-50 dark:bg-purple-900/20 px-2 py-1 rounded"
+                         >
+                           <Sparkles size={11} />
+                           AI ile Üret
+                         </button>
+                       </div>
+                       <input
+                         type="text"
+                         value={formData.komisyon_takdiri || ''}
+                         onChange={e => setFormData({ ...formData, komisyon_takdiri: e.target.value })}
+                         placeholder="Resmi kurul kararı veya yetki belgesi referansı..."
+                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
+                       />
+                     </div>
 
                     <div>
                       <label className="block text-xs font-bold text-slate-600 dark:text-slate-450 mb-1.5">
@@ -1224,6 +1366,30 @@ export default function YeniDosyaScreen(): React.JSX.Element {
           </div>
         </form>
       </div>
+
+      {/* AI Form Fill Modal */}
+      <AIFormFillModal
+        isOpen={showAIModal}
+        onClose={() => setShowAIModal(false)}
+        context={getAIFormContext()}
+        onApply={handleAIApply}
+      />
+
+      {/* AI Text Generator Modal */}
+      <AITextGeneratorModal
+        isOpen={textGenConfig.isOpen}
+        onClose={() => setTextGenConfig(prev => ({ ...prev, isOpen: false }))}
+        title={textGenConfig.title}
+        fieldName={textGenConfig.fieldName}
+        initialSubject={formData.konu}
+        systemInstruction={textGenConfig.systemInstruction}
+        onApply={(text) => {
+          setFormData(prev => ({
+            ...prev,
+            [textGenConfig.targetField]: text
+          }))
+        }}
+      />
     </div>
   )
 }

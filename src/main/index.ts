@@ -16,6 +16,7 @@ import {
   perFormatFilters,
   defaultFormat
 } from './config/fileFormats'
+import { generateContent, testConnection, AIGenerateOptions } from './ai/index'
 
 function createWindow(): void {
   // Create the browser window.
@@ -798,6 +799,15 @@ if (!gotTheLock) {
           if (canceled || !filePaths || filePaths.length === 0) {
             return { success: false, error: 'İptal edildi' }
           }
+
+    // --- AI Handlers ---
+    ipcMain.handle('ai:generate', async (_, options: AIGenerateOptions) => {
+      return await generateContent(options)
+    })
+
+    ipcMain.handle('ai:test', async (_, provider: string, apiKey: string) => {
+      return await testConnection({ provider, apiKey })
+    })
           filePath = filePaths[0]
         }
         

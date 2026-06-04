@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { ArrowLeft, Save, Search, PackageSearch, Barcode, Database, Activity, Edit2 } from 'lucide-react'
+import { ArrowLeft, Save, Search, PackageSearch, Barcode, Database, Activity, Edit2, Bot, Loader2 } from 'lucide-react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useMalzemelerHooks, Kalem } from './malzemeler.hooks'
 import { useOlcuBirimleri } from '../olcubirimleri/olcubirimleri.hooks'
@@ -61,6 +61,39 @@ export default function YeniMalzemeScreen(): React.JSX.Element {
   const filteredTasinir = tasinirKodList.filter(k => 
     k.tam_kod.includes(tasinirSearch) || (k.aciklama || '').toLowerCase().includes(tasinirSearch.toLowerCase())
   ).slice(0, 50)
+
+  const [isAiGeneratingOkas, setIsAiGeneratingOkas] = useState(false)
+
+  const handleAiOkasSuggest = async () => {
+    if (!formData.kalem_adi) {
+      alert('Lütfen önce Mal/Hizmet/Yapım Adı alanını doldurunuz.')
+      return
+    }
+
+    setIsAiGeneratingOkas(true)
+    try {
+      const prompt = `Aşağıdaki malzeme/hizmet için en uygun OKAS kodunu ve kısa bir açıklamasını öner. Yalnızca şu formatta cevap ver: "KOD: AÇIKLAMA". Örnek: "15.01.01.01: A4 Kağıt". Malzeme Adı: ${formData.kalem_adi}`
+      const res = await window.api.aiGenerate({ prompt })
+      
+      if (res.success && res.data) {
+        // Genellikle cevap "12.34.56.78: XYZ" formatında gelir, bunu parse edelim.
+        const text = res.data.trim()
+        const codeMatch = text.match(/^([\d.]+)/)
+        if (codeMatch && codeMatch[1]) {
+          setFormData({ ...formData, okas_kodu: codeMatch[1] })
+          alert(`Yapay Zeka Önerisi:\n\n${text}`)
+        } else {
+          alert(`Yapay Zeka Önerisi:\n\n${text}\n\nTam olarak bir kod bulunamadı, lütfen manuel seçin.`)
+        }
+      } else {
+        alert('AI Hatası: ' + (res.error || 'Bilinmeyen hata'))
+      }
+    } catch (err: any) {
+      alert('AI İsteği sırasında hata oluştu: ' + err.message)
+    } finally {
+      setIsAiGeneratingOkas(false)
+    }
+  }
 
   const handleSave = async () => {
     if (!formData.kalem_adi || !formData.barkod_id) {
@@ -225,6 +258,15 @@ export default function YeniMalzemeScreen(): React.JSX.Element {
                     >
                       <Search size={16} />
                       <span className="hidden sm:inline">Listeden Seç</span>
+                    </button>
+                    <button 
+                      onClick={handleAiOkasSuggest}
+                      disabled={isAiGeneratingOkas}
+                      title="Malzeme adına göre Yapay Zeka (AI) ile OKAS önerisi al"
+                      className="px-3 py-2 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors flex items-center gap-2 shrink-0 border border-purple-200 disabled:opacity-50"
+                    >
+                      {isAiGeneratingOkas ? <Loader2 size={16} className="animate-spin" /> : <Bot size={16} />}
+                      <span className="hidden sm:inline">AI Önerisi</span>
                     </button>
                   </div>
                 </div>
