@@ -22,10 +22,12 @@ import {
   AlertCircle,
   CheckCircle2,
   Clock,
-  FileCheck
+  FileCheck,
+  Sparkles
 } from 'lucide-react'
 import { cn } from '../../utils/cn'
 import { useWorkspaceStore } from '../../store/workspaceStore'
+import { AITextGeneratorModal } from '../../components/ui/AITextGeneratorModal'
 
 // Tur badge renk ve label helper
 function TurBadge({ tur }: { tur: string }) {
@@ -77,16 +79,26 @@ export default function DosyalarScreen(): React.ReactNode {
   const fileId = urlId ? parseInt(urlId, 10) : activeDosyaId
   const selectedDosya = dosyalar.find((d) => d.id === fileId)
 
-  // Dinamik tab label
+  // Dinamik tab label kapatıldı - Kullanıcı isteği: farklı sekme adı verme
   useEffect(() => {
     if (isWindowMode) return
     const currentHref = routerState.location.href
-    if (selectedDosya) {
-      updateTabLabel(currentHref, `DT: ${selectedDosya.konu}`)
+    // Sadece sabit ad veya ana sayfaysa anasayfa
+    if (currentHref === '/' || currentHref.includes('dashboard')) {
+      updateTabLabel(currentHref, 'Anasayfa')
     } else {
       updateTabLabel(currentHref, 'Doğrudan Temin')
     }
-  }, [selectedDosya, routerState.location.href, updateTabLabel, isWindowMode])
+  }, [routerState.location.href, updateTabLabel, isWindowMode])
+
+  // AI Modal State
+  const [showAIModal, setShowAIModal] = useState(false)
+  const [selectedFileForAI, setSelectedFileForAI] = useState<any>(null)
+
+  const handleOpenAI = (dosya: any) => {
+    setSelectedFileForAI(dosya)
+    setShowAIModal(true)
+  }
 
   const handleOpenInNewWindow = () => {
     if (!selectedDosya) return
@@ -616,12 +628,38 @@ export default function DosyalarScreen(): React.ReactNode {
                       Yeni Pencerede Aç
                     </button>
                   )}
+                  
+                  {/* YAPAY ZEKA ASİSTANI BUTONU */}
+                  <button
+                    onClick={() => handleOpenAI(selectedDosya)}
+                    className="w-full px-4 py-2.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-violet-500/20 flex items-center justify-center gap-1.5 cursor-pointer mt-2"
+                  >
+                    <Sparkles size={14} />
+                    Yapay Zeka Asistanı
+                  </button>
                 </div>
               </>
             )}
           </div>
         </div>
       </div>
+
+      {showAIModal && selectedFileForAI && (
+        <AITextGeneratorModal
+          title="Yapay Zeka Asistanı"
+          initialPrompt={`Sistemde kayıtlı olan aşağıdaki doğrudan temin (ihale) dosyasını incele ve bana bir sonraki yasal/idari aşamalar hakkında mevzuata uygun bir tavsiye ya da dosya özeti sun:\n\nDosya No: ${selectedFileForAI.temin_no || 'Belirtilmemiş'}\nKonu: ${selectedFileForAI.konu}\nMaliyet: ${selectedFileForAI.yaklasik_maliyet} TL\nMadde: ${selectedFileForAI.ihale_sekli || 'Belirtilmemiş'}`}
+          systemInstruction="Sen profesyonel bir kamu ihale ve doğrudan temin (4734 Sayılı Kanun) asistanısın. Kısa, net ve mevzuata uygun dönüşler yap. Asla Markdown veya süslü formatları bozma. Doğrudan temin süreçlerindeki adımları rehberlik ederek anlat."
+          onClose={() => {
+            setShowAIModal(false)
+            setSelectedFileForAI(null)
+          }}
+          onApply={(text) => {
+            console.log('AI tavsiyesi:', text)
+            setShowAIModal(false)
+            setSelectedFileForAI(null)
+          }}
+        />
+      )}
     </div>
   )
 }
