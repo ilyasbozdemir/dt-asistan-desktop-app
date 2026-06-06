@@ -18,7 +18,8 @@ import {
   ShieldAlert,
   CheckCircle2,
   AlertTriangle,
-  Sparkles
+  Sparkles,
+  Mail
 } from 'lucide-react'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 import { Link } from '@tanstack/react-router'
@@ -186,7 +187,7 @@ export default function DashboardScreen(): React.JSX.Element {
               <p className="text-xs mt-0.5 opacity-90">Sistem üzerinden şifre sıfırlama veya onay mailleri alabilmeniz için posta sunucunuzu ayarlamanız gerekmektedir. Şifrenizi unutursanız sisteme erişiminizi kaybedebilirsiniz!</p>
             </div>
           </div>
-          <Link to="/ayarlar?tab=smtp">
+          <Link to="/ayarlar" search={{ tab: 'smtp' }}>
             <Button className="shrink-0 text-xs py-2 px-4 bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow-sm">
               <Mail className="w-4 h-4 mr-1.5" />
               Ayarları Yapılandır
