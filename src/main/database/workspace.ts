@@ -68,6 +68,19 @@ function ensureSchemaIntegrity(db: Database.Database): void {
           db.exec(`ALTER TABLE ${table.name} ADD COLUMN ${sqlDef};`)
         }
       }
+      
+      // Self-heal missing initial data
+      if (table.initialData && table.initialData.length > 0) {
+        table.initialData.forEach((row: any) => {
+          const keys = Object.keys(row)
+          const values = Object.values(row).map((v) =>
+            typeof v === 'string' ? "'" + (v as string).replace(/'/g, "''") + "'" : v
+          )
+          db.exec(
+            `INSERT OR IGNORE INTO ${table.name} (${keys.join(', ')}) VALUES (${values.join(', ')});`
+          )
+        })
+      }
     } catch (err: any) {
       console.error(`Error self-healing table ${table.name}:`, err.message)
     }

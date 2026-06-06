@@ -9,6 +9,9 @@ export const TANIM_KomisyonGorevi = {
     { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' },
     { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' }
   ],
+  constraints: [
+    'UNIQUE(ad)'
+  ],
   initialData: [
     { ad: 'Başkan', aciklama: 'Komisyona başkanlık eden asil üye.', aktif_mi: 1 },
     { ad: 'Üye', aciklama: 'Komisyonda görevli asil üye.', aktif_mi: 1 },
