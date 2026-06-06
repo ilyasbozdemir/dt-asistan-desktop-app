@@ -114,13 +114,10 @@ export default function KomisyonlarScreen(): React.JSX.Element {
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center">
-                          {getIconForTur(activeTur?.ad || '')}
+                          {getIconForTur(komisyon.ad)}
                         </div>
                         <div>
                           <h3 className="font-bold text-slate-800 dark:text-slate-200">{komisyon.ad}</h3>
-                          <span className="text-xs font-medium text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">
-                            {activeTur?.ad}
-                          </span>
                         </div>
                       </div>
                     </div>
