@@ -16,6 +16,7 @@ export default function PersonelScreen(): React.ReactNode {
   const [formData, setFormData] = useState<Partial<Personel>>({
     ad_soyad: '',
     unvan: '',
+    sicil_no: '',
     birim: '',
     telefon: '',
     eposta: '',
@@ -33,6 +34,7 @@ export default function PersonelScreen(): React.ReactNode {
       setFormData({
         ad_soyad: '',
         unvan: '',
+        sicil_no: '',
         birim: '',
         telefon: '',
         eposta: '',
@@ -146,6 +148,7 @@ export default function PersonelScreen(): React.ReactNode {
 
                 <div className="space-y-1.5 text-[11px] text-slate-500 dark:text-slate-400 mb-4 flex-1">
                   {p.birim && <div className="truncate">🏢 {p.birim}</div>}
+                  {p.sicil_no && <div className="truncate">📋 Sicil No: {p.sicil_no}</div>}
                   {p.telefon && <div>📞 {p.telefon}</div>}
                   {p.eposta && <div className="truncate">✉️ {p.eposta}</div>}
                 </div>
@@ -190,14 +193,26 @@ export default function PersonelScreen(): React.ReactNode {
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Unvan / Görevi</label>
-              <Input
-                placeholder="Örn: İnşaat Mühendisi"
-                value={formData.unvan || ''}
-                onChange={(e) => setFormData({ ...formData, unvan: e.target.value })}
-                className="bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-xs py-1.5 h-9"
-              />
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Unvan / Görevi</label>
+                <Input
+                  placeholder="Örn: İnşaat Mühendisi"
+                  value={formData.unvan || ''}
+                  onChange={(e) => setFormData({ ...formData, unvan: e.target.value })}
+                  className="bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-xs py-1.5 h-9"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Kurum Sicil No <span className="text-[10px] text-slate-400 font-normal">(İsteğe Bağlı)</span></label>
+                <Input
+                  placeholder="Örn: 12345"
+                  value={formData.sicil_no || ''}
+                  onChange={(e) => setFormData({ ...formData, sicil_no: e.target.value })}
+                  className="bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-xs py-1.5 h-9"
+                />
+              </div>
             </div>
 
               <div className="relative">
