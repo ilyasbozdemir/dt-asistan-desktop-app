@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { X, Search, FileText, Calendar, Copy, ChevronRight } from 'lucide-react'
 import { TeminDosyasi } from '../dosyalar.hooks'
 import { cn } from '../../../utils/cn'
