@@ -19,6 +19,7 @@ import { cn } from '../../utils/cn'
 import { AIFormFillModal, AIFilledValues } from '../../components/ui/AIFormFillModal'
 import { AITextGeneratorModal } from '../../components/ui/AITextGeneratorModal'
 import { logActivity } from '../../utils/logger'
+import { EskiDosyaKopyalaModal } from './components/EskiDosyaKopyalaModal'
 
 interface DBBirim {
   id: number
@@ -160,6 +161,58 @@ export default function YeniDosyaScreen(): React.JSX.Element {
 
   // Active Tab (Stepper)
   const [activeTab, setActiveTab] = useState<'genel' | 'ihtiyac' | 'teknik'>('genel')
+
+  // Kopyalama (Şablon) State
+  const [showKopyalaModal, setShowKopyalaModal] = useState(false)
+
+  const handleCopyDosya = (eskiDosya: TeminDosyasi) => {
+    setFormData({
+      ...formData,
+      // %80 dolu gelsin (kalemler hariç)
+      konu: eskiDosya.konu,
+      isin_aciklamasi: eskiDosya.isin_aciklamasi,
+      birim_id: eskiDosya.birim_id,
+      antet_ek_satir: eskiDosya.antet_ek_satir,
+      sunulacak_makam: eskiDosya.sunulacak_makam,
+      ihtiyac_yeri: eskiDosya.ihtiyac_yeri,
+      kurumsal_kod: eskiDosya.kurumsal_kod,
+      fonksiyonel_kod: eskiDosya.fonksiyonel_kod,
+      muhasebe_birimi: eskiDosya.muhasebe_birimi,
+      harcama_birimi: eskiDosya.harcama_birimi,
+      finansman_kodu: eskiDosya.finansman_kodu,
+      ekonomik_kod: eskiDosya.ekonomik_kod,
+      ihale_tipi: eskiDosya.ihale_tipi,
+      tur: eskiDosya.tur,
+      ihale_sekli: eskiDosya.ihale_sekli,
+      teklif_sozlesme_turu: eskiDosya.teklif_sozlesme_turu,
+      alt_yuklenici_olacak_mi: eskiDosya.alt_yuklenici_olacak_mi,
+      kismi_teklif_verilecek_mi: eskiDosya.kismi_teklif_verilecek_mi,
+      fiyat_farki_dayanagi: eskiDosya.fiyat_farki_dayanagi,
+      yatirim_proje_no: eskiDosya.yatirim_proje_no,
+      avans_verilecek_mi: eskiDosya.avans_verilecek_mi,
+      yaklasik_maliyet_hesaplamasi: eskiDosya.yaklasik_maliyet_hesaplamasi,
+      kdv: eskiDosya.kdv,
+      hesaplama_esasi: eskiDosya.hesaplama_esasi,
+      komisyon_takdiri: eskiDosya.komisyon_takdiri,
+      tibbi_cihaz_alimi_mi: eskiDosya.tibbi_cihaz_alimi_mi,
+      yaklasik_maliyet: eskiDosya.yaklasik_maliyet,
+      butce_kodu: eskiDosya.butce_kodu,
+      irtibat_yetkilisi_id: eskiDosya.irtibat_yetkilisi_id,
+      hazirlayan_personel_id: eskiDosya.hazirlayan_personel_id,
+      onay_personel_id: eskiDosya.onay_personel_id,
+      notlar: eskiDosya.notlar,
+
+      // Sıfırlanan / Güncellenen alanlar
+      temin_no: '',
+      dosya_acilis_tarihi: new Date().toISOString().split('T')[0],
+      talep_tarihi: new Date().toISOString().split('T')[0],
+      talep_sayisi: '',
+      son_teklif_verme_tarihi: '',
+      teslim_tarihi: ''
+    })
+    setShowKopyalaModal(false)
+    alert(`"${eskiDosya.konu}" başlıklı dosyadan veriler başarıyla kopyalandı. Lütfen yeni dosya numarasını ve tarihlerini kontrol edin.`)
+  }
 
   // Search states for custom select/autocomplete dropdowns
   const [showBirimSearch, setShowBirimSearch] = useState(false)
@@ -389,14 +442,26 @@ export default function YeniDosyaScreen(): React.JSX.Element {
   // Turkish lowercase normalization helper
   const normalizeTr = (str: string) => (str || '').trim().toLocaleLowerCase('tr-TR')
 
-  // Collect unique previous subjects
-  const uniqueKonular = Array.from(new Set(dosyalar.map(d => d.konu).filter(Boolean)))
+  // Calculate frequencies of previous subjects (Sık Kullanılanlar)
+  const konuFrequencies = dosyalar.reduce((acc, d) => {
+    if (d.konu) {
+      const k = d.konu.trim()
+      acc[k] = (acc[k] || 0) + 1
+    }
+    return acc
+  }, {} as Record<string, number>)
+
+  // Sort by frequency descending
+  const sortedKonular = Object.entries(konuFrequencies)
+    .sort((a, b) => b[1] - a[1])
+    .map(e => e[0])
+
   const matchedSuggestions = formData.konu
-    ? uniqueKonular.filter(k => 
+    ? sortedKonular.filter(k => 
         normalizeTr(k).includes(normalizeTr(formData.konu || '')) &&
         normalizeTr(k) !== normalizeTr(formData.konu || '')
-      ).slice(0, 5)
-    : []
+      ).slice(0, 8)
+    : sortedKonular.slice(0, 8) // Show top 8 frequent items if empty
 
   const exactMatchCount = formData.konu
     ? dosyalar.filter(d => 
@@ -427,6 +492,19 @@ export default function YeniDosyaScreen(): React.JSX.Element {
           </div>
         </div>
         <div className="flex items-center gap-3 w-full md:w-auto justify-end">
+          {/* Eski Dosyadan Kopyala Butonu */}
+          {!isEdit && (
+            <button
+              type="button"
+              onClick={() => setShowKopyalaModal(true)}
+              className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-amber-500/20 flex items-center gap-2 cursor-pointer"
+              title="Geçmişteki bir alımı seçerek formun %80'ini otomatik doldurun"
+            >
+              <Copy size={14} />
+              Eski Dosyadan Kopyala
+            </button>
+          )}
+
           {/* AI Form Kontrol Butonu */}
           <button
             type="button"
@@ -627,7 +705,7 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                       {showKonuSuggestions && matchedSuggestions.length > 0 && (
                         <div className="absolute left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
                           <div className="px-3 py-1.5 bg-slate-50 dark:bg-slate-950/50 text-[10px] font-bold text-slate-400 border-b border-slate-100 dark:border-slate-800">
-                            Önceki İhale Konuları
+                            {formData.konu ? 'Önceki İhale Konuları' : 'Sık Kullanılan İhale Konuları'}
                           </div>
                           <ul className="max-h-48 overflow-y-auto divide-y divide-slate-50 dark:divide-slate-800/50">
                             {matchedSuggestions.map((suggestion, index) => (
@@ -1578,6 +1656,14 @@ export default function YeniDosyaScreen(): React.JSX.Element {
             [textGenConfig.targetField]: text
           }))
         }}
+      />
+
+      {/* Eski Dosya Kopyala Modal */}
+      <EskiDosyaKopyalaModal
+        isOpen={showKopyalaModal}
+        onClose={() => setShowKopyalaModal(false)}
+        dosyalar={dosyalar}
+        onSelect={handleCopyDosya}
       />
     </div>
   )
