@@ -338,6 +338,13 @@ export function MevzuatScreen(): React.JSX.Element {
 
       setTaxOffice(settings.taxOffice || '')
       setTaxNumber(settings.taxNumber || '')
+
+      if (settings.limits) {
+        try { _setLimits(JSON.parse(settings.limits)) } catch (e) { console.error('Error parsing limits', e) }
+      }
+      if (settings.rates) {
+        try { _setRates(JSON.parse(settings.rates)) } catch (e) { console.error('Error parsing rates', e) }
+      }
     }
   }, [settings])
 
@@ -381,33 +388,56 @@ export function MevzuatScreen(): React.JSX.Element {
   }
 
   // Mock State for Settings (This would normally come from a global store/db)
-  const [limits, setLimits] = useState({
+  const [limits, _setLimits] = useState({
     buyuksehir: '1.021.827,00',
     diger: '340.391,00',
     yil: new Date().getFullYear().toString()
   })
+  const setLimits = (val: React.SetStateAction<typeof limits>) => {
+    _setLimits(val)
+    setIsConfirmed(false)
+  }
 
-  const [rates, setRates] = useState({
-    kdv1: '1',
-    kdv2: '10',
-    kdv3: '20',
-    damgaVergisi: '9,48',
-    kararPulu: '5,69'
-  })
+  type VergiOrani = {
+    id: string
+    ad: string
+    oran: string
+    tur: 'yuzde' | 'binde'
+  }
+  const [rates, _setRates] = useState<VergiOrani[]>([
+    { id: '1', ad: 'Damga Vergisi', oran: '9,48', tur: 'binde' },
+    { id: '2', ad: 'Karar Pulu', oran: '5,69', tur: 'binde' },
+    { id: '3', ad: 'KDV (Genel)', oran: '20', tur: 'yuzde' },
+    { id: '4', ad: 'KDV (İndirimli)', oran: '10', tur: 'yuzde' },
+    { id: '5', ad: 'KDV (Özel)', oran: '1', tur: 'yuzde' }
+  ])
+  const setRates = (val: React.SetStateAction<typeof rates>) => {
+    _setRates(val)
+    setIsConfirmed(false)
+  }
 
   const { data: asamalar = [], isLoading: isLoadingAsamalar } = useQuery({
     queryKey: ['asamalar'],
     queryFn: fetchAsamalar
   })
 
-  // Reset confirmation checkbox on value changes
-  React.useEffect(() => {
-    setIsConfirmed(false)
-  }, [limits, rates])
 
-  const handleSave = (): void => {
+
+  const handleSave = async (): Promise<void> => {
     setIsSaving(true)
-    setTimeout(() => setIsSaving(false), 800)
+    try {
+      await saveSettings({
+        limits: JSON.stringify(limits),
+        rates: JSON.stringify(rates)
+      })
+      await reloadSettingsStore()
+    } catch (error) {
+      console.error('Error saving mevzuat settings:', error)
+      alert('Kaydetme hatası!')
+    } finally {
+      setIsSaving(false)
+      setIsConfirmed(false)
+    }
   }
 
   const menuItems: InnerMenuItem[] = [
@@ -600,79 +630,85 @@ export function MevzuatScreen(): React.JSX.Element {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-4 uppercase tracking-wider">
-                  Kesinti Oranları (Binde)
+            <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
+              <div className="p-4 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+                  Vergi ve Kesinti Tanımları
                 </h3>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300 w-32">
-                      Damga Vergisi
-                    </label>
-                    <div className="relative flex-1">
-                      <input
-                        type="text"
-                        value={rates.damgaVergisi}
-                        onChange={(e) => setRates({ ...rates, damgaVergisi: e.target.value })}
-                        className="w-full pl-4 pr-10 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
-                      />
-                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-semibold">
-                        ‰
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300 w-32">
-                      Karar Pulu
-                    </label>
-                    <div className="relative flex-1">
-                      <input
-                        type="text"
-                        value={rates.kararPulu}
-                        onChange={(e) => setRates({ ...rates, kararPulu: e.target.value })}
-                        className="w-full pl-4 pr-10 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
-                      />
-                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-semibold">
-                        ‰
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                <button
+                  onClick={() => setRates([...rates, { id: Date.now().toString(), ad: 'Yeni Kesinti', oran: '0', tur: 'yuzde' }])}
+                  className="px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 dark:text-blue-400 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer"
+                >
+                  <Plus className="w-3 h-3" /> Yeni Ekle
+                </button>
               </div>
-
-              <div>
-                <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-4 uppercase tracking-wider">
-                  Geçerli KDV Oranları (%)
-                </h3>
-                <div className="space-y-4">
-                  <div className="flex gap-4">
-                    <div className="relative flex-1">
+              <div className="p-5 space-y-4">
+                {rates.map((rate, index) => (
+                  <div key={rate.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-800 rounded-xl relative group">
+                    <div className="flex-1">
+                      <label className="block text-[10px] font-semibold text-slate-500 mb-1">Kesinti/Vergi Adı</label>
                       <input
                         type="text"
-                        value={rates.kdv1}
-                        onChange={(e) => setRates({ ...rates, kdv1: e.target.value })}
-                        className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                        value={rate.ad}
+                        onChange={(e) => {
+                          const newRates = [...rates];
+                          newRates[index].ad = e.target.value;
+                          setRates(newRates);
+                        }}
+                        className="w-full px-3 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200 font-medium"
                       />
                     </div>
-                    <div className="relative flex-1">
-                      <input
-                        type="text"
-                        value={rates.kdv2}
-                        onChange={(e) => setRates({ ...rates, kdv2: e.target.value })}
-                        className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
-                      />
+                    <div className="w-full sm:w-32">
+                      <label className="block text-[10px] font-semibold text-slate-500 mb-1">Türü</label>
+                      <select
+                        value={rate.tur}
+                        onChange={(e) => {
+                          const newRates = [...rates];
+                          newRates[index].tur = e.target.value as 'yuzde' | 'binde';
+                          setRates(newRates);
+                        }}
+                        className="w-full px-3 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200 font-medium"
+                      >
+                        <option value="yuzde">Yüzde (%)</option>
+                        <option value="binde">Binde (‰)</option>
+                      </select>
                     </div>
-                    <div className="relative flex-1">
-                      <input
-                        type="text"
-                        value={rates.kdv3}
-                        onChange={(e) => setRates({ ...rates, kdv3: e.target.value })}
-                        className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
-                      />
+                    <div className="w-full sm:w-32">
+                      <label className="block text-[10px] font-semibold text-slate-500 mb-1">Oran Değeri</label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={rate.oran}
+                          onChange={(e) => {
+                            const newRates = [...rates];
+                            newRates[index].oran = e.target.value;
+                            setRates(newRates);
+                          }}
+                          className="w-full pl-3 pr-8 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-right font-bold text-emerald-600 dark:text-emerald-400"
+                        />
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">
+                          {rate.tur === 'yuzde' ? '%' : '‰'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="w-full sm:w-auto pt-4 sm:pt-0 sm:pl-2 flex items-end">
+                      <button
+                        onClick={() => {
+                          setRates(rates.filter(r => r.id !== rate.id));
+                        }}
+                        className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors cursor-pointer w-full sm:w-auto flex justify-center"
+                        title="Sil"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
-                </div>
+                ))}
+                {rates.length === 0 && (
+                  <div className="text-center py-6 text-slate-400 text-sm">
+                    Henüz vergi veya kesinti tanımlanmamış.
+                  </div>
+                )}
               </div>
             </div>
           </div>
