@@ -12,11 +12,16 @@ import {
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { KomisyonOlusturModal } from './components/KomisyonOlusturModal'
+import { PersonelAtaModal } from './components/PersonelAtaModal'
 
 export default function KomisyonlarScreen(): React.JSX.Element {
   const [searchTerm, setSearchTerm] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingKomisyonId, setEditingKomisyonId] = useState<number | null>(null)
+  
+  const [isAtaModalOpen, setIsAtaModalOpen] = useState(false)
+  const [ataRoleId, setAtaRoleId] = useState<number | null>(null)
+  const [ataKomisyonId, setAtaKomisyonId] = useState<number | null>(null)
 
   // Oluşturulmuş Komisyonları Çek
   const { data: komisyonlar = [], isLoading: isKomisyonLoading } = useQuery({
@@ -31,9 +36,9 @@ export default function KomisyonlarScreen(): React.JSX.Element {
       // Get members for all active commissions
       const membersRes = await window.electron.ipcRenderer.invoke(
         'db:query',
-        `SELECT u.komisyon_id, u.asil_mi, p.ad_soyad, p.unvan, g.ad as gorev_adi 
+        `SELECT u.id as role_id, u.komisyon_id, u.asil_mi, u.personel_id, p.ad_soyad, p.unvan, g.ad as gorev_adi 
          FROM TANIM_KomisyonUye u
-         JOIN TANIM_Personel p ON u.personel_id = p.id
+         LEFT JOIN TANIM_Personel p ON u.personel_id = p.id
          JOIN TANIM_KomisyonGorevi g ON u.gorev_id = g.id`
       )
       
@@ -137,7 +142,9 @@ export default function KomisyonlarScreen(): React.JSX.Element {
                             {komisyon.uyeler.map((uye: any, idx: number) => (
                               <div key={idx} className="flex flex-col p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700/50">
                                 <div className="flex items-center gap-1">
-                                  <span className="font-semibold text-sm text-slate-700 dark:text-slate-300">{uye.ad_soyad}</span>
+                                  <span className="font-semibold text-sm text-slate-700 dark:text-slate-300">
+                                    {uye.personel_id ? uye.ad_soyad : <span className="text-slate-400 italic">Boş Kontenjan</span>}
+                                  </span>
                                   {uye.asil_mi === 1 ? (
                                     <span className="text-[10px] bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-1.5 py-0.5 rounded-full font-medium">Asil</span>
                                   ) : (
@@ -145,10 +152,29 @@ export default function KomisyonlarScreen(): React.JSX.Element {
                                   )}
                                 </div>
                                 <div className="flex items-center gap-1 mt-1 text-xs text-slate-500 dark:text-slate-400">
-                                  <span>{uye.unvan}</span>
-                                  <span className="text-slate-300 dark:text-slate-600">•</span>
+                                  {uye.personel_id && (
+                                    <>
+                                      <span>{uye.unvan}</span>
+                                      <span className="text-slate-300 dark:text-slate-600">•</span>
+                                    </>
+                                  )}
                                   <span className="font-medium text-slate-600 dark:text-slate-300">{uye.gorev_adi}</span>
                                 </div>
+                                {!uye.personel_id && (
+                                  <div className="mt-2">
+                                    <Button 
+                                      variant="outline" 
+                                      className="w-full text-xs py-1 h-auto rounded-md text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-200"
+                                      onClick={() => {
+                                        setAtaRoleId(uye.role_id)
+                                        setAtaKomisyonId(uye.komisyon_id)
+                                        setIsAtaModalOpen(true)
+                                      }}
+                                    >
+                                      Personel Ata
+                                    </Button>
+                                  </div>
+                                )}
                               </div>
                             ))}
                           </div>
@@ -179,13 +205,24 @@ export default function KomisyonlarScreen(): React.JSX.Element {
             </div>
           </div>
         </div>
-        <KomisyonOlusturModal 
-          isOpen={isModalOpen} 
-          komisyonId={editingKomisyonId}
+        <KomisyonOlusturModal
+          isOpen={isModalOpen}
           onClose={() => {
             setIsModalOpen(false)
             setEditingKomisyonId(null)
-          }} 
+          }}
+          komisyonId={editingKomisyonId}
+        />
+
+        <PersonelAtaModal
+          isOpen={isAtaModalOpen}
+          onClose={() => {
+            setIsAtaModalOpen(false)
+            setAtaRoleId(null)
+            setAtaKomisyonId(null)
+          }}
+          roleId={ataRoleId}
+          komisyonId={ataKomisyonId}
         />
     </div>
   )

@@ -18,18 +18,7 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
   // Üyeler state: { personelId: number, gorevId: number, asilMi: boolean }
   const [uyeler, setUyeler] = useState<any[]>([])
 
-  const { data: personeller = [] } = useQuery({
-    queryKey: ['personel_listesi_komisyon'],
-    queryFn: async () => {
-      const res = await window.electron.ipcRenderer.invoke(
-        'db:query',
-        'SELECT * FROM TANIM_Personel WHERE aktif_mi = 1'
-      )
-      if (!res.success) throw new Error(res.error)
-      return res.data
-    },
-    enabled: isOpen
-  })
+
 
   const { data: gorevler = [] } = useQuery({
     queryKey: ['komisyon_gorevleri'],
@@ -77,7 +66,7 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
   })
 
   const handleAddUye = () => {
-    setUyeler([...uyeler, { id: Date.now(), personelId: '', gorevId: '', asilMi: 1 }])
+    setUyeler([...uyeler, { id: Date.now(), personelId: null, gorevId: '', asilMi: 1 }])
   }
 
   const handleRemoveUye = (id: number) => {
@@ -91,8 +80,8 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
   const saveMutation = useMutation({
     mutationFn: async () => {
       if (!ad) throw new Error('Lütfen komisyon adı giriniz.')
-      if (uyeler.some(u => !u.personelId || !u.gorevId)) {
-        throw new Error('Lütfen tüm üyelerin personel ve görev seçimlerini yapınız.')
+      if (uyeler.some(u => !u.gorevId)) {
+        throw new Error('Lütfen tüm üyelerin görev (rol) seçimlerini yapınız.')
       }
 
       if (komisyonId) {
@@ -109,8 +98,8 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
         if (!updateRes.success) throw new Error(updateRes.error)
         
         const uyeQueries = uyeler.map(u => ({
-          sql: 'INSERT INTO TANIM_KomisyonUye (komisyon_id, personel_id, gorev_id, asil_mi) VALUES (?, ?, ?, ?)',
-          params: [komisyonId, u.personelId, u.gorevId, u.asilMi]
+          sql: 'INSERT INTO TANIM_KomisyonUye (komisyon_id, gorev_id, asil_mi) VALUES (?, ?, ?)',
+          params: [komisyonId, u.gorevId, u.asilMi]
         }))
 
         if (uyeQueries.length > 0) {
@@ -131,8 +120,8 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
         const newKomisyonId = res.lastInsertRowid
 
         const uyeQueries = uyeler.map(u => ({
-          sql: 'INSERT INTO TANIM_KomisyonUye (komisyon_id, personel_id, gorev_id, asil_mi) VALUES (?, ?, ?, ?)',
-          params: [newKomisyonId, u.personelId, u.gorevId, u.asilMi]
+          sql: 'INSERT INTO TANIM_KomisyonUye (komisyon_id, gorev_id, asil_mi) VALUES (?, ?, ?)',
+          params: [newKomisyonId, u.gorevId, u.asilMi]
         }))
 
         if (uyeQueries.length > 0) {
@@ -156,7 +145,7 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
       isOpen={isOpen}
       onClose={onClose}
       title={komisyonId ? 'Komisyonu Düzenle' : 'Yeni Komisyon Oluştur'}
-      description="Komisyon türünü belirleyin ve personelleri görevlendirin."
+      description="Komisyonun kadro ve kontenjanlarını belirleyin."
       className="max-w-4xl"
     >
       <div className="space-y-6">
@@ -181,18 +170,18 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
         <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">Komisyon Üyeleri</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Bu komisyonda görev alacak personelleri ve rollerini belirleyin.</p>
+                <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">Komisyon Rolleri / Kadroları</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Bu komisyonda bulunması gereken görev/rolleri belirleyin. Personel atamaları daha sonra yapılacaktır.</p>
               </div>
               <Button onClick={handleAddUye} variant="outline" className="gap-2 text-sm border-dashed">
-                <Plus className="w-4 h-4" /> Üye Ekle
+                <Plus className="w-4 h-4" /> Rol Ekle
               </Button>
             </div>
 
             <div className="space-y-3">
               {uyeler.length === 0 ? (
                 <div className="text-center py-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800 border-dashed">
-                  <p className="text-sm text-slate-500">Henüz üye eklenmedi. "Üye Ekle" butonunu kullanarak personelleri görevlendirebilirsiniz.</p>
+                  <p className="text-sm text-slate-500">Henüz rol/kadro eklenmedi. "Rol Ekle" butonunu kullanarak komisyon yapısını oluşturabilirsiniz.</p>
                 </div>
               ) : (
                 uyeler.map((uye, index) => (
@@ -201,18 +190,6 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
                       {index + 1}
                     </div>
                     
-                    <select
-                      title="Personel Seç"
-                      value={uye.personelId}
-                      onChange={e => handleUyeChange(uye.id, 'personelId', e.target.value ? Number(e.target.value) : '')}
-                      className="flex-1 min-w-[200px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none dark:text-white"
-                    >
-                      <option value="">-- Personel Seç --</option>
-                      {personeller.map((p: any) => (
-                        <option key={p.id} value={p.id}>{p.ad_soyad} ({p.unvan})</option>
-                      ))}
-                    </select>
-
                     <select
                       title="Görev Seç"
                       value={uye.gorevId}

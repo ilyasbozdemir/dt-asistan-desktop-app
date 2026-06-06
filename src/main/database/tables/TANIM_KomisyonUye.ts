@@ -4,7 +4,7 @@ export const TANIM_KomisyonUye = {
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
     { name: 'komisyon_id', type: 'INTEGER', notNull: true }, // TANIM_Komisyon
-    { name: 'personel_id', type: 'INTEGER', notNull: true }, // TANIM_Personel
+    { name: 'personel_id', type: 'INTEGER' }, // TANIM_Personel (Boş olabilir, rol açılıp sonra atanabilir)
     { name: 'gorev_id', type: 'INTEGER', notNull: true }, // TANIM_KomisyonGorevi (Örn: Başkan, Üye)
     { name: 'asil_mi', type: 'BOOLEAN', default: 1 }, // Asil Üye mi Yedek Üye mi?
     { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' },

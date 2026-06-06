@@ -70,7 +70,7 @@ const menuGroups: MenuGroup[] = [
         name: 'Komisyon Yönetimi',
         icon: Users,
         children: [
-          { name: 'Komisyon Listesi', path: '/komisyonlar', icon: Users },
+          { name: 'Komisyon Yönetimi', path: '/komisyonlar', icon: Users },
           { name: 'Görev Tanımları', path: '/komisyon-gorevleri', icon: Settings }
         ]
       },
