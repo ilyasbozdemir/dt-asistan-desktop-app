@@ -196,13 +196,13 @@ export function Sidebar(): React.JSX.Element {
   // Map sidebar item paths to required document keywords
   const documentPathMapping: Record<string, string[]> = {
     '/dosya/komisyon/fiyat-arastirma': ['Piyasa Fiyat Araştırması Tutanağı'],
-    '/dosya/komisyon/muayene-kabul': ['Muayene ve Kabul Komisyonu Tutanağı', 'Hizmet İşleri Kabul Tutanağı', 'Yapım İşleri Kabul Tutanağı'],
-    '/dosya/komisyon/fiyat-muayene': ['Piyasa Fiyat Araştırması Tutanağı', 'Muayene ve Kabul Komisyonu Tutanağı'],
+    '/dosya/komisyon/muayene-kabul': ['Muayene Kabul ve Tespit Komisyonu Tutanağı', 'Hizmet İşleri Kabul Tutanağı', 'Yapım İşleri Kabul Tutanağı'],
+    '/dosya/komisyon/fiyat-muayene': ['Piyasa Fiyat Araştırması Tutanağı', 'Muayene Kabul ve Tespit Komisyonu Tutanağı'],
     '/dosya/komisyon/onay-eki': ['Onay Belgesi'],
     '/dosya/malzemeler/talep-formu': ['Onay Belgesi'],
     '/dosya/luzum/belge': ['Onay Belgesi'],
     '/dosya/luzum/onay-eki': ['Onay Belgesi'],
-    '/dosya/luzum/teslim-tesellum': ['Muayene ve Kabul Komisyonu Tutanağı', 'Hizmet İşleri Kabul Tutanağı', 'Yapım İşleri Kabul Tutanağı'],
+    '/dosya/luzum/teslim-tesellum': ['Muayene Kabul ve Tespit Komisyonu Tutanağı', 'Hizmet İşleri Kabul Tutanağı', 'Yapım İşleri Kabul Tutanağı'],
     '/dosya/firmalar-maliyet/istekliler': ['Piyasa Fiyat Araştırması Tutanağı'],
     '/dosya/firmalar-maliyet/yaklasik': ['Yaklaşık Maliyet Hesap Cetveli', 'Piyasa Fiyat Araştırması Tutanağı'],
     '/dosya/firmalar-maliyet/tutanak': ['Piyasa Fiyat Araştırması Tutanağı'],

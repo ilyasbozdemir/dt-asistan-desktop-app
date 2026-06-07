@@ -15,7 +15,7 @@ export const TANIM_AlimTuru = {
     {
       tur_adi: 'Mal Alımı',
       ikon: 'Building2',
-      belgeler: JSON.stringify(['Onay Belgesi', 'Piyasa Fiyat Araştırması Tutanağı', 'Muayene ve Kabul Komisyonu Tutanağı', 'Fatura / e-Arşiv Fatura', 'Taşınır İşlem Fişi (TİF)']),
+      belgeler: JSON.stringify(['Onay Belgesi', 'Piyasa Fiyat Araştırması Tutanağı', 'Muayene Kabul ve Tespit Komisyonu Tutanağı', 'Fatura / e-Arşiv Fatura', 'Taşınır İşlem Fişi (TİF)']),
       sablon_id: ''
     },
     {

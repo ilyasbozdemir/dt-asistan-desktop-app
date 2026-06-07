@@ -15,6 +15,6 @@ export const TANIM_Komisyon = {
   initialData: [
     { ad: 'Fiyat Araştırma Komisyonu' },
     { ad: 'Yaklaşık Maliyet Tespit Komisyonu' },
-    { ad: 'Muayene ve Kabul Komisyonu' }
+    { ad: 'Muayene Kabul ve Tespit Komisyonu' }
   ]
 }

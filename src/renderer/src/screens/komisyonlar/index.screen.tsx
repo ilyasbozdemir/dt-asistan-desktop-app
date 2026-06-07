@@ -225,7 +225,24 @@ export default function KomisyonlarScreen(): React.JSX.Element {
                         >
                           Düzenle
                         </Button>
-                        <Button variant="outline" className="text-xs py-1.5 h-auto rounded-lg text-red-500 hover:text-red-600 hover:bg-red-50">Sil</Button>
+                        <Button 
+                          variant="outline" 
+                          className="text-xs py-1.5 h-auto rounded-lg text-red-500 hover:text-red-600 hover:bg-red-50"
+                          onClick={async () => {
+                            if (window.confirm('Bu komisyonu silmek istediğinize emin misiniz?')) {
+                              const res = await window.electron.ipcRenderer.invoke(
+                                'db:run',
+                                'UPDATE TANIM_Komisyon SET aktif_mi = 0 WHERE id = ?',
+                                [komisyon.id]
+                              )
+                              if (res.success) {
+                                queryClient.invalidateQueries({ queryKey: ['komisyonlar'] })
+                              }
+                            }
+                          }}
+                        >
+                          Sil
+                        </Button>
                       </div>
                     </div>
                   ))}

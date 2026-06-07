@@ -257,7 +257,7 @@ export function MevzuatScreen(): React.JSX.Element {
 
   // Dinamik Alım Türü Rehberi State
   const [alimTurleri, setAlimTurleri] = useState([
-    { id: '1', ad: 'Mal Alımı', ikon: 'Building2', belgeler: ['Onay Belgesi', 'Piyasa Fiyat Araştırması Tutanağı', 'Muayene ve Kabul Komisyonu Tutanağı', 'Fatura / e-Arşiv Fatura', 'Taşınır İşlem Fişi (TİF)'], sablonId: '' },
+    { id: '1', ad: 'Mal Alımı', ikon: 'Building2', belgeler: ['Onay Belgesi', 'Piyasa Fiyat Araştırması Tutanağı', 'Muayene Kabul ve Tespit Komisyonu Tutanağı', 'Fatura / e-Arşiv Fatura', 'Taşınır İşlem Fişi (TİF)'], sablonId: '' },
     { id: '2', ad: 'Hizmet Alımı', ikon: 'Briefcase', belgeler: ['Onay Belgesi', 'Piyasa Fiyat Araştırması Tutanağı', 'Hizmet İşleri Kabul Tutanağı', 'Fatura / e-Arşiv Fatura'], sablonId: '' },
     { id: '3', ad: 'Yapım İşi', ikon: 'HardHat', belgeler: ['Yaklaşık Maliyet Hesap Cetveli', 'Onay Belgesi', 'Piyasa Fiyat Araştırması Tutanağı', 'Yapım İşleri Kabul Tutanağı', 'Sözleşme (İdare Gerekli Görürse)'], sablonId: '' }
   ])
