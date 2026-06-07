@@ -64,6 +64,14 @@ export default function AyarlarScreen(): React.ReactNode {
   const [aiTestStatus, setAiTestStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
   const [aiTestMsg, setAiTestMsg] = useState('')
 
+  const [isPackaged, setIsPackaged] = useState(false)
+
+  useEffect(() => {
+    window.electron.ipcRenderer.invoke('app:isPackaged').then((packaged: boolean) => {
+      setIsPackaged(packaged)
+    }).catch(console.error)
+  }, [])
+
   useEffect(() => {
     if (settings) {
       setTimeout(() => {
@@ -327,56 +335,65 @@ export default function AyarlarScreen(): React.ReactNode {
                 {/* TAB 6: GELİŞTİRİCİ AYARLARI */}
                 {activeTab === 'developer' && (
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
-                      <div>
-                        <h2 className="text-lg font-bold text-slate-850 dark:text-slate-100">
-                          Geliştirici ve Test Ayarları
-                        </h2>
-                        <p className="text-xs text-slate-500">
-                          Geliştirme modunda otomatik güncellemeleri test etmek için kullanılır.
-                        </p>
+                    {isPackaged ? (
+                      <div className="bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 p-4 rounded-xl text-sm font-medium">
+                        Bu ayarlar yalnızca geliştirici modunda (uygulama paketlenmemişken) kullanılabilir.
                       </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                      <div className="md:col-span-2 flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          id="devUpdateTestMode"
-                          checked={devUpdateTestMode}
-                          onChange={(e) => setDevUpdateTestMode(e.target.checked)}
-                          className="rounded border-slate-300 dark:border-slate-700 bg-slate-55 dark:bg-slate-950 text-primary focus:ring-primary accent-primary"
-                        />
-                        <label
-                          htmlFor="devUpdateTestMode"
-                          className="text-xs font-semibold text-slate-600 dark:text-slate-400 cursor-pointer"
-                        >
-                          Geliştirici Modunda (Dev Mode) Güncelleme Testini Etkinleştir
-                        </label>
-                      </div>
-
-                      {devUpdateTestMode && (
-                        <div className="md:col-span-1">
-                          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
-                            Şu Anki Versiyonu Şöyle Göster (GitHub Releases)
-                          </label>
-                          <select
-                            value={devUpdateVersion}
-                            onChange={(e) => setDevUpdateVersion(e.target.value)}
-                            className="w-full text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-55 dark:bg-slate-950 text-slate-800 dark:text-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                          >
-                            <option value="">-- Versiyon Seçiniz --</option>
-                            {githubReleases.map((v) => (
-                              <option key={v} value={v}>
-                                {v}
-                              </option>
-                            ))}
-                          </select>
+                    ) : (
+                      <>
+                        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+                          <div>
+                            <h2 className="text-lg font-bold text-slate-850 dark:text-slate-100">
+                              Geliştirici ve Test Ayarları
+                            </h2>
+                            <p className="text-xs text-slate-500">
+                              Geliştirme modunda otomatik güncellemeleri test etmek için kullanılır.
+                            </p>
+                          </div>
                         </div>
-                      )}
-                    </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                          <div className="md:col-span-2 flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              id="devUpdateTestMode"
+                              checked={devUpdateTestMode}
+                              onChange={(e) => setDevUpdateTestMode(e.target.checked)}
+                              className="rounded border-slate-300 dark:border-slate-700 bg-slate-55 dark:bg-slate-950 text-primary focus:ring-primary accent-primary"
+                            />
+                            <label
+                              htmlFor="devUpdateTestMode"
+                              className="text-xs font-semibold text-slate-600 dark:text-slate-400 cursor-pointer"
+                            >
+                              Geliştirici Modunda (Dev Mode) Güncelleme Testini Etkinleştir
+                            </label>
+                          </div>
+
+                          {devUpdateTestMode && (
+                            <div className="md:col-span-1">
+                              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                                Şu Anki Versiyonu Şöyle Göster (GitHub Releases)
+                              </label>
+                              <select
+                                value={devUpdateVersion}
+                                onChange={(e) => setDevUpdateVersion(e.target.value)}
+                                className="w-full text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-55 dark:bg-slate-950 text-slate-800 dark:text-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                              >
+                                <option value="">-- Versiyon Seçiniz --</option>
+                                {githubReleases.map((v) => (
+                                  <option key={v} value={v}>
+                                    {v}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
+
 
                 {/* TAB 7: YAPAY ZEKA AYARLARI */}
                 {activeTab === 'ai' && (

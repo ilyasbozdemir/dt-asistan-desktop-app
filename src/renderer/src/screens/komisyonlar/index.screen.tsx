@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Users,
   Search,
@@ -15,6 +15,7 @@ import { KomisyonOlusturModal } from './components/KomisyonOlusturModal'
 import { PersonelAtaModal } from './components/PersonelAtaModal'
 
 export default function KomisyonlarScreen(): React.JSX.Element {
+  const queryClient = useQueryClient()
   const [searchTerm, setSearchTerm] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingKomisyonId, setEditingKomisyonId] = useState<number | null>(null)
@@ -160,7 +161,7 @@ export default function KomisyonlarScreen(): React.JSX.Element {
                                   )}
                                   <span className="font-medium text-slate-600 dark:text-slate-300">{uye.gorev_adi}</span>
                                 </div>
-                                {!uye.personel_id && (
+                                {!uye.personel_id ? (
                                   <div className="mt-2">
                                     <Button 
                                       variant="outline" 
@@ -172,6 +173,34 @@ export default function KomisyonlarScreen(): React.JSX.Element {
                                       }}
                                     >
                                       Personel Ata
+                                    </Button>
+                                  </div>
+                                ) : (
+                                  <div className="mt-2 flex gap-2">
+                                    <Button 
+                                      variant="outline" 
+                                      className="flex-1 text-xs py-1 h-auto rounded-md text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-200"
+                                      onClick={() => {
+                                        setAtaRoleId(uye.role_id)
+                                        setAtaKomisyonId(uye.komisyon_id)
+                                        setIsAtaModalOpen(true)
+                                      }}
+                                    >
+                                      Değiştir
+                                    </Button>
+                                    <Button 
+                                      variant="outline" 
+                                      className="flex-1 text-xs py-1 h-auto rounded-md text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                                      onClick={async () => {
+                                        if(confirm('Personeli bu görevden (komisyondan) almak istediğinize emin misiniz?')) {
+                                          const res = await window.electron.ipcRenderer.invoke('db:run', 'UPDATE TANIM_KomisyonUye SET personel_id = NULL WHERE id = ?', [uye.role_id])
+                                          if (res.success) {
+                                            queryClient.invalidateQueries({ queryKey: ['komisyonlar'] })
+                                          }
+                                        }
+                                      }}
+                                    >
+                                      Kaldır
                                     </Button>
                                   </div>
                                 )}

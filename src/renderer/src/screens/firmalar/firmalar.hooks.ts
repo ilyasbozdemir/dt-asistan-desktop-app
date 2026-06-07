@@ -47,6 +47,33 @@ export function useFirmalarHooks() {
 
   const addFirmaMutation = useMutation({
     mutationFn: async (firma: FirmaInput) => {
+      // Çift kayıt (duplicate) kontrolü
+      const { vergi_no, tc_kimlik_no, unvan } = firma
+      const conditions: string[] = []
+      const params: any[] = []
+
+      if (vergi_no?.trim()) {
+        conditions.push('vergi_no = ?')
+        params.push(vergi_no.trim())
+      }
+      if (tc_kimlik_no?.trim()) {
+        conditions.push('tc_kimlik_no = ?')
+        params.push(tc_kimlik_no.trim())
+      }
+      // Eğer ne vergi no ne TC no girilmemişse, isme (unvan) göre duplicate arayalım
+      if (!vergi_no?.trim() && !tc_kimlik_no?.trim() && unvan?.trim()) {
+        conditions.push('LOWER(unvan) = LOWER(?)')
+        params.push(unvan.trim())
+      }
+
+      if (conditions.length > 0) {
+        const checkQuery = `SELECT unvan FROM TANIM_Firma WHERE ${conditions.join(' OR ')} LIMIT 1`
+        const existing = await window.electron.ipcRenderer.invoke('db:query', checkQuery, params)
+        if (existing.success && existing.data?.length > 0) {
+          throw new Error(`Bu bilgilere (Vergi No / TC No / Unvan) sahip firma zaten kayıtlı:\n\n${existing.data[0].unvan}`)
+        }
+      }
+
       const cols = [
         'firma_kodu', 'unvan', 'ilgili_adi', 'uyrugu', 'istigal_konusu',
         'adres', 'ilce', 'posta_kodu', 'il', 'telefon', 'faks', 'email',
@@ -68,6 +95,32 @@ export function useFirmalarHooks() {
 
   const updateFirmaMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<FirmaInput> }) => {
+      // Çift kayıt (duplicate) kontrolü (Kendi ID'si hariç)
+      const { vergi_no, tc_kimlik_no, unvan } = data
+      const conditions: string[] = []
+      const params: any[] = []
+
+      if (vergi_no?.trim()) {
+        conditions.push('vergi_no = ?')
+        params.push(vergi_no.trim())
+      }
+      if (tc_kimlik_no?.trim()) {
+        conditions.push('tc_kimlik_no = ?')
+        params.push(tc_kimlik_no.trim())
+      }
+      if (!vergi_no?.trim() && !tc_kimlik_no?.trim() && unvan?.trim()) {
+        conditions.push('LOWER(unvan) = LOWER(?)')
+        params.push(unvan.trim())
+      }
+
+      if (conditions.length > 0) {
+        const checkQuery = `SELECT unvan FROM TANIM_Firma WHERE id != ? AND (${conditions.join(' OR ')}) LIMIT 1`
+        const existing = await window.electron.ipcRenderer.invoke('db:query', checkQuery, [id, ...params])
+        if (existing.success && existing.data?.length > 0) {
+          throw new Error(`Bu bilgilere (Vergi No / TC No / Unvan) sahip başka bir firma zaten kayıtlı:\n\n${existing.data[0].unvan}`)
+        }
+      }
+
       const entries = Object.entries(data).filter(([, v]) => v !== undefined)
       if (entries.length === 0) return
       const setClause = entries.map(([k]) => `${k} = ?`).join(', ')

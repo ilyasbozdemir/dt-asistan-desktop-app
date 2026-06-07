@@ -195,6 +195,18 @@ export default function DashboardScreen(): React.JSX.Element {
         </div>
       )}
 
+      {/* YASAL UYARI / EULA BANNER */}
+      <div className="p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 flex flex-col md:flex-row items-start gap-4 shadow-sm">
+        <ShieldAlert className="w-6 h-6 shrink-0 mt-0.5 text-slate-500 dark:text-slate-400" />
+        <div className="flex-1">
+          <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">Yasal Uyarı ve Sorumluluk Reddi</h4>
+          <p className="text-xs mt-1 text-slate-600 dark:text-slate-400 leading-relaxed">
+            Bu uygulama, kamu kurumları ve kuruluşlarının Doğrudan Temin süreçlerini dijitalleştirmek amacıyla <strong>yardımcı bir araç</strong> olarak geliştirilmiştir.
+            Uygulama üzerinden üretilen hesaplamaların, belgelerin ve raporların doğruluğunu, yasal mevzuata uygunluğunu ve güncelliğini kontrol etmek <strong>tamamen kullanıcının sorumluluğundadır</strong>. Geliştirici, hatalı hesaplamalar veya mevzuata aykırı işlemlerden doğabilecek <strong>hukuki, idari ve mali sorumlulukları kabul etmez</strong>.
+          </p>
+        </div>
+      </div>
+
       <div className="p-6 rounded-3xl bg-linear-to-r from-blue-600/10 via-indigo-600/5 to-transparent border border-blue-500/10 dark:border-blue-500/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
