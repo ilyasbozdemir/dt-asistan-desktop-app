@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { ArrowLeft, Users, ShieldCheck, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, Users } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
 import { useQueryClient, useQuery } from '@tanstack/react-query'
 import { PersonelAtaModal } from './components/PersonelAtaModal'
