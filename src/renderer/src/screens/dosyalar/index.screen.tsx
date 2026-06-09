@@ -33,20 +33,55 @@ import { AITextGeneratorModal } from '../../components/ui/AITextGeneratorModal'
 function TurBadge({ tur }: { tur: string }) {
   const map: Record<string, { label: string; cls: string }> = {
     mal: { label: 'Mal', cls: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' },
-    hizmet: { label: 'Hizmet', cls: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400' },
-    yapim_isi: { label: 'Yapım', cls: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' },
-    danismanlik: { label: 'Danışmanlık', cls: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400' }
+    hizmet: {
+      label: 'Hizmet',
+      cls: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400'
+    },
+    yapim_isi: {
+      label: 'Yapım',
+      cls: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+    },
+    danismanlik: {
+      label: 'Danışmanlık',
+      cls: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400'
+    }
   }
-  const { label, cls } = map[tur] ?? { label: tur, cls: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400' }
+  const { label, cls } = map[tur] ?? {
+    label: tur,
+    cls: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+  }
   return (
-    <span className={cn('px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide', cls)}>
+    <span
+      className={cn('px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide', cls)}
+    >
       {label}
     </span>
   )
 }
 
-// Durum badge helper (durum_asama_id null ise "Taslak")
-function DurumBadge({ durumAsamaId }: { durumAsamaId: number | null }) {
+function DurumBadge({
+  durumAsamaId,
+  isDeleted,
+  status
+}: {
+  durumAsamaId: number | null
+  isDeleted?: number
+  status?: string
+}) {
+  if (isDeleted === 1) {
+    return (
+      <span className="flex items-center gap-0.5 text-[9px] font-bold text-red-600 dark:text-red-400">
+        <Trash2 size={9} /> Silindi
+      </span>
+    )
+  }
+  if (status === 'tamamlandi') {
+    return (
+      <span className="flex items-center gap-0.5 text-[9px] font-bold text-purple-600 dark:text-purple-400">
+        <CheckCircle2 size={9} /> Tamamlandı
+      </span>
+    )
+  }
   if (!durumAsamaId) {
     return (
       <span className="flex items-center gap-0.5 text-[9px] font-bold text-slate-400 dark:text-slate-500">
@@ -62,7 +97,7 @@ function DurumBadge({ durumAsamaId }: { durumAsamaId: number | null }) {
 }
 
 export default function DosyalarScreen(): React.ReactNode {
-  const { dosyalar, isLoadingDosyalar, deleteDosya } = useDosyalarHooks()
+  const { dosyalar, isLoadingDosyalar, deleteDosya, updateDosya } = useDosyalarHooks()
   const { activeDosyaId, setActiveDosyaId } = useWorkspaceStore()
   const { updateTabLabel } = useTabStore()
   const routerState = useRouterState()
@@ -110,10 +145,18 @@ export default function DosyalarScreen(): React.ReactNode {
   }
 
   const handleDelete = async (id: number): Promise<void> => {
-    if (confirm('Bu dosyayı silmek istediğinize emin misiniz?')) {
+    if (
+      confirm(
+        'Bu dosyayı silmek istediğinize emin misiniz? Sistemde silinmiş olarak işaretlenecektir.'
+      )
+    ) {
       await deleteDosya(id)
       if (activeDosyaId === id) setActiveDosyaId(null)
     }
+  }
+
+  const handleUpdateStatus = async (id: number, status: string): Promise<void> => {
+    await updateDosya({ id, status })
   }
 
   const filteredDosyalar = dosyalar.filter((d) => {
@@ -125,10 +168,16 @@ export default function DosyalarScreen(): React.ReactNode {
     return matchSearch && matchTur
   })
 
-  // İstatistikler
-  const toplamMaliyet = dosyalar.reduce((s, d) => s + (d.yaklasik_maliyet || 0), 0)
-  const aktifCount = dosyalar.filter(d => d.durum_asama_id).length
-  const taslakCount = dosyalar.filter(d => !d.durum_asama_id).length
+  // İstatistikler (Sadece silinmemiş olanlar baz alınsın)
+  const aktifDosyalar = dosyalar.filter((d) => d.is_deleted !== 1)
+  const toplamMaliyet = aktifDosyalar.reduce((s, d) => s + (d.yaklasik_maliyet || 0), 0)
+  const aktifCount = aktifDosyalar.filter(
+    (d) => d.durum_asama_id && d.status !== 'tamamlandi'
+  ).length
+  const taslakCount = aktifDosyalar.filter(
+    (d) => !d.durum_asama_id && d.status !== 'tamamlandi'
+  ).length
+  const tamamlananCount = aktifDosyalar.filter((d) => d.status === 'tamamlandi').length
 
   const formatMoney = (val: number) =>
     val ? val.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) : '0.00'
@@ -196,7 +245,11 @@ export default function DosyalarScreen(): React.ReactNode {
           {/* GENEL YAPAY ZEKA BUTONU */}
           <button
             onClick={() => {
-              setSelectedFileForAI({ konu: 'Genel Mevzuat Danışmanlığı', yaklasik_maliyet: 0, temin_no: 'Belirtilmemiş' })
+              setSelectedFileForAI({
+                konu: 'Genel Mevzuat Danışmanlığı',
+                yaklasik_maliyet: 0,
+                temin_no: 'Belirtilmemiş'
+              })
               setShowAIModal(true)
             }}
             className="px-4 py-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-violet-500/20 flex items-center gap-1.5 cursor-pointer shrink-0"
@@ -226,7 +279,9 @@ export default function DosyalarScreen(): React.ReactNode {
           </div>
           <div>
             <p className="text-[10px] text-slate-500 font-medium">Toplam Dosya</p>
-            <p className="text-lg font-black text-slate-800 dark:text-white leading-tight">{dosyalar.length}</p>
+            <p className="text-lg font-black text-slate-800 dark:text-white leading-tight">
+              {dosyalar.length}
+            </p>
           </div>
         </div>
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3 flex items-center gap-3">
@@ -235,7 +290,9 @@ export default function DosyalarScreen(): React.ReactNode {
           </div>
           <div>
             <p className="text-[10px] text-slate-500 font-medium">Aktif</p>
-            <p className="text-lg font-black text-emerald-600 dark:text-emerald-400 leading-tight">{aktifCount}</p>
+            <p className="text-lg font-black text-emerald-600 dark:text-emerald-400 leading-tight">
+              {aktifCount}
+            </p>
           </div>
         </div>
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3 flex items-center gap-3">
@@ -244,7 +301,9 @@ export default function DosyalarScreen(): React.ReactNode {
           </div>
           <div>
             <p className="text-[10px] text-slate-500 font-medium">Taslak</p>
-            <p className="text-lg font-black text-slate-600 dark:text-slate-300 leading-tight">{taslakCount}</p>
+            <p className="text-lg font-black text-slate-600 dark:text-slate-300 leading-tight">
+              {taslakCount}
+            </p>
           </div>
         </div>
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3 flex items-center gap-3">
@@ -253,14 +312,16 @@ export default function DosyalarScreen(): React.ReactNode {
           </div>
           <div>
             <p className="text-[10px] text-slate-500 font-medium">Toplam Yaklaşık Maliyet</p>
-            <p className="text-sm font-black text-green-600 dark:text-green-400 leading-tight">₺ {formatMoney(toplamMaliyet)}</p>
+            <p className="text-sm font-black text-green-600 dark:text-green-400 leading-tight">
+              ₺ {formatMoney(toplamMaliyet)}
+            </p>
           </div>
         </div>
       </div>
 
       {/* FİLTRE SATIRI */}
       <div className="flex-none flex gap-1.5">
-        {['hepsi', 'mal', 'hizmet', 'yapim_isi', 'danismanlik'].map(t => (
+        {['hepsi', 'mal', 'hizmet', 'yapim_isi', 'danismanlik'].map((t) => (
           <button
             key={t}
             onClick={() => setFilterTur(t)}
@@ -271,7 +332,15 @@ export default function DosyalarScreen(): React.ReactNode {
                 : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300'
             )}
           >
-            {t === 'hepsi' ? 'Tümü' : t === 'mal' ? 'Mal' : t === 'hizmet' ? 'Hizmet' : t === 'yapim_isi' ? 'Yapım' : 'Danışmanlık'}
+            {t === 'hepsi'
+              ? 'Tümü'
+              : t === 'mal'
+                ? 'Mal'
+                : t === 'hizmet'
+                  ? 'Hizmet'
+                  : t === 'yapim_isi'
+                    ? 'Yapım'
+                    : 'Danışmanlık'}
           </button>
         ))}
         {filteredDosyalar.length < dosyalar.length && (
@@ -286,13 +355,18 @@ export default function DosyalarScreen(): React.ReactNode {
         {/* SOL TARAF: LİSTE VEYA KARTLAR */}
         <div className="w-full lg:w-3/5 xl:w-2/3 flex flex-col h-full overflow-hidden">
           {isLoadingDosyalar ? (
-            <div className="flex-1 flex items-center justify-center text-sm text-slate-500 italic">Dosyalar yükleniyor...</div>
+            <div className="flex-1 flex items-center justify-center text-sm text-slate-500 italic">
+              Dosyalar yükleniyor...
+            </div>
           ) : filteredDosyalar.length === 0 ? (
             <div className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 text-center flex flex-col items-center justify-center">
               <FileText className="w-12 h-12 text-slate-300 dark:text-slate-700 mb-3" />
-              <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300">Temin Dosyası Bulunamadı</h3>
+              <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                Temin Dosyası Bulunamadı
+              </h3>
               <p className="text-xs text-slate-500 max-w-xs mt-1">
-                Arama kriterlerinize uyan veya kayıtlı herhangi bir doğrudan temin dosyası bulunmamaktadır.
+                Arama kriterlerinize uyan veya kayıtlı herhangi bir doğrudan temin dosyası
+                bulunmamaktadır.
               </p>
               <button
                 onClick={() => navigate({ to: '/dosyalar/yeni' })}
@@ -322,7 +396,11 @@ export default function DosyalarScreen(): React.ReactNode {
                         {dosya.temin_no || 'NO BELİRSİZ'}
                       </span>
                       <div className="flex items-center gap-1.5 shrink-0">
-                        <DurumBadge durumAsamaId={dosya.durum_asama_id} />
+                        <DurumBadge
+                          durumAsamaId={dosya.durum_asama_id}
+                          isDeleted={dosya.is_deleted}
+                          status={dosya.status}
+                        />
                         <TurBadge tur={dosya.tur} />
                       </div>
                     </div>
@@ -351,7 +429,11 @@ export default function DosyalarScreen(): React.ReactNode {
                   {/* Açıklama */}
                   <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800/60">
                     <p className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed min-h-[28px]">
-                      {dosya.isin_aciklamasi || <span className="italic text-slate-350 dark:text-slate-600">Açıklama girilmemiş.</span>}
+                      {dosya.isin_aciklamasi || (
+                        <span className="italic text-slate-350 dark:text-slate-600">
+                          Açıklama girilmemiş.
+                        </span>
+                      )}
                     </p>
                   </div>
 
@@ -360,22 +442,31 @@ export default function DosyalarScreen(): React.ReactNode {
                     <div className="flex items-center gap-1 truncate">
                       <BookOpen size={9} className="text-slate-400 shrink-0" />
                       <span className="text-slate-400 font-semibold shrink-0">Madde:</span>
-                      <span className="font-bold text-slate-700 dark:text-slate-300 truncate">{dosya.ihale_sekli || '-'}</span>
+                      <span className="font-bold text-slate-700 dark:text-slate-300 truncate">
+                        {dosya.ihale_sekli || '-'}
+                      </span>
                     </div>
                     <div className="flex items-center gap-1 truncate">
                       <Calendar size={9} className="text-slate-400 shrink-0" />
                       <span className="text-slate-400 font-semibold shrink-0">Bütçe:</span>
-                      <span className="font-bold text-slate-700 dark:text-slate-300 truncate">{dosya.butce_yili || '-'}</span>
+                      <span className="font-bold text-slate-700 dark:text-slate-300 truncate">
+                        {dosya.butce_yili || '-'}
+                      </span>
                     </div>
                     <div className="flex items-center gap-1 truncate">
                       <ClipboardList size={9} className="text-slate-400 shrink-0" />
                       <span className="text-slate-400 font-semibold shrink-0">Sözleşme:</span>
-                      <span className="font-bold text-slate-700 dark:text-slate-300 truncate">{dosya.teklif_sozlesme_turu || '-'}</span>
+                      <span className="font-bold text-slate-700 dark:text-slate-300 truncate">
+                        {dosya.teklif_sozlesme_turu || '-'}
+                      </span>
                     </div>
                     <div className="flex items-center gap-1 truncate">
                       <Hash size={9} className="text-slate-400 shrink-0" />
                       <span className="text-slate-400 font-semibold shrink-0">Ek. Kodu:</span>
-                      <span className="font-bold text-slate-700 dark:text-slate-300 truncate font-mono" title={dosya.ekonomik_kod || ''}>
+                      <span
+                        className="font-bold text-slate-700 dark:text-slate-300 truncate font-mono"
+                        title={dosya.ekonomik_kod || ''}
+                      >
                         {dosya.ekonomik_kod || '-'}
                       </span>
                     </div>
@@ -384,7 +475,8 @@ export default function DosyalarScreen(): React.ReactNode {
                         <FileCheck size={9} className="text-slate-400 shrink-0" />
                         <span className="text-slate-400 font-semibold shrink-0">Talep:</span>
                         <span className="font-bold text-slate-700 dark:text-slate-300 truncate">
-                          {dosya.talep_sayisi} {dosya.talep_tarihi ? `· ${formatDate(dosya.talep_tarihi)}` : ''}
+                          {dosya.talep_sayisi}{' '}
+                          {dosya.talep_tarihi ? `· ${formatDate(dosya.talep_tarihi)}` : ''}
                         </span>
                       </div>
                     )}
@@ -398,12 +490,16 @@ export default function DosyalarScreen(): React.ReactNode {
                         ₺ {formatMoney(dosya.yaklasik_maliyet || 0)}
                       </span>
                       {dosya.kdv && (
-                        <span className="text-[9px] text-emerald-500/70 font-semibold">(+%{dosya.kdv} KDV)</span>
+                        <span className="text-[9px] text-emerald-500/70 font-semibold">
+                          (+%{dosya.kdv} KDV)
+                        </span>
                       )}
                     </div>
                     <span className="text-slate-400 text-[9px] flex items-center gap-1">
                       <Calendar size={10} />
-                      {dosya.dosya_acilis_tarihi ? formatDate(dosya.dosya_acilis_tarihi) : formatDate(dosya.created_at)}
+                      {dosya.dosya_acilis_tarihi
+                        ? formatDate(dosya.dosya_acilis_tarihi)
+                        : formatDate(dosya.created_at)}
                     </span>
                   </div>
 
@@ -437,16 +533,22 @@ export default function DosyalarScreen(): React.ReactNode {
                         onClick={() => setActiveDosyaId(dosya.id)}
                         className={cn(
                           'hover:bg-slate-50/50 dark:hover:bg-slate-800/30 cursor-pointer transition-colors',
-                          activeDosyaId === dosya.id && 'bg-blue-50/30 dark:bg-blue-900/10'
+                          activeDosyaId === dosya.id && 'bg-blue-50/30 dark:bg-blue-900/10',
+                          dosya.is_deleted === 1 && 'opacity-50 grayscale'
                         )}
                       >
                         <td className="p-3.5 pl-5 font-mono font-bold text-slate-500 whitespace-nowrap">
                           {dosya.temin_no || '-'}
                         </td>
-                        <td className="p-3.5 font-bold text-slate-800 dark:text-slate-200 max-w-xs truncate" title={dosya.konu}>
+                        <td
+                          className="p-3.5 font-bold text-slate-800 dark:text-slate-200 max-w-xs truncate"
+                          title={dosya.konu}
+                        >
                           {dosya.konu}
                           {dosya.tekrar_no && dosya.tekrar_no > 1 ? (
-                            <span className="ml-1 text-[9px] text-amber-500 font-black">#{dosya.tekrar_no}</span>
+                            <span className="ml-1 text-[9px] text-amber-500 font-black">
+                              #{dosya.tekrar_no}
+                            </span>
                           ) : null}
                         </td>
                         <td className="p-3.5 text-slate-500 max-w-[120px] truncate text-[10px]">
@@ -459,7 +561,9 @@ export default function DosyalarScreen(): React.ReactNode {
                           ₺ {formatMoney(dosya.yaklasik_maliyet || 0)}
                         </td>
                         <td className="p-3.5 text-center text-slate-450 whitespace-nowrap">
-                          {dosya.dosya_acilis_tarihi ? formatDate(dosya.dosya_acilis_tarihi) : formatDate(dosya.created_at)}
+                          {dosya.dosya_acilis_tarihi
+                            ? formatDate(dosya.dosya_acilis_tarihi)
+                            : formatDate(dosya.created_at)}
                         </td>
                         <td className="p-3.5 text-right pr-5">
                           <ChevronRight size={16} className="text-slate-400" />
@@ -481,13 +585,20 @@ export default function DosyalarScreen(): React.ReactNode {
                 <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-950 flex items-center justify-center mb-4 border border-slate-100 dark:border-slate-800/80">
                   <FileText size={28} className="text-slate-400" />
                 </div>
-                <h3 className="text-sm font-bold text-slate-700 dark:text-slate-350">Dosya Seçilmedi</h3>
+                <h3 className="text-sm font-bold text-slate-700 dark:text-slate-350">
+                  Dosya Seçilmedi
+                </h3>
                 <p className="text-[11px] text-slate-500 max-w-xs mt-1.5 mb-6">
-                  İşlem yapmak, detaylarını incelemek veya düzenlemek istediğiniz ihale dosyasını soldaki listeden seçin. Veya genel süreçler hakkında Yapay Zeka'ya danışın.
+                  İşlem yapmak, detaylarını incelemek veya düzenlemek istediğiniz ihale dosyasını
+                  soldaki listeden seçin. Veya genel süreçler hakkında Yapay Zeka'ya danışın.
                 </p>
                 <button
                   onClick={() => {
-                    setSelectedFileForAI({ konu: 'Genel Mevzuat Danışmanlığı', yaklasik_maliyet: 0, temin_no: 'Belirtilmemiş' })
+                    setSelectedFileForAI({
+                      konu: 'Genel Mevzuat Danışmanlığı',
+                      yaklasik_maliyet: 0,
+                      temin_no: 'Belirtilmemiş'
+                    })
                     setShowAIModal(true)
                   }}
                   className="px-6 py-3 bg-linear-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-violet-500/20 flex items-center gap-2 cursor-pointer"
@@ -502,9 +613,17 @@ export default function DosyalarScreen(): React.ReactNode {
                 <div className="p-5 border-b border-slate-100 dark:border-slate-800 bg-gradient-to-b from-blue-50/50 to-transparent dark:from-blue-950/20">
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <span className="text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">
-                      AKTİF İHALE DOSYASI
+                      {selectedDosya.is_deleted === 1
+                        ? 'SİLİNMİŞ DOSYA'
+                        : selectedDosya.status === 'tamamlandi'
+                          ? 'TAMAMLANMIŞ DOSYA'
+                          : 'AKTİF İHALE DOSYASI'}
                     </span>
-                    <DurumBadge durumAsamaId={selectedDosya.durum_asama_id} />
+                    <DurumBadge
+                      durumAsamaId={selectedDosya.durum_asama_id}
+                      isDeleted={selectedDosya.is_deleted}
+                      status={selectedDosya.status}
+                    />
                   </div>
                   <h2
                     className="text-sm font-bold text-slate-850 dark:text-white leading-snug line-clamp-3"
@@ -526,12 +645,13 @@ export default function DosyalarScreen(): React.ReactNode {
 
                 {/* Detay İçeriği */}
                 <div className="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-4">
-
                   {/* Birim */}
                   <div className="flex items-center gap-2 p-2.5 bg-blue-50/60 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 rounded-xl">
                     <Building2 size={14} className="text-blue-500 shrink-0" />
                     <div className="min-w-0">
-                      <p className="text-[9px] text-blue-400 font-semibold uppercase tracking-wide">Birim / Müdürlük</p>
+                      <p className="text-[9px] text-blue-400 font-semibold uppercase tracking-wide">
+                        Birim / Müdürlük
+                      </p>
                       <p className="text-[11px] font-bold text-blue-700 dark:text-blue-300 truncate">
                         {selectedDosya.birim_adi || 'Birim Seçilmemiş'}
                       </p>
@@ -540,17 +660,31 @@ export default function DosyalarScreen(): React.ReactNode {
 
                   {/* Tür + Madde */}
                   <div className="grid grid-cols-2 gap-2">
-                    <DetailField icon={<FileText size={11} />} label="Tür" value={
-                      selectedDosya.tur === 'mal' ? 'Mal Alımı' :
-                      selectedDosya.tur === 'hizmet' ? 'Hizmet Alımı' :
-                      selectedDosya.tur === 'yapim_isi' ? 'Yapım İşi' : 'Danışmanlık'
-                    } />
-                    <DetailField icon={<BookOpen size={11} />} label="DT Maddesi" value={selectedDosya.ihale_sekli || '-'} />
+                    <DetailField
+                      icon={<FileText size={11} />}
+                      label="Tür"
+                      value={
+                        selectedDosya.tur === 'mal'
+                          ? 'Mal Alımı'
+                          : selectedDosya.tur === 'hizmet'
+                            ? 'Hizmet Alımı'
+                            : selectedDosya.tur === 'yapim_isi'
+                              ? 'Yapım İşi'
+                              : 'Danışmanlık'
+                      }
+                    />
+                    <DetailField
+                      icon={<BookOpen size={11} />}
+                      label="DT Maddesi"
+                      value={selectedDosya.ihale_sekli || '-'}
+                    />
                   </div>
 
                   {/* Maliyet */}
                   <div className="p-3 bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 rounded-xl">
-                    <p className="text-[9px] text-emerald-500 font-semibold uppercase tracking-wide mb-0.5">Yaklaşık Maliyet</p>
+                    <p className="text-[9px] text-emerald-500 font-semibold uppercase tracking-wide mb-0.5">
+                      Yaklaşık Maliyet
+                    </p>
                     <p className="text-xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
                       ₺ {formatMoney(selectedDosya.yaklasik_maliyet || 0)}
                     </p>
@@ -563,10 +697,15 @@ export default function DosyalarScreen(): React.ReactNode {
 
                   {/* Bütçe Bilgileri */}
                   <div className="space-y-1.5">
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Bütçe & Muhasebe</p>
+                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+                      Bütçe & Muhasebe
+                    </p>
                     <div className="space-y-1">
                       <DetailRow label="Bütçe Tipi" value={selectedDosya.butce_tipi || '-'} />
-                      <DetailRow label="Bütçe Yılı" value={selectedDosya.butce_yili?.toString() || '-'} />
+                      <DetailRow
+                        label="Bütçe Yılı"
+                        value={selectedDosya.butce_yili?.toString() || '-'}
+                      />
                       {selectedDosya.butce_kodu && (
                         <DetailRow label="Bütçe Kodu" value={selectedDosya.butce_kodu} mono />
                       )}
@@ -581,22 +720,36 @@ export default function DosyalarScreen(): React.ReactNode {
 
                   {/* İhale Bilgileri */}
                   <div className="space-y-1.5">
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">İhale & Sözleşme</p>
+                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+                      İhale & Sözleşme
+                    </p>
                     <div className="space-y-1">
-                      <DetailRow label="Sözleşme Türü" value={selectedDosya.teklif_sozlesme_turu || '-'} />
+                      <DetailRow
+                        label="Sözleşme Türü"
+                        value={selectedDosya.teklif_sozlesme_turu || '-'}
+                      />
                       {selectedDosya.talep_sayisi && (
                         <DetailRow label="Talep Sayısı" value={selectedDosya.talep_sayisi} />
                       )}
                       {selectedDosya.talep_tarihi && (
-                        <DetailRow label="Talep Tarihi" value={formatDate(selectedDosya.talep_tarihi)} />
+                        <DetailRow
+                          label="Talep Tarihi"
+                          value={formatDate(selectedDosya.talep_tarihi)}
+                        />
                       )}
                       {selectedDosya.son_teklif_verme_tarihi && (
-                        <DetailRow label="Son Teklif Tarihi" value={
-                          new Date(selectedDosya.son_teklif_verme_tarihi).toLocaleString('tr-TR')
-                        } />
+                        <DetailRow
+                          label="Son Teklif Tarihi"
+                          value={new Date(selectedDosya.son_teklif_verme_tarihi).toLocaleString(
+                            'tr-TR'
+                          )}
+                        />
                       )}
                       {selectedDosya.teslim_tarihi && (
-                        <DetailRow label="Teslim Tarihi" value={formatDate(selectedDosya.teslim_tarihi)} />
+                        <DetailRow
+                          label="Teslim Tarihi"
+                          value={formatDate(selectedDosya.teslim_tarihi)}
+                        />
                       )}
                     </div>
                   </div>
@@ -604,7 +757,9 @@ export default function DosyalarScreen(): React.ReactNode {
                   {/* İşin Tanımı */}
                   {selectedDosya.isin_aciklamasi && (
                     <div className="p-3 bg-slate-50 dark:bg-slate-950/40 border border-slate-150 dark:border-slate-850 rounded-xl">
-                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">İşin Tanımı / Kapsamı</p>
+                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                        İşin Tanımı / Kapsamı
+                      </p>
                       <p className="text-[10px] text-slate-600 dark:text-slate-350 leading-relaxed line-clamp-4">
                         {selectedDosya.isin_aciklamasi}
                       </p>
@@ -627,20 +782,55 @@ export default function DosyalarScreen(): React.ReactNode {
                 {/* Aksiyon Butonları */}
                 <div className="p-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
                   <div className="grid grid-cols-2 gap-2">
-                    <button
-                      onClick={() => navigate({ to: `/dosyalar/yeni?id=${selectedDosya.id}` })}
-                      className="px-4 py-2.5 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                    >
-                      <Edit size={14} />
-                      Düzenle
-                    </button>
-                    <button
-                      onClick={() => handleDelete(selectedDosya.id)}
-                      className="px-4 py-2.5 border border-red-200 dark:border-red-950/20 hover:bg-red-50 dark:hover:bg-red-955/10 text-red-600 dark:text-red-400 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                    >
-                      <Trash2 size={14} />
-                      Sil
-                    </button>
+                    {selectedDosya.is_deleted !== 1 && (
+                      <button
+                        onClick={() => navigate({ to: `/dosyalar/yeni?id=${selectedDosya.id}` })}
+                        className="px-4 py-2.5 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        <Edit size={14} />
+                        Düzenle
+                      </button>
+                    )}
+                    {selectedDosya.is_deleted !== 1 && (
+                      <button
+                        onClick={() => handleDelete(selectedDosya.id)}
+                        className="px-4 py-2.5 border border-red-200 dark:border-red-950/20 hover:bg-red-50 dark:hover:bg-red-955/10 text-red-600 dark:text-red-400 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        <Trash2 size={14} />
+                        Sil
+                      </button>
+                    )}
+                    {selectedDosya.is_deleted !== 1 && selectedDosya.status !== 'tamamlandi' && (
+                      <button
+                        onClick={() => handleUpdateStatus(selectedDosya.id, 'tamamlandi')}
+                        className="col-span-2 px-4 py-2.5 border border-purple-200 dark:border-purple-950/20 hover:bg-purple-50 dark:hover:bg-purple-955/10 text-purple-600 dark:text-purple-400 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        <CheckCircle2 size={14} />
+                        Tamamlandı İşaretle
+                      </button>
+                    )}
+                    {selectedDosya.is_deleted !== 1 && selectedDosya.status === 'tamamlandi' && (
+                      <button
+                        onClick={() => handleUpdateStatus(selectedDosya.id, 'devam_ediyor')}
+                        className="col-span-2 px-4 py-2.5 border border-emerald-200 dark:border-emerald-950/20 hover:bg-emerald-50 dark:hover:bg-emerald-955/10 text-emerald-600 dark:text-emerald-400 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        <Clock size={14} />
+                        Aktife Al
+                      </button>
+                    )}
+                    {selectedDosya.is_deleted === 1 && (
+                      <button
+                        onClick={() =>
+                          handleUpdateStatus(selectedDosya.id, 'devam_ediyor').then(() =>
+                            updateDosya({ id: selectedDosya.id, is_deleted: 0 })
+                          )
+                        }
+                        className="col-span-2 px-4 py-2.5 border border-emerald-200 dark:border-emerald-950/20 hover:bg-emerald-50 dark:hover:bg-emerald-955/10 text-emerald-600 dark:text-emerald-400 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        <Edit size={14} />
+                        Silinmişi Geri Al
+                      </button>
+                    )}
                   </div>
 
                   {!isWindowMode && (
@@ -652,7 +842,7 @@ export default function DosyalarScreen(): React.ReactNode {
                       Yeni Pencerede Aç
                     </button>
                   )}
-                  
+
                   {/* YAPAY ZEKA ASİSTANI BUTONU */}
                   <button
                     onClick={() => handleOpenAI(selectedDosya)}
@@ -675,7 +865,7 @@ export default function DosyalarScreen(): React.ReactNode {
           fieldName="Mevzuat Analizi"
           title="Yapay Zeka Asistanı"
           initialPrompt={
-            selectedFileForAI.konu === 'Genel Mevzuat Danışmanlığı' 
+            selectedFileForAI.konu === 'Genel Mevzuat Danışmanlığı'
               ? `Doğrudan temin, kamu ihale kanunu veya belediye satın alma süreçleri (4734 sayılı kanun vb.) hakkında sana genel bir mevzuat veya idari işleyiş sorusu soracağım. Lütfen profesyonel bir asistan gibi yanıtla.\n\nSorum: `
               : `Sistemde kayıtlı olan aşağıdaki doğrudan temin (ihale) dosyasını incele ve bana bir sonraki yasal/idari aşamalar hakkında mevzuata uygun bir tavsiye ya da dosya özeti sun:\n\nDosya No: ${selectedFileForAI.temin_no || 'Belirtilmemiş'}\nKonu: ${selectedFileForAI.konu}\nMaliyet: ${selectedFileForAI.yaklasik_maliyet} TL\nMadde: ${selectedFileForAI.ihale_sekli || 'Belirtilmemiş'}`
           }
@@ -696,7 +886,15 @@ export default function DosyalarScreen(): React.ReactNode {
 }
 
 /* ---- Yardımcı bileşenler ---- */
-function DetailField({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function DetailField({
+  icon,
+  label,
+  value
+}: {
+  icon: React.ReactNode
+  label: string
+  value: string
+}) {
   return (
     <div className="p-2 bg-slate-50 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800 rounded-xl">
       <div className="flex items-center gap-1 text-slate-400 mb-0.5">
@@ -711,8 +909,15 @@ function DetailField({ icon, label, value }: { icon: React.ReactNode; label: str
 function DetailRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
     <div className="flex justify-between items-center py-1 border-b border-slate-50 dark:border-slate-850/80 last:border-0">
-      <span className="text-[10px] text-slate-500 dark:text-slate-450 font-medium shrink-0 mr-2">{label}:</span>
-      <span className={cn('text-[10px] font-bold text-slate-700 dark:text-slate-300 text-right truncate max-w-[180px]', mono && 'font-mono')}>
+      <span className="text-[10px] text-slate-500 dark:text-slate-450 font-medium shrink-0 mr-2">
+        {label}:
+      </span>
+      <span
+        className={cn(
+          'text-[10px] font-bold text-slate-700 dark:text-slate-300 text-right truncate max-w-[180px]',
+          mono && 'font-mono'
+        )}
+      >
         {value}
       </span>
     </div>
