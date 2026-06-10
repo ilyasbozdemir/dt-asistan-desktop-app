@@ -402,10 +402,14 @@ if (!gotTheLock) {
       }
     })
 
-    ipcMain.handle('export-html', async (_, htmlContent: string) => {
+    ipcMain.handle('export-html', async (_, htmlContent: string, options?: { paperSize?: string }) => {
       try {
+        const paperSize = options?.paperSize || 'A4'
+        const isA4 = paperSize === 'A4'
+        const width = isA4 ? '210mm' : 'auto'
+
         const { canceled, filePath } = await dialog.showSaveDialog({
-          title: 'A4 HTML Olarak Kaydet',
+          title: 'HTML Olarak Kaydet',
           defaultPath: 'Cikti.html',
           filters: [{ name: 'HTML Dosyası', extensions: ['html'] }]
         })
@@ -415,11 +419,11 @@ if (!gotTheLock) {
 <html>
 <head>
   <meta charset="utf-8">
-  <title>A4 Belge</title>
+  <title>Belge</title>
   <style>
-    @page { size: A4; margin: 20mm; }
+    @page { size: ${paperSize}; margin: 20mm; }
     body { 
-      width: 210mm; 
+      width: ${width}; 
       margin: 0 auto; 
       font-family: 'Times New Roman', Times, serif; 
       font-size: 12pt;

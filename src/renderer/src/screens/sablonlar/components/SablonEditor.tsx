@@ -15,8 +15,8 @@ import {
   Eye
 } from 'lucide-react'
 import { Button } from '../../../components/ui/Button'
-import { Sablon, useSaveSablon, usePlaceholders } from '../sablonlar.hooks'
-import { A4Editor } from '../../../../components/editor/A4Editor'
+import { useSaveSablon, usePlaceholders } from '../sablonlar.hooks'
+import { A4Editor } from '../../../components/editor/A4Editor'
 
 const ResizeHandle = () => (
   <PanelResizeHandle className="w-2 flex items-center justify-center bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-700/50 transition-colors cursor-col-resize group">
@@ -81,9 +81,9 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
   const handleExportHtml = async () => {
     try {
       const finalHtml = Mustache.render(htmlCode, parsedData)
-      const res = await window.electron.ipcRenderer.invoke('export-html', finalHtml)
+      const res = await window.electron.ipcRenderer.invoke('export-html', finalHtml, { paperSize: 'A4' })
       if (res.success) {
-        alert('Şablon başarıyla A4 HTML olarak dışa aktarıldı.')
+        alert('Şablon başarıyla HTML olarak dışa aktarıldı.')
       } else if (res.error !== 'İptal edildi') {
         alert('Dışa aktarma hatası: ' + res.error)
       }
@@ -167,7 +167,7 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
           </Button>
           <Button onClick={handleExportHtml} className="bg-blue-600 hover:bg-blue-700 text-xs font-semibold py-2 px-4 shadow-md flex items-center gap-2 text-white">
             <Download className="w-3.5 h-3.5" />
-            HTML İndir (A4)
+            HTML İndir
           </Button>
           <Button onClick={handleSave} disabled={saveSablon.isPending} className="bg-purple-600 hover:bg-purple-700 text-xs font-semibold py-2 px-4 shadow-md flex items-center gap-2 text-white ml-2">
             <Save className="w-3.5 h-3.5" />
@@ -262,7 +262,7 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
               <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-900/50">
                 <div className="px-4 py-2 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center gap-2">
                   <FileText className="w-4 h-4 text-slate-500" />
-                  <h2 className="text-xs font-bold text-slate-700 dark:text-slate-300">İndirilecek A4 Çıktısı Önizleme</h2>
+                  <h2 className="text-xs font-bold text-slate-700 dark:text-slate-300">İndirilecek Çıktı Önizleme (Varsayılan: A4)</h2>
                 </div>
                 <div className="flex-1 overflow-auto bg-slate-200 dark:bg-slate-800 p-8 flex justify-center custom-scrollbar">
                   <div className="w-[210mm] min-h-[297mm] bg-white shadow-lg border border-slate-300 relative">
