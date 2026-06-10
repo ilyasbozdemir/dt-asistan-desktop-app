@@ -254,6 +254,7 @@ export function MevzuatScreen(): React.JSX.Element {
   const [ffGuncelEndeks, setFfGuncelEndeks] = useState<string>('1302')
   const [ffEndeksModu, setFfEndeksModu] = useState<boolean>(false)
   const [ffAlimTuru, setFfAlimTuru] = useState<'mal' | 'hizmet'>('mal')
+  const ffKdvOrani = 0.20
 
   const loadFfSample = (type: 'mal' | 'hizmet'): void => {
     if (type === 'mal') {
