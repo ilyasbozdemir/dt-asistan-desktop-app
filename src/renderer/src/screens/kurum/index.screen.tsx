@@ -20,7 +20,6 @@ export default function KurumScreen(): React.JSX.Element {
   const [saving, setSaving] = useState(false)
 
   // Tab 1: İdari Bilgiler
-  const [institutionCode, setInstitutionCode] = useState('')
   const [kurumAdi, setKurumAdi] = useState('')
   const [institutionLetterhead, setInstitutionLetterhead] = useState<string[]>([''])
   const [recipientTitle, setRecipientTitle] = useState('')
@@ -90,7 +89,6 @@ export default function KurumScreen(): React.JSX.Element {
   useEffect(() => {
     if (settings) {
       setTimeout(() => {
-        setInstitutionCode(settings.institutionCode || '')
         setKurumAdi(settings.institutionName || '')
         let parsedLetterhead = ['']
         if (settings.institutionLetterhead) {
@@ -142,9 +140,8 @@ export default function KurumScreen(): React.JSX.Element {
       const dataToSave: Record<string, string> = {}
 
       if (tab === 'idari') {
-        dataToSave.institutionCode = institutionCode
         dataToSave.institutionName = kurumAdi
-        dataToSave.institutionLetterhead = JSON.stringify(institutionLetterhead.filter(Boolean))
+        dataToSave.institutionLetterhead = JSON.stringify(institutionLetterhead.filter(l => l.trim() !== ''))
         dataToSave.recipientTitle = recipientTitle
         dataToSave.parentInstitution = parentInstitution
         dataToSave.logoLeft = logoLeft
@@ -241,17 +238,6 @@ export default function KurumScreen(): React.JSX.Element {
                       </p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
-                          Kurum Kodu (Dahili vb.)
-                        </label>
-                        <Input
-                          value={institutionCode}
-                          onChange={(e) => setInstitutionCode(e.target.value)}
-                          placeholder="Kurum Kodunu Girin"
-                          className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-xs"
-                        />
-                      </div>
                       <div>
                         <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
                           Kurum Adı
@@ -446,6 +432,38 @@ export default function KurumScreen(): React.JSX.Element {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
+
+                          {/* Yeni Kurumsal Kod Öneki */}
+                          <div>
+                            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+                              Kurumsal Kod Öneki (e-Bütçe)
+                            </label>
+                            <Input
+                              value={kurumsalKod}
+                              onChange={(e) => setKurumsalKod(e.target.value)}
+                              placeholder="Örn: 46.70.97"
+                              className="w-full bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-xs"
+                            />
+                            <p className="text-[10px] text-slate-400 mt-1 leading-normal">
+                              Birim yönetiminde alt birim kodlarının başına eklenecek ana kurum kodu öneki.
+                            </p>
+                          </div>
+
+                          {/* Eski Kurumsal Kod Öneki */}
+                          <div>
+                            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+                              Eski Kurumsal Kod Öneki (Say2000i)
+                            </label>
+                            <Input
+                              value={eskiKurumsalKod}
+                              onChange={(e) => setEskiKurumsalKod(e.target.value)}
+                              placeholder="Örn: 70XXX"
+                              className="w-full bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-xs"
+                            />
+                            <p className="text-[10px] text-slate-400 mt-1 leading-normal">
+                              Birim yönetiminde alt birim kodlarının başına eklenecek Say2000i (eski sistem) öneki.
+                            </p>
+                          </div>
 
                           {/* Fonksiyonel Kod */}
                           <div>

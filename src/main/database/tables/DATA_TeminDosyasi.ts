@@ -17,7 +17,8 @@ export const DATA_TeminDosyasi = {
     { name: 'ihtiyac_yeri', type: 'TEXT' },
 
     // Mali Kodlar
-    { name: 'kurumsal_kod', type: 'TEXT' },
+    { name: 'e_butce', type: 'TEXT' },
+    { name: 'say2000i', type: 'TEXT' },
     { name: 'fonksiyonel_kod', type: 'TEXT' },
     { name: 'muhasebe_birimi', type: 'TEXT' },
     { name: 'harcama_birimi', type: 'TEXT' },

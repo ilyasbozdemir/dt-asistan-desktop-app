@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useBirimlerHooks, BirimInput, usePersonelList } from './birimler.hooks'
+import { useAyarlarHooks } from '../ayarlar/ayarlar.hooks'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { LayoutGrid, Plus, Trash2, Edit2, ChevronDown, ChevronUp, Building2, Hash, Users, MapPin, Type, AlignLeft, User, PhoneCall, Building } from 'lucide-react'
@@ -8,7 +9,7 @@ import { Modal } from '../../components/ui/Modal'
 
 const emptyBirim: BirimInput = {
   birim_adi: '', antet_ek_satir: '', ihtiyac_yeri_eki: '',
-  sunum_makami: '', kurumsal_kod: '', ayrintili_bilgi_personel: '', ilgili_personel_id: null
+  sunum_makami: '', e_butce: '', say2000i: '', ayrintili_bilgi_personel: '', ilgili_personel_id: null
 }
 
 const Field = ({ label, field, form, handleChange, required, placeholder }: { label: string; field: keyof BirimInput; form: BirimInput; handleChange: (field: keyof BirimInput, value: string) => void; required?: boolean; placeholder?: string }) => (
@@ -29,6 +30,7 @@ const Field = ({ label, field, form, handleChange, required, placeholder }: { la
 export default function BirimlerScreen(): React.ReactNode {
   const { birimler, isLoadingBirimler, addBirim, updateBirim, deleteBirim } = useBirimlerHooks()
   const { personeller, isLoading: isLoadingPersonel } = usePersonelList()
+  const { settings } = useAyarlarHooks()
   const [form, setForm] = useState<BirimInput>({ ...emptyBirim })
   const [showExtraFields, setShowExtraFields] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -41,11 +43,22 @@ export default function BirimlerScreen(): React.ReactNode {
   const handleSaveBirim = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
     if (!form.birim_adi.trim()) return
+    
     try {
+      const dataToSave = { ...form }
+      
+      // If the user hasn't typed the full code and a prefix exists, append the prefix!
+      if (settings?.institutionCode && form.e_butce && !form.e_butce.startsWith(settings.institutionCode)) {
+        dataToSave.e_butce = `${settings.institutionCode}.${form.e_butce}`
+      }
+      if (settings?.eskiKurumsalKod && form.say2000i && !form.say2000i.startsWith(settings.eskiKurumsalKod)) {
+        dataToSave.say2000i = `${settings.eskiKurumsalKod}${form.say2000i}`
+      }
+
       if (editingBirimId) {
-        await updateBirim({ id: editingBirimId, data: form })
+        await updateBirim({ id: editingBirimId, data: dataToSave })
       } else {
-        await addBirim(form)
+        await addBirim(dataToSave)
       }
       setForm({ ...emptyBirim })
       setShowExtraFields(false)
@@ -67,7 +80,8 @@ export default function BirimlerScreen(): React.ReactNode {
       antet_ek_satir: birim.antet_ek_satir || '',
       ihtiyac_yeri_eki: birim.ihtiyac_yeri_eki || '',
       sunum_makami: birim.sunum_makami || '',
-      kurumsal_kod: birim.kurumsal_kod || '',
+      e_butce: birim.e_butce || '',
+      say2000i: birim.say2000i || '',
       ayrintili_bilgi_personel: birim.ayrintili_bilgi_personel || '',
       ilgili_personel_id: birim.ilgili_personel_id || null
     })
@@ -159,10 +173,16 @@ export default function BirimlerScreen(): React.ReactNode {
                         {birim.birim_adi}
                       </h3>
                       <div className="flex flex-wrap items-center gap-2">
-                        {birim.kurumsal_kod && (
-                          <span className="inline-flex items-center gap-1 font-mono text-[10px] font-semibold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md border border-slate-200 dark:border-slate-700">
+                        {birim.e_butce && (
+                          <span className="inline-flex items-center gap-1 font-mono text-[10px] font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-1.5 py-0.5 rounded-md border border-blue-200 dark:border-blue-800/50" title="Yeni Kurumsal Kod (e-Bütçe)">
                             <Hash className="w-3 h-3" />
-                            {birim.kurumsal_kod}
+                            {birim.e_butce}
+                          </span>
+                        )}
+                        {birim.say2000i && (
+                          <span className="inline-flex items-center gap-1 font-mono text-[10px] font-semibold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md border border-slate-200 dark:border-slate-700" title="Eski Kurumsal Kod (Say2000i)">
+                            <Hash className="w-3 h-3" />
+                            {birim.say2000i}
                           </span>
                         )}
                         {birim.personel_sayisi !== undefined && birim.personel_sayisi > 0 && (
@@ -248,6 +268,47 @@ export default function BirimlerScreen(): React.ReactNode {
 
           {showExtraFields && (
             <div className="space-y-4 pt-2 border-t border-slate-100 dark:border-slate-800 animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+                    Kurumsal Kod (e-Bütçe)
+                  </label>
+                  <div className="flex">
+                    {settings?.institutionCode && (
+                      <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 text-slate-500 text-xs font-mono">
+                        {settings.institutionCode}.
+                      </span>
+                    )}
+                    <input
+                      type="text"
+                      value={form.e_butce as string || ''}
+                      onChange={(e) => handleChange('e_butce', e.target.value)}
+                      placeholder="Birim Kodu (Örn: 03)"
+                      className={`flex-1 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs py-1.5 h-9 px-3 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 ${settings?.institutionCode ? 'rounded-r-xl' : 'rounded-xl'}`}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+                    Eski Kurumsal Kod (Say2000i)
+                  </label>
+                  <div className="flex">
+                    {settings?.eskiKurumsalKod && (
+                      <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 text-slate-500 text-xs font-mono">
+                        {settings.eskiKurumsalKod}
+                      </span>
+                    )}
+                    <input
+                      type="text"
+                      value={form.say2000i as string || ''}
+                      onChange={(e) => handleChange('say2000i', e.target.value)}
+                      placeholder="Birim Kodu (Örn: 01)"
+                      className={`flex-1 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs py-1.5 h-9 px-3 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 ${settings?.eskiKurumsalKod ? 'rounded-r-xl' : 'rounded-xl'}`}
+                    />
+                  </div>
+                </div>
+              </div>
+              
               <Field label="Antet Ek Satır" field="antet_ek_satir" form={form} handleChange={handleChange} placeholder="Antet yazısında ek satır" />
               <Field label="İhtiyaç Yeri Eki" field="ihtiyac_yeri_eki" form={form} handleChange={handleChange} placeholder="İhtiyaç yeri ek bilgisi" />
               <Field label="Sunum Makamı" field="sunum_makami" form={form} handleChange={handleChange} placeholder="Sunulacak makam" />

@@ -14,7 +14,7 @@ export interface TeminDosyasi {
   sunulacak_makam: string | null
   ihtiyac_yeri: string | null
 
-  kurumsal_kod: string | null
+  e_butce: string | null
   fonksiyonel_kod: string | null
   muhasebe_birimi: string | null
   harcama_birimi: string | null

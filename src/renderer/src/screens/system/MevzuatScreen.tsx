@@ -195,7 +195,7 @@ function CodeListEditor({
 
 import { InnerMenu, InnerMenuItem } from '../../components/ui/InnerMenu'
 import { EKONOMIK_KODLAR, FONKSIYONEL_KODLAR, FINANSMAN_KODLARI, GELIR_KODLARI } from '../../constants/butce-kodlari'
-import { Modal } from '../../components/ui/Modal'
+
 import { useBirimlerHooks } from '../birimler/birimler.hooks'
 import {
   MADDE_22_BENTLERI,
@@ -241,7 +241,7 @@ export function MevzuatScreen(): React.JSX.Element {
   >('limitler')
   const [subTab, setSubTab] = useState<'madde22' | 'madde3'>('madde22')
   const [isSaving, setIsSaving] = useState(false)
-  const [isLoadingCodes, setIsLoadingCodes] = useState(false)
+
   const { birimler } = useBirimlerHooks()
   const [isConfirmed, setIsConfirmed] = useState(false)
   const [butceSearch, setButceSearch] = useState('')
@@ -254,7 +254,6 @@ export function MevzuatScreen(): React.JSX.Element {
   const [ffGuncelEndeks, setFfGuncelEndeks] = useState<string>('1302')
   const [ffEndeksModu, setFfEndeksModu] = useState<boolean>(false)
   const [ffAlimTuru, setFfAlimTuru] = useState<'mal' | 'hizmet'>('mal')
-  const [ffKdvOrani, setFfKdvOrani] = useState<number>(0.20)
 
   const loadFfSample = (type: 'mal' | 'hizmet'): void => {
     if (type === 'mal') {
@@ -284,6 +283,7 @@ export function MevzuatScreen(): React.JSX.Element {
   const [limitType, setLimitType] = useState('diger')
 
   const [kurumsalCodes, setKurumsalCodes] = useState<CodeItem[]>([])
+  const [localBirimCodes, setLocalBirimCodes] = useState<{id: number, e_butce: string, say2000i: string}[]>([])
   const [fonksiyonelCodes, setFonksiyonelCodes] = useState<CodeItem[]>([])
   const [muhasebeBirimleri, setMuhasebeBirimleri] = useState<CodeItem[]>([])
   const [harcamaBirimleri, setHarcamaBirimleri] = useState<CodeItem[]>([])
@@ -398,11 +398,17 @@ export function MevzuatScreen(): React.JSX.Element {
   useEffect(() => {
     queueMicrotask(() => {
       if (birimler && birimler.length > 0) {
+        setLocalBirimCodes(birimler.map(b => ({
+          id: b.id,
+          e_butce: b.e_butce || '',
+          say2000i: b.say2000i || ''
+        })))
         setKurumsalCodes(birimler.map(b => ({
-          code: b.kurumsal_kod || '',
+          code: b.e_butce || '',
           description: b.birim_adi
         })))
       } else {
+        setLocalBirimCodes([])
         setKurumsalCodes([])
       }
     })
@@ -451,12 +457,11 @@ export function MevzuatScreen(): React.JSX.Element {
         ...harcamaBirimleri.map(c => ({ sql: 'INSERT INTO TANIM_KodSozlugu (tur, kod, aciklama) VALUES (?, ?, ?)', params: ['harcama_birimi', c.code, c.description] }))
       ]
       
-      // Update TANIM_Birim kurumsal_kod based on Kurumsal Kodlar
       const updateBirimQueries = [
-        { sql: 'UPDATE TANIM_Birim SET kurumsal_kod = NULL', params: [] },
-        ...kurumsalCodes.map(c => ({
-          sql: 'UPDATE TANIM_Birim SET kurumsal_kod = ? WHERE birim_adi = ?',
-          params: [c.code, c.description]
+        { sql: 'UPDATE TANIM_Birim SET e_butce = NULL, say2000i = NULL', params: [] },
+        ...localBirimCodes.map(lb => ({
+          sql: 'UPDATE TANIM_Birim SET e_butce = ?, say2000i = ? WHERE id = ?',
+          params: [lb.e_butce, lb.say2000i, lb.id]
         }))
       ]
       
@@ -859,33 +864,42 @@ export function MevzuatScreen(): React.JSX.Element {
                           </div>
                         ) : (
                           birimler.map((birim, index) => {
-                            const codeItem = kurumsalCodes.find(c => c.description === birim.birim_adi)
-                            const currentCode = codeItem ? codeItem.code : (birim.kurumsal_kod || '')
+                            const lbCode = localBirimCodes.find(lb => lb.id === birim.id)
+                            const currentKurumsal = lbCode ? lbCode.e_butce : (birim.e_butce || '')
+                            const currentEski = lbCode ? lbCode.say2000i : (birim.say2000i || '')
                             
                             return (
-                              <div key={birim.id || index} className="flex items-center gap-3 p-2 bg-white dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
-                                <div className="flex-1">
+                              <div key={birim.id || index} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3 bg-white dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
+                                <div className="flex-1 w-full">
                                   <div className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                                     {birim.birim_adi}
                                   </div>
                                 </div>
-                                <div className="w-48 shrink-0">
-                                  <Input
-                                    value={currentCode}
-                                    onChange={(e) => {
-                                      const newCode = e.target.value
-                                      setKurumsalCodes(prev => {
-                                        const exists = prev.find(p => p.description === birim.birim_adi)
-                                        if (exists) {
-                                          return prev.map(p => p.description === birim.birim_adi ? { ...p, code: newCode } : p)
-                                        } else {
-                                          return [...prev, { code: newCode, description: birim.birim_adi }]
-                                        }
-                                      })
-                                    }}
-                                    placeholder="Kurumsal Kod (Örn: 30.11.01.22)"
-                                    className="h-8 text-xs bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 w-full"
-                                  />
+                                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto shrink-0">
+                                  <div className="w-full sm:w-48">
+                                    <label className="text-[10px] text-slate-500 font-semibold mb-1 block">Yeni Kurumsal Kod (e-Bütçe)</label>
+                                    <Input
+                                      value={currentKurumsal}
+                                      onChange={(e) => {
+                                        const newCode = e.target.value
+                                        setLocalBirimCodes(prev => prev.map(p => p.id === birim.id ? { ...p, e_butce: newCode } : p))
+                                      }}
+                                      placeholder="Örn: 46.70.97.03"
+                                      className="h-8 text-xs bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 w-full"
+                                    />
+                                  </div>
+                                  <div className="w-full sm:w-48">
+                                    <label className="text-[10px] text-slate-500 font-semibold mb-1 block">Eski Kurumsal Kod (Say2000i)</label>
+                                    <Input
+                                      value={currentEski}
+                                      onChange={(e) => {
+                                        const newCode = e.target.value
+                                        setLocalBirimCodes(prev => prev.map(p => p.id === birim.id ? { ...p, say2000i: newCode } : p))
+                                      }}
+                                      placeholder="Örn: 70XXX01"
+                                      className="h-8 text-xs bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 w-full"
+                                    />
+                                  </div>
                                 </div>
                               </div>
                             )

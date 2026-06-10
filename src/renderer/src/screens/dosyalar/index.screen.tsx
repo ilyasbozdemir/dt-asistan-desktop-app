@@ -760,8 +760,8 @@ export default function DosyalarScreen(): React.ReactNode {
                       {selectedDosya.ekonomik_kod && (
                         <DetailRow label="Ekonomik Kod" value={selectedDosya.ekonomik_kod} mono />
                       )}
-                      {selectedDosya.kurumsal_kod && (
-                        <DetailRow label="Kurumsal Kod" value={selectedDosya.kurumsal_kod} mono />
+                      {selectedDosya.e_butce && (
+                        <DetailRow label="Kurumsal Kod" value={selectedDosya.e_butce} mono />
                       )}
                     </div>
                   </div>

@@ -10,10 +10,10 @@ export const BUTCE_KODU_REHBERI: ButceKoduRehberItem[] = [
   {
     id: "kurumsal",
     baslik: "Kurumsal Kod (Kurum ve Birim Bilgisi)",
-    aciklama: "Harcamayı yapan idari birimi gösterir. Genellikle 4 düzeyden oluşur (Örn: 30.11.01.22).",
+    aciklama: "Harcamayı yapan idari birimi gösterir. Genellikle 4 düzeyden oluşur (Örn: 46.00.00.01).",
     maddeler: [
       "Düzey 1: Kurum Tipi (Örn: 30 - Mahalli İdareler)",
-      "Düzey 2: İl/Bölge (Örn: 11 - Bilecik)",
+      "Düzey 2: İl/Bölge (Örn: XX - X İli)",
       "Düzey 3: İlçe/Kurum (Örn: 01 - Merkez)",
       "Düzey 4: Harcama Birimi / Müdürlük (Örn: 22 - Mali Hizmetler Müdürlüğü)"
     ],
@@ -70,5 +70,5 @@ export const BUTCE_KODU_REHBERI: ButceKoduRehberItem[] = [
 export const BUTCE_KODU_GENEL_BILGI = `Uygulama, evrak (ÖEB, Onay Belgesi) üretirken;
 Kurumsal Kod, Fonksiyonel Kod, Finansman Kodu ve Ekonomik Kodu yan yana getirerek tam bütçe kodunu (Tertip) oluşturur.
 
-Örnek Tam Bütçe Tertibi: 30.11.01.22 - 01.1.2.00 - 5 - 03.2.1.01
-(Bilecik Merkez Mali Hizmetler Müdürlüğü - Finansal Hizmetler - Mahalli İdare Bütçesi - Kırtasiye Alımı)`;
+Örnek Tam Bütçe Tertibi: 46.00.00.01 - 01.1.2.00 - 5 - 03.2.1.01
+(X Belediyesi Mali Hizmetler Müdürlüğü - Finansal Hizmetler - Mahalli İdare Bütçesi - Kırtasiye Alımı)`;

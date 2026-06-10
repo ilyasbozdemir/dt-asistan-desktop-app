@@ -15,7 +15,7 @@ export const TANIM_KodSozlugu = {
   ],
   initialData: [
     // Varsayılan Kurumsal Kodlar
-    { tur: 'kurumsal', kod: '30.11.01.22', aciklama: 'Mali Hizmetler Müdürlüğü', aktif_mi: 1 },
+    { tur: 'kurumsal', kod: '46.00.00.01', aciklama: 'Mali Hizmetler Müdürlüğü', aktif_mi: 1 },
     { tur: 'kurumsal', kod: '30.11.01.23', aciklama: 'Destek Hizmetleri Müdürlüğü', aktif_mi: 1 },
     
     // Varsayılan Fonksiyonel Kodlar

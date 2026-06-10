@@ -28,7 +28,7 @@ interface DBBirim {
   antet_ek_satir?: string
   sunum_makami?: string
   ihtiyac_yeri_eki?: string
-  kurumsal_kod?: string
+  e_butce?: string
 }
 
 interface DBPersonel {
@@ -85,7 +85,7 @@ export default function YeniDosyaScreen(): React.JSX.Element {
     antet_ek_satir: '',
     sunulacak_makam: '',
     ihtiyac_yeri: '',
-    kurumsal_kod: '',
+    e_butce: '',
     fonksiyonel_kod: '',
     muhasebe_birimi: '',
     harcama_birimi: '',
@@ -212,7 +212,7 @@ export default function YeniDosyaScreen(): React.JSX.Element {
       antet_ek_satir: eskiDosya.antet_ek_satir,
       sunulacak_makam: eskiDosya.sunulacak_makam,
       ihtiyac_yeri: eskiDosya.ihtiyac_yeri,
-      kurumsal_kod: eskiDosya.kurumsal_kod,
+      e_butce: eskiDosya.e_butce,
       fonksiyonel_kod: eskiDosya.fonksiyonel_kod,
       muhasebe_birimi: eskiDosya.muhasebe_birimi,
       harcama_birimi: eskiDosya.harcama_birimi,
@@ -418,7 +418,7 @@ export default function YeniDosyaScreen(): React.JSX.Element {
       antet_ek_satir: birim.antet_ek_satir || prev.antet_ek_satir,
       sunulacak_makam: birim.sunum_makami || prev.sunulacak_makam,
       ihtiyac_yeri: birim.ihtiyac_yeri_eki || prev.ihtiyac_yeri,
-      kurumsal_kod: birim.kurumsal_kod || prev.kurumsal_kod
+      e_butce: birim.e_butce || prev.e_butce
     }))
     setShowBirimSearch(false)
     setBirimSearchQuery('')
@@ -584,7 +584,7 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                   antet_ek_satir: 'Fen İşleri Dairesi Başkanlığı',
                   sunulacak_makam: 'BAÅKANLIK MAKAMINA',
                   ihtiyac_yeri: 'X Belediyesi Merkez Åantiyesi',
-                  kurumsal_kod: '30.11.01.22',
+                  e_butce: '46.00.00.01',
                   fonksiyonel_kod: '01.3.9.00',
                   muhasebe_birimi: '30.06.01',
                   harcama_birimi: '30.11.01',
@@ -1032,8 +1032,8 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                           Kurumsal Kod (Düzey 1-2-3-4)
                         </label>
                         <select
-                          value={formData.kurumsal_kod || ''}
-                          onChange={e => setFormData({ ...formData, kurumsal_kod: e.target.value })}
+                          value={formData.e_butce || ''}
+                          onChange={e => setFormData({ ...formData, e_butce: e.target.value })}
                           className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs rounded-xl py-2 px-3 focus:outline-none text-slate-800 dark:text-slate-200"
                         >
                           <option value="">Seçiniz...</option>
