@@ -1479,7 +1479,7 @@ if (!gotTheLock) {
               }
             }
             
-            autoUpdater.checkForUpdatesAndNotify().catch(e => {
+            autoUpdater.checkForUpdates().catch(e => {
               console.error('Update check error:', e.message)
             })
           }
@@ -1489,7 +1489,7 @@ if (!gotTheLock) {
       }, 5000)
     } else {
       setTimeout(() => {
-        autoUpdater.checkForUpdatesAndNotify().catch(e => {
+        autoUpdater.checkForUpdates().catch(e => {
           console.error('Update check error:', e.message)
         })
       }, 5000)
@@ -1525,7 +1525,7 @@ if (!gotTheLock) {
         if (!app.isPackaged && !autoUpdater.forceDevUpdateConfig) {
           return { success: false, error: 'Geliştirme modunda (Dev) otomatik güncelleme denetlenemez.' }
         }
-        const result = await autoUpdater.checkForUpdatesAndNotify()
+        const result = await autoUpdater.checkForUpdates()
         if (result === null) {
           return { success: false, error: 'Güncelleme kontrolü bu ortamda atlandı veya desteklenmiyor.' }
         }
