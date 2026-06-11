@@ -586,9 +586,7 @@ if (!gotTheLock) {
     ipcMain.handle('db:check-auth-setup', async () => {
       try {
         const db = workspaceManager.getDb()
-        const codeRow = db
-          .prepare("SELECT value FROM settings WHERE key = 'eButceKodu'")
-          .get() as { value: string } | undefined
+
         const userRow = db
           .prepare("SELECT value FROM settings WHERE key = 'adminUsername'")
           .get() as { value: string } | undefined
@@ -623,21 +621,17 @@ if (!gotTheLock) {
       }
     })
 
-    ipcMain.handle('db:login', async (_, code: string, user: string, pass: string) => {
+    ipcMain.handle('db:login', async (_, _code: string, user: string, pass: string) => {
       try {
         const db = workspaceManager.getDb()
-        const codeRow = db
-          .prepare("SELECT value FROM settings WHERE key = 'eButceKodu'")
-          .get() as { value: string } | undefined
+
         const userRow = db
           .prepare("SELECT value FROM settings WHERE key = 'adminUsername'")
           .get() as { value: string } | undefined
         const passRow = db
           .prepare("SELECT value FROM settings WHERE key = 'adminPassword'")
           .get() as { value: string } | undefined
-        const eskiCodeRow = db
-          .prepare("SELECT value FROM settings WHERE key = 'say2000iKodu'")
-          .get() as { value: string } | undefined
+
 
         const expectedUser = userRow?.value || ''
         const expectedPass = passRow?.value || ''
