@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Bell, Moon, Sun, Minus, Square, X, DownloadCloud } from 'lucide-react'
 import { useTheme } from '../providers/ThemeProvider'
 import { TeminSelector } from './TeminSelector'
@@ -8,8 +8,20 @@ export function Header(): React.JSX.Element {
   const { theme, setTheme } = useTheme()
   const [updateStatus, setUpdateStatus] = React.useState<{status: string, version?: string} | null>(null)
   const [showNotifications, setShowNotifications] = React.useState(false)
+  const notificationRef = useRef<HTMLDivElement>(null)
   
   const { announcements } = useAnnouncements()
+
+  React.useEffect(() => {
+    if (!showNotifications) return
+    const handleClickOutside = (e: MouseEvent) => {
+      if (notificationRef.current && !notificationRef.current.contains(e.target as Node)) {
+        setShowNotifications(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showNotifications])
 
   React.useEffect(() => {
     const removeListener = window.electron?.ipcRenderer.on('updater:status', (_event, data) => {
@@ -63,7 +75,7 @@ export function Header(): React.JSX.Element {
           </button>
         )}
 
-        <div className="relative">
+        <div className="relative" ref={notificationRef}>
           <button
             style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
             onClick={() => setShowNotifications(!showNotifications)}
