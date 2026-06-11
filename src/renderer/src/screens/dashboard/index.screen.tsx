@@ -341,6 +341,41 @@ export default function DashboardScreen(): React.JSX.Element {
             </div>
           </div>
         </div>
+        {/* Card 3: Active Files (Genel) */}
+        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between h-36 group hover:border-cyan-500/30 transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <div className="w-10 h-10 rounded-xl bg-cyan-50 dark:bg-cyan-900/20 text-cyan-600 dark:text-cyan-450 flex items-center justify-center shrink-0">
+              <Clock className="w-5 h-5" />
+            </div>
+            <span className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/30 px-2.5 py-0.5 rounded-full border border-cyan-500/10">
+              Süreçte
+            </span>
+          </div>
+          <div>
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Aktif Temin Süreçleri</div>
+            <div className="text-2xl font-extrabold text-slate-800 dark:text-slate-100 mt-1 flex items-baseline gap-1">
+              {isLoading ? '-' : stats.aktifDosyaSayisi} <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">Dosya</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 4: Completed Files (Genel) */}
+        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between h-36 group hover:border-purple-500/30 transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-450 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-5 h-5" />
+            </div>
+            <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/30 px-2.5 py-0.5 rounded-full border border-purple-500/10">
+              Sonuçlanan
+            </span>
+          </div>
+          <div>
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Tamamlanan İhaleler</div>
+            <div className="text-2xl font-extrabold text-slate-800 dark:text-slate-100 mt-1 flex items-baseline gap-1">
+              {isLoading ? '-' : stats.tamamlananDosyaSayisi} <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">Dosya</span>
+            </div>
+          </div>
+        </div>
           </>
         )}
 
