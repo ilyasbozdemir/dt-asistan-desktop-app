@@ -6,6 +6,7 @@ import FirmalarScreen from './screens/firmalar/index.screen'
 import PersonelScreen from './screens/personel/index.screen'
 import { MevzuatScreen } from './screens/system/MevzuatScreen'
 import ChangelogScreen from './screens/system/ChangelogScreen'
+import ImportScreen from './screens/system/ImportScreen'
 import AyarlarScreen from './screens/ayarlar/index.screen'
 import TemaScreen from './screens/ayarlar/TemaScreen'
 import BirimlerScreen from './screens/birimler/index.screen'
@@ -115,6 +116,12 @@ const changelogRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/changelog',
   component: ChangelogScreen
+})
+
+const importRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/import',
+  component: ImportScreen
 })
 
 const ayarlarRoute = createRoute({
@@ -315,6 +322,7 @@ const routeTree = rootRoute.addChildren([
   okasKodRoute,
   mevzuatRoute,
   changelogRoute,
+  importRoute,
   ayarlarRoute,
   temaRoute,
   birimlerRoute,

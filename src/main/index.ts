@@ -386,15 +386,41 @@ if (!gotTheLock) {
 
     ipcMain.handle('get-changelog', async () => {
       const allChanges: {version: string, notes: string, schema_max: number}[] = []
+      
+      // Gerçek uygulama güncellemelerini manuel ekliyoruz
+      const appUpdates = [
+        { version: '1.0.0-alpha.28', notes: '- Yeni Özellik: Firmalar, Personel, Malzeme gibi kayıtların sisteme JSON dosyası olarak Toplu İçe Aktarılabilmesi sağlandı.', schema_max: 20 },
+        { version: '1.0.0-alpha.27', notes: '- Sistem tepsisi (Tray) entegrasyonu sağlandı. Uygulama X tuşuyla kapatıldığında arka planda çalışmaya devam eder.\n- Görev çubuğunda (Jump List) kısayollar aktif edildi.\n- Çeşitli hata düzeltmeleri yapıldı.', schema_max: 20 },
+        { version: '1.0.0-alpha.26', notes: '- Yeni dosya oluşturma ekranına Yapay Zeka destekli "İşin Kapsamı ve Tanımı" oluşturma özelliği eklendi.', schema_max: 20 },
+        { version: '1.0.0-alpha.25', notes: '- Profil ve Ayarlar ekranlarındaki arayüz sorunları giderildi.', schema_max: 20 }
+      ]
+
       for (const v of manifests) {
         if (v.changes && v.changes.length > 0) {
-          const notes = v.changes.map(c => `- Schema ${c.schema}: ${c.description}`).join('\n')
+          const notes = v.changes.map((c: any) => `- Schema ${c.schema}: ${c.description}`).join('\n')
           allChanges.push({ version: v.app, notes, schema_max: v.schema_max })
         } else {
           allChanges.push({ version: v.app, notes: 'Yapısal bir veritabanı değişikliği yok.', schema_max: v.schema_max })
         }
       }
-      return allChanges.reverse()
+
+      // App güncellemelerini ekle
+      appUpdates.forEach(update => {
+        // Eğer manifest'te aynı versiyon varsa onu ez
+        const index = allChanges.findIndex(c => c.version === update.version)
+        if (index !== -1) {
+          allChanges[index] = update
+        } else {
+          allChanges.push(update)
+        }
+      })
+
+      // Versionlara göre sırala (basit string sıralaması yeterli olmayabilir ama alpha versiyonları için idare eder)
+      return allChanges.sort((a, b) => {
+        const aNum = parseInt(a.version.split('.').pop() || '0')
+        const bNum = parseInt(b.version.split('.').pop() || '0')
+        return bNum - aNum
+      })
     })
 
     ipcMain.handle('workspace:open', async (_, filePath: string, allowMigration: boolean = false) => {
@@ -428,6 +454,44 @@ if (!gotTheLock) {
         return { success: true, meta }
       } catch (error: any) {
         console.error('Get meta error:', error)
+        return { success: false, error: error.message }
+      }
+    })
+
+    ipcMain.handle('db:bulk-import', async (_, { target, mappings, data }) => {
+      try {
+        const db = workspaceManager.getDb()
+        if (!db) throw new Error('Açık bir çalışma alanı yok.')
+
+        // Güvenlik: Sadece belirli tablolara izin ver (SQL Injection önlemi)
+        const allowedTargets = ['TANIM_Firma', 'TANIM_Personel', 'TANIM_Birim', 'TANIM_Kalem', 'TANIM_Ambar', 'DATA_TeminDosyasi']
+        if (!allowedTargets.includes(target)) {
+           throw new Error(`Geçersiz hedef tablo: ${target}`)
+        }
+
+        const jsonKeys = Object.keys(mappings)
+        const columns = Object.values(mappings) as string[]
+        
+        if (columns.length === 0) throw new Error('Eşleştirilmiş alan bulunamadı.')
+
+        // Çakışan kayıtları atla (INSERT OR IGNORE)
+        const placeholders = columns.map(() => '?').join(', ')
+        const stmt = db.prepare(`INSERT OR IGNORE INTO ${target} (${columns.join(', ')}) VALUES (${placeholders})`)
+
+        let successCount = 0
+        const insertMany = db.transaction((rows: any[]) => {
+          for (const row of rows) {
+            const values = jsonKeys.map(key => row[key] !== undefined ? row[key] : null)
+            const result = stmt.run(...values)
+            if (result.changes > 0) successCount++
+          }
+        })
+
+        insertMany(data)
+        
+        return { success: true, count: successCount, total: data.length }
+      } catch (error: any) {
+        console.error('Bulk import error:', error)
         return { success: false, error: error.message }
       }
     })
