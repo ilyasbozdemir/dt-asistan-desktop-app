@@ -91,6 +91,7 @@ export default function AyarlarScreen(): React.ReactNode {
         if ((window as any).api?.setDevVersion) {
           ;(window as any).api.setDevVersion(mode, ver)
           window.dispatchEvent(new Event('app-version-changed'))
+          window.electron?.ipcRenderer.invoke('updater:check')
         }
 
         setAiProvider(settings.ai_provider || 'gemini')
@@ -165,6 +166,7 @@ export default function AyarlarScreen(): React.ReactNode {
         if ((window as any).api?.setDevVersion) {
           ;(window as any).api.setDevVersion(devUpdateTestMode, devUpdateVersion)
           window.dispatchEvent(new Event('app-version-changed'))
+          window.electron?.ipcRenderer.invoke('updater:check')
         }
       } else if (tab === 'ai') {
         dataToSave.ai_provider = aiProvider
@@ -387,6 +389,7 @@ export default function AyarlarScreen(): React.ReactNode {
                                 if ((window as any).api?.setDevVersion) {
                                   ;(window as any).api.setDevVersion(mode, devUpdateVersion)
                                   window.dispatchEvent(new Event('app-version-changed'))
+                                  window.electron?.ipcRenderer.invoke('updater:check')
                                 }
                               }}
                               className="rounded border-slate-300 dark:border-slate-700 bg-slate-55 dark:bg-slate-950 text-primary focus:ring-primary accent-primary"
@@ -412,6 +415,7 @@ export default function AyarlarScreen(): React.ReactNode {
                                   if ((window as any).api?.setDevVersion) {
                                     ;(window as any).api.setDevVersion(devUpdateTestMode, ver)
                                     window.dispatchEvent(new Event('app-version-changed'))
+                                    window.electron?.ipcRenderer.invoke('updater:check')
                                   }
                                 }}
                                 className="w-full text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-55 dark:bg-slate-950 text-slate-800 dark:text-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"

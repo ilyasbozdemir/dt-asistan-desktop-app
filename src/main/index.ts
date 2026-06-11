@@ -1421,9 +1421,11 @@ if (!gotTheLock) {
     // Helper to send status to all open windows
     const sendUpdaterStatus = (status: string, data: any = {}) => {
       const windows = BrowserWindow.getAllWindows()
-      if (windows.length > 0) {
-        windows[0].webContents.send('updater:status', { status, ...data })
-      }
+      windows.forEach(w => {
+        if (!w.isDestroyed()) {
+          w.webContents.send('updater:status', { status, ...data })
+        }
+      })
     }
 
     // --- Auto Updater Logic ---
