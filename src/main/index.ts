@@ -389,6 +389,7 @@ if (!gotTheLock) {
       
       // Gerçek uygulama güncellemelerini manuel ekliyoruz
       const appUpdates = [
+        { version: '1.0.0-alpha.29', notes: '- İçe Aktarma (Import) ekranındaki buton stilleri (variant) ile ilgili TypeScript hataları düzeltildi.', schema_max: 20 },
         { version: '1.0.0-alpha.28', notes: '- Yeni Özellik: Firmalar, Personel, Malzeme gibi kayıtların sisteme JSON dosyası olarak Toplu İçe Aktarılabilmesi sağlandı.', schema_max: 20 },
         { version: '1.0.0-alpha.27', notes: '- Sistem tepsisi (Tray) entegrasyonu sağlandı. Uygulama X tuşuyla kapatıldığında arka planda çalışmaya devam eder.\n- Görev çubuğunda (Jump List) kısayollar aktif edildi.\n- Çeşitli hata düzeltmeleri yapıldı.', schema_max: 20 },
         { version: '1.0.0-alpha.26', notes: '- Yeni dosya oluşturma ekranına Yapay Zeka destekli "İşin Kapsamı ve Tanımı" oluşturma özelliği eklendi.', schema_max: 20 },

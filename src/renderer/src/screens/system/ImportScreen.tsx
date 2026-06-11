@@ -269,7 +269,7 @@ export default function ImportScreen(): React.JSX.Element {
                   onClick={handleImport} 
                   disabled={isImporting || Object.keys(mappings).length === 0}
                   className="w-full mt-6 flex justify-center items-center gap-2"
-                  variant={importResult?.success ? "secondary" : "primary"}
+                  variant={importResult?.success ? "secondary" : "default"}
                 >
                   {isImporting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                   {isImporting ? 'Aktarılıyor...' : 'Eşleşenleri İçe Aktar'}
