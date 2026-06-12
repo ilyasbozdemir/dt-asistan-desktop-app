@@ -3,6 +3,7 @@ export const TANIM_Kalem = {
   description: 'Ortak malzeme, hizmet ve yapım işleri havuzu',
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
+    { name: 'eski_id', type: 'TEXT' },
     { name: 'barkod_id', type: 'TEXT', unique: true, notNull: true },
     { name: 'tasinir_kodu', type: 'TEXT' },
     { name: 'okas_kodu', type: 'TEXT' },

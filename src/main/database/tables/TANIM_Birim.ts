@@ -3,6 +3,7 @@ export const TANIM_Birim = {
   description: 'Kurum içerisindeki müdürlükler, birimler ve departmanlar',
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
+    { name: 'eski_id', type: 'TEXT' },
     { name: 'birim_adi', type: 'TEXT', notNull: true, unique: true },
     { name: 'antet_ek_satir', type: 'TEXT' },
     { name: 'ihtiyac_yeri_eki', type: 'TEXT' },

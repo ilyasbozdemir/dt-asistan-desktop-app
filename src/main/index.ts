@@ -470,19 +470,48 @@ if (!gotTheLock) {
            throw new Error(`Geçersiz hedef tablo: ${target}`)
         }
 
-        const jsonKeys = Object.keys(mappings)
-        const columns = Object.values(mappings) as string[]
-        
-        if (columns.length === 0) throw new Error('Eşleştirilmiş alan bulunamadı.')
+        // Aynı hedefe eşlenen JSON alanlarını grupla (Örn: adi -> ad_soyad, soyadi -> ad_soyad)
+        const columnMap = new Map<string, string[]>()
+        for (const [jsonKey, dbCol] of Object.entries(mappings)) {
+          const colName = dbCol as string
+          if (!columnMap.has(colName)) columnMap.set(colName, [])
+          columnMap.get(colName)!.push(jsonKey)
+        }
+
+        const uniqueColumns = Array.from(columnMap.keys())
+        if (uniqueColumns.length === 0) throw new Error('Eşleştirilmiş alan bulunamadı.')
 
         // Çakışan kayıtları atla (INSERT OR IGNORE)
-        const placeholders = columns.map(() => '?').join(', ')
-        const stmt = db.prepare(`INSERT OR IGNORE INTO ${target} (${columns.join(', ')}) VALUES (${placeholders})`)
+        const placeholders = uniqueColumns.map(() => '?').join(', ')
+        const stmt = db.prepare(`INSERT OR IGNORE INTO ${target} (${uniqueColumns.join(', ')}) VALUES (${placeholders})`)
 
         let successCount = 0
         const insertMany = db.transaction((rows: any[]) => {
           for (const row of rows) {
-            const values = jsonKeys.map(key => row[key] !== undefined ? row[key] : null)
+            const values = uniqueColumns.map(col => {
+              const keys = columnMap.get(col)!
+              const parts = keys.map(k => row[k]).filter(v => v !== undefined && v !== null && v !== '')
+              if (parts.length === 0) return null
+              // Birden fazla alan aynı sütuna eşleştiyse aralarında boşluk bırakarak birleştir
+              let combined = parts.join(' ')
+              
+              // İsim/Soyisim alanları için özel formatlama (Son kelime BÜYÜK, diğerleri İlk Harf Büyük)
+              if (['ad_soyad', 'ilgili_adi'].includes(col) && typeof combined === 'string') {
+                const words = combined.trim().split(/\s+/)
+                if (words.length > 1) {
+                  const lastWord = words.pop()!.toLocaleUpperCase('tr-TR')
+                  const firstWords = words.map(w => 
+                    w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR')
+                  )
+                  combined = [...firstWords, lastWord].join(' ')
+                } else if (words.length === 1 && words[0]) {
+                  const w = words[0]
+                  combined = w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR')
+                }
+              }
+              
+              return combined
+            })
             const result = stmt.run(...values)
             if (result.changes > 0) successCount++
           }

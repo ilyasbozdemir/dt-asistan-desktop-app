@@ -3,6 +3,7 @@ export const TANIM_Firma = {
   description: 'Kayıtlı firmalar ve tedarikçiler havuzu',
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
+    { name: 'eski_id', type: 'TEXT' },
     { name: 'firma_kodu', type: 'TEXT' },
     { name: 'unvan', type: 'TEXT', notNull: true },
     { name: 'ilgili_adi', type: 'TEXT' },

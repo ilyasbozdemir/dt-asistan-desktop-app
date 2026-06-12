@@ -3,6 +3,7 @@ export const TANIM_Ambar = {
   description: 'Kurum ambar depoları ve stok yönetimi',
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
+    { name: 'eski_id', type: 'TEXT' },
     { name: 'ambar_adi', type: 'TEXT', notNull: true, unique: true },
     { name: 'aciklama', type: 'TEXT' },
     { name: 'adres', type: 'TEXT' },

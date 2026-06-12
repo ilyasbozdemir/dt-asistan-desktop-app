@@ -3,6 +3,7 @@ export const TANIM_Personel = {
   description: 'Temin süreçlerinde görev alan kurum personel havuzu',
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
+    { name: 'eski_id', type: 'TEXT' },
     { name: 'ad_soyad', type: 'TEXT', notNull: true },
     { name: 'unvan', type: 'TEXT' },
     { name: 'birim', type: 'TEXT' },

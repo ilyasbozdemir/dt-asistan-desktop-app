@@ -12,27 +12,27 @@ const TARGET_TABLES: TargetTable[] = [
   {
     id: 'TANIM_Firma',
     label: 'İstekli Firmalar',
-    columns: ['firma_kodu', 'unvan', 'ilgili_adi', 'uyrugu', 'istigal_konusu', 'adres', 'ilce', 'posta_kodu', 'il', 'telefon', 'faks', 'email', 'web_adresi', 'banka_adi', 'sube_kodu_adi', 'hesap_no', 'tc_kimlik_no', 'dogum_tarihi', 'vergi_dairesi', 'vergi_no', 'aktif_mi']
+    columns: ['eski_id', 'firma_kodu', 'unvan', 'ilgili_adi', 'uyrugu', 'istigal_konusu', 'adres', 'ilce', 'posta_kodu', 'il', 'telefon', 'faks', 'email', 'web_adresi', 'banka_adi', 'sube_kodu_adi', 'hesap_no', 'tc_kimlik_no', 'dogum_tarihi', 'vergi_dairesi', 'vergi_no', 'aktif_mi']
   },
   {
     id: 'TANIM_Personel',
     label: 'Personel Listesi',
-    columns: ['ad_soyad', 'unvan', 'birim', 'sicil_no', 'telefon', 'eposta', 'ihale_yetkilisi_mi', 'harcama_yetkilisi_mi', 'aktif_mi', 'notlar']
+    columns: ['eski_id', 'ad_soyad', 'unvan', 'birim', 'sicil_no', 'telefon', 'eposta', 'ihale_yetkilisi_mi', 'harcama_yetkilisi_mi', 'aktif_mi', 'notlar']
   },
   {
     id: 'TANIM_Birim',
     label: 'Birimler',
-    columns: ['birim_adi', 'antet_ek_satir', 'ihtiyac_yeri_eki', 'sunum_makami', 'e_butce', 'say2000i', 'dtvt_kodu', 'ayrintili_bilgi_personel', 'aktif_mi']
+    columns: ['eski_id', 'birim_adi', 'antet_ek_satir', 'ihtiyac_yeri_eki', 'sunum_makami', 'e_butce', 'say2000i', 'dtvt_kodu', 'ayrintili_bilgi_personel', 'aktif_mi']
   },
   {
     id: 'TANIM_Kalem',
     label: 'Malzeme/Hizmet Kalemleri',
-    columns: ['barkod_id', 'tasinir_kodu', 'okas_kodu', 'kalem_adi', 'tipi', 'birim', 'kategori', 'ozelligi', 'kdv_orani', 'mensei', 'is_personel', 'personel_asgari_fark_oran', 'aktif_mi', 'notlar']
+    columns: ['eski_id', 'barkod_id', 'tasinir_kodu', 'okas_kodu', 'kalem_adi', 'tipi', 'birim', 'kategori', 'ozelligi', 'kdv_orani', 'mensei', 'is_personel', 'personel_asgari_fark_oran', 'aktif_mi', 'notlar']
   },
   {
     id: 'TANIM_Ambar',
     label: 'Ambar',
-    columns: ['ambar_kodu', 'ambar_adi', 'aktif_mi']
+    columns: ['eski_id', 'ambar_kodu', 'ambar_adi', 'aktif_mi']
   }
 ]
 
@@ -49,12 +49,28 @@ export default function ImportScreen(): React.JSX.Element {
     try {
       setParseError(null)
       setImportResult(null)
-      const data = JSON.parse(jsonText)
+      
+      let data: any
+      try {
+        data = JSON.parse(jsonText)
+      } catch (err) {
+        const match = jsonText.match(/\[[\s\S]*\]/)
+        if (match) {
+          try {
+            data = new Function(`return ${match[0]}`)()
+          } catch (evalErr) {
+            throw new Error('Geçersiz format. Hem standart JSON hem de JS formatı ayrıştırılamadı.')
+          }
+        } else {
+          throw new Error('Geçerli bir JSON veya JS dizisi (Array) bekliyoruz. Örn: [ { "ad": "X" } ]')
+        }
+      }
+
       if (!Array.isArray(data)) {
-        throw new Error('Geçerli bir JSON dizisi (Array) bekliyoruz. Örn: [ { "ad": "X" } ]')
+        throw new Error('Veri bir dizi (Array) formatında olmalıdır.')
       }
       if (data.length === 0) {
-        throw new Error('JSON dizisi boş.')
+        throw new Error('Dizi boş.')
       }
       setParsedData(data)
       
