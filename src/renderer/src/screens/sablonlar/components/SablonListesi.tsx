@@ -1,4 +1,4 @@
-import { Plus, LayoutTemplate, History, Edit } from 'lucide-react'
+import { Plus, LayoutTemplate, History, Edit, Calendar } from 'lucide-react'
 import { Button } from '../../../components/ui/Button'
 import { useSablonlar, Sablon } from '../sablonlar.hooks'
 
@@ -50,6 +50,18 @@ export function SablonListesi({ onEdit, onCreate }: { onEdit: (s: Sablon) => voi
                 <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 min-h-[40px] mb-4">
                   {sablon.aciklama || 'Açıklama yok'}
                 </p>
+
+                {(sablon.created_at || sablon.updated_at) && (
+                  <div className="flex items-start gap-2 text-[11px] text-slate-600 dark:text-slate-400 mb-4 pt-3 border-t border-slate-100 dark:border-slate-800/60">
+                    <Calendar className="w-3.5 h-3.5 shrink-0 text-slate-400 mt-0.5" />
+                    <div>
+                      <span className="font-semibold text-slate-700 dark:text-slate-300 block mb-0.5">Son Güncelleme</span>
+                      <span className="line-clamp-1 leading-relaxed">
+                        {new Date(sablon.updated_at || sablon.created_at).toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                  </div>
+                )}
 
                 <div className="flex flex-col gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
                    <Button onClick={() => onEdit(sablon)} variant="outline" className="w-full justify-center text-xs border-slate-200 dark:border-slate-700">

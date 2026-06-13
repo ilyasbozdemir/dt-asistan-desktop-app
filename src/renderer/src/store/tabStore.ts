@@ -39,7 +39,9 @@ export function getTabLabel(fullPath: string): string {
   if (path.startsWith('/sablonlar')) return 'Şablon Yönetimi'
   if (path.startsWith('/komisyonlar/detay')) return 'Komisyon Detayı'
   if (path.startsWith('/komisyonlar')) return 'Komisyon Yönetimi'
+  if (path.startsWith('/komisyon-gorevleri')) return 'Komisyon Görevleri'
   if (path.startsWith('/changelog')) return 'Sürüm Notları'
+  if (path.startsWith('/import')) return 'Toplu Veri İçe Aktarma'
   return 'Yeni Sekme'
 }
 

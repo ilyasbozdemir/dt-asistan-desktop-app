@@ -3,7 +3,7 @@ import { useBirimlerHooks, BirimInput, usePersonelList } from './birimler.hooks'
 import { useAyarlarHooks } from '../ayarlar/ayarlar.hooks'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
-import { LayoutGrid, Plus, Trash2, Edit2, ChevronDown, ChevronUp, Hash, Users, MapPin, Type, AlignLeft, User, Building } from 'lucide-react'
+import { LayoutGrid, Plus, Trash2, Edit2, ChevronDown, ChevronUp, Hash, Users, MapPin, Type, AlignLeft, User, Building, Calendar } from 'lucide-react'
 
 import { Modal } from '../../components/ui/Modal'
 
@@ -223,6 +223,16 @@ export default function BirimlerScreen(): React.ReactNode {
                         <div>
                           <span className="font-semibold text-slate-700 dark:text-slate-300 block mb-0.5">İhtiyaç Yeri</span>
                           <span className="line-clamp-2 leading-relaxed">{birim.ihtiyac_yeri_eki}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {birim.created_at && (
+                      <div className="flex items-start gap-2 text-[11px] text-slate-600 dark:text-slate-400 col-span-full pt-2 border-t border-slate-100 dark:border-slate-800/60">
+                        <Calendar className="w-3.5 h-3.5 shrink-0 text-slate-400 mt-0.5" />
+                        <div>
+                          <span className="font-semibold text-slate-700 dark:text-slate-300 block mb-0.5">Oluşturulma Tarihi</span>
+                          <span className="line-clamp-1 leading-relaxed">{new Date(birim.created_at).toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
                       </div>
                     )}

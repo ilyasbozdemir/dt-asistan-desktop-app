@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react'
-import { FileJson, Upload, CheckCircle2, AlertCircle, RefreshCw, ArrowRight } from 'lucide-react'
+import { FileJson, Upload, CheckCircle2, AlertCircle, RefreshCw, ArrowRight, ExternalLink } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
+import { useNavigate } from '@tanstack/react-router'
+import { useTabStore } from '../../store/tabStore'
 
 interface TargetTable {
   id: string
@@ -12,31 +14,38 @@ const TARGET_TABLES: TargetTable[] = [
   {
     id: 'TANIM_Firma',
     label: 'İstekli Firmalar',
-    columns: ['eski_id', 'firma_kodu', 'unvan', 'ilgili_adi', 'uyrugu', 'istigal_konusu', 'adres', 'ilce', 'posta_kodu', 'il', 'telefon', 'faks', 'email', 'web_adresi', 'banka_adi', 'sube_kodu_adi', 'hesap_no', 'tc_kimlik_no', 'dogum_tarihi', 'vergi_dairesi', 'vergi_no', 'aktif_mi']
+    columns: ['eski_id', 'firma_kodu', 'unvan', 'ilgili_adi', 'uyrugu', 'istigal_konusu', 'adres', 'ilce', 'posta_kodu', 'il', 'telefon', 'faks', 'email', 'web_adresi', 'banka_adi', 'sube_kodu_adi', 'hesap_no', 'tc_kimlik_no', 'dogum_tarihi', 'vergi_dairesi', 'vergi_no', 'aktif_mi', 'created_at']
   },
   {
     id: 'TANIM_Personel',
     label: 'Personel Listesi',
-    columns: ['eski_id', 'ad_soyad', 'unvan', 'birim', 'sicil_no', 'telefon', 'eposta', 'ihale_yetkilisi_mi', 'harcama_yetkilisi_mi', 'aktif_mi', 'notlar']
+    columns: ['eski_id', 'ad_soyad', 'unvan', 'birim', 'sicil_no', 'telefon', 'eposta', 'ihale_yetkilisi_mi', 'harcama_yetkilisi_mi', 'aktif_mi', 'notlar', 'created_at']
   },
   {
     id: 'TANIM_Birim',
     label: 'Birimler',
-    columns: ['eski_id', 'birim_adi', 'antet_ek_satir', 'ihtiyac_yeri_eki', 'sunum_makami', 'e_butce', 'say2000i', 'dtvt_kodu', 'ayrintili_bilgi_personel', 'aktif_mi']
+    columns: ['eski_id', 'birim_adi', 'antet_ek_satir', 'ihtiyac_yeri_eki', 'sunum_makami', 'e_butce', 'say2000i', 'dtvt_kodu', 'ayrintili_bilgi_personel', 'aktif_mi', 'created_at']
   },
   {
     id: 'TANIM_Kalem',
     label: 'Malzeme/Hizmet Kalemleri',
-    columns: ['eski_id', 'barkod_id', 'tasinir_kodu', 'okas_kodu', 'kalem_adi', 'tipi', 'birim', 'kategori', 'ozelligi', 'kdv_orani', 'mensei', 'is_personel', 'personel_asgari_fark_oran', 'aktif_mi', 'notlar']
+    columns: ['eski_id', 'barkod_id', 'tasinir_kodu', 'okas_kodu', 'kalem_adi', 'tipi', 'birim', 'kategori', 'ozelligi', 'kdv_orani', 'mensei', 'is_personel', 'personel_asgari_fark_oran', 'aktif_mi', 'notlar', 'created_at']
   },
   {
     id: 'TANIM_Ambar',
     label: 'Ambar',
-    columns: ['eski_id', 'ambar_kodu', 'ambar_adi', 'aktif_mi']
+    columns: ['eski_id', 'ambar_kodu', 'ambar_adi', 'aktif_mi', 'created_at']
+  },
+  {
+    id: 'settings',
+    label: 'Kurum Bilgileri (Ayarlar)',
+    columns: ['institutionName', 'institutionLetterhead', 'recipientTitle', 'parentInstitution', 'logoLeft', 'logoRight', 'institutionLogo', 'limitType', 'finansmanKodu', 'institutionType', 'eButceKodu', 'say2000iKodu', 'fonksiyonelKod', 'muhasebeBirimKodu', 'muhasebeBirimAdi', 'harcamaBirimKodu', 'harcamaBirimAdi', 'dtvtKodu', 'address', 'district', 'postalCode', 'city', 'phone', 'fax', 'institutionEmail', 'website']
   }
 ]
 
 export default function ImportScreen(): React.JSX.Element {
+  const navigate = useNavigate()
+  const { addTab } = useTabStore()
   const [jsonText, setJsonText] = useState('')
   const [targetId, setTargetId] = useState<string>('TANIM_Firma')
   const [parsedData, setParsedData] = useState<any[] | null>(null)
@@ -266,17 +275,61 @@ export default function ImportScreen(): React.JSX.Element {
                 </div>
 
                 {importResult && (
-                  <div className={`mt-4 p-3 text-sm rounded-lg flex items-start gap-2 ${importResult.success ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-600 border border-red-200'}`}>
-                    {importResult.success ? (
-                      <>
-                        <CheckCircle2 className="w-5 h-5 shrink-0" />
-                        <span>Başarıyla içe aktarıldı. <strong>{importResult.count}</strong> yeni kayıt eklendi. (Toplam {importResult.total})</span>
-                      </>
-                    ) : (
-                      <>
-                        <AlertCircle className="w-5 h-5 shrink-0" />
-                        <span>Hata: {importResult.error}</span>
-                      </>
+                  <div className={`mt-4 p-3 text-sm rounded-lg flex flex-col gap-2 ${importResult.success ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-600 border border-red-200'}`}>
+                    <div className="flex items-start gap-2">
+                      {importResult.success ? (
+                        <>
+                          <CheckCircle2 className="w-5 h-5 shrink-0" />
+                          <div className="flex-1 space-y-1">
+                            <div className="font-bold text-[13px] text-green-800 dark:text-green-300">
+                              İçe Aktarma İşlemi Tamamlandı
+                            </div>
+                            <p className="text-xs text-green-700/90 dark:text-green-400/90 leading-relaxed">
+                              İşlenen toplam <strong>{importResult.total}</strong> kayıttan <strong>{importResult.count}</strong> tanesi sisteme başarıyla eklendi.
+                            </p>
+                            {importResult.total !== undefined && importResult.count !== undefined && importResult.total > importResult.count && (
+                              <div className="mt-3 p-2.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/50 rounded-lg flex items-start gap-2.5 text-amber-800 dark:text-amber-400 text-xs shadow-sm">
+                                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-500" />
+                                <div>
+                                  <strong className="text-amber-900 dark:text-amber-300">
+                                    {importResult.total - importResult.count} kayıt sisteme eklenemedi ve atlandı.
+                                  </strong>
+                                  <p className="mt-1 opacity-90">Olası Sebepler:</p>
+                                  <ul className="list-disc pl-4 mt-0.5 space-y-0.5 opacity-80">
+                                    <li>Sistemde aynı benzersiz değere (Kod, Barkod, TC, Vergi No) sahip kayıt zaten var.</li>
+                                    <li>Zorunlu alanları (Ad, Tip) boş bıraktınız veya doğru eşleştirmediniz.</li>
+                                  </ul>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <AlertCircle className="w-5 h-5 shrink-0" />
+                          <span>Hata: {importResult.error}</span>
+                        </>
+                      )}
+                    </div>
+                    {importResult.success && (
+                      <div className="flex justify-end mt-1">
+                        <Button 
+                          variant="outline" 
+                          className="bg-white border-green-200 text-green-700 hover:bg-green-100 hover:text-green-800 text-xs py-1 h-7 gap-1.5 shadow-sm"
+                          onClick={() => {
+                            const route = targetId === 'TANIM_Birim' ? '/birimler' 
+                                        : targetId === 'TANIM_Firma' ? '/firmalar'
+                                        : targetId === 'TANIM_Personel' ? '/personel'
+                                        : targetId === 'TANIM_Kalem' ? '/malzemeler'
+                                        : targetId === 'TANIM_Ambar' ? '/ambar'
+                                        : targetId === 'settings' ? '/kurum' : '/'
+                            addTab(route)
+                            navigate({ to: route as any })
+                          }}
+                        >
+                          Sonucu Gör <ExternalLink className="w-3 h-3" />
+                        </Button>
+                      </div>
                     )}
                   </div>
                 )}

@@ -465,7 +465,7 @@ if (!gotTheLock) {
         if (!db) throw new Error('Açık bir çalışma alanı yok.')
 
         // Güvenlik: Sadece belirli tablolara izin ver (SQL Injection önlemi)
-        const allowedTargets = ['TANIM_Firma', 'TANIM_Personel', 'TANIM_Birim', 'TANIM_Kalem', 'TANIM_Ambar', 'DATA_TeminDosyasi']
+        const allowedTargets = ['TANIM_Firma', 'TANIM_Personel', 'TANIM_Birim', 'TANIM_Kalem', 'TANIM_Ambar', 'DATA_TeminDosyasi', 'settings']
         if (!allowedTargets.includes(target)) {
            throw new Error(`Geçersiz hedef tablo: ${target}`)
         }
@@ -481,14 +481,48 @@ if (!gotTheLock) {
         const uniqueColumns = Array.from(columnMap.keys())
         if (uniqueColumns.length === 0) throw new Error('Eşleştirilmiş alan bulunamadı.')
 
+        if (target === 'settings') {
+          let successCount = 0
+          const insertSettings = db.transaction((rows: any[]) => {
+            const stmt = db.prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')
+            for (const row of rows) {
+              const mappedRow: any = {}
+              for (const col of uniqueColumns) {
+                const keys = columnMap.get(col)!
+                const parts = keys.map(k => row[k]).filter(v => v !== undefined && v !== null && v !== '')
+                if (parts.length > 0) {
+                  mappedRow[col] = String(parts.join(' '))
+                }
+              }
+              for (const [k, v] of Object.entries(mappedRow)) {
+                 stmt.run(k, v)
+              }
+              successCount++
+            }
+          })
+          insertSettings(data)
+          return { success: true, count: successCount, total: data.length }
+        }
+
+        // Hedef tabloya özel zorunlu alan enjeksiyonları
+        const insertColumns = [...uniqueColumns]
+        let autoBarkodId = false
+        if (target === 'TANIM_Kalem' && !insertColumns.includes('barkod_id')) {
+          insertColumns.push('barkod_id')
+          autoBarkodId = true
+        }
+
         // Çakışan kayıtları atla (INSERT OR IGNORE)
-        const placeholders = uniqueColumns.map(() => '?').join(', ')
-        const stmt = db.prepare(`INSERT OR IGNORE INTO ${target} (${uniqueColumns.join(', ')}) VALUES (${placeholders})`)
+        const placeholders = insertColumns.map(() => '?').join(', ')
+        const stmt = db.prepare(`INSERT OR IGNORE INTO ${target} (${insertColumns.join(', ')}) VALUES (${placeholders})`)
 
         let successCount = 0
         const insertMany = db.transaction((rows: any[]) => {
           for (const row of rows) {
-            const values = uniqueColumns.map(col => {
+            const values = insertColumns.map(col => {
+              if (col === 'barkod_id' && autoBarkodId) {
+                return Math.floor(1000000000000 + Math.random() * 9000000000000).toString()
+              }
               const keys = columnMap.get(col)!
               const parts = keys.map(k => row[k]).filter(v => v !== undefined && v !== null && v !== '')
               if (parts.length === 0) return null
