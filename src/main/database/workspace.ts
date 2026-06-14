@@ -154,10 +154,10 @@ function seedTemplates(db: Database.Database): void {
           VALUES (?, ?, 'html', ?, ?, 1, ?)
         `).run(ad, file, content, 'Sistem varsayılan şablonu', kategori)
         console.log(`[Seed] Seeded default template: ${file} in category: ${kategori}`)
-      } else if (!existing.kategori || existing.kategori !== kategori) {
-        // Kategori boşsa veya değişmişse güncelle
-        db.prepare('UPDATE TANIM_Sablon SET kategori = ? WHERE id = ?').run(kategori, existing.id)
-        console.log(`[Seed] Updated category for template: ${file} to ${kategori}`)
+      } else {
+        // Güncelle: İçerik veya kategori değişmiş olabilir
+        db.prepare('UPDATE TANIM_Sablon SET kategori = ?, icerik = ? WHERE id = ?').run(kategori, content, existing.id)
+        console.log(`[Seed] Updated template: ${file}`)
       }
     }
   } catch (err: any) {

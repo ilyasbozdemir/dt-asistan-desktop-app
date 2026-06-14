@@ -150,12 +150,6 @@
     <thead>
       <tr>
         <td>
-          <!-- HEADER REPEATS ON EVERY PAGE -->
-          {{#ekNo}}
-          <div style="text-align: right; font-weight: bold; font-size: 11pt; margin-bottom: 10px;">
-            {{ekNo}}
-          </div>
-          {{/ekNo}}
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <div style="width: 20%; text-align: left;">
               {{#solLogo}}<img src="{{.}}" style="max-width: 80px; max-height: 80px;">{{/solLogo}}
@@ -185,6 +179,11 @@
     <tbody>
       <tr>
         <td>
+          {{#ekNo}}
+          <div style="text-align: right; font-weight: bold; font-size: 11pt; margin-bottom: 10px;">
+            {{ekNo}}
+          </div>
+          {{/ekNo}}
           <!-- MAIN CONTENT PLACEHOLDER -->
           {{> content }}
         </td>

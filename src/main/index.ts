@@ -648,9 +648,7 @@ if (!gotTheLock && !isMultiInstance) {
         
         const pdfData = await win.webContents.printToPDF({
           printBackground: true,
-          displayHeaderFooter: true,
-          headerTemplate: '<div></div>',
-          footerTemplate: '<div style="font-size: 10px; width: 100%; text-align: center; padding-bottom: 5px;"><span class="pageNumber"></span>/<span class="totalPages"></span></div>'
+          displayHeaderFooter: false
         })
         
         fs.writeFileSync(filePath, pdfData)
