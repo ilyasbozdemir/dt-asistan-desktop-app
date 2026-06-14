@@ -130,34 +130,48 @@ function seedTemplates(db: Database.Database): void {
       const file = path.basename(filePath)
       const content = fs.readFileSync(filePath, 'utf-8')
       
+      let dosya_adi = file
       let ad = file.replace('.html', '').replace(/-/g, ' ').toUpperCase()
-      if (file === 'ihtiyac-listesi.html') ad = 'İHTİYAÇ LİSTESİ' 
       
       let kategori = 'Genel Şablonlar'
       const parentDir = path.basename(path.dirname(filePath))
+      
+      if (file === 'index.html' && parentDir && parentDir !== 'templates') {
+        dosya_adi = `${parentDir}.html`
+        ad = parentDir.replace(/-/g, ' ').toUpperCase()
+      }
+
+      if (ad === 'IHTIYAC LISTESI') ad = 'İHTİYAÇ LİSTESİ' 
+
       if (parentDir !== 'templates') {
         // Kategori adını klasör adından (örn: 1-ihtiyac-tespiti -> İhtiyaç Tespiti) oluştur
-        const parts = parentDir.split('-')
-        if (parts.length > 1 && !isNaN(parseInt(parts[0], 10))) {
-          const no = parts[0]
-          const name = parts.slice(1).map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join(' ')
-          kategori = `${no}. ${name}`
-        } else {
-          kategori = parentDir.charAt(0).toUpperCase() + parentDir.slice(1).replace(/-/g, ' ')
+        // Burada parentDir yerine, kategori klasörünü bulmalıyız
+        const relPath = path.relative(targetDir, filePath)
+        const pathParts = relPath.split(path.sep)
+        if (pathParts.length > 1) {
+          const topLevelFolder = pathParts[0]
+          const parts = topLevelFolder.split('-')
+          if (parts.length > 1 && !isNaN(parseInt(parts[0], 10))) {
+            const no = parts[0]
+            const name = parts.slice(1).map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join(' ')
+            kategori = `${no}. ${name}`
+          } else {
+            kategori = topLevelFolder.charAt(0).toUpperCase() + topLevelFolder.slice(1).replace(/-/g, ' ')
+          }
         }
       }
 
-      const existing = db.prepare('SELECT * FROM TANIM_Sablon WHERE dosya_adi = ?').get(file) as any
+      const existing = db.prepare('SELECT * FROM TANIM_Sablon WHERE dosya_adi = ?').get(dosya_adi) as any
       if (!existing) {
         db.prepare(`
           INSERT INTO TANIM_Sablon (ad, dosya_adi, dosya_turu, icerik, aciklama, aktif_mi, kategori)
           VALUES (?, ?, 'html', ?, ?, 1, ?)
-        `).run(ad, file, content, 'Sistem varsayılan şablonu', kategori)
-        console.log(`[Seed] Seeded default template: ${file} in category: ${kategori}`)
+        `).run(ad, dosya_adi, content, 'Sistem varsayılan şablonu', kategori)
+        console.log(`[Seed] Seeded default template: ${dosya_adi} in category: ${kategori}`)
       } else {
         // Güncelle: İçerik veya kategori değişmiş olabilir
         db.prepare('UPDATE TANIM_Sablon SET kategori = ?, icerik = ? WHERE id = ?').run(kategori, content, existing.id)
-        console.log(`[Seed] Updated template: ${file}`)
+        console.log(`[Seed] Updated template: ${dosya_adi}`)
       }
     }
   } catch (err: any) {

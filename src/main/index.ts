@@ -816,6 +816,12 @@ if (!gotTheLock && !isMultiInstance) {
               if (found) return found
             } else if (file === fileName) {
               return filePath
+            } else if (file === 'index.html' && fileName === `${dir.split(/[\\/]/).pop()}.html`) {
+              return filePath
+            } else if (file === 'index.html.json' && fileName === `${dir.split(/[\\/]/).pop()}.html.json`) {
+              return filePath
+            } else if (file === 'index.json' && fileName === `${dir.split(/[\\/]/).pop()}.html.json`) {
+              return filePath
             }
           }
         } catch (e) {
