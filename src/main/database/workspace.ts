@@ -116,7 +116,7 @@ function seedTemplates(db: Database.Database): void {
           const exists = db.prepare('SELECT 1 FROM TANIM_Sablon WHERE dosya_adi = ?').get(file)
           if (!exists) {
             let ad = file.replace('.html', '').replace(/-/g, ' ').toUpperCase()
-            if (file === 'ihtiyac-listesi.html') ad = 'İHTİYAÇ LİSTESİ' // Özel çeviri
+            if (file === 'ihtiyac-listesi.html') ad = 'İHTİYAÇ LİSTESİ' 
             
             db.prepare(`
               INSERT INTO TANIM_Sablon (ad, dosya_adi, dosya_turu, icerik, aciklama, aktif_mi)

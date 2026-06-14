@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { Table } from '@tiptap/extension-table'
@@ -19,6 +19,25 @@ interface A4EditorProps {
 
 export function A4Editor({ content, onChange, readOnly = false }: A4EditorProps): React.JSX.Element {
   const [isRawMode, setIsRawMode] = useState(false)
+  
+  const getInnerAndShell = (html: string) => {
+    const bodyMatch = html.match(/(<body[^>]*>)([\s\S]*?)(<\/body>)/i)
+    if (bodyMatch) {
+      const bodyTag = bodyMatch[1]
+      const bodyClose = bodyMatch[3]
+      const prefixIndex = html.indexOf(bodyTag) + bodyTag.length
+      const suffixIndex = html.lastIndexOf(bodyClose)
+      return {
+        inner: html.substring(prefixIndex, suffixIndex),
+        prefix: html.substring(0, prefixIndex),
+        suffix: html.substring(suffixIndex)
+      }
+    }
+    return { inner: html, prefix: '', suffix: '' }
+  }
+
+  const [initialShell] = useState(() => getInnerAndShell(content))
+  const shellRef = useRef({ prefix: initialShell.prefix, suffix: initialShell.suffix })
 
   const editor = useEditor({
     extensions: [
@@ -33,17 +52,26 @@ export function A4Editor({ content, onChange, readOnly = false }: A4EditorProps)
       TableHeader,
       TableCell,
     ],
-    content,
+    content: getInnerAndShell(content).inner,
     editable: !readOnly,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML())
+      const newHtml = editor.getHTML()
+      if (shellRef.current.prefix || shellRef.current.suffix) {
+        onChange(shellRef.current.prefix + newHtml + shellRef.current.suffix)
+      } else {
+        onChange(newHtml)
+      }
     },
   })
 
-  // Update content if changed externally (e.g., initial load)
+  // Update content if changed externally (e.g., initial load or mode switch)
   useEffect(() => {
-    if (editor && content !== editor.getHTML() && !isRawMode) {
-      editor.commands.setContent(content)
+    if (editor && !isRawMode) {
+      const { inner, prefix, suffix } = getInnerAndShell(content)
+      shellRef.current = { prefix, suffix }
+      if (inner !== editor.getHTML()) {
+        editor.commands.setContent(inner, false)
+      }
     }
   }, [content, editor, isRawMode])
 

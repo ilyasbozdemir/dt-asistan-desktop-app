@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 
 import Mustache from 'mustache'
 import { Panel, Group as PanelGroup, Separator as PanelResizeHandle } from 'react-resizable-panels'
@@ -27,41 +27,31 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
   const [ad, setAd] = useState(sablon?.ad || '')
   const [dosyaAdi, setDosyaAdi] = useState(sablon?.dosya_adi || '')
   const [aciklama, setAciklama] = useState(sablon?.aciklama || '')
-  const [htmlCode, setHtmlCode] = useState(sablon?.icerik || `<p>Merhaba, {{firma_adi}}!</p>`)
+  const [htmlCode, setHtmlCode] = useState(sablon?.icerik || `<p>Merhaba, {{ffirma_adi}}!</p>`)
   const [testJson, setTestJson] = useState(`{\n  "firma_adi": "Test Firması A.Ş.",\n  "kurumIci": false\n}`)
-  const [parsedData, setParsedData] = useState<Record<string, any>>({})
   const [activeTab, setActiveTab] = useState<'design' | 'preview'>('design')
   const iframeRef = useRef<HTMLIFrameElement>(null)
   
   const { data: placeholders } = usePlaceholders()
   const saveSablon = useSaveSablon()
 
-  // Parse JSON real-time
-  useEffect(() => {
+  const parsedData = React.useMemo(() => {
     try {
-      const data = JSON.parse(testJson)
-      setParsedData(data)
+      return JSON.parse(testJson)
     } catch {
-      // do nothing, wait for valid json
+      // return empty or keep previous? A simple fallback is {}
+      return {}
     }
   }, [testJson])
 
-  // Update preview real-time
-  useEffect(() => {
-    if (iframeRef.current) {
-      const doc = iframeRef.current.contentDocument
-      if (doc) {
-        doc.open()
-        try {
-          const finalHtml = Mustache.render(htmlCode, parsedData)
-          doc.write(finalHtml)
-        } catch (e) {
-          doc.write(`<div style="color:red;padding:20px;">Şablon Hatası: ${e}</div>`)
-        }
-        doc.close()
-      }
+  // Calculate final HTML synchronously so iframe instantly updates via srcDoc
+  const finalHtmlForPreview = (() => {
+    try {
+      return Mustache.render(htmlCode, parsedData)
+    } catch (e) {
+      return `<div style="color:red;padding:20px;">Şablon Hatası: ${e}</div>`
     }
-  }, [htmlCode, parsedData])
+  })()
 
   const handleImportDocx = async () => {
     try {
@@ -264,6 +254,7 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
                     <iframe
                       ref={iframeRef}
                       title="preview"
+                      srcDoc={finalHtmlForPreview}
                       className="w-full h-full border-0 absolute inset-0"
                       sandbox="allow-same-origin"
                     />
