@@ -1,6 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { donemTarihAraligiUret, VARSAYILAN_EKAP_DONEM_KURALI } from '../../constants/madde-22d-donemler'
-import { useSettingsStore } from '../../store/settingsStore'
 
 export interface LimitDonemKaydi {
   id?: number
@@ -9,10 +7,10 @@ export interface LimitDonemKaydi {
   bitis_tarihi: string
   buyuksehir_limit: number
   diger_limit: number
-  guncelleme_orani?: string
   kaynak?: string
 }
 
+// Yeni eklenen dönemin mevcut dönemlerle tarih olarak çakışıp çakışmadığını kontrol eder
 export function cakisanDonemBul(yeniDonem: LimitDonemKaydi, mevcutDonemler: LimitDonemKaydi[]): LimitDonemKaydi | null {
   const yeniBas = new Date(yeniDonem.baslangic_tarihi).getTime()
   const yeniBit = new Date(yeniDonem.bitis_tarihi).getTime()
@@ -30,14 +28,14 @@ export function cakisanDonemBul(yeniDonem: LimitDonemKaydi, mevcutDonemler: Limi
   return null
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useKikLimitDonemleri() {
   const queryClient = useQueryClient()
-  const settings = useSettingsStore()
 
   // Dönem listesini çek
   const { data: donemler = [], isLoading } = useQuery<LimitDonemKaydi[]>({
     queryKey: ['kikLimitDonemleri'],
-    queryFn: async () => {
+    queryFn: async (): Promise<LimitDonemKaydi[]> => {
       const res = await window.electron.ipcRenderer.invoke(
         'db:query',
         'SELECT * FROM TANIM_KikLimitDonemleri ORDER BY donem_kodu DESC'
@@ -49,26 +47,27 @@ export function useKikLimitDonemleri() {
 
   // Yeni dönem ekle
   const addMutation = useMutation({
-    mutationFn: async (input: { donem_kodu: string; buyuksehir_limit: number; diger_limit: number }) => {
-      const ekapKuraliStr = settings.ekapDonemKurali
-      const ekapKurali = ekapKuraliStr 
-        ? JSON.parse(ekapKuraliStr)
-        : VARSAYILAN_EKAP_DONEM_KURALI
-
-      const { baslangic_tarihi, bitis_tarihi } = donemTarihAraligiUret(input.donem_kodu, ekapKurali)
-
+    mutationFn: async (input: { donem_kodu: string; baslangic_tarihi: string; bitis_tarihi: string; buyuksehir_limit: number; diger_limit: number }): Promise<any> => {
       const donem: LimitDonemKaydi = {
         donem_kodu: input.donem_kodu,
-        baslangic_tarihi,
-        bitis_tarihi,
+        baslangic_tarihi: input.baslangic_tarihi,
+        bitis_tarihi: input.bitis_tarihi,
         buyuksehir_limit: input.buyuksehir_limit,
         diger_limit: input.diger_limit
+      }
+
+      if (!donem.baslangic_tarihi || !donem.bitis_tarihi) {
+        throw new Error('Başlangıç ve bitiş tarihi girilmelidir.')
+      }
+
+      if (donem.baslangic_tarihi > donem.bitis_tarihi) {
+        throw new Error('Başlangıç tarihi bitiş tarihinden büyük olamaz.')
       }
 
       const cakisan = cakisanDonemBul(donem, donemler)
       if (cakisan) {
         throw new Error(
-          `"${input.donem_kodu}" dönemi için hesaplanan tarih aralığı (${baslangic_tarihi} - ${bitis_tarihi}), ` +
+          `"${input.donem_kodu}" dönemi için girilen tarih aralığı (${donem.baslangic_tarihi} - ${donem.bitis_tarihi}), ` +
           `"${cakisan.donem_kodu}" dönemi (${cakisan.baslangic_tarihi} - ${cakisan.bitis_tarihi}) ile çakışıyor.`
         )
       }
@@ -89,12 +88,12 @@ export function useKikLimitDonemleri() {
       if (!res.success) throw new Error(res.error)
       return res
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['kikLimitDonemleri'] })
+    onSuccess: (): void => { queryClient.invalidateQueries({ queryKey: ['kikLimitDonemleri'] }) }
   })
 
   // Sil
   const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: number): Promise<any> => {
       const res = await window.electron.ipcRenderer.invoke(
         'db:run',
         'DELETE FROM TANIM_KikLimitDonemleri WHERE id = ?',
@@ -103,7 +102,7 @@ export function useKikLimitDonemleri() {
       if (!res.success) throw new Error(res.error)
       return res
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['kikLimitDonemleri'] })
+    onSuccess: (): void => { queryClient.invalidateQueries({ queryKey: ['kikLimitDonemleri'] }) }
   })
 
   // Tarihe göre aktif dönemi getir (örn: "2026-06-15" string yyyy-MM-dd veya Date objesi)
@@ -123,7 +122,7 @@ export function useKikLimitDonemleri() {
     for (const d of donemler) {
       const bas = new Date(d.baslangic_tarihi).getTime()
       const bit = new Date(d.bitis_tarihi).getTime()
-      const bitKapsam = bit + (24 * 60 * 60 * 1000) - 1 // Gece 23:59:59.999
+      const bitKapsam = bit + 24 * 60 * 60 * 1000 - 1 // Gece 23:59:59.999
 
       if (tTime >= bas && tTime <= bitKapsam) {
         return d
@@ -133,12 +132,12 @@ export function useKikLimitDonemleri() {
   }
 
   // Kritik hata kontrolü: "Dönem Tanımsız Mı?"
-  const donemTanimsizMi = (tarih?: string | Date) => {
+  const donemTanimsizMi = (tarih?: string | Date): boolean => {
     return getAktifDonem(tarih) === null
   }
 
   // Erken Uyarı Kontrolü (22-31 Ocak arası)
-  const yaklasanDonemUyarisiGosterilsinMi = () => {
+  const yaklasanDonemUyarisiGosterilsinMi = (): boolean => {
     const today = new Date()
     const month = today.getMonth() + 1 // 1-12
     const day = today.getDate()
@@ -146,7 +145,7 @@ export function useKikLimitDonemleri() {
     if (month === 1 && day >= 22 && day <= 31) {
       // Belki yeni dönemi çoktan eklediler mi diye kontrol edelim?
       const nextYear = (today.getFullYear() + 1).toString()
-      const hasNextPeriod = donemler.some(d => d.donem_kodu === nextYear)
+      const hasNextPeriod = donemler.some((d) => d.donem_kodu === nextYear)
       if (!hasNextPeriod) {
         return true
       }

@@ -9,9 +9,25 @@ export function KikLimitleriSection(): React.JSX.Element {
   const { ekapDonemKurali } = useSettingsStore()
   
   const [newDonemKodu, setNewDonemKodu] = useState('')
+  const [newBaslangic, setNewBaslangic] = useState('')
+  const [newBitis, setNewBitis] = useState('')
   const [newBuyuksehir, setNewBuyuksehir] = useState('')
   const [newDiger, setNewDiger] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
+
+  // Dönem kodu değiştiğinde başlangıç/bitiş tarihlerini otomatik öner (istenirse elle değiştirilebilir)
+  React.useEffect(() => {
+    if (newDonemKodu.length >= 4) {
+      const kural = ekapDonemKurali ? JSON.parse(ekapDonemKurali) : undefined
+      try {
+        const res = donemTarihAraligiUret(newDonemKodu, kural)
+        setNewBaslangic(res.baslangic_tarihi)
+        setNewBitis(res.bitis_tarihi)
+      } catch (e) {
+        // ignore
+      }
+    }
+  }, [newDonemKodu, ekapDonemKurali])
 
   const handleAdd = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
@@ -25,18 +41,22 @@ export function KikLimitleriSection(): React.JSX.Element {
         return
       }
 
-      if (!newDonemKodu) {
-        setErrorMsg('Lütfen dönem yılı giriniz.')
+      if (!newDonemKodu || !newBaslangic || !newBitis) {
+        setErrorMsg('Lütfen dönem yılı, başlangıç ve bitiş tarihlerini giriniz.')
         return
       }
 
       await addMutation.mutateAsync({
         donem_kodu: newDonemKodu,
+        baslangic_tarihi: newBaslangic,
+        bitis_tarihi: newBitis,
         buyuksehir_limit: bLimit,
         diger_limit: dLimit
       })
 
       setNewDonemKodu('')
+      setNewBaslangic('')
+      setNewBitis('')
       setNewBuyuksehir('')
       setNewDiger('')
     } catch (error: unknown) {
@@ -52,18 +72,6 @@ export function KikLimitleriSection(): React.JSX.Element {
     if (confirm('Bu dönemi silmek istediğinize emin misiniz?')) {
       await deleteMutation.mutateAsync(id)
     }
-  }
-
-  // Önizleme hesabı
-  let previewDates = ''
-  try {
-    if (newDonemKodu.length >= 4) {
-      const kural = ekapDonemKurali ? JSON.parse(ekapDonemKurali) : undefined
-      const res = donemTarihAraligiUret(newDonemKodu, kural)
-      previewDates = `${res.baslangic_tarihi} - ${res.bitis_tarihi}`
-    }
-  } catch(e) {
-    // ignore
   }
 
   const formatCurrency = (val: number) => {
@@ -116,12 +124,28 @@ export function KikLimitleriSection(): React.JSX.Element {
                 className="w-full px-3 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-sm"
               />
             </div>
-            {previewDates && (
-              <div className="text-[10px] text-slate-500 flex items-center gap-1">
-                <CalendarDays className="w-3 h-3" />
-                Geçerlilik: {previewDates}
+            
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Başlangıç Tarihi</label>
+                <input
+                  type="date"
+                  value={newBaslangic}
+                  onChange={e => setNewBaslangic(e.target.value)}
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs"
+                />
               </div>
-            )}
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Bitiş Tarihi</label>
+                <input
+                  type="date"
+                  value={newBitis}
+                  onChange={e => setNewBitis(e.target.value)}
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs"
+                />
+              </div>
+            </div>
+
             <div>
               <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Büyükşehir Limiti (₺)</label>
               <input
