@@ -198,6 +198,14 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
             </h1>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               HTML Şablonunuzu yazın, test verisi girin ve anlık önizleme alın. Yer tutucular için {'{{degisken}}'} kullanın.
+              <br/>
+              <span className="inline-flex items-center gap-1 mt-1 text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded-md border border-blue-100 dark:border-blue-800">
+                💡 Geliştiriciler için web şablon test alanı: 
+                <a href="https://doc-templater.ilyasbozdemir.dev/" target="_blank" rel="noopener noreferrer" className="font-semibold underline hover:text-blue-800 dark:hover:text-blue-300">
+                  doc-templater.ilyasbozdemir.dev
+                </a>
+                (Orada test edip kodunuzu buraya aktarabilirsiniz)
+              </span>
             </p>
           </div>
         </div>
