@@ -60,13 +60,12 @@ export function PdfTab({ isPdfLoading, pdfBase64, handleUpdatePdfPreview }: PdfT
            </div>
          ) : null}
          {pdfUrl ? (
-           <embed
-             title="pdf-preview"
-             type="application/pdf"
-             src={pdfUrl}
-             className="w-full h-full border-0"
-           />
-         ) : (
+          <iframe
+            title="pdf-preview"
+            src={pdfUrl}
+            className="w-full h-full border-0"
+          />
+        ) : (
            <div className="flex flex-col items-center justify-center text-slate-500 h-full">
              <FileText className="w-12 h-12 text-slate-300 mb-3" />
              <p>PDF oluşturmak için Yenile butonuna basın.</p>
