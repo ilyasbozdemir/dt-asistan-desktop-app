@@ -28,6 +28,123 @@
             "birimi": "Adet",
             "kdvOrani": "%10",
             "miktar": 200
+        },
+        {
+            "siraNo": 3,
+            "kodu": "LAB-003",
+            "malzemeAdi": "Laboratuvar Önlüğü",
+            "ozelligi": "Tek Kullanımlık",
+            "birimi": "Adet",
+            "kdvOrani": "%20",
+            "miktar": 100
+        },
+        {
+            "siraNo": 4,
+            "kodu": "LAB-004",
+            "malzemeAdi": "Koruyucu Gözlük",
+            "ozelligi": "Şeffaf",
+            "birimi": "Adet",
+            "kdvOrani": "%20",
+            "miktar": 30
+        },
+        {
+            "siraNo": 5,
+            "kodu": "LAB-005",
+            "malzemeAdi": "Enjektör",
+            "ozelligi": "5 ml",
+            "birimi": "Adet",
+            "kdvOrani": "%10",
+            "miktar": 500
+        },
+        {
+            "siraNo": 6,
+            "kodu": "LAB-006",
+            "malzemeAdi": "Numune Kabı",
+            "ozelligi": "Steril",
+            "birimi": "Adet",
+            "kdvOrani": "%20",
+            "miktar": 300
+        },
+        {
+            "siraNo": 7,
+            "kodu": "LAB-007",
+            "malzemeAdi": "Pipet Ucu",
+            "ozelligi": "1000 µl",
+            "birimi": "Kutu",
+            "kdvOrani": "%20",
+            "miktar": 40
+        },
+        {
+            "siraNo": 8,
+            "kodu": "LAB-008",
+            "malzemeAdi": "Santrifüj Tüpü",
+            "ozelligi": "15 ml",
+            "birimi": "Paket",
+            "kdvOrani": "%20",
+            "miktar": 60
+        },
+        {
+            "siraNo": 9,
+            "kodu": "LAB-009",
+            "malzemeAdi": "Lam",
+            "ozelligi": "Mikroskop Camı",
+            "birimi": "Kutu",
+            "kdvOrani": "%20",
+            "miktar": 25
+        },
+        {
+            "siraNo": 10,
+            "kodu": "LAB-010",
+            "malzemeAdi": "Lamel",
+            "ozelligi": "22x22 mm",
+            "birimi": "Kutu",
+            "kdvOrani": "%20",
+            "miktar": 20
+        },
+        {
+            "siraNo": 11,
+            "kodu": "LAB-011",
+            "malzemeAdi": "Dezenfektan",
+            "ozelligi": "1 Litre",
+            "birimi": "Şişe",
+            "kdvOrani": "%20",
+            "miktar": 75
+        },
+        {
+            "siraNo": 12,
+            "kodu": "LAB-012",
+            "malzemeAdi": "Alkol Bazlı El Antiseptiği",
+            "ozelligi": "500 ml",
+            "birimi": "Şişe",
+            "kdvOrani": "%20",
+            "miktar": 120
+        },
+        {
+            "siraNo": 13,
+            "kodu": "LAB-013",
+            "malzemeAdi": "Biyolojik Atık Torbası",
+            "ozelligi": "Kırmızı",
+            "birimi": "Paket",
+            "kdvOrani": "%20",
+            "miktar": 35
+        },
+        {
+            "siraNo": 14,
+            "kodu": "LAB-014",
+            "malzemeAdi": "Kan Alma İğnesi",
+            "ozelligi": "21G",
+            "birimi": "Adet",
+            "kdvOrani": "%10",
+            "miktar": 1000
+        },
+        {
+            "siraNo": 15,
+            "kodu": "LAB-015",
+            "malzemeAdi": "PCR Tüpü",
+            "ozelligi": "0.2 ml",
+            "birimi": "Paket",
+            "kdvOrani": "%20",
+            "miktar": 50
         }
     ],
     "dosyaTarihi": "14.06.2026",

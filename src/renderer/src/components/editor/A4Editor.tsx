@@ -70,7 +70,7 @@ export function A4Editor({ content, onChange, readOnly = false }: A4EditorProps)
       const { inner, prefix, suffix } = getInnerAndShell(content)
       shellRef.current = { prefix, suffix }
       if (inner !== editor.getHTML()) {
-        editor.commands.setContent(inner, false)
+        editor.commands.setContent(inner, { emitUpdate: false } as any)
       }
     }
   }, [content, editor, isRawMode])

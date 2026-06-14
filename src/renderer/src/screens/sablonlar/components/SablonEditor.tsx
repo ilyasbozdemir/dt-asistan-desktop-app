@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react'
+import React, { useState, useRef } from 'react'
 
 import Mustache from 'mustache'
 import { Panel, Group as PanelGroup, Separator as PanelResizeHandle } from 'react-resizable-panels'
@@ -14,7 +14,7 @@ import {
   Eye
 } from 'lucide-react'
 import { Button } from '../../../components/ui/Button'
-import { Sablon, useSaveSablon, usePlaceholders } from '../sablonlar.hooks'
+import { Sablon, useSaveSablon } from '../sablonlar.hooks'
 import { A4Editor } from '../../../components/editor/A4Editor'
 
 const ResizeHandle = () => (
@@ -32,7 +32,7 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
   const [activeTab, setActiveTab] = useState<'design' | 'preview'>('design')
   const iframeRef = useRef<HTMLIFrameElement>(null)
   
-  const { data: placeholders } = usePlaceholders()
+  
   const saveSablon = useSaveSablon()
 
   const parsedData = React.useMemo(() => {
@@ -87,27 +87,10 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
       return
     }
 
-    // Değişken Taraması (Regex ile {{degisken_adi}} ve Mustache döngüleri {{#dizi}})
-    const matches = Array.from(htmlCode.matchAll(/\{\{\s*[#/^]?\s*([a-zA-Z0-9_]+)\s*\}\}/g))
-    // Benzersiz değişken isimlerini çıkar
-    const uniqueVars = Array.from(new Set(matches.map(m => m[1])))
-
-    if (!placeholders) {
-      alert('Sistem değişkenleri yüklenemedi.')
-      return
-    }
-
-    const missingVars = uniqueVars.filter(v => !placeholders.find(p => p.anahtar === v))
-    
-    if (missingVars.length > 0) {
-      const confirmMissing = confirm(`UYARI! Şablonda sistemde kayıtlı olmayan değişkenler var:\n${missingVars.map(v => '{{' + v + '}}').join(', ')}\n\nBu şekilde kaydedilirse bu değişkenler otomatik doldurulmayabilir. Yine de kaydetmek istiyor musunuz?`)
-      if (!confirmMissing) return
-    } else {
-      const isConfirmed = confirm(
-        `Bu şablon şu değişkenleri kullanıyor:\n${uniqueVars.map(v => '{{' + v + '}}').join(', ')}\n\n${sablon ? 'Yeni bir versiyon (v' + (sablon.versiyon + 1) + ') oluşturulacak.' : 'Yeni şablon oluşturulacak.'}\nOnaylıyor musunuz?`
-      )
-      if (!isConfirmed) return
-    }
+    const isConfirmed = confirm(
+      sablon ? `Yeni bir versiyon (v${sablon.versiyon + 1}) oluşturulacak.\nOnaylıyor musunuz?` : 'Yeni şablon oluşturulacak.\nOnaylıyor musunuz?'
+    )
+    if (!isConfirmed) return
 
     saveSablon.mutate({
       ad,
@@ -116,7 +99,7 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
       icerik: htmlCode,
       aciklama,
       oldSablon: sablon,
-      extractedPlaceholders
+      extractedPlaceholders: []
     }, {
       onSuccess: () => {
         alert('Şablon başarıyla kaydedildi!')

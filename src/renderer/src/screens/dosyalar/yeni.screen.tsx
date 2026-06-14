@@ -798,7 +798,7 @@ export default function YeniDosyaScreen(): React.JSX.Element {
             <div className="p-8 text-center text-sm text-slate-500 italic">Bilgiler yükleniyor...</div>
           ) : (
             <>
-              {donemTanimsizMi(formData.dosya_acilis_tarihi) && (
+              {donemTanimsizMi(formData.dosya_acilis_tarihi || undefined) && (
                 <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded-r-xl mb-6 shadow-sm">
                   <div className="flex items-start gap-3">
                     <div className="bg-red-100 dark:bg-red-900/50 p-2 rounded-lg">

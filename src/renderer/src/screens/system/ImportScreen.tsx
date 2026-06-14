@@ -234,7 +234,7 @@ export default function ImportScreen(): React.JSX.Element {
               </div>
             )}
 
-            <Button onClick={handleParse} className="w-full mt-4" disabled={!jsonText.trim()} variant="primary">
+            <Button onClick={handleParse} className="w-full mt-4" disabled={!jsonText.trim()} variant="default">
               <FileJson className="w-4 h-4 mr-2" />
               Veriyi Oku ve Eşleştir
             </Button>

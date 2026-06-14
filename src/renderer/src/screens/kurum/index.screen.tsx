@@ -5,7 +5,6 @@ import { Input } from '../../components/ui/Input'
 import { Building2, Save, Upload, MapPin, ImageIcon, Info, X, ExternalLink, Plus } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { FINANSMAN_KODLARI } from '../../constants/butce-kodlari'
-import { DTVTKoduLabels } from '../../constants/dtvt-kodlari'
 import { InnerMenu, InnerMenuItem } from '../../components/ui/InnerMenu'
 import { useSettingsStore } from '../../store/settingsStore'
 

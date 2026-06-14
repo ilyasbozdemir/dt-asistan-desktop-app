@@ -3,7 +3,7 @@ import { useBirimlerHooks, BirimInput, usePersonelList } from './birimler.hooks'
 import { useAyarlarHooks } from '../ayarlar/ayarlar.hooks'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
-import { LayoutGrid, Plus, Trash2, Edit2, ChevronDown, ChevronUp, Hash, Users, MapPin, Type, AlignLeft, User, Building, Calendar, Info } from 'lucide-react'
+import { LayoutGrid, Plus, Trash2, Edit2, ChevronDown, ChevronUp, Hash, Users, MapPin, Type, AlignLeft, User, Building, Calendar, Info, ExternalLink } from 'lucide-react'
 
 import { Modal } from '../../components/ui/Modal'
 
@@ -43,7 +43,7 @@ export default function BirimlerScreen(): React.ReactNode {
   const [editingBirimId, setEditingBirimId] = useState<number | null>(null)
   
   // Placeholder for kurumsalKodlar as per instruction logic
-  const kurumsalKodlar: { kod: string; aciklama: string }[] = []
+  // const kurumsalKodlar: { kod: string; aciklama: string }[] = []
 
   const handleChange = (key: keyof BirimInput, value: string | number | null): void => {
     setForm((prev) => ({ ...prev, [key]: value }))

@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import { Info, Plus, CalendarDays, AlertTriangle, Edit2 } from 'lucide-react'
+import { Info, Plus, AlertTriangle, Edit2 } from 'lucide-react'
 import { useKikLimitDonemleri, LimitDonemKaydi } from './kik-limitleri.hooks'
 import { donemTarihAraligiUret } from '../../constants/madde-22d-donemler'
 import { useSettingsStore } from '../../store/settingsStore'
 
 export function KikLimitleriSection(): React.JSX.Element {
-  const { donemler, isLoading, addMutation, deleteMutation, yaklasanDonemUyarisiGosterilsinMi } = useKikLimitDonemleri()
+  const { donemler, isLoading, addMutation, yaklasanDonemUyarisiGosterilsinMi } = useKikLimitDonemleri()
   const { ekapDonemKurali } = useSettingsStore()
   
   const [newDonemKodu, setNewDonemKodu] = useState('')
