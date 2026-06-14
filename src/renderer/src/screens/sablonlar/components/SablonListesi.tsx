@@ -87,7 +87,7 @@ export function SablonListesi({ onEdit, onCreate }: { onEdit: (s: Sablon) => voi
       <div className="flex-1 overflow-auto">
         {isLoading ? (
           <div className="flex items-center justify-center h-full text-slate-500">Yükleniyor...</div>
-        ) : sablonlar?.length === 0 ? (
+        ) : !sablonlar || sablonlar.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-slate-500 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
             <LayoutTemplate className="w-12 h-12 mb-2 text-slate-300" />
             <p>Henüz şablon bulunmuyor.</p>
@@ -95,7 +95,7 @@ export function SablonListesi({ onEdit, onCreate }: { onEdit: (s: Sablon) => voi
         ) : (
           <div className="flex flex-col gap-8 pb-8">
             {Object.entries(
-              sablonlar!.reduce((acc, sablon) => {
+              sablonlar.reduce((acc, sablon) => {
                 const kat = sablon.kategori || 'Genel Şablonlar'
                 if (!acc[kat]) acc[kat] = []
                 acc[kat].push(sablon)

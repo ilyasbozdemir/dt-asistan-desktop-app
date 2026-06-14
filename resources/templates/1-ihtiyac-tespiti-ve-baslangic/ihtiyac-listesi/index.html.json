@@ -144,6 +144,14 @@
         }
     ],
     "dosyaTarihi": "14.06.2026",
-    "onaylayanPersonelAdi": "Dr. Mehmet Demir",
-    "onaylayanPersonelUnvan": "İl Sağlık Müdürü"
+    "onaylayanlar": [
+        {
+            "onaylayanPersonelAdi": "Dr. Mehmet Demir",
+            "onaylayanPersonelUnvan": "İl Sağlık Müdürü"
+        },
+        {
+            "onaylayanPersonelAdi": "Ahmet Yılmaz",
+            "onaylayanPersonelUnvan": "Satınalma Müdürü"
+        }
+    ]
 }

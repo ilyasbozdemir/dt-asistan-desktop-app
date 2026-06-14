@@ -43,11 +43,13 @@
   </tbody>
 </table>
 
-<div class="signature">
-  <div style="display: inline-block; text-align: center;">
+<div class="signature" style="display: flex; justify-content: space-around; margin-top: 40px; gap: 20px; flex-wrap: wrap;">
+  {{#onaylayanlar}}
+  <div style="display: inline-block; text-align: center; min-width: 200px;">
     OLUR<br>
     {{dosyaTarihi}}<br><br>
     {{onaylayanPersonelAdi}}<br>
     {{onaylayanPersonelUnvan}}
   </div>
+  {{/onaylayanlar}}
 </div>

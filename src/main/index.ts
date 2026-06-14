@@ -648,7 +648,9 @@ if (!gotTheLock && !isMultiInstance) {
         
         const pdfData = await win.webContents.printToPDF({
           printBackground: true,
-          displayHeaderFooter: false
+          displayHeaderFooter: true,
+          headerTemplate: '<div></div>',
+          footerTemplate: '<div style="font-size: 9px; color: #555; width: 100%; text-align: right; padding-right: 1.5cm; padding-bottom: 0.5cm;">Sayfa <span class="pageNumber"></span> / <span class="totalPages"></span></div>'
         })
         
         fs.writeFileSync(filePath, pdfData)
