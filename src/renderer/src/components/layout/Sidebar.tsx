@@ -23,7 +23,7 @@ import {
   Compass,
   FileCheck,
   CreditCard,
-        } from 'lucide-react'
+} from 'lucide-react'
 import { cn } from '../../utils/cn'
 import { useSettingsStore } from '../../store/settingsStore'
 import { useWorkspaceStore } from '../../store/workspaceStore'
@@ -95,14 +95,15 @@ const menuGroups: MenuGroup[] = [
     items: [
       { name: 'Raporlar', path: '/raporlar', icon: BarChart3 },
       { name: 'Şablon Yönetimi', path: '/sablonlar', icon: FileText },
-      { name: 'Toplu İçe Aktarma', path: '/import', icon: Database },
       { name: 'Sürüm Notları', path: '/changelog', icon: Megaphone },
       {
         name: 'Ayarlar',
         icon: Settings,
         children: [
           { name: 'Genel Ayarlar', path: '/ayarlar', icon: Settings },
-          { name: 'Mevzuat ve Parametreler', path: '/mevzuat', icon: Scale }
+          { name: 'Mevzuat ve Parametreler', path: '/mevzuat', icon: Scale },
+          { name: 'Toplu İçe Aktarma', path: '/import', icon: Database },
+
         ]
       }
     ]
@@ -155,7 +156,7 @@ export function Sidebar(): React.JSX.Element {
   // Get active file and its type
   const { dosyalar } = useDosyalarHooks()
   const activeDosya = dosyalar.find((d) => d.id === activeDosyaId)
-  
+
   // Fetch Alım Türü configs from DB
   interface DbAlimTuru {
     id: string
@@ -174,7 +175,7 @@ export function Sidebar(): React.JSX.Element {
         let parsedBelgeler = []
         try {
           parsedBelgeler = typeof d.belgeler === 'string' ? JSON.parse(d.belgeler) : (d.belgeler || [])
-        } catch(e) {
+        } catch (e) {
           console.error(e)
         }
         return {
@@ -190,14 +191,14 @@ export function Sidebar(): React.JSX.Element {
 
   const activeAlimTuru = activeDosya
     ? dbAlimTurleri.find((t) => {
-        const fileTur = activeDosya.tur?.toLowerCase()
-        const dbTur = t.ad?.toLowerCase() || ''
-        if (fileTur === 'mal' && dbTur.includes('mal')) return true
-        if (fileTur === 'hizmet' && dbTur.includes('hizmet')) return true
-        if (fileTur === 'yapim_isi' && (dbTur.includes('yapım') || dbTur.includes('yapim'))) return true
-        if (fileTur === 'danismanlik' && (dbTur.includes('danışmanlık') || dbTur.includes('danismanlik'))) return true
-        return dbTur === fileTur
-      })
+      const fileTur = activeDosya.tur?.toLowerCase()
+      const dbTur = t.ad?.toLowerCase() || ''
+      if (fileTur === 'mal' && dbTur.includes('mal')) return true
+      if (fileTur === 'hizmet' && dbTur.includes('hizmet')) return true
+      if (fileTur === 'yapim_isi' && (dbTur.includes('yapım') || dbTur.includes('yapim'))) return true
+      if (fileTur === 'danismanlik' && (dbTur.includes('danışmanlık') || dbTur.includes('danismanlik'))) return true
+      return dbTur === fileTur
+    })
     : null
 
   // Map sidebar item paths to required document keywords
@@ -263,13 +264,13 @@ export function Sidebar(): React.JSX.Element {
   const dynamicActiveItems: MenuItem[] = stagesToUse.map((asama) => {
     // Filter subpages that correspond to this stage index
     const stagePages = subPagesMapping.filter((p) => p.stage === asama.asama_sira)
-    
+
     // Filter based on activeAlimTuru's documents requirement (dynamic document list)
     const filteredChildren = stagePages.filter((child) => {
       if (!activeAlimTuru) return true
       const reqDocs = documentPathMapping[child.path]
       if (!reqDocs) return true
-      return reqDocs.some((docName) => 
+      return reqDocs.some((docName) =>
         activeAlimTuru.belgeler.some((b) => {
           const documentName = typeof b === 'string' ? b : (b?.ad || '')
           return documentName.toLowerCase().includes(docName.toLowerCase()) || docName.toLowerCase().includes(documentName.toLowerCase())
@@ -296,17 +297,17 @@ export function Sidebar(): React.JSX.Element {
     items: dynamicActiveItems
   } : null
 
-  const finalMenuGroups = activeGroup 
+  const finalMenuGroups = activeGroup
     ? [
-        {
-          title: 'Dosya Navigasyonu',
-          items: [
-            ...(!isDosyaWindowMode ? [{ name: '⬅ Tüm Teminlere Dön', path: '/dosyalar', icon: ChevronLeft, onClick: () => setActiveDosyaId(null) }] : []),
-            { name: 'Süreç Takip & Durum', path: '/takip', icon: ClipboardList }
-          ]
-        },
-        activeGroup
-      ]
+      {
+        title: 'Dosya Navigasyonu',
+        items: [
+          ...(!isDosyaWindowMode ? [{ name: '⬅ Tüm Teminlere Dön', path: '/dosyalar', icon: ChevronLeft, onClick: () => setActiveDosyaId(null) }] : []),
+          { name: 'Süreç Takip & Durum', path: '/takip', icon: ClipboardList }
+        ]
+      },
+      activeGroup
+    ]
     : menuGroups
 
   return (

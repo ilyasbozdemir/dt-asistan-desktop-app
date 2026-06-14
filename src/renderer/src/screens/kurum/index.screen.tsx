@@ -263,7 +263,7 @@ export default function KurumScreen(): React.JSX.Element {
                       </p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                      <div>
+                      <div className="md:col-span-2">
                         <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
                           Kurum Adı
                         </label>
@@ -274,32 +274,7 @@ export default function KurumScreen(): React.JSX.Element {
                           className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-xs"
                         />
                       </div>
-                      {/* e-Bütçe Kodu */}
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5 flex items-center gap-1.5">
-                          e-Bütçe Kodu
-                        </label>
-                        <Input
-                          value={eButceKodu}
-                          onChange={(e) => setEButceKodu(e.target.value)}
-                          placeholder="Örn: 46.70.97"
-                          className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-xs"
-                        />
-                      </div>
-
-                      {/* Say2000i Kodu */}
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5 flex items-center gap-1.5">
-                          Say2000i Kodu
-                          <span className="text-[9px] font-normal text-slate-400">(İsteğe Bağlı)</span>
-                        </label>
-                        <Input
-                          value={say2000iKodu}
-                          onChange={(e) => setSay2000iKodu(e.target.value)}
-                          placeholder="Say2000i Kodu"
-                          className="bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-xs"
-                        />
-                      </div>
+                 
                       <div className="md:col-span-2">
                         <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1 flex items-center gap-1.5">
                           Kurum Anteti
@@ -447,13 +422,36 @@ export default function KurumScreen(): React.JSX.Element {
                             <Building2 className="w-4 h-4 text-blue-500" />
                             Mali ve Muhasebe Birim Bilgileri
                           </h3>
-                          <Link
-                            to="/mevzuat"
-                            className="text-[11px] font-semibold flex items-center gap-1.5 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/30 px-2 py-1.5 rounded-lg border border-blue-100 dark:border-blue-800/50 transition-colors"
-                          >
-                            <ExternalLink className="w-3.5 h-3.5" />
-                            Kod Listelerini Yönet
-                          </Link>
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                try {
+                                  await window.electron.ipcRenderer.invoke('db:run', `
+                                    DELETE FROM TANIM_KodSozlugu 
+                                    WHERE id NOT IN (
+                                      SELECT MIN(id) 
+                                      FROM TANIM_KodSozlugu 
+                                      GROUP BY tur, kod, aciklama
+                                    )
+                                  `)
+                                  alert('Tekrar eden kayıtlar başarıyla temizlendi. İşlemin etkili olması için lütfen uygulamayı veya bulunduğunuz ekranı yenileyin.')
+                                } catch (err) {
+                                  alert('Hata: ' + err)
+                                }
+                              }}
+                              className="text-[11px] font-semibold flex items-center gap-1.5 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/30 px-2 py-1.5 rounded-lg border border-red-100 dark:border-red-800/50 transition-colors"
+                            >
+                              Tekrar Edenleri Temizle
+                            </button>
+                            <Link
+                              to="/mevzuat"
+                              className="text-[11px] font-semibold flex items-center gap-1.5 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/30 px-2 py-1.5 rounded-lg border border-blue-100 dark:border-blue-800/50 transition-colors"
+                            >
+                              <ExternalLink className="w-3.5 h-3.5" />
+                              Kod Listelerini Yönet
+                            </Link>
+                          </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
@@ -466,7 +464,7 @@ export default function KurumScreen(): React.JSX.Element {
                             <Input
                               value={eButceKodu}
                               onChange={(e) => setEButceKodu(e.target.value)}
-                              placeholder="Örn: 46.70.97"
+                              placeholder="Örn: xx.yy.zz"
                               className="w-full bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-xs"
                             />
                             <p className="text-[10px] text-slate-400 mt-1 leading-normal">
@@ -482,7 +480,7 @@ export default function KurumScreen(): React.JSX.Element {
                             <Input
                               value={say2000iKodu}
                               onChange={(e) => setSay2000iKodu(e.target.value)}
-                              placeholder="Örn: 70XXX"
+                              placeholder="Örn: XXYY"
                               className="w-full bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-xs"
                             />
                             <p className="text-[10px] text-slate-400 mt-1 leading-normal">
@@ -571,13 +569,28 @@ export default function KurumScreen(): React.JSX.Element {
                               placeholder="Kurumunuzun DETSİS kodunu girin..."
                               className="w-full bg-slate-55 dark:bg-slate-955 border-slate-200 dark:border-slate-800 text-xs"
                             />
-                            <p className="mt-2 text-[10px] text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-950/30 p-2 rounded-lg border border-amber-100 dark:border-amber-900/50 flex items-start gap-1.5 leading-relaxed">
-                              <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-                              <span>
-                                DTVT (Devlet Teşkilatı Veri Tabanı) sistemi, DETSİS (Devlet Teşkilatı Merkezi Kayıt Sistemi) olarak güncellenmiştir.
-                                Kurum kodunuzu bilmiyorsanız <a href="https://detsis.gov.tr/" target="_blank" rel="noopener noreferrer" className="font-bold underline hover:text-amber-700 dark:hover:text-amber-400">https://detsis.gov.tr/</a> adresinden arama yaparak bulabilirsiniz.
-                              </span>
-                            </p>
+                            <div className="mt-2 text-[10px] text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-950/30 p-2 rounded-lg border border-amber-100 dark:border-amber-900/50 flex flex-col gap-1.5 leading-relaxed">
+                              
+                              {dtvtKodu ? (
+                                <div className="flex items-center gap-1.5 ml-5">
+                                  <ExternalLink className="w-3 h-3" />
+                                  <a href={`https://detsis.gov.tr/birim/${dtvtKodu}/${dtvtKodu}/${new Date().toISOString().split('T')[0]}`} target="_blank" rel="noopener noreferrer" className="font-bold underline hover:text-amber-700 dark:hover:text-amber-400">
+                                    Kurum Künyesine Git
+                                  </a>
+                                </div>
+                              )
+                            :
+                            <>
+                            <div className="flex items-start gap-1.5">
+                                <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                                <span>
+                                  DTVT (Devlet Teşkilatı Veri Tabanı) sistemi, DETSİS (Devlet Teşkilatı Merkezi Kayıt Sistemi) olarak güncellenmiştir.
+                                  Kurum kodunuzu bilmiyorsanız <a href={dtvtKodu ? `https://detsis.gov.tr/ara/${dtvtKodu}` : "https://detsis.gov.tr/"} target="_blank" rel="noopener noreferrer" className="font-bold underline hover:text-amber-700 dark:hover:text-amber-400">DETSİS'te Arama Yapın</a>.
+                                </span>
+                              </div>
+                            </>
+                            }
+                            </div>
                           </div>
 
                         </div>

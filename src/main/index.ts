@@ -93,24 +93,32 @@ function createWindow(): void {
 }
 
 // Single Instance Lock
-const gotTheLock = app.requestSingleInstanceLock()
+const isMultiInstance = process.argv.includes('--multi-instance')
+const gotTheLock = isMultiInstance ? true : app.requestSingleInstanceLock()
 
-if (!gotTheLock) {
+if (!gotTheLock && !isMultiInstance) {
   app.quit()
 } else {
   app.on('second-instance', (_event, commandLine) => {
     const windows = BrowserWindow.getAllWindows()
     if (windows.length > 0) {
       const mainWindow = windows[0]
-      if (mainWindow.isMinimized()) mainWindow.restore()
-      mainWindow.focus()
 
-      // Eğer desteklenen bir dosya çift tıklandıysa
+      // Eğer desteklenen bir dosya çift tıklandıysa, yeni bir süreç (pencere) olarak başlat
       const filePath = commandLine.find((arg) => isSupportedFile(arg))
       if (filePath) {
-        mainWindow.webContents.send('open-external-file', filePath)
-      } else if (commandLine.includes('--new-dosya')) {
-        mainWindow.webContents.send('app:navigate', '/dosyalar/yeni')
+        const { spawn } = require('child_process')
+        spawn(process.execPath, [filePath, '--multi-instance'], {
+          detached: true,
+          stdio: 'ignore'
+        }).unref()
+      } else {
+        if (mainWindow.isMinimized()) mainWindow.restore()
+        mainWindow.focus()
+        
+        if (commandLine.includes('--new-dosya')) {
+          mainWindow.webContents.send('app:navigate', '/dosyalar/yeni')
+        }
       }
     }
   })

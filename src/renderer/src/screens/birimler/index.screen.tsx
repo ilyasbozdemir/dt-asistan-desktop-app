@@ -355,16 +355,25 @@ export default function BirimlerScreen(): React.ReactNode {
                   placeholder="Biriminizin DETSİS kodunu girin..."
                   className="w-full bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-xs"
                 />
-                <p className="mt-2 text-[10px] text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-950/30 p-2 rounded-lg border border-amber-100 dark:border-amber-900/50 flex items-start gap-1.5 leading-relaxed">
-                  <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-                  <span>
-                    DTVT sistemi, DETSİS olarak güncellenmiştir. Birim kodunuzu bilmiyorsanız{' '}
-                    <a href="https://detsis.gov.tr/" target="_blank" rel="noopener noreferrer" className="font-bold underline hover:text-amber-700 dark:hover:text-amber-400">
-                      https://detsis.gov.tr/
-                    </a>{' '}
-                    adresinden arama yaparak bulabilirsiniz.
-                  </span>
-                </p>
+                <div className="mt-2 text-[10px] text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-950/30 p-2 rounded-lg border border-amber-100 dark:border-amber-900/50 flex flex-col gap-1.5 leading-relaxed">
+                  <div className="flex items-start gap-1.5">
+                    <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                    <span>
+                      DTVT sistemi, DETSİS olarak güncellenmiştir. Birim kodunuzu bilmiyorsanız{' '}
+                      <a href={form.dtvt_kodu ? `https://detsis.gov.tr/ara/${form.dtvt_kodu}` : "https://detsis.gov.tr/"} target="_blank" rel="noopener noreferrer" className="font-bold underline hover:text-amber-700 dark:hover:text-amber-400">
+                        DETSİS'te Arama Yapın
+                      </a>.
+                    </span>
+                  </div>
+                  {form.dtvt_kodu && (
+                    <div className="flex items-center gap-1.5 ml-5">
+                      <ExternalLink className="w-3 h-3" />
+                      <a href={`https://detsis.gov.tr/birim/${form.dtvt_kodu}/${form.dtvt_kodu}/${new Date().toISOString().split('T')[0]}`} target="_blank" rel="noopener noreferrer" className="font-bold underline hover:text-amber-700 dark:hover:text-amber-400">
+                        Birim Künyesine Git
+                      </a>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div>

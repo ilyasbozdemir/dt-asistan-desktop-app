@@ -98,6 +98,17 @@ export class DtmWorkspace {
   }
 
   public openWorkspace(filePath: string, allowMigration: boolean = false): WorkspaceMeta {
+    const lockPath = filePath + '.lock'
+    if (fs.existsSync(lockPath)) {
+      throw new Error('LOCKED|Bu dosya şu anda başka bir pencerede veya programda açık durumda. Çakışmayı önlemek için önce diğer taraftan kapatmalısınız.')
+    }
+    
+    try {
+      fs.writeFileSync(lockPath, process.pid.toString(), { encoding: 'utf-8' })
+    } catch (err: any) {
+      throw new Error(`Kilit dosyası oluşturulamadı: ${err.message}`)
+    }
+
     this.currentFilePath = filePath
     this.ensureTempDir()
 
@@ -217,6 +228,17 @@ export class DtmWorkspace {
   }
 
   public createWorkspace(filePath: string, institutionName: string): WorkspaceMeta {
+    const lockPath = filePath + '.lock'
+    if (fs.existsSync(lockPath)) {
+      throw new Error('LOCKED|Bu dosya şu anda başka bir pencerede veya programda açık durumda.')
+    }
+    
+    try {
+      fs.writeFileSync(lockPath, process.pid.toString(), { encoding: 'utf-8' })
+    } catch (err: any) {
+      throw new Error(`Kilit dosyası oluşturulamadı: ${err.message}`)
+    }
+
     this.currentFilePath = filePath
     this.ensureTempDir()
 
@@ -311,6 +333,14 @@ export class DtmWorkspace {
       this.db.close()
       this.db = null
     }
+
+    if (this.currentFilePath) {
+      const lockPath = this.currentFilePath + '.lock'
+      if (fs.existsSync(lockPath)) {
+        try { fs.unlinkSync(lockPath) } catch (e) {}
+      }
+    }
+
     this.currentFilePath = null
     this.meta = null
 
@@ -378,3 +408,10 @@ export const workspaceManager = {
     }
   }
 }
+
+// Ensure lock is cleared if the process exits
+process.on('exit', () => {
+  if (activeWorkspace) {
+    try { activeWorkspace.closeWorkspace() } catch (e) {}
+  }
+})
