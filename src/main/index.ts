@@ -12,6 +12,7 @@ import { isSupportedFile, defaultFormat, perFormatFilters, allFormatsFilter } fr
 import { startServer, stopServer, getSocketServer } from './server'
 import { connectToServer, disconnectFromServer, emitEvent } from './client'
 import { generateContent, testConnection, AIGenerateOptions } from './ai/index'
+import { renderPdfBuffer } from './pdfService'
 
 process.on('uncaughtException', (error) => {
   console.error('UNCAUGHT EXCEPTION:', error)
@@ -612,29 +613,6 @@ if (!gotTheLock && !isMultiInstance) {
       return { canceled, filePath: filePaths && filePaths.length > 0 ? filePaths[0] : null }
     })
 
-    ipcMain.handle('export-docx', async (_, htmlContent: string, fileName?: string) => {
-      try {
-        const { canceled, filePath } = await dialog.showSaveDialog({
-          title: 'DOCX Olarak Kaydet',
-          defaultPath: fileName ? `${fileName}.docx` : 'Cikti.docx',
-          filters: [{ name: 'Word Document', extensions: ['docx'] }]
-        })
-        if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
-        
-        // html-docx-js dynamically required to avoid breaking main if not fully installed yet
-        const htmlDocx = require('html-docx-js')
-        const docx = htmlDocx.asBlob(htmlContent)
-        
-        // If it returns a Buffer or Blob
-        const buffer = docx.arrayBuffer ? Buffer.from(await docx.arrayBuffer()) : Buffer.from(docx)
-        fs.writeFileSync(filePath, buffer)
-        
-        return { success: true, filePath }
-      } catch (err: any) {
-        return { success: false, error: err.message }
-      }
-    })
-
     ipcMain.handle('export-pdf', async (_, htmlContent: string, printOptions?: any, fileName?: string) => {
       try {
         const { canceled, filePath } = await dialog.showSaveDialog({
@@ -644,30 +622,8 @@ if (!gotTheLock && !isMultiInstance) {
         })
         if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
         
-        const win = new BrowserWindow({ show: false })
-        await win.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`)
-        
-        const defaultPrintOptions = {
-          printBackground: true,
-          displayHeaderFooter: false
-        }
-        
-        let pdfData = await win.webContents.printToPDF(printOptions || defaultPrintOptions)
-        
-        const pdfString = pdfData.toString('utf8')
-        const pageCount = (pdfString.match(/\/Type\s*\/Page\b/g) || []).length
-        
-        if (!printOptions && pageCount > 1) {
-          pdfData = await win.webContents.printToPDF({
-            printBackground: true,
-            displayHeaderFooter: true,
-            headerTemplate: '<div></div>',
-            footerTemplate: '<div style="font-size: 9px; color: #555; width: 100%; text-align: right; padding-right: 1.5cm; padding-bottom: 0.5cm;">Sayfa <span class="pageNumber"></span> / <span class="totalPages"></span></div>'
-          })
-        }
-        
-        fs.writeFileSync(filePath, pdfData)
-        win.destroy()
+        const pdfBuffer = await renderPdfBuffer(htmlContent)
+        fs.writeFileSync(filePath, pdfBuffer)
         
         return { success: true, filePath }
       } catch (err: any) {
@@ -736,31 +692,8 @@ if (!gotTheLock && !isMultiInstance) {
 
     ipcMain.handle('preview-pdf', async (_, htmlContent: string, printOptions?: any) => {
       try {
-        const win = new BrowserWindow({ show: false })
-        await win.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`)
-        
-        const defaultPrintOptions = {
-          printBackground: true,
-          displayHeaderFooter: false
-        }
-        
-        let pdfData = await win.webContents.printToPDF(printOptions || defaultPrintOptions)
-        
-        const pdfString = pdfData.toString('utf8')
-        const pageCount = (pdfString.match(/\/Type\s*\/Page\b/g) || []).length
-        
-        if (!printOptions && pageCount > 1) {
-          pdfData = await win.webContents.printToPDF({
-            printBackground: true,
-            displayHeaderFooter: true,
-            headerTemplate: '<div></div>',
-            footerTemplate: '<div style="font-size: 9px; color: #555; width: 100%; text-align: right; padding-right: 1.5cm; padding-bottom: 0.5cm;">Sayfa <span class="pageNumber"></span> / <span class="totalPages"></span></div>'
-          })
-        }
-        
-        win.destroy()
-        
-        return { success: true, data: pdfData.toString('base64') }
+        const pdfBuffer = await renderPdfBuffer(htmlContent)
+        return { success: true, data: pdfBuffer.toString('base64') }
       } catch (err: any) {
         return { success: false, error: err.message }
       }

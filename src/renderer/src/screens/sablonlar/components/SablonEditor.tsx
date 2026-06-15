@@ -15,67 +15,6 @@ import { Sablon, useSaveSablon } from '../sablonlar.hooks'
 
 const cmToInches = (cm: number) => cm / 2.54
 
-const buildPrintOptions = (parsedData: any) => {
-  const isHeaderRepeat = !!parsedData.antetTekrarla
-  const isKurumIci = !!parsedData.kurumIci
-
-  const headerHtml = isHeaderRepeat ? `
-    <div style="width: 100%; font-size: 11px; font-family: 'Times New Roman', serif; padding: 0 1.5cm; padding-top: 1.5cm;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <div style="width: 20%; text-align: left;">
-          ${parsedData.solLogo ? `<img src="${parsedData.solLogo}" style="max-width: 80px; max-height: 80px;">` : ''}
-        </div>
-        <div style="flex: 1; text-align: center; text-transform: uppercase; font-weight: bold; line-height: 1.3; font-size: 16px;">
-          ${parsedData.antetSatir1 || ''}<br>
-          ${parsedData.antetSatir2 || ''}<br>
-          ${parsedData.antetSatir3 || ''}
-        </div>
-        <div style="width: 20%; text-align: right;">
-          ${parsedData.sagLogo ? `<img src="${parsedData.sagLogo}" style="max-width: 80px; max-height: 80px;">` : ''}
-        </div>
-      </div>
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin: 15px 0 25px 0;">
-        <div style="width: 50%; word-wrap: break-word; text-align: left;">
-          Sayı: ${parsedData.evrakSayisi || ''}<br>
-          Konu: ${parsedData.dosyaKonusu || ''}
-        </div>
-        <div style="text-align: right;">
-          Tarih: ${parsedData.tarih || ''}
-        </div>
-      </div>
-    </div>
-  ` : '<span></span>'
-
-  const footerHtml = !isKurumIci ? `
-    <div style="width: 100%; font-size: 9px; font-family: 'Times New Roman', serif; display: flex; justify-content: space-between; padding: 10px 1.5cm 0 1.5cm; border-top: 1.5px solid #000; color: #333; margin-bottom: 1.5cm;">
-      <div style="text-align: left; line-height: 1.4;">
-        Adres: ${parsedData.kurumAdres || ''}<br>
-        Elektronik Ağ: ${parsedData.kurumWeb || ''}<br>
-        E-posta: ${parsedData.kurumEmail || ''}<br>
-        KEP: ${parsedData.kurumKepAdres || ''}
-      </div>
-      <div style="text-align: right; line-height: 1.4;">
-        Ayrıntılı Bilgi İçin: ${parsedData.ilgiliPersonelAdi || ''}<br>
-        Telefon: ${parsedData.kurumTelefon || ''}<br>
-        Faks: ${parsedData.kurumFaks || ''}<br>
-        Sayfa <span class="pageNumber"></span> / <span class="totalPages"></span>
-      </div>
-    </div>
-  ` : '<span></span>'
-
-  return {
-    printBackground: true,
-    displayHeaderFooter: true,
-    headerTemplate: headerHtml,
-    footerTemplate: footerHtml,
-    margins: {
-      top: isHeaderRepeat ? cmToInches(6) : cmToInches(1.5),
-      bottom: isKurumIci ? cmToInches(1.5) : cmToInches(2.5),
-      left: cmToInches(1.5),
-      right: cmToInches(1.5)
-    }
-  }
-}
 import { A4Editor } from '../../../components/editor/A4Editor'
 import { PreviewTab } from './tabs/PreviewTab'
 import { PdfTab } from './tabs/PdfTab'
@@ -213,8 +152,7 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
         return
       }
       const finalHtml = Mustache.render(masterHtml, parsedData, { content: htmlCode })
-      const printOptions = buildPrintOptions(parsedData)
-      const res = await window.electron.ipcRenderer.invoke('export-pdf', finalHtml, printOptions, ad || dosyaAdi)
+      const res = await window.electron.ipcRenderer.invoke('export-pdf', finalHtml, null, ad || dosyaAdi)
       if (res.success) {
         alert('Şablon başarıyla PDF olarak dışa aktarıldı.')
       } else if (res.error !== 'İptal edildi') {
@@ -234,8 +172,7 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
     setIsPdfLoading(true)
     try {
       const finalHtml = Mustache.render(masterHtml, parsedData, { content: htmlCode })
-      const printOptions = buildPrintOptions(parsedData)
-      const res = await window.electron.ipcRenderer.invoke('preview-pdf', finalHtml, printOptions)
+      const res = await window.electron.ipcRenderer.invoke('preview-pdf', finalHtml)
       if (res.success && res.data) {
         setPdfBase64(res.data)
       } else {
