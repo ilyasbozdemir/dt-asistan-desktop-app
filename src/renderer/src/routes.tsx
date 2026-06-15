@@ -183,7 +183,8 @@ import {
   IhaleOnayBelgesi,
   ButceSorgusu,
   HarcamaTalimati,
-  HarcamaPusulasi
+  HarcamaPusulasi,
+  CiktiMerkeziScreen
 } from './screens/dosya/SubScreens.screen'
 
 const profilRoute = createRoute({
@@ -295,6 +296,12 @@ const harcamaPusulaRoute = createRoute({
   component: HarcamaPusulasi
 })
 
+const ciktiMerkeziRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/dosya/cikti-merkezi',
+  component: CiktiMerkeziScreen
+})
+
 const olcubirimleriRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/olcubirimleri',
@@ -350,7 +357,8 @@ const routeTree = rootRoute.addChildren([
   ihaleOnayRoute,
   butceSorguRoute,
   harcamaTalimatRoute,
-  harcamaPusulaRoute
+  harcamaPusulaRoute,
+  ciktiMerkeziRoute
 ])
 
 export const router = createRouter({ routeTree })

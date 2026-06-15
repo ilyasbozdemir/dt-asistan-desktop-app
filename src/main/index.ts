@@ -675,6 +675,65 @@ if (!gotTheLock && !isMultiInstance) {
       }
     })
 
+    ipcMain.handle('export-docx', async (_, htmlContent: string, fileName?: string) => {
+      try {
+        const { canceled, filePath } = await dialog.showSaveDialog({
+          title: 'Word (DOCX) Olarak Kaydet',
+          defaultPath: fileName ? `${fileName}.docx` : 'Cikti.docx',
+          filters: [{ name: 'Word Dosyası', extensions: ['docx'] }]
+        })
+        if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
+        
+        const htmlDocx = require('html-docx-js')
+        const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${htmlContent}</body></html>`
+        const docxBuffer = htmlDocx.asBlob(fullHtml)
+        const buffer = Buffer.from(await docxBuffer.arrayBuffer())
+        fs.writeFileSync(filePath, buffer)
+        
+        return { success: true, filePath }
+      } catch (err: any) {
+        return { success: false, error: err.message }
+      }
+    })
+
+    ipcMain.handle('export-udf', async (_, htmlContent: string, fileName?: string) => {
+      try {
+        const { canceled, filePath } = await dialog.showSaveDialog({
+          title: 'UDF Olarak Kaydet',
+          defaultPath: fileName ? `${fileName}.udf` : 'Cikti.udf',
+          filters: [{ name: 'UYAP Dokümanı', extensions: ['udf'] }]
+        })
+        if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
+        
+        const stripHtml = htmlContent.replace(/<[^>]+>/g, ' ')
+        const udfContent = `<?xml version="1.0" encoding="utf-8"?>\n<Document>\n<content>\n<![CDATA[\n${stripHtml}\n]]>\n</content>\n</Document>`
+        fs.writeFileSync(filePath, udfContent, 'utf-8')
+        
+        return { success: true, filePath }
+      } catch (err: any) {
+        return { success: false, error: err.message }
+      }
+    })
+
+    ipcMain.handle('print-html', async (_, htmlContent: string, printOptions?: any) => {
+      try {
+        const win = new BrowserWindow({ show: false })
+        await win.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`)
+        
+        await new Promise(resolve => setTimeout(resolve, 500))
+        
+        win.webContents.print({ printBackground: true, ...printOptions })
+        
+        setTimeout(() => {
+          if (!win.isDestroyed()) win.destroy()
+        }, 10000)
+        
+        return { success: true }
+      } catch (err: any) {
+        return { success: false, error: err.message }
+      }
+    })
+
     ipcMain.handle('preview-pdf', async (_, htmlContent: string, printOptions?: any) => {
       try {
         const win = new BrowserWindow({ show: false })
