@@ -19,7 +19,7 @@ import { PreviewTab } from './tabs/PreviewTab'
 import { PdfTab } from './tabs/PdfTab'
 import { applyPagedBehaviors } from '../../../utils/paged-behaviors'
 
-export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () => void }): JSX.Element {
+export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () => void }): React.ReactElement {
   const [ad, setAd] = useState(sablon?.ad || '')
   const [dosyaAdi, setDosyaAdi] = useState(sablon?.dosya_adi || '')
   const [aciklama, setAciklama] = useState(sablon?.aciklama || '')
