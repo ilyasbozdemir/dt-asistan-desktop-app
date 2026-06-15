@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page { size: A4; margin: 2cm 1.5cm; }
+    body { font-family: "Times New Roman", Times, serif; font-size: 11pt; box-sizing: border-box; line-height: 1.5; }
+    .header { text-align: center; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; }
+    .title { text-align: center; font-weight: bold; text-decoration: underline; margin: 20px 0; font-size: 12pt; }
+  </style>
+</head>
+<body>
+  <div data-behavior="first-page-only" data-slot="top-center">
+    <div class="header">T.C.<br>{{antetSatir1}}</div>
+  </div>
+
+  <div class="title">İHALE ONAY BELGESİ</div>
+
+  <div style="margin-bottom: 20px;">
+    <strong>İşin Adı:</strong> {{dosyaKonusu}}<br>
+    <strong>Tarih:</strong> {{dosyaTarihi}}
+  </div>
+
+  <div style="text-align: justify; margin-bottom: 20px;">
+    Yukarıda adı geçen mal/hizmet alımı işi için yapılan piyasa fiyat araştırması sonucunda en uygun teklifi sunan <strong>..........................................................</strong> firmasından KDV hariç <strong>....................... ₺</strong> bedel üzerinden 4734 sayılı kanunun 22/d maddesine göre Doğrudan Temin Usulü ile satın alınması hususunu Olur'larınıza arz ederim.
+  </div>
+
+  <div style="text-align:right; margin-bottom: 40px;">
+    {{hazirlayanPersonelAdi}}<br>{{hazirlayanPersonelUnvan}}
+  </div>
+
+  <div class="signature" style="text-align: center; margin-top: 40px;" data-behavior="keep-together">
+    {{#onaylayanlar}}
+    <div style="display: inline-block; text-align: center; width: 45%; vertical-align: top;">
+      OLUR<br><br><br>{{onaylayanPersonelAdi}}<br>{{onaylayanPersonelUnvan}}<br>Harcama Yetkilisi
+    </div>
+    {{/onaylayanlar}}
+  </div>
+</body>
+</html>

@@ -1,57 +1,150 @@
-<div class="makam" style="text-align: center; font-weight: bold; margin: 40px 0; text-transform: uppercase;">
-  {{sunulacakMakamAdi}}
-</div>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page {
+      size: A4;
+      margin: 2cm 1.5cm 2.5cm 1.5cm;
+      @bottom-right {
+        content: "Sayfa " counter(page) " / " counter(pages);
+        font-size: 8pt;
+        font-family: "Times New Roman", serif;
+      }
+    }
+    body {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 11pt;
+      box-sizing: border-box;
+      color: #000;
+      line-height: 1.5;
+    }
+    .header {
+      text-align: center;
+      line-height: 1.3;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .header strong {
+      font-size: 12pt;
+      letter-spacing: 0.5px;
+    }
+    .title {
+      text-align: center;
+      font-weight: bold;
+      text-decoration: underline;
+      margin: 20px 0;
+      font-size: 12pt;
+    }
+    .konu {
+      text-indent: 40px;
+      text-align: justify;
+      margin-bottom: 20px;
+    }
+    .content-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 10pt;
+    }
+    .content-table th, .content-table td {
+      border: 1px solid #000;
+      padding: 6px;
+      text-align: left;
+    }
+    .content-table th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+      text-align: center;
+    }
+    .footer-info {
+      font-size: 8pt;
+    }
+  </style>
+</head>
+<body>
 
-<div class="title">İHTİYAÇ LİSTESİ</div>
-
-<div class="konu">
-  {{dosyaKonusu}} ihtiyacı olan aşağıda yazılı mal/hizmet kalemlerinin temin edilmesi gerekmektedir.
-  Söz konusu ihtiyacın 4734 sayılı Kamu İhale Kanunun ilgili maddesine göre temini için
-  gereğini arz ederim.
-</div>
-
-<div style="text-align:right; margin-bottom: 20px;">
-  {{hazirlayanPersonelAdi}}<br>
-  {{hazirlayanPersonelUnvan}}
-</div>
-
-<table class="content-table">
-  <thead>
-    <tr>
-      <th>Kodu</th>
-      <th>Malzeme Adı</th>
-      <th>Özelliği</th>
-      <th>Birimi</th>
-      <th>Kdv Oranı</th>
-      <th>Miktar</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#ihtiyacKalemleri}}
-    <tr>
-      <td>{{kodu}}</td>
-      <td>{{malzemeAdi}}</td>
-      <td>{{ozelligi}}</td>
-      <td>{{birimi}}</td>
-      <td>{{kdvOrani}}</td>
-      <td>{{miktar}}</td>
-    </tr>
-    {{/ihtiyacKalemleri}}
-    {{^ihtiyacKalemleri}}
-    <tr>
-      <td colspan="7">Kalem bulunamadı</td>
-    </tr>
-    {{/ihtiyacKalemleri}}
-  </tbody>
-</table>
-
-<div class="signature" style="text-align: center; margin-top: 40px;">
-  {{#onaylayanlar}}
-  <div style="display: inline-block; text-align: center; width: 30%; min-width: 200px; vertical-align: top; margin-bottom: 30px; page-break-inside: avoid;">
-    OLUR<br>
-    {{dosyaTarihi}}<br><br><br>
-    {{onaylayanPersonelAdi}}<br>
-    {{onaylayanPersonelUnvan}}
+  <!-- ANTET (Sadece İlk Sayfa) -->
+  <div data-behavior="first-page-only" data-slot="top-center">
+    <div class="header">
+      {{#solLogo}}
+      <img src="{{solLogo}}" alt="Logo" style="width: 60px; height: auto; position: absolute; left: 0; top: 0;" />
+      {{/solLogo}}
+      <strong>T.C.</strong><br>
+      <strong>{{antetSatir1}}</strong><br>
+      {{antetSatir2}}<br>
+      {{antetSatir3}}
+    </div>
   </div>
-  {{/onaylayanlar}}
-</div>
+
+  <!-- KURUM İLETİŞİM (Tüm Sayfalar) -->
+  {{^kurumIci}}
+  <div data-behavior="every-page" data-slot="bottom-left">
+    <div class="footer-info">
+      İletişim: {{kurumAdres}} | Tel: {{kurumTelefon}} | Faks: {{kurumFaks}}<br>
+      E-posta: {{kurumEposta}} | KEP: {{kurumKep}}<br>
+      Bilgi İçin: {{ilgiliPersonelAdi}} - {{ilgiliPersonelUnvan}}
+    </div>
+  </div>
+  {{/kurumIci}}
+
+  <div class="makam" style="text-align: center; font-weight: bold; margin: 40px 0; text-transform: uppercase;">
+    {{sunulacakMakamAdi}}
+  </div>
+
+  <div class="title">İHTİYAÇ LİSTESİ</div>
+
+  <div class="konu">
+    {{dosyaKonusu}} ihtiyacı olan aşağıda yazılı mal/hizmet kalemlerinin temin edilmesi gerekmektedir.
+    Söz konusu ihtiyacın 4734 sayılı Kamu İhale Kanunun ilgili maddesine göre temini için
+    gereğini arz ederim.
+  </div>
+
+  <div style="text-align:right; margin-bottom: 20px;">
+    {{hazirlayanPersonelAdi}}<br>
+    {{hazirlayanPersonelUnvan}}
+  </div>
+
+  <table class="content-table">
+    <thead>
+      <tr>
+        <th>Kodu</th>
+        <th>Malzeme Adı</th>
+        <th>Özelliği</th>
+        <th>Birimi</th>
+        <th>Kdv Oranı</th>
+        <th>Miktar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#ihtiyacKalemleri}}
+      <tr>
+        <td>{{kodu}}</td>
+        <td>{{malzemeAdi}}</td>
+        <td>{{ozelligi}}</td>
+        <td>{{birimi}}</td>
+        <td>{{kdvOrani}}</td>
+        <td>{{miktar}}</td>
+      </tr>
+      {{/ihtiyacKalemleri}}
+      {{^ihtiyacKalemleri}}
+      <tr>
+        <td colspan="6" style="text-align: center;">Kalem bulunamadı</td>
+      </tr>
+      {{/ihtiyacKalemleri}}
+    </tbody>
+  </table>
+
+  <div class="signature" style="text-align: center; margin-top: 40px;" data-behavior="keep-together">
+    {{#onaylayanlar}}
+    <div style="display: inline-block; text-align: center; width: 30%; min-width: 200px; vertical-align: top; margin-bottom: 30px;">
+      OLUR<br>
+      {{dosyaTarihi}}<br><br><br>
+      {{onaylayanPersonelAdi}}<br>
+      {{onaylayanPersonelUnvan}}
+    </div>
+    {{/onaylayanlar}}
+  </div>
+
+</body>
+</html>

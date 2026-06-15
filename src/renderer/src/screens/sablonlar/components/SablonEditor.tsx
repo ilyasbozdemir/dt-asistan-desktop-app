@@ -18,6 +18,7 @@ const cmToInches = (cm: number) => cm / 2.54
 import { A4Editor } from '../../../components/editor/A4Editor'
 import { PreviewTab } from './tabs/PreviewTab'
 import { PdfTab } from './tabs/PdfTab'
+import { applyPagedBehaviors } from '../../../utils/paged-behaviors'
 
 export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () => void }) {
   const [ad, setAd] = useState(sablon?.ad || '')
@@ -49,59 +50,22 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
   const [activeTab, setActiveTab] = useState<'design' | 'preview' | 'pdf'>('design')
   const [pdfBase64, setPdfBase64] = useState<string>('')
   const [isPdfLoading, setIsPdfLoading] = useState(false)
-  const [masterHtml, setMasterHtml] = useState('')
-  const [masterJson, setMasterJson] = useState({})
 
-  useEffect(() => {
-    // Load master HTML
-    window.electron.ipcRenderer
-      .invoke('template:read-system', 'master.html')
-      .then((res) => {
-        if (typeof res === 'string' && res.trim().length > 0) {
-          setMasterHtml(res)
-        } else {
-          console.error('Master şablon boş geldi:', res)
-        }
-      })
-      .catch((err) => console.error('Master template yüklenemedi:', err))
-
-    // Load master JSON
-    window.electron.ipcRenderer
-      .invoke('template:read-system', 'master.html.json')
-      .then((res) => {
-        if (typeof res === 'string' && res.trim().length > 0) {
-          try {
-            setMasterJson(JSON.parse(res))
-          } catch (e) {
-            console.error('Master JSON parse edilemedi:', e)
-          }
-        }
-      })
-      .catch((err) => console.error('Master JSON yüklenemedi:', err))
-  }, [])
-
-  
   const saveSablon = useSaveSablon()
 
   const parsedData = React.useMemo(() => {
     try {
-      const specificData = JSON.parse(testJson)
-      return { ...masterJson, ...specificData }
+      return JSON.parse(testJson)
     } catch {
-      return masterJson
+      return {}
     }
-  }, [testJson, masterJson])
+  }, [testJson])
 
   // Calculate final HTML synchronously so iframe instantly updates via srcDoc
   const finalHtmlForPreview = (() => {
     try {
-      if (dosyaAdi === 'master.html') {
-        // Infinite recursion önlemi: Master şablonun kendisini düzenlerken, onu tekrar master içine sarmayız.
-        return Mustache.render(htmlCode, parsedData, { content: '<div style="padding:40px; text-align:center; border: 2px dashed #ccc; background: #fafafa; color: #999; margin: 20px;">[ Şablon İçeriği Buraya Gelecek ]</div>' })
-      }
-
-      if (!masterHtml) return '<div style="padding:20px;">Master şablon yükleniyor...</div>'
-      return Mustache.render(masterHtml, parsedData, { content: htmlCode })
+      const rawHtml = Mustache.render(htmlCode, parsedData)
+      return applyPagedBehaviors(rawHtml)
     } catch (e) {
       return '<div style="color:red;padding:20px;">Şablon Hatası: ' + String(e) + '</div>'
     }
@@ -127,12 +91,12 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
 
   const handleExportHtml = async () => {
     try {
-      if (!masterHtml) return
       if (!window.electron) {
         alert('Bu özellik yalnızca masaüstü uygulamasında (Electron) çalışır.')
         return
       }
-      const finalHtml = Mustache.render(masterHtml, parsedData, { content: htmlCode })
+      const rawHtml = Mustache.render(htmlCode, parsedData)
+      const finalHtml = applyPagedBehaviors(rawHtml)
       const res = await window.electron.ipcRenderer.invoke('export-html', finalHtml, { paperSize: 'A4' }, ad || dosyaAdi)
       if (res.success) {
         alert('Şablon başarıyla HTML olarak dışa aktarıldı.')
@@ -146,12 +110,12 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
 
   const handleExportPdf = async () => {
     try {
-      if (!masterHtml) return
       if (!window.electron) {
         alert('Bu özellik yalnızca masaüstü uygulamasında (Electron) çalışır.')
         return
       }
-      const finalHtml = Mustache.render(masterHtml, parsedData, { content: htmlCode })
+      const rawHtml = Mustache.render(htmlCode, parsedData)
+      const finalHtml = applyPagedBehaviors(rawHtml)
       const res = await window.electron.ipcRenderer.invoke('export-pdf', finalHtml, null, ad || dosyaAdi)
       if (res.success) {
         alert('Şablon başarıyla PDF olarak dışa aktarıldı.')
@@ -164,14 +128,14 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
   }
 
   const handleUpdatePdfPreview = async () => {
-    if (!masterHtml) return
     if (!window.electron) {
       alert('PDF önizleme özelliği yalnızca masaüstü uygulamasında (Electron) çalışır. Tarayıcıda desteklenmemektedir.')
       return
     }
     setIsPdfLoading(true)
     try {
-      const finalHtml = Mustache.render(masterHtml, parsedData, { content: htmlCode })
+      const rawHtml = Mustache.render(htmlCode, parsedData)
+      const finalHtml = applyPagedBehaviors(rawHtml)
       const res = await window.electron.ipcRenderer.invoke('preview-pdf', finalHtml)
       if (res.success && res.data) {
         setPdfBase64(res.data)
@@ -189,7 +153,7 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
     if (activeTab === 'pdf' && !pdfBase64) {
       handleUpdatePdfPreview()
     }
-  }, [activeTab, pdfBase64, masterHtml])
+  }, [activeTab, pdfBase64])
 
   const handleSave = async () => {
     if (!ad || !dosyaAdi) {

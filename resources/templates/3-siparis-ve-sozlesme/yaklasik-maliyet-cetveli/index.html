@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page { size: A4 landscape; margin: 2cm 1.5cm; @bottom-right { content: "Sayfa " counter(page) " / " counter(pages); font-size: 8pt; font-family: "Times New Roman", serif; } }
+    body { font-family: "Times New Roman", Times, serif; font-size: 10pt; box-sizing: border-box; line-height: 1.5; }
+    .header { text-align: center; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; }
+    .title { text-align: center; font-weight: bold; text-decoration: underline; margin: 20px 0; font-size: 12pt; }
+    .content-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 9pt; }
+    .content-table th, .content-table td { border: 1px solid #000; padding: 4px; text-align: center; }
+    .content-table th { background-color: #f2f2f2; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div data-behavior="first-page-only" data-slot="top-center">
+    <div class="header">
+      T.C.<br>{{antetSatir1}}<br>{{antetSatir2}}
+    </div>
+  </div>
+
+  <div class="title">YAKLAŞIK MALİYET CETVELİ</div>
+  <div style="margin-bottom: 10px;"><strong>İşin Adı:</strong> {{dosyaKonusu}}</div>
+
+  <table class="content-table">
+    <thead>
+      <tr>
+        <th>Sıra</th>
+        <th>Malzeme Adı</th>
+        <th>Miktarı</th>
+        <th>Birimi</th>
+        <th>Firma 1 Teklifi (TL)</th>
+        <th>Firma 2 Teklifi (TL)</th>
+        <th>Firma 3 Teklifi (TL)</th>
+        <th>Ortalama (Yaklaşık Maliyet)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#ihtiyacKalemleri}}
+      <tr>
+        <td>{{siraNo}}</td>
+        <td>{{malzemeAdi}}</td>
+        <td>{{miktar}}</td>
+        <td>{{birimi}}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      {{/ihtiyacKalemleri}}
+    </tbody>
+  </table>
+
+  <div class="signature" style="text-align: center; margin-top: 40px;" data-behavior="keep-together">
+    <div style="font-weight: bold; margin-bottom: 20px;">Piyasa Fiyat Araştırması Görevlileri</div>
+    {{#onaylayanlar}}
+    <div style="display: inline-block; text-align: center; width: 30%; vertical-align: top;">
+      {{onaylayanPersonelAdi}}<br>{{onaylayanPersonelUnvan}}
+    </div>
+    {{/onaylayanlar}}
+  </div>
+</body>
+</html>

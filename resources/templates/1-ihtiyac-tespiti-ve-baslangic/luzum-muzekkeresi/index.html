@@ -1,57 +1,55 @@
-<div class="makam" style="text-align: center; font-weight: bold; margin: 40px 0; text-transform: uppercase;">
-  {{sunulacakMakamAdi}}
-</div>
-
-<div class="title">İHTİYAÇ LİSTESİ</div>
-
-<div class="konu">
-  {{dosyaKonusu}} ihtiyacı olan aşağıda yazılı mal/hizmet kalemlerinin temin edilmesi gerekmektedir.
-  Söz konusu ihtiyacın 4734 sayılı Kamu İhale Kanunun ilgili maddesine göre temini için
-  gereğini arz ederim.
-</div>
-
-<div style="text-align:right; margin-bottom: 20px;">
-  {{hazirlayanPersonelAdi}}<br>
-  {{hazirlayanPersonelUnvan}}
-</div>
-
-<table class="content-table">
-  <thead>
-    <tr>
-      <th>Kodu</th>
-      <th>Malzeme Adı</th>
-      <th>Özelliği</th>
-      <th>Birimi</th>
-      <th>Kdv Oranı</th>
-      <th>Miktar</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#ihtiyacKalemleri}}
-    <tr>
-      <td>{{kodu}}</td>
-      <td>{{malzemeAdi}}</td>
-      <td>{{ozelligi}}</td>
-      <td>{{birimi}}</td>
-      <td>{{kdvOrani}}</td>
-      <td>{{miktar}}</td>
-    </tr>
-    {{/ihtiyacKalemleri}}
-    {{^ihtiyacKalemleri}}
-    <tr>
-      <td colspan="7">Kalem bulunamadı</td>
-    </tr>
-    {{/ihtiyacKalemleri}}
-  </tbody>
-</table>
-
-<div class="signature" style="text-align: center; margin-top: 40px;">
-  {{#onaylayanlar}}
-  <div style="display: inline-block; text-align: center; width: 30%; min-width: 200px; vertical-align: top; margin-bottom: 30px; page-break-inside: avoid;">
-    OLUR<br>
-    {{dosyaTarihi}}<br><br><br>
-    {{onaylayanPersonelAdi}}<br>
-    {{onaylayanPersonelUnvan}}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page { size: A4; margin: 2cm 1.5cm 2.5cm 1.5cm; 
+      @bottom-right { content: "Sayfa " counter(page) " / " counter(pages); font-size: 8pt; font-family: "Times New Roman", serif; }
+    }
+    body { font-family: "Times New Roman", Times, serif; font-size: 11pt; box-sizing: border-box; line-height: 1.5; }
+    .header { text-align: center; line-height: 1.3; margin-bottom: 20px; text-transform: uppercase; font-weight: bold;}
+    .title { text-align: center; font-weight: bold; text-decoration: underline; margin: 20px 0; font-size: 12pt; }
+    .footer-info { font-size: 8pt; }
+    .label { font-weight: bold; width: 30%; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div data-behavior="first-page-only" data-slot="top-center">
+    <div class="header">
+      {{#solLogo}}<img src="{{solLogo}}" alt="Logo" style="width: 60px; position: absolute; left: 0; top: 0;" />{{/solLogo}}
+      T.C.<br><strong>{{antetSatir1}}</strong><br>{{antetSatir2}}<br>{{antetSatir3}}
+    </div>
   </div>
-  {{/onaylayanlar}}
-</div>
+  {{^kurumIci}}
+  <div data-behavior="every-page" data-slot="bottom-left">
+    <div class="footer-info">İletişim: {{kurumAdres}} | Tel: {{kurumTelefon}} | Bilgi İçin: {{ilgiliPersonelAdi}}</div>
+  </div>
+  {{/kurumIci}}
+
+  <div class="title">ONAY BELGESİ (LÜZUM MÜZEKKERESİ)</div>
+
+  <div style="margin-bottom: 20px;">
+    <div style="margin-bottom: 8px;"><span class="label">İşin Adı / Konusu:</span> {{dosyaKonusu}}</div>
+    <div style="margin-bottom: 8px;"><span class="label">İşin Niteliği ve Türü:</span> Mal/Hizmet Alımı</div>
+    <div style="margin-bottom: 8px;"><span class="label">Miktarı:</span> Ekli İhtiyaç Listesinde Belirtilmiştir</div>
+    <div style="margin-bottom: 8px;"><span class="label">Kullanılabilir Ödenek:</span> {{kullanilabilirOdenek}} ₺</div>
+    <div style="margin-bottom: 8px;"><span class="label">Alımda Uygulanacak Usul:</span> 4734 Sayılı K.İ.K. 22/d Maddesi (Doğrudan Temin)</div>
+  </div>
+
+  <div style="text-align: justify; margin-bottom: 20px;">
+    Yukarıda belirtilen mal/hizmet alım işinin, 4734 sayılı Kamu İhale Kanununun 22 nci maddesinin (d) bendi uyarınca Doğrudan Temin usulü ile piyasa fiyat araştırması yapılarak gerçekleştirilmesi hususunu Olur'larınıza arz ederim.
+  </div>
+
+  <div style="text-align:right; margin-bottom: 40px;">
+    {{hazirlayanPersonelAdi}}<br>{{hazirlayanPersonelUnvan}}
+  </div>
+
+  <div class="signature" style="text-align: center; margin-top: 40px;" data-behavior="keep-together">
+    {{#onaylayanlar}}
+    <div style="display: inline-block; text-align: center; width: 45%; vertical-align: top;">
+      OLUR<br>{{dosyaTarihi}}<br><br><br>{{onaylayanPersonelAdi}}<br>{{onaylayanPersonelUnvan}}<br>Harcama Yetkilisi
+    </div>
+    {{/onaylayanlar}}
+  </div>
+</body>
+</html>

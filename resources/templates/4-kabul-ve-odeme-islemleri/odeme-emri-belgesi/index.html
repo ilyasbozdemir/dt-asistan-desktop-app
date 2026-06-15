@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page { size: A4; margin: 2cm 1.5cm; }
+    body { font-family: "Times New Roman", Times, serif; font-size: 11pt; box-sizing: border-box; line-height: 1.5; }
+    .header { text-align: center; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; }
+    .title { text-align: center; font-weight: bold; text-decoration: underline; margin: 20px 0; font-size: 12pt; }
+    .content-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 10pt; }
+    .content-table th, .content-table td { border: 1px solid #000; padding: 6px; text-align: left; }
+  </style>
+</head>
+<body>
+  <div data-behavior="first-page-only" data-slot="top-center">
+    <div class="header">T.C.<br>{{antetSatir1}}</div>
+  </div>
+
+  <div class="title">ÖDEME EMRİ BELGESİ</div>
+
+  <div style="margin-bottom: 20px;">
+    <strong>İşin Adı:</strong> {{dosyaKonusu}}<br>
+    <strong>Yüklenici:</strong> ..............................................................
+  </div>
+
+  <div style="text-align: justify; margin-bottom: 20px;">
+    Kurumumuz ihtiyacı olan mal/hizmet alımına ilişkin fatura ve muayene kabul tutanağı ekte sunulmuş olup, ödemenin aşağıda belirtilen kesintiler yapıldıktan sonra yüklenicinin hesabına aktarılması hususunda gereğini arz/rica ederim.
+  </div>
+
+  <table class="content-table">
+    <tbody>
+      <tr>
+        <td style="font-weight: bold; width: 50%;">Fatura Tutarı (KDV Hariç)</td>
+        <td>....................... ₺</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold;">Hesaplanan KDV Tutarı</td>
+        <td>....................... ₺</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold;">Fatura Genel Toplamı</td>
+        <td>....................... ₺</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold;">Damga Vergisi Kesintisi (Binde 9.48)</td>
+        <td>....................... ₺</td>
+      </tr>
+      <tr>
+        <td style="font-weight: bold;">Ödenecek Net Tutar</td>
+        <td>....................... ₺</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="signature" style="text-align: center; margin-top: 40px;" data-behavior="keep-together">
+    {{#onaylayanlar}}
+    <div style="display: inline-block; text-align: center; width: 45%; vertical-align: top;">
+      Gerçekleştirme Görevlisi<br><br><br>{{onaylayanPersonelAdi}}<br>{{onaylayanPersonelUnvan}}
+    </div>
+    <div style="display: inline-block; text-align: center; width: 45%; vertical-align: top;">
+      Harcama Yetkilisi<br><br><br>...........................<br>...........................
+    </div>
+    {{/onaylayanlar}}
+  </div>
+</body>
+</html>
