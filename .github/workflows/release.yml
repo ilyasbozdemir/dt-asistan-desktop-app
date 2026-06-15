@@ -36,6 +36,8 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+        env:
+          npm_config_msvs_version: "2022"
 
       - name: Build and Package
         run: pnpm run build:win
