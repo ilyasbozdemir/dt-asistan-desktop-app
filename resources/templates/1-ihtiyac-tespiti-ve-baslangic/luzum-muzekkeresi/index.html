@@ -11,6 +11,21 @@
     .title { text-align: center; font-weight: bold; text-decoration: underline; margin: 20px 0; font-size: 12pt; }
     .footer-info { font-size: 8pt; }
     .label { font-weight: bold; width: 30%; display: inline-block; }
+
+    /* ── Paged.js Running Elements ── */
+    .paged-header        { position: running(pagedHeader); display: block; width: 100%; }
+    .paged-footer        { position: running(pagedFooter); display: block; width: 100%; }
+    .paged-keep-together { break-inside: avoid; }
+    .paged-break-before  { break-before: page; }
+    .paged-break-after   { break-after: page; }
+
+    @page {
+      @bottom-left { content: element(pagedFooter); }
+    }
+    @page:first {
+      @top-center  { content: element(pagedHeader); }
+      @bottom-left { content: none; }
+    }
   </style>
 </head>
 <body>

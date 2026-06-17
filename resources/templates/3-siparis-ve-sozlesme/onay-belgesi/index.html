@@ -7,6 +7,16 @@
     body { font-family: "Times New Roman", Times, serif; font-size: 11pt; box-sizing: border-box; line-height: 1.5; }
     .header { text-align: center; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; }
     .title { text-align: center; font-weight: bold; text-decoration: underline; margin: 20px 0; font-size: 12pt; }
+
+    /* ── Paged.js Running Elements ── */
+    .paged-header        { position: running(pagedHeader); display: block; width: 100%; }
+    .paged-keep-together { break-inside: avoid; }
+    .paged-break-before  { break-before: page; }
+    .paged-break-after   { break-after: page; }
+
+    @page:first {
+      @top-center { content: element(pagedHeader); }
+    }
   </style>
 </head>
 <body>

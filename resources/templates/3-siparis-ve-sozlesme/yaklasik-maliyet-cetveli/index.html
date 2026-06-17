@@ -10,6 +10,16 @@
     .content-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 9pt; }
     .content-table th, .content-table td { border: 1px solid #000; padding: 4px; text-align: center; }
     .content-table th { background-color: #f2f2f2; font-weight: bold; }
+
+    /* ── Paged.js Running Elements ── */
+    .paged-header        { position: running(pagedHeader); display: block; width: 100%; }
+    .paged-keep-together { break-inside: avoid; }
+    .paged-break-before  { break-before: page; }
+    .paged-break-after   { break-after: page; }
+
+    @page:first {
+      @top-center { content: element(pagedHeader); }
+    }
   </style>
 </head>
 <body>

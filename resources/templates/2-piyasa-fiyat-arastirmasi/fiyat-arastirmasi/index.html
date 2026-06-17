@@ -62,14 +62,12 @@
     }
 
     /* ── Paged.js Running Elements ── */
-    /* class → CSS hook | data-paged-slot → semantic annotation */
-    .paged-header       { position: running(pagedHeader); display: block; width: 100%; }
-    .paged-footer       { position: running(pagedFooter); display: block; width: 100%; }
-    .paged-keep-together  { break-inside: avoid; }
-    .paged-break-before   { break-before: page; }
-    .paged-break-after    { break-after: page; }
+    .paged-header        { position: running(pagedHeader); display: block; width: 100%; }
+    .paged-footer        { position: running(pagedFooter); display: block; width: 100%; }
+    .paged-keep-together { break-inside: avoid; }
+    .paged-break-before  { break-before: page; }
+    .paged-break-after   { break-after: page; }
 
-    /* Tek @page bloğu — duplicate yok, override race yok */
     @page {
       @bottom-left { content: element(pagedFooter); }
     }

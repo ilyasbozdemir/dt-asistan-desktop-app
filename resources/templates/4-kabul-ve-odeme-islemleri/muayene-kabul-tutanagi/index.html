@@ -9,6 +9,16 @@
     .title { text-align: center; font-weight: bold; text-decoration: underline; margin: 20px 0; font-size: 12pt; }
     .content-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 10pt; }
     .content-table th, .content-table td { border: 1px solid #000; padding: 6px; text-align: left; }
+
+    /* ── Paged.js Running Elements ── */
+    .paged-header        { position: running(pagedHeader); display: block; width: 100%; }
+    .paged-keep-together { break-inside: avoid; }
+    .paged-break-before  { break-before: page; }
+    .paged-break-after   { break-after: page; }
+
+    @page:first {
+      @top-center { content: element(pagedHeader); }
+    }
   </style>
 </head>
 <body>
