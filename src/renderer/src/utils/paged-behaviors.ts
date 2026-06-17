@@ -24,16 +24,15 @@ const BEHAVIOR_CLASS_MAP: Record<string, string> = {
  * HTML attribute helpers
  */
 function getAttr(tag: string, attr: string): string | null {
-  const match = tag.match(new RegExp(`${attr}="([^"]*)"`))
+  const escaped = attr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const match = tag.match(new RegExp(`${escaped}="([^"]*)"`))
   return match ? match[1] : null
 }
 
 function setAttr(tag: string, attr: string, value: string): string {
-  if (new RegExp(`${attr}="`).test(tag)) {
-    return tag.replace(
-      new RegExp(`${attr}="[^"]*"`),
-      `${attr}="${value}"`
-    )
+  const escaped = attr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  if (new RegExp(`${escaped}="`).test(tag)) {
+    return tag.replace(new RegExp(`${escaped}="[^"]*"`), `${attr}="${value}"`)
   }
   return tag.replace('>', ` ${attr}="${value}">`)
 }
@@ -54,7 +53,7 @@ export function applyPagedBehaviors(htmlContent: string): string {
   let match: RegExpExecArray | null
   let result = htmlContent
 
-  while ((match = regex.exec(htmlContent)) !== null) {
+  while ((match = regex.exec(result)) !== null) {
     const fullMatch = match[0]
     const behaviors = match[1].trim().split(/\s+/)
 
