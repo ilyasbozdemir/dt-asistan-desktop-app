@@ -11,6 +11,7 @@ export interface Sablon {
   parent_id: number | null
   versiyon: number
   kategori: string | null
+  test_verisi: string | null
   created_at: string
   updated_at: string
 }
@@ -80,6 +81,7 @@ export function useSaveSablon() {
       dosya_turu,
       icerik,
       aciklama,
+      test_verisi,
       oldSablon,
       extractedPlaceholders
     }: {
@@ -88,6 +90,7 @@ export function useSaveSablon() {
       dosya_turu: string
       icerik: string
       aciklama: string
+      test_verisi?: string | null
       oldSablon?: Sablon
       extractedPlaceholders: Placeholder[]
     }) => {
@@ -99,9 +102,9 @@ export function useSaveSablon() {
           const parent_id = oldSablon.parent_id || oldSablon.id
           const insertRes = await window.electron.ipcRenderer.invoke(
             'db:run',
-            `INSERT INTO TANIM_Sablon (ad, dosya_adi, dosya_turu, icerik, aciklama, aktif_mi, parent_id, versiyon)
-             VALUES (?, ?, ?, ?, ?, 1, ?, 2)`,
-            [ad, dosya_adi, dosya_turu, icerik, aciklama, parent_id]
+            `INSERT INTO TANIM_Sablon (ad, dosya_adi, dosya_turu, icerik, aciklama, test_verisi, aktif_mi, parent_id, versiyon)
+             VALUES (?, ?, ?, ?, ?, ?, 1, ?, 2)`,
+            [ad, dosya_adi, dosya_turu, icerik, aciklama, test_verisi || null, parent_id]
           )
           if (insertRes.error) throw new Error(insertRes.error)
           const newSablonId = insertRes.lastID
@@ -118,8 +121,8 @@ export function useSaveSablon() {
           // Update existing customized version in place
           const updateRes = await window.electron.ipcRenderer.invoke(
             'db:run',
-            `UPDATE TANIM_Sablon SET ad = ?, dosya_adi = ?, icerik = ?, aciklama = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
-            [ad, dosya_adi, icerik, aciklama, oldSablon.id]
+            `UPDATE TANIM_Sablon SET ad = ?, dosya_adi = ?, icerik = ?, aciklama = ?, test_verisi = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+            [ad, dosya_adi, icerik, aciklama, test_verisi || null, oldSablon.id]
           )
           if (updateRes.error) throw new Error(updateRes.error)
 
@@ -138,9 +141,9 @@ export function useSaveSablon() {
         // Insert new fresh template (v1)
         const insertRes = await window.electron.ipcRenderer.invoke(
           'db:run',
-          `INSERT INTO TANIM_Sablon (ad, dosya_adi, dosya_turu, icerik, aciklama, aktif_mi, parent_id, versiyon)
-           VALUES (?, ?, ?, ?, ?, 1, NULL, 1)`,
-          [ad, dosya_adi, dosya_turu, icerik, aciklama]
+          `INSERT INTO TANIM_Sablon (ad, dosya_adi, dosya_turu, icerik, aciklama, test_verisi, aktif_mi, parent_id, versiyon)
+           VALUES (?, ?, ?, ?, ?, ?, 1, NULL, 1)`,
+          [ad, dosya_adi, dosya_turu, icerik, aciklama, test_verisi || null]
         )
         if (insertRes.error) throw new Error(insertRes.error)
         const newSablonId = insertRes.lastID

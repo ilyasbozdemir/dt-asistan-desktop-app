@@ -50,6 +50,8 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
   const [pdfBase64, setPdfBase64] = useState<string>('')
   const [isPdfLoading, setIsPdfLoading] = useState(false)
   const [isAiModalOpen, setIsAiModalOpen] = useState(false)
+  const [isSystemTemplate, setIsSystemTemplate] = useState(false)
+  const [originalDosyaAdi, setOriginalDosyaAdi] = useState('')
 
   const saveSablon = useSaveSablon()
 
@@ -158,6 +160,11 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
       return
     }
 
+    if (isSystemTemplate && dosyaAdi === originalDosyaAdi && !sablon) {
+      alert("Bu bir sistem şablonudur, değişikliklerinizi kaydetmek için lütfen dosya adını değiştirerek 'Farklı Kaydet' yapın (Örn: " + dosyaAdi + "_ozel).")
+      return
+    }
+
     const message = 'Onaylıyor musunuz?'
     const isConfirmed = window.confirm(message)
     if (!isConfirmed) return
@@ -165,9 +172,10 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
     saveSablon.mutate({
       ad,
       dosya_adi: dosyaAdi,
-      dosya_turu: 'docx', // Default docx for now, could be dynamic
+      dosya_turu: 'html',
       icerik: htmlCode,
       aciklama,
+      test_verisi: testJson,
       oldSablon: sablon,
       extractedPlaceholders: []
     }, {
@@ -238,6 +246,8 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
                       if (jsonContent) {
                         setTestJson(jsonContent);
                       }
+                      setIsSystemTemplate(true);
+                      setOriginalDosyaAdi(dosyaAdi);
                       alert('Varsayılan şablon ve test verisi yüklendi.');
                     } else {
                       alert('Varsayılan şablon dosyası bulunamadı.');
