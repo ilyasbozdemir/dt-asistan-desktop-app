@@ -10,12 +10,16 @@ import {
   ShieldCheck,
   Building,
   Layers,
-  ChevronRight
+  ChevronRight,
+  Upload,
+  FileCheck,
+  Bell
 } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { useWorkspaceStore } from '../../store/workspaceStore'
 import { useDosyalarHooks } from '../dosyalar/dosyalar.hooks'
 import { Button } from '../../components/ui/Button'
+import { useEffect, useState } from 'react'
 
 export function TakipScreen(): React.JSX.Element {
   const { activeDosyaId } = useWorkspaceStore()
@@ -23,6 +27,22 @@ export function TakipScreen(): React.JSX.Element {
 
   // 1. Fetch active dossier details
   const activeDosya = dosyalar.find((d) => d.id === activeDosyaId)
+  const [notificationSent, setNotificationSent] = useState(false)
+
+  // Fetch Documents generated for this dossier
+  const { data: dbBelgeler = [], refetch: refetchBelgeler } = useQuery<any[]>({
+    queryKey: ['takip_belgeler', activeDosyaId],
+    queryFn: async () => {
+      if (!activeDosyaId) return []
+      const res = await window.electron.ipcRenderer.invoke(
+        'db:query', 
+        `SELECT * FROM DATA_TeminBelge WHERE temin_dosya_id = ${activeDosyaId}`
+      )
+      if (!res.success) return []
+      return res.data
+    },
+    enabled: !!activeDosyaId
+  })
 
   // 2. Fetch stages from DB
   const { data: dbAsamalar = [] } = useQuery<any[]>({
@@ -109,6 +129,52 @@ export function TakipScreen(): React.JSX.Element {
 
     return 'bekliyor'
   }
+
+  // Handle file upload / mark as signed
+  const handleSignDocument = async (belgeId: number) => {
+    try {
+      // In a real scenario, this could open a file dialog. For now, we simulate marking it as signed.
+      const res = await window.electron.ipcRenderer.invoke(
+        'db:execute',
+        `UPDATE DATA_TeminBelge SET is_signed = 1 WHERE id = ${belgeId}`
+      )
+      if (res.success) {
+        refetchBelgeler()
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  // Smart Desktop Notifications
+  useEffect(() => {
+    if (activeDosya && !notificationSent) {
+      let missingCount = dbBelgeler.filter((b) => !b.is_signed).length
+      
+      // Calculate deadline warning
+      let deadlineMsg = ''
+      if (activeDosya.son_teklif_verme_tarihi) {
+        const diffMs = new Date(activeDosya.son_teklif_verme_tarihi).getTime() - Date.now()
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+        if (diffDays <= 2 && diffDays >= 0) {
+          deadlineMsg = `Son teklif verme tarihine ${diffDays} gün kaldı! `
+        } else if (diffDays < 0) {
+          deadlineMsg = `Son teklif verme süresi doldu! `
+        }
+      }
+
+      if (deadlineMsg || missingCount > 0) {
+        const notification = new window.Notification('DT Asistan - Akıllı Hatırlatıcı', {
+          body: `${deadlineMsg}${missingCount > 0 ? `İmzası eksik ${missingCount} evrakınız bulunuyor.` : ''}`,
+          icon: '/icon.png' // Use default app icon if possible
+        })
+        notification.onclick = () => {
+          window.focus()
+        }
+        setNotificationSent(true)
+      }
+    }
+  }, [activeDosya, dbBelgeler, notificationSent])
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto pb-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -322,6 +388,49 @@ export function TakipScreen(): React.JSX.Element {
                   </span>
                 </div>
               )}
+
+              {/* UPLOAD SIGNED DOCUMENTS SECTION */}
+              <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <div className="flex items-center gap-2 mb-3">
+                  <FileCheck className="w-5 h-5 text-indigo-500" />
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">Üretilen Belgeler ve İmza Takibi</h3>
+                    <p className="text-[10px] text-slate-500">Sistemden üretilmiş dosyaların ıslak imzalı kopyalarını buradan takip edebilirsiniz.</p>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  {dbBelgeler.length === 0 ? (
+                    <div className="p-3 text-xs text-slate-500 text-center italic bg-slate-50 dark:bg-slate-900 rounded-lg">
+                      Henüz bu dosya için belge üretilmemiş.
+                    </div>
+                  ) : (
+                    dbBelgeler.map((belge) => (
+                      <div key={belge.id} className={`flex items-center justify-between p-2.5 rounded-lg border ${belge.is_signed ? 'bg-emerald-50/30 border-emerald-100 dark:bg-emerald-950/10 dark:border-emerald-900/30' : 'bg-slate-50/50 border-slate-200 dark:bg-slate-900 dark:border-slate-800'}`}>
+                        <div className="flex items-center gap-2">
+                          <div className={`w-2 h-2 rounded-full ${belge.is_signed ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}`} />
+                          <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                            {belge.belge_adi}
+                          </span>
+                        </div>
+                        {belge.is_signed ? (
+                          <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-500 flex items-center gap-1">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            İmzalandı
+                          </span>
+                        ) : (
+                          <Button 
+                            onClick={() => handleSignDocument(belge.id)}
+                            className="h-7 px-3 text-[10px] font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 shadow-none"
+                          >
+                            İmzalandı İşaretle
+                          </Button>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
 
               <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
                 <Link to="/dosyalar">

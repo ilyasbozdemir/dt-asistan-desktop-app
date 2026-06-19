@@ -7,6 +7,8 @@ export const DATA_TeminBelge = {
     { name: 'belge_adi', type: 'TEXT', notNull: true },
     { name: 'sablon_id', type: 'INTEGER' },
     { name: 'dosya_yolu', type: 'TEXT' },
+    { name: 'is_signed', type: 'INTEGER', default: 0 },
+    { name: 'imzali_dosya_yolu', type: 'TEXT' },
     { name: 'olusturan_personel_id', type: 'INTEGER' },
     { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' }
   ],
