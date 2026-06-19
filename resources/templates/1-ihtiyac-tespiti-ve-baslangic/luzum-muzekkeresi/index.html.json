@@ -1,153 +1,355 @@
 {
+    "antetSatirlari": [
+        "T.C.",
+        "SAĞLIK BAKANLIĞI",
+        "Ankara İl Sağlık Müdürlüğü",
+        "Destek Hizmetleri Başkanlığı"
+    ],
     "ekNo": "EK-1",
     "evrakSayisi": "E-12345",
+    "dosyaKonusu": "İhtiyaç Listesi",
     "tarih": "14.06.2026",
     "sunulacakMakamAdi": "MAKAM ONAYINA",
-    "dosyaKonusu": "Lüzum Müzekkeresi",
     "hazirlayanPersonelAdi": "Ahmet Yılmaz",
     "hazirlayanPersonelUnvan": "Satınalma Memuru",
+    "kullanilabilirOdenek": "150.000,00",
+    "ihaleTuru": "Mal",
+    "kurumIci": false,
+    "kurumAdres": "Mustafa Kemal Mah. Dumlupınar Blv. No:1 Çankaya/Ankara",
+    "kurumTelefon": "0312 555 44 33",
+    "kurumFaks": "0312 555 44 34",
+    "kurumWeb": "www.saglik.gov.tr",
+    "kurumEposta": "ankara.destek@saglik.gov.tr",
+    "kurumKep": "saglikbakanligi@hs01.kep.tr",
+    "ilgiliPersonelAdi": "Ayşe Demir",
+    "ilgiliPersonelUnvan": "V.H.K.İ.",
+    "solLogo": "https://raw.githubusercontent.com/ilyasbozdemir/dt-desktop-app/refs/heads/main/resources/icon.png",
+    "sagLogo": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Logo_of_100th_years_of_the_Republic_of_T%C3%BCrkiye.svg",
+    "ihtiyacYeri": "İhtiyacın yapılacağı yer",
     "ihtiyacKalemleri": [
         {
-            "siraNo": 1,
             "kodu": "LAB-001",
             "malzemeAdi": "Eldiven",
             "ozelligi": "Nitril",
             "birimi": "Kutu",
-            "kdvOrani": "%20",
+            "kdvOrani": "20",
             "miktar": 50
         },
         {
-            "siraNo": 2,
             "kodu": "LAB-002",
             "malzemeAdi": "Maske",
             "ozelligi": "N95",
+            "birimi": "Adet",
+            "kdvOrani": "10",
+            "miktar": 200
+        },
+        {
+            "kodu": "LAB-003",
+            "malzemeAdi": "Laboratuvar Önlüğü",
+            "ozelligi": "Tek Kullanımlık",
+            "birimi": "Adet",
+            "kdvOrani": "20",
+            "miktar": 100
+        },
+        {
+            "kodu": "LAB-004",
+            "malzemeAdi": "Koruyucu Gözlük",
+            "ozelligi": "Şeffaf",
+            "birimi": "Adet",
+            "kdvOrani": "20",
+            "miktar": 30
+        },
+        {
+            "kodu": "LAB-005",
+            "malzemeAdi": "Enjektör",
+            "ozelligi": "5 ml",
+            "birimi": "Adet",
+            "kdvOrani": "10",
+            "miktar": 500
+        },
+        {
+            "kodu": "LAB-006",
+            "malzemeAdi": "Numune Kabı",
+            "ozelligi": "Steril",
+            "birimi": "Adet",
+            "kdvOrani": "20",
+            "miktar": 300
+        },
+        {
+            "kodu": "LAB-007",
+            "malzemeAdi": "Pipet Ucu",
+            "ozelligi": "1000 µl",
+            "birimi": "Kutu",
+            "kdvOrani": "20",
+            "miktar": 40
+        },
+        {
+            "kodu": "LAB-008",
+            "malzemeAdi": "Santrifüj Tüpü",
+            "ozelligi": "15 ml",
+            "birimi": "Paket",
+            "kdvOrani": "20",
+            "miktar": 60
+        },
+        {
+            "kodu": "LAB-009",
+            "malzemeAdi": "Lam",
+            "ozelligi": "Mikroskop Camı",
+            "birimi": "Kutu",
+            "kdvOrani": "20",
+            "miktar": 25
+        },
+        {
+            "kodu": "LAB-010",
+            "malzemeAdi": "Lamel",
+            "ozelligi": "22x22 mm",
+            "birimi": "Kutu",
+            "kdvOrani": "20",
+            "miktar": 20
+        },
+        {
+            "kodu": "LAB-011",
+            "malzemeAdi": "Dezenfektan",
+            "ozelligi": "1 Litre",
+            "birimi": "Şişe",
+            "kdvOrani": "20",
+            "miktar": 75
+        },
+        {
+            "kodu": "LAB-012",
+            "malzemeAdi": "Alkol Bazlı El Antiseptiği",
+            "ozelligi": "500 ml",
+            "birimi": "Şişe",
+            "kdvOrani": "20",
+            "miktar": 120
+        },
+        {
+            "kodu": "LAB-013",
+            "malzemeAdi": "Biyolojik Atık Torbası",
+            "ozelligi": "Kırmızı",
+            "birimi": "Paket",
+            "kdvOrani": "20",
+            "miktar": 35
+        },
+        {
+            "kodu": "LAB-014",
+            "malzemeAdi": "Kan Alma İğnesi",
+            "ozelligi": "21G",
+            "birimi": "Adet",
+            "kdvOrani": "10",
+            "miktar": 1000
+        },
+        {
+            "kodu": "LAB-015",
+            "malzemeAdi": "PCR Tüpü",
+            "ozelligi": "0.2 ml",
+            "birimi": "Paket",
+            "kdvOrani": "20",
+            "miktar": 50
+        },
+        {
+            "kodu": "LAB-016",
+            "malzemeAdi": "Santrifüj Cihazı Bakımı",
+            "ozelligi": "Yıllık Periyodik",
+            "birimi": "Adet",
+            "kdvOrani": "20",
+            "miktar": 2
+        },
+        {
+            "kodu": "LAB-017",
+            "malzemeAdi": "Otoklav Poşeti",
+            "ozelligi": "Isıya Dayanıklı",
+            "birimi": "Kutu",
+            "kdvOrani": "20",
+            "miktar": 15
+        },
+        {
+            "kodu": "LAB-018",
+            "malzemeAdi": "Mikroskop Ampulü",
+            "ozelligi": "Halojen",
+            "birimi": "Adet",
+            "kdvOrani": "20",
+            "miktar": 10
+        },
+        {
+            "kodu": "LAB-019",
+            "malzemeAdi": "Distile Su",
+            "ozelligi": "5 Litre",
+            "birimi": "Bidon",
+            "kdvOrani": "20",
+            "miktar": 20
+        },
+        {
+            "kodu": "LAB-020",
+            "malzemeAdi": "Ependorf Tüpü",
+            "ozelligi": "1.5 ml",
+            "birimi": "Kutu",
+            "kdvOrani": "20",
+            "miktar": 30
+        },
+        {
+            "kodu": "LAB-021",
+            "malzemeAdi": "Porselen Havan",
+            "ozelligi": "Küçük Boy",
+            "birimi": "Adet",
+            "kdvOrani": "20",
+            "miktar": 5
+        },
+        {
+            "kodu": "LAB-022",
+            "malzemeAdi": "Mezür",
+            "ozelligi": "100 ml Cam",
+            "birimi": "Adet",
+            "kdvOrani": "20",
+            "miktar": 10
+        },
+        {
+            "kodu": "LAB-023",
+            "malzemeAdi": "Erlenmayer",
+            "ozelligi": "250 ml Cam",
+            "birimi": "Adet",
+            "kdvOrani": "20",
+            "miktar": 15
+        },
+        {
+            "kodu": "LAB-024",
+            "malzemeAdi": "Beherglas",
+            "ozelligi": "500 ml Cam",
+            "birimi": "Adet",
+            "kdvOrani": "20",
+            "miktar": 20
+        },
+        {
+            "kodu": "LAB-025",
+            "malzemeAdi": "Balon Joje",
+            "ozelligi": "1000 ml Cam",
+            "birimi": "Adet",
+            "kdvOrani": "20",
+            "miktar": 5
+        },
+        {
+            "kodu": "LAB-026",
+            "malzemeAdi": "Filtre Kağıdı",
+            "ozelligi": "Kaba Filtre",
+            "birimi": "Kutu",
+            "kdvOrani": "20",
+            "miktar": 12
+        },
+        {
+            "kodu": "LAB-027",
+            "malzemeAdi": "Pamuk",
+            "ozelligi": "Hidrofil 500 gr",
+            "birimi": "Paket",
+            "kdvOrani": "%10",
+            "miktar": 50
+        },
+        {
+            "kodu": "LAB-028",
+            "malzemeAdi": "Sargı Bezi",
+            "ozelligi": "10 cm x 10 m",
+            "birimi": "Paket",
+            "kdvOrani": "%10",
+            "miktar": 100
+        },
+        {
+            "kodu": "LAB-029",
+            "malzemeAdi": "Turnike",
+            "ozelligi": "Otomatik",
+            "birimi": "Adet",
+            "kdvOrani": "20",
+            "miktar": 15
+        },
+        {
+            "kodu": "LAB-030",
+            "malzemeAdi": "Termometre",
+            "ozelligi": "Dijital",
+            "birimi": "Adet",
+            "kdvOrani": "20",
+            "miktar": 10
+        },
+        {
+            "kodu": "LAB-031",
+            "malzemeAdi": "Tansiyon Aleti",
+            "ozelligi": "Mekanik",
+            "birimi": "Adet",
+            "kdvOrani": "20",
+            "miktar": 5
+        },
+        {
+            "kodu": "LAB-032",
+            "malzemeAdi": "Steteskop",
+            "ozelligi": "Çift Taraflı",
+            "birimi": "Adet",
+            "kdvOrani": "20",
+            "miktar": 8
+        },
+        {
+            "kodu": "LAB-033",
+            "malzemeAdi": "Plaster",
+            "ozelligi": "Bez Tıbbi Bant",
             "birimi": "Adet",
             "kdvOrani": "%10",
             "miktar": 200
         },
         {
-            "siraNo": 3,
-            "kodu": "LAB-003",
-            "malzemeAdi": "Laboratuvar Önlüğü",
-            "ozelligi": "Tek Kullanımlık",
-            "birimi": "Adet",
-            "kdvOrani": "%20",
-            "miktar": 100
-        },
-        {
-            "siraNo": 4,
-            "kodu": "LAB-004",
-            "malzemeAdi": "Koruyucu Gözlük",
-            "ozelligi": "Şeffaf",
-            "birimi": "Adet",
-            "kdvOrani": "%20",
-            "miktar": 30
-        },
-        {
-            "siraNo": 5,
-            "kodu": "LAB-005",
-            "malzemeAdi": "Enjektör",
-            "ozelligi": "5 ml",
-            "birimi": "Adet",
-            "kdvOrani": "%10",
-            "miktar": 500
-        },
-        {
-            "siraNo": 6,
-            "kodu": "LAB-006",
-            "malzemeAdi": "Numune Kabı",
+            "kodu": "LAB-034",
+            "malzemeAdi": "Gaz Kompres",
             "ozelligi": "Steril",
-            "birimi": "Adet",
-            "kdvOrani": "%20",
-            "miktar": 300
-        },
-        {
-            "siraNo": 7,
-            "kodu": "LAB-007",
-            "malzemeAdi": "Pipet Ucu",
-            "ozelligi": "1000 µl",
             "birimi": "Kutu",
-            "kdvOrani": "%20",
+            "kdvOrani": "%10",
             "miktar": 40
         },
         {
-            "siraNo": 8,
-            "kodu": "LAB-008",
-            "malzemeAdi": "Santrifüj Tüpü",
-            "ozelligi": "15 ml",
-            "birimi": "Paket",
-            "kdvOrani": "%20",
+            "kodu": "LAB-035",
+            "malzemeAdi": "Oksijen Tüpü",
+            "ozelligi": "10 Litre",
+            "birimi": "Adet",
+            "kdvOrani": "20",
+            "miktar": 2
+        },
+        {
+            "kodu": "LAB-036",
+            "malzemeAdi": "Ambu Seti",
+            "ozelligi": "Yetişkin",
+            "birimi": "Set",
+            "kdvOrani": "20",
+            "miktar": 3
+        },
+        {
+            "kodu": "LAB-037",
+            "malzemeAdi": "Aspiratör Ucu",
+            "ozelligi": "Plastik",
+            "birimi": "Kutu",
+            "kdvOrani": "20",
+            "miktar": 10
+        },
+        {
+            "kodu": "LAB-038",
+            "malzemeAdi": "Sonda",
+            "ozelligi": "Foley 16F",
+            "birimi": "Adet",
+            "kdvOrani": "%10",
+            "miktar": 30
+        },
+        {
+            "kodu": "LAB-039",
+            "malzemeAdi": "İdrar Torbası",
+            "ozelligi": "2000 ml",
+            "birimi": "Adet",
+            "kdvOrani": "%10",
             "miktar": 60
         },
         {
-            "siraNo": 9,
-            "kodu": "LAB-009",
-            "malzemeAdi": "Lam",
-            "ozelligi": "Mikroskop Camı",
-            "birimi": "Kutu",
-            "kdvOrani": "%20",
-            "miktar": 25
-        },
-        {
-            "siraNo": 10,
-            "kodu": "LAB-010",
-            "malzemeAdi": "Lamel",
-            "ozelligi": "22x22 mm",
-            "birimi": "Kutu",
-            "kdvOrani": "%20",
-            "miktar": 20
-        },
-        {
-            "siraNo": 11,
-            "kodu": "LAB-011",
-            "malzemeAdi": "Dezenfektan",
-            "ozelligi": "1 Litre",
-            "birimi": "Şişe",
-            "kdvOrani": "%20",
-            "miktar": 75
-        },
-        {
-            "siraNo": 12,
-            "kodu": "LAB-012",
-            "malzemeAdi": "Alkol Bazlı El Antiseptiği",
-            "ozelligi": "500 ml",
-            "birimi": "Şişe",
-            "kdvOrani": "%20",
-            "miktar": 120
-        },
-        {
-            "siraNo": 13,
-            "kodu": "LAB-013",
-            "malzemeAdi": "Biyolojik Atık Torbası",
-            "ozelligi": "Kırmızı",
+            "kodu": "LAB-040",
+            "malzemeAdi": "Galos",
+            "ozelligi": "Naylon",
             "birimi": "Paket",
-            "kdvOrani": "%20",
-            "miktar": 35
-        },
-        {
-            "siraNo": 14,
-            "kodu": "LAB-014",
-            "malzemeAdi": "Kan Alma İğnesi",
-            "ozelligi": "21G",
-            "birimi": "Adet",
-            "kdvOrani": "%10",
-            "miktar": 1000
-        },
-        {
-            "siraNo": 15,
-            "kodu": "LAB-015",
-            "malzemeAdi": "PCR Tüpü",
-            "ozelligi": "0.2 ml",
-            "birimi": "Paket",
-            "kdvOrani": "%20",
-            "miktar": 50
+            "kdvOrani": "20",
+            "miktar": 150
         }
     ],
+    "olurYazisi": true,
     "dosyaTarihi": "14.06.2026",
-    "onaylayanlar": [
-        {
-            "onaylayanPersonelAdi": "Dr. Mehmet Demir",
-            "onaylayanPersonelUnvan": "İl Sağlık Müdürü"
-        }
-    ]
+    "onaylayanPersonelAdi": "Dr. Mehmet Demir",
+    "onaylayanPersonelUnvan": "İl Sağlık Müdürü"
 }

@@ -3,80 +3,323 @@
 <head>
   <meta charset="UTF-8">
   <style>
-    @page { size: A4; margin: 2cm 1.5cm 2.5cm 1.5cm; 
-      @bottom-right { content: "Sayfa " counter(page) " / " counter(pages); font-size: 8pt; font-family: "Times New Roman", serif; }
+    /* Removed duplicate @page block */
+    body {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 11pt;
+      color: #000;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
     }
-    body { font-family: "Times New Roman", Times, serif; font-size: 11pt; box-sizing: border-box; line-height: 1.5; }
-    .header { text-align: center; line-height: 1.3; margin-bottom: 20px; text-transform: uppercase; font-weight: bold;}
-    .title { text-align: center; font-weight: bold; text-decoration: underline; margin: 20px 0; font-size: 12pt; }
-    .footer-info { font-size: 8pt; }
-    .label { font-weight: bold; width: 30%; display: inline-block; }
-
-    /* ── Paged.js Running Elements ── */
+    .page-container {
+      max-width: 21cm;
+      min-height: 29.7cm;
+      margin: 20px auto;
+      padding: 2cm 1.5cm 4cm 1.5cm;
+      background: white;
+      box-sizing: border-box;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .content-body {
+      width: 100%;
+    }
+    @media print {
+      body {
+        background-color: white;
+      }
+      .page-container {
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        max-width: none;
+        min-height: 0;
+        position: static;
+      }
+    }
+    /* ── Header / Footer Positioning (Paged.js Running Elements) ── */
     .paged-header {
-      position: running(pagedHeader);
       display: block;
       width: 100%;
     }
 
     .paged-footer {
-      position: running(pagedFooter);
-      display: block;
+      position: absolute;
+      bottom: 0;
+      left: 0;
       width: 100%;
+      padding: 0 1.5cm 1.5cm 1.5cm;
+      box-sizing: border-box;
     }
 
     .paged-keep-together { break-inside: avoid; }
     .paged-break-before  { break-before: page; }
     .paged-break-after   { break-after: page; }
 
-    /* PAGE RULES — SINGLE SOURCE OF TRUTH */
-    @page {
-      @bottom-left { content: element(pagedFooter); }
-    }
+    /* PAGE RULES — SINGLE SOURCE OF TRUTH (ELECTRON NATIVE) */
+    /* Margins are now handled exclusively by printToPDF options in main process */
 
-    @page:first {
-      @top-center  { content: element(pagedHeader); }
-      @bottom-left { content: none; }
+    /* Header and Footer Flexbox rules removed and replaced with Table */
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
     }
+    .meta-table {
+      border-collapse: collapse;
+    }
+    .meta-table td {
+      padding: 2px 10px 2px 0;
+      vertical-align: top;
+    }
+    .meta-label {
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .makam {
+      text-align: center;
+      font-weight: bold;
+      margin: 40px 0 20px 0;
+      text-transform: uppercase;
+    }
+    .title {
+      text-align: center;
+      font-weight: bold;
+      text-decoration: underline;
+      margin: 20px 0;
+      font-size: 12pt;
+    }
+    .konu-metni {
+      text-indent: 40px;
+      text-align: justify;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .hazirlayan {
+      text-align: right;
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+    .content-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      margin-bottom: 30px;
+      font-size: 10pt;
+    }
+    .content-table th, .content-table td {
+      border: 1px solid #333;
+      padding: 6px;
+      text-align: left;
+    }
+    
+    /* ── Hassas Sayfa Bölünme Kuralları ── */
+    /* Tablo satırları ortadan bölünmesin (cantSplit) */
+    .content-table tr {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    /* Paragraflar ortadan bölünmesin (keepLines) */
+    .keep-lines {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    /* Başlık altındaki içerikten kopmasın (keepNext) */
+    .keep-next {
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+    /* Zorla yeni sayfadan başlasın (pageBreakBefore) */
+    .page-break-before {
+      break-before: page;
+      page-break-before: always;
+    }
+    /* ──────────────────────────────────── */
+
+    .content-table th {
+      font-weight: bold;
+      text-align: center;
+      background-color: #f2f2f2;
+    }
+    .approval {
+      text-align: center;
+      margin-top: 40px;
+      break-inside: avoid;
+      page-break-inside: avoid;
+      break-before: avoid;
+      page-break-before: avoid;
+    }
+    /* Footer rules replaced with Table */
   </style>
 </head>
 <body>
-  <div data-behavior="first-page-only" data-slot="top-center">
-    <div class="header">
-      {{#solLogo}}<img src="{{solLogo}}" alt="Logo" style="width: 60px; position: absolute; left: 0; top: 0;" />{{/solLogo}}
-      T.C.<br><strong>{{antetSatir1}}</strong><br>{{antetSatir2}}<br>{{antetSatir3}}
+  <div class="page-container">
+
+    <!-- ANTET -->
+    <div class="paged-header" data-behavior="first-page-only" data-slot="top-center">
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; min-height: 80px;">
+        <tr>
+          <td style="width: 90px; text-align: left; vertical-align: middle;">
+            {{#solLogo}}
+            <img src="{{solLogo}}" alt="Sol Logo" style="max-width: 80px; max-height: 80px; object-fit: contain;" />
+            {{/solLogo}}
+          </td>
+          
+          <td style="text-align: center; vertical-align: middle; line-height: 1.3;">
+            {{#antetSatirlari}}
+            <div style="font-weight: bold; font-size: 12pt;">{{.}}</div>
+            {{/antetSatirlari}}
+          </td>
+
+          <td style="width: 90px; text-align: right; vertical-align: middle;">
+            {{#sagLogo}}
+            <img src="{{sagLogo}}" alt="Sağ Logo" style="max-width: 80px; max-height: 80px; object-fit: contain;" />
+            {{/sagLogo}}
+          </td>
+        </tr>
+      </table>
     </div>
-  </div>
-  {{^kurumIci}}
-  <div data-behavior="every-page" data-slot="bottom-left">
-    <div class="footer-info">İletişim: {{kurumAdres}} | Tel: {{kurumTelefon}} | Bilgi İçin: {{ilgiliPersonelAdi}}</div>
-  </div>
-  {{/kurumIci}}
 
-  <div class="title">ONAY BELGESİ (LÜZUM MÜZEKKERESİ)</div>
+    <!-- CONTENT BODY (Güvenli Alan) -->
+    <div class="content-body">
+      <div class="meta-row">
+        <div>
+          <table class="meta-table">
+            <tr>
+              <td class="meta-label">Sayı</td>
+              <td>: {{evrakSayisi}}</td>
+            </tr>
+            <tr>
+              <td class="meta-label">Konu</td>
+              <td>: Lüzum Müzekkeresi</td>
+            </tr>
+          </table>
+        </div>
+        <div>
+          <strong>Tarih:</strong> {{tarih}}
+        </div>
+      </div>
 
-  <div style="margin-bottom: 20px;">
-    <div style="margin-bottom: 8px;"><span class="label">İşin Adı / Konusu:</span> {{dosyaKonusu}}</div>
-    <div style="margin-bottom: 8px;"><span class="label">İşin Niteliği ve Türü:</span> Mal/Hizmet Alımı</div>
-    <div style="margin-bottom: 8px;"><span class="label">Miktarı:</span> Ekli İhtiyaç Listesinde Belirtilmiştir</div>
-    <div style="margin-bottom: 8px;"><span class="label">Kullanılabilir Ödenek:</span> {{kullanilabilirOdenek}} ₺</div>
-    <div style="margin-bottom: 8px;"><span class="label">Alımda Uygulanacak Usul:</span> 4734 Sayılı K.İ.K. 22/d Maddesi (Doğrudan Temin)</div>
-  </div>
+      <div class="makam">
+        {{sunulacakMakamAdi}}
+      </div>
+      <div class="konu-metni">
+        {{ihtiyacYeri}} ihtiyacı olan aşağıda yazılı mal/hizmet kalemlerinin temin edilmesi gerekmektedir.<br>
+        Söz konusu ihtiyacın 4734 sayılı Kamu İhale Kanunu'nun ilgili maddesine göre temini için gereğini arz ederim.
+      </div>
 
-  <div style="text-align: justify; margin-bottom: 20px;">
-    Yukarıda belirtilen mal/hizmet alım işinin, 4734 sayılı Kamu İhale Kanununun 22 nci maddesinin (d) bendi uyarınca Doğrudan Temin usulü ile piyasa fiyat araştırması yapılarak gerçekleştirilmesi hususunu Olur'larınıza arz ederim.
-  </div>
+      <div class="hazirlayan">
+        {{hazirlayanPersonelAdi}}<br>
+        {{hazirlayanPersonelUnvan}}
+      </div>
 
-  <div style="text-align:right; margin-bottom: 40px;">
-    {{hazirlayanPersonelAdi}}<br>{{hazirlayanPersonelUnvan}}
-  </div>
+      <table class="content-table">
+        <thead>
+          <tr>
+            <th>Kodu</th>
+            <th>Malzeme Adı</th>
+            <th>Özelliği</th>
+            <th>Birimi</th>
+            <th>KDV Oranı</th>
+            <th>Miktar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#ihtiyacKalemleri}}
+          <tr>
+            <td>{{kodu}}</td>
+            <td>{{malzemeAdi}}</td>
+            <td>{{ozelligi}}</td>
+            <td>{{birimi}}</td>
+            <td>{{kdvOrani}}</td>
+            <td>{{miktar}}</td>
+          </tr>
+          {{/ihtiyacKalemleri}}
+          {{^ihtiyacKalemleri}}
+          <tr>
+            <td colspan="6" style="text-align: center;">Kalem bulunamadı</td>
+          </tr>
+          {{/ihtiyacKalemleri}}
+        </tbody>
+      </table>
 
-  <div class="signature" style="text-align: center; margin-top: 40px;" data-behavior="keep-together">
-    {{#onaylayanlar}}
-    <div style="display: inline-block; text-align: center; width: 45%; vertical-align: top;">
-      OLUR<br>{{dosyaTarihi}}<br><br><br>{{onaylayanPersonelAdi}}<br>{{onaylayanPersonelUnvan}}<br>Harcama Yetkilisi
+      {{#olurYazisi}}
+      <div class="approval" data-behavior="keep-together">
+        <strong>OLUR</strong><br>
+        {{dosyaTarihi}}<br><br><br>
+        {{onaylayanPersonelAdi}}<br>
+        {{onaylayanPersonelUnvan}}<br>
+        Harcama Yetkilisi
+      </div>
+      {{/olurYazisi}}
+    </div> <!-- END CONTENT BODY -->
+
+    <!-- KURUM İLETİŞİM -->
+    {{^kurumIci}}
+    <div class="paged-footer" data-behavior="every-page">
+      <div style="border-top: 1px solid red; margin-bottom: 5px;"></div>
+      <table style="width: 100%; border-collapse: collapse; font-size: 8pt; color: #333; line-height: 1.2;">
+        <tr>
+          <td style="text-align: left; vertical-align: top;">
+            Adres: {{kurumAdres}}<br>
+            Elektronik Ağ: {{kurumWeb}}<br>
+            E-Posta: {{kurumEposta}}<br>
+            KEP: {{kurumKep}}
+          </td>
+          <td style="text-align: right; vertical-align: top;">
+            Bilgi İçin: {{ilgiliPersonelAdi}}<br>
+            {{ilgiliPersonelUnvan}}<br>
+            Telefon No: {{kurumTelefon}}
+          </td>
+        </tr>
+      </table>
     </div>
-    {{/onaylayanlar}}
+    {{/kurumIci}}
+
   </div>
+
+  <script>
+    // Tablo satırlarını sayıp maksimum satır sınırlarına göre sayfalara bölme
+    window.addEventListener('DOMContentLoaded', () => {
+      const tbody = document.querySelector('.content-table tbody');
+      if (!tbody) return;
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      
+      const MAX_ROWS = 20; // Normal sayfalar için maksimum satır
+      const SAFE_LAST_PAGE_ROWS = 12; // İmzanın da sığabileceği maksimum satır
+      
+      let rowsOnCurrentPage = 0;
+      
+      for (let i = 0; i < rows.length; i++) {
+         rowsOnCurrentPage++;
+         const isLastRow = i === rows.length - 1;
+         
+         if (isLastRow) {
+            // Son satırdayız. Eğer bu sayfada imza için yeterli yer kalmadıysa
+            // son satırı (ve doğal olarak imzayı) yeni sayfaya at.
+            if (rowsOnCurrentPage > SAFE_LAST_PAGE_ROWS) {
+               rows[i].style.breakBefore = 'page';
+               rows[i].style.pageBreakBefore = 'always';
+            }
+         } else {
+            // Normal satır
+            if (rowsOnCurrentPage >= MAX_ROWS) {
+               // Maksimum satıra ulaştık, zorunlu sayfa sonu
+               rows[i + 1].style.breakBefore = 'page';
+               rows[i + 1].style.pageBreakBefore = 'always';
+               rowsOnCurrentPage = 0;
+            } else if (rows.length - i <= 5 && rowsOnCurrentPage > 15) {
+               // Kalan satır sayısı az (<= 5) ve mevcut sayfa bayağı doldu (>15)
+               // İmzayı yalnız bırakmamak için kalan satırları şimdiden yeni sayfaya atalım.
+               rows[i + 1].style.breakBefore = 'page';
+               rows[i + 1].style.pageBreakBefore = 'always';
+               rowsOnCurrentPage = 0;
+            }
+         }
+      }
+    });
+  </script>
 </body>
 </html>
