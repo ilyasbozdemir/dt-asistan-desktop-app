@@ -283,21 +283,7 @@ export default function YeniDosyaScreen(): React.JSX.Element {
   // AI Form Fill Modal
   const [showAIModal, setShowAIModal] = useState(false)
   const [showAiMenu, setShowAiMenu] = useState(false)
-  const [, setAiModalConfig] = useState<{
-    title: string
-    fieldName: string
-    initialPrompt: string
-    systemInstruction: string
-    mode?: 'text' | 'json'
-    expectedJsonFormat?: string
-  }>({
-    title: '',
-    fieldName: '',
-    initialPrompt: '',
-    systemInstruction: '',
-    mode: 'text',
-    expectedJsonFormat: ''
-  })
+
 
   // Reusable AI Text Generator Modal
   const [textGenConfig, setTextGenConfig] = useState<{
