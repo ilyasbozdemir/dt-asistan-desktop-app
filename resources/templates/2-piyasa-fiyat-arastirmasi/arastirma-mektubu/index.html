@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <style>
+    @page { size: A4; margin: 2cm 1.5cm; }
     body {
       font-family: "Times New Roman", Times, serif;
       font-size: 11pt;
@@ -106,6 +107,10 @@
     .content-table th {
       font-weight: bold;
       text-align: center;
+    }
+    .content-table tr {
+      break-inside: avoid;
+      page-break-inside: avoid;
     }
     .toplam-container {
       display: flex;
