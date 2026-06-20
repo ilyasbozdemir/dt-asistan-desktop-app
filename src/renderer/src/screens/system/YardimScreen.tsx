@@ -85,35 +85,35 @@ const DogrudanTeminSurecAkisi = () => {
   const steps = [
     {
       title: "1- İHTİYACIN TESPİTİ",
-      desc: "Standart bir form yoktur. Lüzum Müzekkeresi veya İhtiyaç Raporu adı altında bir belge oluşturulabilir. Bu belge, ihtiyaç duyan birim tarafından alımı gerçekleştirecek makama hitaben yazılır."
+      desc: "Standart bir form yok, “Lüzum Müzekkeresi” veya “İhtiyaç Raporu” adı altında bir belge oluşturulabilir. Bu belge ihtiyaç duyan birim tarafından alımı gerçekleştirilecek makama hitaben yazılır."
     },
     {
       title: "2- ONAY BELGESİ DÜZENLENMESİ",
-      desc: "Alım konusu işin nev'i, niteliği, varsa proje numarası, miktarı, gereken hallerde yaklaşık maliyeti, kullanılabilir ödeneği ve tertibi, alımda uygulanacak usulü, avans ve fiyat farkı verilecekse şartlarını gösteren ve harcama yetkilisinin imzasını taşıyan belgedir. Standart bir form yoktur; onay belgesi üzerinde düzenleme yapılarak kullanılabilir. Bu belgede, görevlendirilen personel isimlerine de yer verilebilir veya ayrı bir yazıyla görevlendirme yapılabilir."
+      desc: "Onay Belgesi: İhale usulüyle yapılacak alımlarda, kamu ihale mevzuatında standart form olarak belirlenen ihale onay belgelerini; doğrudan temin suretiyle veya kamu ihale mevzuatında belirtilen istisnai alımlarda ise alım konusu işin nev'i, niteliği, varsa proje numarası, miktarı, gereken hallerde yaklaşık maliyeti, kullanılabilir ödeneği ve tertibi, alımda uygulanacak usulü, avans ve fiyat farkı verilecekse şartlarını gösteren ve harcama yetkilisinin imzasını taşıyan belgeyi ifade eder.\n\nStandart bir form yok, onay belgesinde oynama yapılarak kullanılabilir. Bu belgede, görevlendirme yapılan personel isimlerine de yer verilebilir veya ayrı bir yazıyla görevlendirme yapılabilir."
     },
     {
       title: "3- GÖREVLENDİRME YAPILMASI",
-      desc: "Onay belgesi üzerinde veya ayrı bir yazıyla görevlendirme gerçekleştirilir."
+      desc: "Onay belgesi üzerinde veya ayrı bir yazıyla görevlendirme yapılır."
     },
     {
       title: "4- PİYASA FİYAT ARAŞTIRMASI YAPILMASI",
-      desc: "Standart bir formu bulunmaktadır. Mahalli İdareler Harcama Belgeleri Yönetmeliği ÖRNEK 3 uyarınca piyasa fiyat araştırması yapılır."
+      desc: "Standart bir formu bulunmaktadır. Mahalli İdareler Harcama Belgeleri Yönetmeliği ÖRNEK 3."
     },
     {
       title: "5- FİYATIN HARCAMA YETKİLİSİ TARAFINDAN ONAYLANMASI",
       desc: "Piyasa fiyat araştırması tutanağının altına harcama yetkilisi tarafından olur verilmek suretiyle gerçekleştirilebilir."
     },
     {
-      title: "6- 4734 SAYILI KANUN 62/I MADDESİNE GÖRE %10 KONTROLÜ",
-      desc: "Yıllık ayrılan ödeneğin %10 limit kontrolü gerçekleştirilir."
+      title: "6- 4734 62/I MADDESİNE GÖRE % 10 KONTROLÜ",
+      desc: ""
     },
     {
       title: "7- ALIMIN YAPILMASI",
-      desc: "Faturanın düzenlenmesi, gerekli hallerde muayene kabul belgeleri ve taşınır işlem fişinin (TİF) düzenlenmesi, piyasa fiyat araştırma tutanağının eklenmesi aşamasıdır."
+      desc: "Fatura düzenlenmesi, gerekli hallerde muayene kabul belgeleri ve taşınır işlem fişinin düzenlenmesi, piyasa fiyat araştırma tutanağının eklenmesi."
     },
     {
       title: "8- ÖDEME",
-      desc: "Standart formu bulunmaktadır. Ödeme Emri Belgesi düzenlenir ve ekine kanunen gerekli tüm belgeler konulur."
+      desc: "Standart formu bulunmaktadır. Ödeme Emri Belgesi düzenlenir ve ekine gerekli belgeler konulur."
     }
   ];
 
@@ -121,7 +121,7 @@ const DogrudanTeminSurecAkisi = () => {
     <div className="p-6 overflow-y-auto h-full max-h-full custom-scrollbar bg-slate-50 dark:bg-slate-900/40">
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="text-center pb-4 border-b border-slate-200 dark:border-slate-800">
-          <h2 className="text-base font-bold text-slate-800 dark:text-slate-100">Doğrudan Temin İşlem Süreci Akış Şeması</h2>
+          <h2 className="text-base font-bold text-slate-800 dark:text-slate-105">Doğrudan Temin İşlem Süreci Akış Şeması</h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Mevzuata uygun olarak doğrudan temin (4734 Sayılı Kanun 22. Madde) sürecinin 8 temel adımı
           </p>
@@ -131,18 +131,20 @@ const DogrudanTeminSurecAkisi = () => {
           {steps.map((step, idx) => (
             <div key={idx} className="relative pl-6 md:pl-8 group">
               {/* Dot marker */}
-              <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-white dark:bg-slate-900 border-4 border-blue-500 dark:border-blue-600 group-hover:scale-125 transition-transform duration-200" />
+              <div className="absolute left-[-11px] top-1 w-5 h-5 rounded-full bg-white dark:bg-slate-900 border-4 border-blue-500 dark:border-blue-600 group-hover:scale-125 transition-transform duration-200" />
               
-              <div className="bg-white dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs group-hover:border-blue-300 dark:group-hover:border-blue-800 transition-colors">
+              <div className="bg-white dark:bg-slate-955 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs group-hover:border-blue-300 dark:group-hover:border-blue-800 transition-colors">
                 <h3 className="text-xs font-bold text-blue-600 dark:text-blue-450 uppercase tracking-wide flex items-center gap-2">
                   <span className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-[10px] text-blue-700 dark:text-blue-300 font-bold shrink-0">
                     {idx + 1}
                   </span>
                   {step.title}
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed font-normal">
-                  {step.desc}
-                </p>
+                {step.desc && (
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed font-normal whitespace-pre-wrap">
+                    {step.desc}
+                  </p>
+                )}
               </div>
             </div>
           ))}
