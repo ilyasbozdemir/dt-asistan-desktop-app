@@ -1,6 +1,6 @@
 {
   "name": "dt-desktop-app",
-  "version": "1.0.0-alpha.52",
+  "version": "1.0.0-alpha.53",
   "description": "DT Desktop Application",
   "main": "./out/main/index.js",
   "author": "example.com",
