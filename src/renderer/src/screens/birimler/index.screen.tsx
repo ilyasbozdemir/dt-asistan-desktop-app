@@ -3,7 +3,7 @@ import { useBirimlerHooks, BirimInput, usePersonelList } from './birimler.hooks'
 import { useAyarlarHooks } from '../ayarlar/ayarlar.hooks'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
-import { LayoutGrid, Plus, Trash2, Edit2, ChevronDown, ChevronUp, Hash, Users, MapPin, Type, AlignLeft, User, Building, Calendar, Info, ArrowLeft, X } from 'lucide-react'
+import { LayoutGrid, Plus, Trash2, Edit2, ChevronDown, ChevronUp, Hash, Users, MapPin, Type, AlignLeft, User, Building, Calendar, Info, ArrowLeft, X, HelpCircle, ExternalLink } from 'lucide-react'
 
 import { Modal } from '../../components/ui/Modal'
 
@@ -398,8 +398,9 @@ export default function BirimlerScreen(): React.ReactNode {
                 </p>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+                <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5 flex items-center gap-1.5">
                   e-Bütçe Kodu
+                  <span title="Kurumunuzun e-Bütçe sistemindeki ön ek kodudur (Örn: 38.xx.xx)"><HelpCircle className="w-3.5 h-3.5 text-blue-500 cursor-help" /></span>
                 </label>
                 <div className="flex">
                   {settings?.eButceKodu && (
@@ -420,8 +421,9 @@ export default function BirimlerScreen(): React.ReactNode {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+                <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5 flex items-center gap-1.5">
                   Say2000i Kodu
+                  <span title="Maliye Bakanlığı Say2000i sistemindeki ödeme kurumu kodunuz"><HelpCircle className="w-3.5 h-3.5 text-blue-500 cursor-help" /></span>
                 </label>
                 <div className="flex">
                   {settings?.say2000iKodu && (
@@ -455,8 +457,9 @@ export default function BirimlerScreen(): React.ReactNode {
               {!isMuhasebe && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+                    <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5 flex items-center gap-1.5">
                       e-Bütçe Kodu
+                      <span title="Kurumunuzun e-Bütçe sistemindeki ön ek kodudur (Örn: 38.xx.xx)"><HelpCircle className="w-3.5 h-3.5 text-blue-500 cursor-help" /></span>
                     </label>
                     <div className="flex">
                       {settings?.eButceKodu && (
@@ -477,8 +480,9 @@ export default function BirimlerScreen(): React.ReactNode {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+                    <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5 flex items-center gap-1.5">
                       Say2000i Kodu
+                      <span title="Maliye Bakanlığı Say2000i sistemindeki ödeme kurumu kodunuz"><HelpCircle className="w-3.5 h-3.5 text-blue-500 cursor-help" /></span>
                     </label>
                     <div className="flex">
                       {settings?.say2000iKodu && (
@@ -545,6 +549,9 @@ export default function BirimlerScreen(): React.ReactNode {
               <div className="col-span-full">
                 <label className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
                   DETSİS Kodu <span className="text-[10px] font-normal text-slate-400">(Eski adıyla DTVT)</span>
+                  <a href="https://www.kaysis.gov.tr/" target="_blank" rel="noreferrer" className="text-[10px] text-blue-600 hover:underline flex items-center gap-1 ml-auto" title="Devlet Teşkilatı Merkezi Kayıt Sistemi">
+                    DETSİS Sorgula <ExternalLink className="w-3 h-3" />
+                  </a>
                 </label>
                 <Input
                   value={form.dtvt_kodu || ''}

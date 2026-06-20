@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useAyarlarHooks } from '../ayarlar/ayarlar.hooks'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
-import { Building2, Save, Upload, MapPin, ImageIcon, Info, X, ExternalLink, Plus } from 'lucide-react'
+import { Building2, Save, Upload, MapPin, ImageIcon, Info, X, ExternalLink, Plus, HelpCircle } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { FINANSMAN_KODLARI } from '../../constants/butce-kodlari'
 import { InnerMenu, InnerMenuItem } from '../../components/ui/InnerMenu'
@@ -460,8 +460,9 @@ export default function KurumScreen(): React.JSX.Element {
 
                           {/* Yeni Kurumsal Kod Öneki */}
                           <div>
-                            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+                            <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5 flex items-center gap-1.5">
                               e-Bütçe Kodu Öneki
+                              <span title="Kurumunuzun e-Bütçe sistemindeki ön ek kodudur (Örn: 38.xx.xx)"><HelpCircle className="w-3.5 h-3.5 text-blue-500 cursor-help" /></span>
                             </label>
                             <Input
                               value={eButceKodu}
@@ -476,8 +477,9 @@ export default function KurumScreen(): React.JSX.Element {
 
                           {/* Eski Kurumsal Kod Öneki */}
                           <div>
-                            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+                            <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5 flex items-center gap-1.5">
                               Say2000i Kodu Öneki
+                              <span title="Maliye Bakanlığı Say2000i sistemindeki ödeme kurumu kodunuz"><HelpCircle className="w-3.5 h-3.5 text-blue-500 cursor-help" /></span>
                             </label>
                             <Input
                               value={say2000iKodu}
@@ -490,10 +492,13 @@ export default function KurumScreen(): React.JSX.Element {
                             </p>
                           </div>
 
-                          {/* Fonksiyonel Kod */}
+                          {/* Kurumsal Kod */}
                           <div>
-                            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
-                              Fonksiyonel Kod (Düzey 1-2-3-4)
+                            <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5 flex items-center gap-1.5">
+                              Kurumsal Kod (Düzey 1-2-3-4)
+                              <a href="https://www.kaysis.gov.tr/" target="_blank" rel="noreferrer" className="text-[10px] text-blue-600 hover:underline flex items-center gap-1 ml-auto" title="Devlet Teşkilatı Merkezi Kayıt Sistemi">
+                                DETSİS Sorgula <ExternalLink className="w-3 h-3" />
+                              </a>
                             </label>
                             <select
                               value={fonksiyonelKod}

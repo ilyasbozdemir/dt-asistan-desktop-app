@@ -103,7 +103,7 @@ export function Footer(): React.JSX.Element {
             
             <div className="p-3 text-[11px] text-slate-600 dark:text-slate-300 border-b border-slate-100 dark:border-slate-700 leading-relaxed">
               <p className="mb-2">
-                Bu sürüm <strong>tek kullanıcılı</strong> ve yerel <strong>SQLite tabanlı (.dtm)</strong> olarak çalışan ücretsiz sürümdür.
+                Bu sürüm <strong>tek kullanıcılı</strong> ve yerel <strong>SQLite tabanlı (.dta / .dtm)</strong> olarak çalışan ücretsiz sürümdür.
               </p>
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/40 p-2.5 rounded-lg">
                 <p className="font-semibold text-blue-800 dark:text-blue-300 mb-1 flex items-center gap-1.5">

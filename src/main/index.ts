@@ -1284,29 +1284,44 @@ if (!gotTheLock && !isMultiInstance) {
       }
     })
 
-    ipcMain.handle('db:export-dte', async (_, contentType: 'firms' | 'items' | 'all') => {
+    ipcMain.handle('db:export-dte', async (_, contentType: string) => {
       try {
         const db = workspaceManager.getDb()
         const activeMeta = workspaceManager.getMeta()
         
-        let firms: any[] = []
-        let items: any[] = []
-        
-        // Check table existences dynamically before querying
-        const checkTableExists = (tableName: string): boolean => {
+        const data: Record<string, any[]> = {}
+        let recordCount = 0
+
+        const exportTable = (tableName: string) => {
           const row = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name = ?").get(tableName)
-          return !!row
+          if (row) {
+            const rows = db.prepare(`SELECT * FROM ${tableName}`).all()
+            data[tableName] = rows
+            recordCount += rows.length
+          }
         }
+
+        if (contentType === 'firms' || contentType === 'all') exportTable('TANIM_Firma')
+        if (contentType === 'items' || contentType === 'all') exportTable('TANIM_Kalem')
+        if (contentType === 'birimler' || contentType === 'all') exportTable('TANIM_Birim')
+        if (contentType === 'personel' || contentType === 'all') exportTable('TANIM_Personel')
+        if (contentType === 'mevzuat' || contentType === 'all') exportTable('TANIM_Mevzuat')
+        if (contentType === 'ambar' || contentType === 'all') exportTable('TANIM_Ambar')
+        if (contentType === 'tasinir' || contentType === 'all') exportTable('TANIM_TasinirKod')
+        if (contentType === 'olcubirimleri' || contentType === 'all') exportTable('TANIM_OlcuBirimleri')
         
-        const hasFirms = checkTableExists('TANIM_Firma')
-        const hasItems = checkTableExists('TANIM_Kalem')
-        
-        if ((contentType === 'firms' || contentType === 'all') && hasFirms) {
-          firms = db.prepare('SELECT * FROM TANIM_Firma').all()
-        }
-        
-        if ((contentType === 'items' || contentType === 'all') && hasItems) {
-          items = db.prepare('SELECT * FROM TANIM_Kalem').all()
+        // Note: DATA_TeminDosyasi is deliberately skipped unless explicitly requested, as it contains transactional data.
+        if (contentType === 'full_backup') {
+          exportTable('TANIM_Firma')
+          exportTable('TANIM_Kalem')
+          exportTable('TANIM_Birim')
+          exportTable('TANIM_Personel')
+          exportTable('TANIM_Mevzuat')
+          exportTable('TANIM_Ambar')
+          exportTable('TANIM_TasinirKod')
+          exportTable('TANIM_OlcuBirimleri')
+          exportTable('DATA_TeminDosyasi')
+          exportTable('settings')
         }
         
         // Fetch active institution name from settings
@@ -1331,8 +1346,6 @@ if (!gotTheLock && !isMultiInstance) {
           // ignore
         }
         
-        const recordCount = firms.length + items.length
-        
         const payload = {
           dte_version: '1.0',
           exported_from_app: app.getVersion(),
@@ -1341,10 +1354,7 @@ if (!gotTheLock && !isMultiInstance) {
           institution: institutionName,
           content_type: contentType,
           record_count: recordCount,
-          data: {
-            firms,
-            items
-          }
+          data
         }
         
         const { filePath, canceled } = await dialog.showSaveDialog({
@@ -1406,8 +1416,7 @@ if (!gotTheLock && !isMultiInstance) {
         }
         
         const contentType = payload.content_type || 'all'
-        const firmsToImport = payload.data?.firms || []
-        const itemsToImport = payload.data?.items || []
+        const dataToImport = payload.data || {}
         
         const db = workspaceManager.getDb()
         
@@ -1422,63 +1431,38 @@ if (!gotTheLock && !isMultiInstance) {
           return rows.map((r) => r.name)
         }
         
-        let importedFirmsCount = 0
-        let importedItemsCount = 0
+        let totalImportedCount = 0
         const warnings: string[] = []
         
         db.transaction(() => {
-          // Import Firms
-          if ((contentType === 'firms' || contentType === 'all') && firmsToImport.length > 0) {
-            if (checkTableExists('TANIM_Firma')) {
-              const existingCols = getTableColumns('TANIM_Firma')
-              
-              for (const firm of firmsToImport) {
-                // Keep only keys that exist in the target database table schema
-                const filteredFirm: Record<string, any> = {}
-                for (const col of existingCols) {
-                  if (firm[col] !== undefined) {
-                    filteredFirm[col] = firm[col]
+          for (const [tableName, rows] of Object.entries(dataToImport)) {
+            const tableRows = rows as any[]
+            if (Array.isArray(tableRows) && tableRows.length > 0) {
+              if (checkTableExists(tableName)) {
+                const existingCols = getTableColumns(tableName)
+                let tableImportCount = 0
+                
+                for (const row of tableRows) {
+                  const filteredRow: Record<string, any> = {}
+                  for (const col of existingCols) {
+                    if (row[col] !== undefined) {
+                      filteredRow[col] = row[col]
+                    }
+                  }
+                  
+                  if (Object.keys(filteredRow).length > 0) {
+                    const colsStr = Object.keys(filteredRow).map((c) => `"${c}"`).join(', ')
+                    const placeholders = Object.keys(filteredRow).map(() => '?').join(', ')
+                    const values = Object.values(filteredRow)
+                    
+                    db.prepare(`INSERT OR REPLACE INTO ${tableName} (${colsStr}) VALUES (${placeholders})`).run(...values)
+                    tableImportCount++
+                    totalImportedCount++
                   }
                 }
-                
-                if (Object.keys(filteredFirm).length > 0) {
-                  const colsStr = Object.keys(filteredFirm).map((c) => `"${c}"`).join(', ')
-                  const placeholders = Object.keys(filteredFirm).map(() => '?').join(', ')
-                  const values = Object.values(filteredFirm)
-                  
-                  db.prepare(`INSERT OR REPLACE INTO TANIM_Firma (${colsStr}) VALUES (${placeholders})`).run(...values)
-                  importedFirmsCount++
-                }
+              } else {
+                warnings.push(`${tableName} tablosu hedef veritabanında bulunamadı. Aktarımı atlandı.`)
               }
-            } else {
-              warnings.push('Firma tablosu (TANIM_Firma) hedef veritabanında bulunamadı. Firma aktarımı atlandı.')
-            }
-          }
-          
-          // Import Items
-          if ((contentType === 'items' || contentType === 'all') && itemsToImport.length > 0) {
-            if (checkTableExists('TANIM_Kalem')) {
-              const existingCols = getTableColumns('TANIM_Kalem')
-              
-              for (const item of itemsToImport) {
-                const filteredItem: Record<string, any> = {}
-                for (const col of existingCols) {
-                  if (item[col] !== undefined) {
-                    filteredItem[col] = item[col]
-                  }
-                }
-                
-                if (Object.keys(filteredItem).length > 0) {
-                  const colsStr = Object.keys(filteredItem).map((c) => `"${c}"`).join(', ')
-                  const placeholders = Object.keys(filteredItem).map(() => '?').join(', ')
-                  const values = Object.values(filteredItem)
-                  
-                  db.prepare(`INSERT OR REPLACE INTO TANIM_Kalem (${colsStr}) VALUES (${placeholders})`).run(...values)
-                  importedItemsCount++
-                }
-              }
-            } else {
-              warnings.push('Malzeme/Hizmet Kalemleri tablosu (TANIM_Kalem) hedef veritabanında bulunamadı. Kalem aktarımı atlandı.')
             }
           }
         })()
@@ -1488,8 +1472,9 @@ if (!gotTheLock && !isMultiInstance) {
         
         return {
           success: true,
-          importedFirmsCount,
-          importedItemsCount,
+          totalImportedCount,
+          importedFirmsCount: (dataToImport['TANIM_Firma']?.length || 0), // Kept for backwards compatibility in UI
+          importedItemsCount: (dataToImport['TANIM_Kalem']?.length || 0), // Kept for backwards compatibility in UI
           contentType,
           warnings
         }

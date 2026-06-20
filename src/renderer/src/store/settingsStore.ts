@@ -111,8 +111,8 @@ export const useSettingsStore = create<SettingsState>((set) => ({
         muhasebeBirimAdi: settings.muhasebeBirimAdi || '',
         harcamaBirimKodu: settings.harcamaBirimKodu || '',
         harcamaBirimAdi: settings.harcamaBirimAdi || '',
-        ekapDonemKurali: settings.ekapDonemKurali || '',
-        isDisclaimerAccepted: settings.isDisclaimerAccepted === 'true'
+        ekapDonemKurali: settings.ekapDonemKurali || ''
+        // isDisclaimerAccepted is intentionally not loaded from DB to show it on every app launch
       })
     } catch (error) {
       console.error('Ayarlar yüklenemedi:', error)

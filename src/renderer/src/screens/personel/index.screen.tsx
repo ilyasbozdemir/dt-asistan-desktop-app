@@ -4,7 +4,7 @@ import { useBirimlerHooks } from '../birimler/birimler.hooks'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { Modal } from '../../components/ui/Modal'
-import { Plus, Edit, Trash2, Users, CheckCircle, Shield, ArrowLeft } from 'lucide-react'
+import { Plus, Edit, Trash2, Users, CheckCircle, Shield, ArrowLeft, HelpCircle } from 'lucide-react'
 
 export default function PersonelScreen(): React.ReactNode {
   const { personelList, isLoading: isPersonelLoading, addPersonel, updatePersonel, deletePersonel } =
@@ -297,7 +297,11 @@ export default function PersonelScreen(): React.ReactNode {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Kurum Sicil No <span className="text-[10px] text-slate-400 font-normal">(İsteğe Bağlı)</span></label>
+                <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5 flex items-center gap-1.5">
+                  Kurum Sicil No 
+                  <span className="text-[10px] text-slate-400 font-normal">(İsteğe Bağlı)</span>
+                  <span title="Personelin kurum içi sicil numarası"><HelpCircle className="w-3.5 h-3.5 text-blue-500 cursor-help ml-auto" /></span>
+                </label>
                 <Input
                   placeholder="Örn: 12345"
                   value={formData.sicil_no || ''}

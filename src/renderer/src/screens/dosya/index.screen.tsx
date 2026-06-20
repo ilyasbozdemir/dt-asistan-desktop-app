@@ -88,7 +88,11 @@ export default function DosyaScreen(): React.JSX.Element {
         if (res.importedFirmsCount > 0) msg += `${res.importedFirmsCount} adet firma `
         if (res.importedItemsCount > 0) msg += `${msg ? 've ' : ''}${res.importedItemsCount} adet malzeme/hizmet kalemi `
         
-        if (!msg) {
+        if (res.totalImportedCount > 0 && !msg) {
+          msg = `Toplam ${res.totalImportedCount} adet kayıt `
+        }
+
+        if (!msg && res.totalImportedCount === 0) {
           msg = 'Aktarılacak yeni kayıt bulunamadı veya atlandı.'
         } else {
           msg += 'başarıyla içe aktarıldı.'
@@ -395,7 +399,11 @@ export default function DosyaScreen(): React.JSX.Element {
                 >
                   <option value="firms">Yalnızca Firmalar / Tedarikçiler</option>
                   <option value="items">Yalnızca Malzeme &amp; Hizmet Kalemleri</option>
-                  <option value="all">Tüm Tanımlı Veriler (Firma &amp; Kalemler)</option>
+                  <option value="birimler">Kurum Birimleri</option>
+                  <option value="personel">Personel Havuzu</option>
+                  <option value="mevzuat">Mevzuat ve Limitler</option>
+                  <option value="all">Tüm Tanımlı Veriler (Temel Tanımlar)</option>
+                  <option value="full_backup">Tam Veritabanı Yedeği (İhale/Loglar Dahil)</option>
                 </select>
               </div>
 
