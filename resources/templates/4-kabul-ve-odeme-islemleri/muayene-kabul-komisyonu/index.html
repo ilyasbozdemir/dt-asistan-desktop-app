@@ -131,12 +131,7 @@
             <tr>
               <td class="meta-label">Sayı</td>
               <td>:
-                {{#dosyaNumarasi}}
-                  {{#yili}}{{yili}}{{/yili}}{{^yili}}....{{/yili}}/{{#sayisi}}{{sayisi}}{{/sayisi}}{{^sayisi}}....{{/sayisi}}
-                {{/dosyaNumarasi}}
-                {{^dosyaNumarasi}}
-                  ..../....
-                {{/dosyaNumarasi}}
+                {{#detsisNo}}{{detsisNo}}{{/detsisNo}}{{^detsisNo}}........{{/detsisNo}}-{{#dosyaNumarasi}}{{#yili}}{{yili}}{{/yili}}{{^yili}}....{{/yili}}/{{#sayisi}}{{sayisi}}{{/sayisi}}{{^sayisi}}....{{/sayisi}}{{/dosyaNumarasi}}{{^dosyaNumarasi}}..../....{{/dosyaNumarasi}}
               </td>
             </tr>
             <tr>
