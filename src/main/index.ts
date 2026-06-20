@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, dialog, Tray, Menu } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog, Tray, Menu, session } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { autoUpdater } from 'electron-updater'
@@ -49,8 +49,10 @@ function createWindow(): void {
     icon: icon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false,
-      plugins: true
+      sandbox: true,
+      contextIsolation: true,
+      nodeIntegration: false,
+      plugins: false
     }
   })
 
@@ -93,6 +95,16 @@ function createWindow(): void {
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
+  })
+
+  // Navigation kilidi: Dış web sitelerine Electron içinden gidilmesini engelle
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    if (!is.dev) {
+      const parsedUrl = new URL(url)
+      if (parsedUrl.origin !== 'file://') {
+        event.preventDefault()
+      }
+    }
   })
 
   // HMR for renderer base on electron-vite cli.
@@ -217,6 +229,20 @@ if (!gotTheLock && !isMultiInstance) {
     // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
     app.on('browser-window-created', (_, window) => {
       optimizer.watchWindowShortcuts(window)
+    })
+
+    // Güvenlik: Tüm donanım (kamera, mikrofon) izinlerini varsayılan olarak reddet
+    session.defaultSession.setPermissionRequestHandler((_webContents, _permission, callback) => {
+      callback(false)
+    })
+
+    // Güvenlik: Production'da DevTools açılmasını tamamen engelle
+    app.on('browser-window-created', (_, window) => {
+      if (!is.dev) {
+        window.webContents.on('devtools-opened', () => {
+          window.webContents.closeDevTools()
+        })
+      }
     })
 
     // IPC test
