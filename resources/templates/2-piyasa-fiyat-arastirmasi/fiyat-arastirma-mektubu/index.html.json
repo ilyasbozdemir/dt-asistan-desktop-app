@@ -1,0 +1,77 @@
+{
+  "antetSatirlari": [
+    "T.C.",
+    "YILDIZTEPE BELEDİYE BAŞKANLIĞI"
+  ],
+  "solLogo": "https://raw.githubusercontent.com/ilyasbozdemir/dt-asistan-desktop-app/refs/heads/main/resources/icon.png",
+  "sagLogo": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Logo_of_100th_years_of_the_Republic_of_T%C3%BCrkiye.svg",
+  "kurumAdi": "Yıldıztepe Belediye Başkanlığı",
+  "isinAdi": "Hizmet Binası Reklam Panoları Yapım İşleri",
+  "gunSayisi": "3",
+  "gunSayisiYazi": "üç",
+  "komisyonUyeleri": [
+    {
+      "adSoyad": "Selim KAYA",
+      "unvan": "Bld.Per."
+    },
+    {
+      "adSoyad": "Burcu ERDOĞAN",
+      "unvan": "Fen İşleri Müdür V."
+    },
+    {
+      "adSoyad": "Oğuz ŞAHIN",
+      "unvan": "Zabıta"
+    },
+    {
+      "adSoyad": "Derya KOÇAK",
+      "unvan": "Tekniker"
+    },
+    {
+      "adSoyad": "Emre AKSOY",
+      "unvan": "Mali Hiz. Uzmanı"
+    },
+    {
+      "adSoyad": "Seda YALÇIN",
+      "unvan": "Mimar"
+    },
+    {
+      "adSoyad": "Tolga ÖZDEMİR",
+      "unvan": "İnşaat Müh."
+    },
+    {
+      "adSoyad": "Elif GÜNEŞ",
+      "unvan": "Bilgi İşlem"
+    }
+  ],
+  "teklifSahibi": "",
+  "tebligatAdresi": "",
+  "vergiNo": "",
+  "telefonFaks": "",
+  "eposta": "",
+  "aciklama": "",
+  "kdvOrani": "20",
+  "ihtiyacKalemleri": [
+    {
+      "siraNo": 1,
+      "malzemeAdi": "Tabela Panosu",
+      "ozelligi": "150cm x 600cm Alüminyum Çerçeve",
+      "birimi": "Adet",
+      "miktar": 2
+    },
+    {
+      "siraNo": 2,
+      "malzemeAdi": "Kaygan Zemin Pankartı",
+      "ozelligi": "25cm x 35cm PVC Baskı",
+      "birimi": "Adet",
+      "miktar": 4
+    }
+  ],
+  "kurumIci": true,
+  "kurumAdres": "Yıldıztepe Mah. Cumhuriyet Cad. No:12 Merkez/Konya",
+  "kurumTelefon": "0332 444 55 66",
+  "kurumWeb": "www.yildiztepe.bel.tr",
+  "kurumEposta": "info@yildiztepe.bel.tr",
+  "kurumKep": "yildiztepebel@hs01.kep.tr",
+  "ilgiliPersonelAdi": "Veli Özkan",
+  "ilgiliPersonelUnvan": "Fen İşleri Müdürü"
+}
