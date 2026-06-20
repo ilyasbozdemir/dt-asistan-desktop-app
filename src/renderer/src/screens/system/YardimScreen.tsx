@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { FileText, Download, ExternalLink, HelpCircle, FileSpreadsheet } from 'lucide-react'
+import { ExcelViewer } from '../../components/ui/ExcelViewer'
 
 const DOCUMENTS = [
   {
@@ -164,34 +165,27 @@ export default function YardimScreen(): React.JSX.Element {
             </div>
           </div>
           
-          <div className="flex-1 w-full h-full p-4 relative z-0">
+          <div className="flex-1 w-full h-full relative z-0 overflow-hidden bg-white dark:bg-slate-950">
             {activeDoc.file.endsWith('.pdf') ? (
-              <iframe
-                src={`${activeDoc.file}#view=FitH`}
-                className="w-full h-full rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm bg-white"
-                title={activeDoc.title}
-              />
+              <div className="p-4 w-full h-full">
+                <iframe
+                  src={`${activeDoc.file}#view=FitH`}
+                  className="w-full h-full rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm bg-white"
+                  title={activeDoc.title}
+                />
+              </div>
+            ) : activeDoc.file.endsWith('.xls') || activeDoc.file.endsWith('.xlsx') ? (
+              <ExcelViewer fileUrl={activeDoc.file} />
             ) : (
-              <div className="w-full h-full flex items-center justify-center rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 p-8">
+              <div className="w-full h-full flex items-center justify-center p-8">
                 <div className="flex flex-col items-center text-center max-w-sm">
-                  <div className="w-20 h-20 rounded-2xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center mb-6 shadow-sm border border-green-100 dark:border-green-900/30 text-green-600 dark:text-green-500">
-                    <FileSpreadsheet className="w-10 h-10" />
+                  <div className="w-20 h-20 rounded-2xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center mb-6 shadow-sm border border-slate-200 dark:border-slate-800 text-slate-400">
+                    <FileText className="w-10 h-10" />
                   </div>
                   <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2">
                     {activeDoc.title}
                   </h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
-                    Bu dosya formatı (<span className="font-mono text-slate-700 dark:text-slate-300 font-semibold">{activeDoc.file.split('.').pop()?.toUpperCase()}</span>) tarayıcıda doğrudan önizlenemiyor.
-                    İçeriği görüntülemek ve düzenlemek için lütfen dosyayı bilgisayarınıza indirin.
-                  </p>
-                  <a
-                    href={activeDoc.file}
-                    download
-                    className="flex items-center gap-2 px-8 py-3 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-md shadow-blue-500/20 hover:shadow-blue-500/30 active:scale-95"
-                  >
-                    <Download className="w-4 h-4" />
-                    Dosyayı İndir
-                  </a>
+                  <p className="text-sm text-slate-500 mb-8">Önizleme desteklenmiyor.</p>
                 </div>
               </div>
             )}

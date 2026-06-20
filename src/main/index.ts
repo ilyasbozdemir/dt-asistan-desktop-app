@@ -705,6 +705,18 @@ if (!gotTheLock && !isMultiInstance) {
       return { canceled, filePath: filePaths && filePaths.length > 0 ? filePaths[0] : null }
     })
 
+    ipcMain.handle('open-excel', async () => {
+      const mainWindow = BrowserWindow.getAllWindows()[0]
+      const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
+        title: 'Excel Dosyası Seç',
+        filters: [{ name: 'Excel Dosyaları', extensions: ['xlsx', 'xls', 'csv'] }],
+        properties: ['openFile']
+      })
+      if (canceled || !filePaths.length) return null
+      const buffer = fs.readFileSync(filePaths[0])
+      return { name: filePaths[0].split(/[\\/]/).pop(), buffer }
+    })
+
     // --- RECENT FILES HANDLERS ---
     ipcMain.handle('app:get-recent-files', () => {
       return recentFilesStore.getRecentFiles()
