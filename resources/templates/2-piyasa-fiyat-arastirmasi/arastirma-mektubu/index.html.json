@@ -5,11 +5,12 @@
     "sayisi": "123"
   },
   "dosyaKonusu": "Fiyat Araştırması",
-  "dosyaTarihi": "09.06.2026",
+  "dosyaTarihi": "20.06.2026",
   "antetSatirlari": [
     "T.C.",
-    "GÜNEYYURT BELEDİYE BAŞKANLIĞI",
-    "Fen İşleri Müdürlüğü"
+    "SAĞLIK BAKANLIĞI",
+    "Ankara İl Sağlık Müdürlüğü",
+    "Destek Hizmetleri Başkanlığı"
   ],
   "solLogo": "",
   "sagLogo": "",
@@ -17,48 +18,43 @@
   "aciklamaMetni": "Aşağıda cins ve miktarları belirtilen mal/hizmet kalemlerinin yaklaşık maliyet tespiti için piyasa araştırması yapılmaktadır, birim fiyatlarını KDV hariç bildirmenizi rica ederim/ederiz.",
   "gorevlendirilenler": [
     {
-      "adSoyad": "Mustafa ÇALIŞKAN",
-      "unvan": "Memur",
+      "adSoyad": "Ahmet Yılmaz",
+      "unvan": "Mühendis",
       "komisyonGorevi": "Komisyon Başkanı"
     },
     {
-      "adSoyad": "Hasan EROĞLU",
-      "unvan": "Tekniker",
+      "adSoyad": "Mehmet Karaca",
+      "unvan": "Teknisyen",
       "komisyonGorevi": "Komisyon Üyesi"
     },
     {
-      "adSoyad": "Mustafa TUNCER",
-      "unvan": "Tekniker",
-      "komisyonGorevi": "Komisyon Üyesi"
-    },
-    {
-      "adSoyad": "Mehmet MUTLU",
-      "unvan": "Bld. Personeli",
+      "adSoyad": "Ayşe Demir",
+      "unvan": "Memur",
       "komisyonGorevi": "Komisyon Üyesi"
     }
   ],
   "ihtiyacKalemleri": [
     {
       "siraNo": 1,
-      "malzemeAdi": "Siyah Profil 100x200x4,00 mm",
-      "ozelligi": "Profil 100x200x4,00 mm",
-      "birimi": "Adet",
-      "miktar": 34
+      "malzemeAdi": "A4 Fotokopi Kağıdı",
+      "ozelligi": "80 gr/m2 Beyaz",
+      "birimi": "Kutu",
+      "miktar": 50
     },
     {
       "siraNo": 2,
-      "malzemeAdi": "Siyah Profil 100x200x5,00 mm",
-      "ozelligi": "Profil 100x200x5,00 mm",
+      "malzemeAdi": "Tükenmez Kalem",
+      "ozelligi": "Mavi Renk",
       "birimi": "Adet",
-      "miktar": 52
+      "miktar": 100
     }
   ],
   "kurumIci": false,
-  "kurumAdres": "Güneyyurt Belediyesi, Ermenek/KARAMAN",
-  "kurumTelefon": "0338 716 11 11",
-  "kurumWeb": "www.guneyyurt.bel.tr",
-  "kurumEposta": "info@guneyyurt.bel.tr",
-  "kurumKep": "guneyyurtbelediyesi@hs01.kep.tr",
-  "ilgiliPersonelAdi": "Mustafa ÇALIŞKAN",
-  "ilgiliPersonelUnvan": "Memur"
+  "kurumAdres": "Mustafa Kemal Mah. Dumlupınar Blv. No:1 Çankaya/Ankara",
+  "kurumTelefon": "0312 555 44 33",
+  "kurumWeb": "www.saglik.gov.tr",
+  "kurumEposta": "ankara.destek@saglik.gov.tr",
+  "kurumKep": "saglikbakanligi@hs01.kep.tr",
+  "ilgiliPersonelAdi": "Ayşe Demir",
+  "ilgiliPersonelUnvan": "V.H.K.İ."
 }
