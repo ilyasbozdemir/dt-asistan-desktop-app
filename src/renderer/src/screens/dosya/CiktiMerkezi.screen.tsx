@@ -37,9 +37,12 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
         // Aktif dosya verisini al (Temel dosya bilgisi, onaylayan personel ve kalemler)
         const dosyaRes = await window.electron.ipcRenderer.invoke(
           'db:query',
-          `SELECT d.*, p.ad_soyad as onaylayan_ad_soyad, p.unvan as onaylayan_unvan 
+          `SELECT d.*, 
+                  p.ad_soyad as onaylayan_ad_soyad, p.unvan as onaylayan_unvan,
+                  h.ad_soyad as hazirlayan_ad_soyad, h.unvan as hazirlayan_unvan 
            FROM DATA_TeminDosyasi d 
            LEFT JOIN TANIM_Personel p ON d.onay_personel_id = p.id 
+           LEFT JOIN TANIM_Personel h ON d.hazirlayan_personel_id = h.id
            WHERE d.id = ?`,
           [activeDosyaId]
         )
@@ -78,10 +81,12 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
           `SELECT tk.*, p.ad_soyad, p.unvan 
            FROM DATA_TeminKomisyon tk 
            JOIN TANIM_Personel p ON tk.personel_id = p.id 
-           WHERE tk.temin_dosya_id = ? AND tk.komisyon_turu = 'Fiyat Araştırma'`,
+           WHERE tk.temin_dosya_id = ?`,
           [activeDosyaId]
         )
-        const commission = komsRes.success ? komsRes.data : []
+        const allCommission = komsRes.success ? komsRes.data : []
+        const commission = allCommission.filter((c: any) => c.komisyon_turu === 'Fiyat Araştırma')
+        const muayeneKomisyonu = allCommission.filter((c: any) => c.komisyon_turu === 'Muayene Kabul')
 
         const settings = await window.electron.ipcRenderer.invoke('db:get-settings')
         const subInstType = settings?.subInstitutionType || ''
@@ -198,6 +203,18 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
             unvan: c.unvan,
             gorevi: c.gorevi
           })),
+          fiyatKomisyonu: commission.map((c: any) => ({
+            adSoyad: c.ad_soyad,
+            unvan: c.unvan,
+            gorevi: c.gorevi
+          })),
+          muayeneKomisyonu: muayeneKomisyonu.map((c: any) => ({
+            adSoyad: c.ad_soyad,
+            unvan: c.unvan,
+            gorevi: c.gorevi
+          })),
+          hazirlayanPersonelAdi: dosyaRes.data?.[0]?.hazirlayan_ad_soyad || 'Görevli Personel',
+          hazirlayanPersonelUnvan: dosyaRes.data?.[0]?.hazirlayan_unvan || 'Unvan Belirtilmedi',
           firmalar: firms.map((f: any) => ({ unvan: f.unvan })),
           firmalarColspan: firms.length + 2,
           firmaToplamlari,

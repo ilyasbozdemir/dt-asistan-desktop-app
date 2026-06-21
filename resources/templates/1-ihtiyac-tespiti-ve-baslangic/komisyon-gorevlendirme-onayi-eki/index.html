@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Görevlendirme Onay Eki</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 1.5cm 1.2cm 1.5cm 1.2cm;
+      }
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 11pt;
+        color: #000;
+        line-height: 1.5;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f5;
+      }
+      .page-container {
+        max-width: 21cm;
+        min-height: 29.7cm;
+        margin: 20px auto;
+        padding: 1.5cm 1.2cm;
+        background: white;
+        box-sizing: border-box;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+      .content-body {
+        width: 100%;
+      }
+      @media print {
+        body {
+          background-color: white;
+        }
+        .page-container {
+          margin: 0;
+          padding: 0;
+          box-shadow: none;
+          max-width: none;
+          min-height: 0;
+          position: static;
+        }
+      }
+      .commission-title {
+        text-align: center;
+        font-weight: bold;
+        background-color: #f2f2f2;
+        border: 1px solid #000;
+        padding: 5px;
+        font-size: 10pt;
+        text-transform: uppercase;
+        margin-top: 15px;
+      }
+      .commission-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 25px;
+        font-size: 10pt;
+      }
+      .commission-table th,
+      .commission-table td {
+        border: 1px solid #000;
+        padding: 6px 8px;
+        text-align: left;
+      }
+      .commission-table th {
+        font-weight: bold;
+        background-color: #f9f9f9;
+      }
+      .preparer-signature {
+        float: right;
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 30px;
+        width: 250px;
+      }
+      .document-title {
+        text-align: center;
+        font-weight: bold;
+        font-size: 12pt;
+        text-transform: uppercase;
+        margin: 20px 0 25px 0;
+        text-decoration: underline;
+      }
+      .body-paragraph {
+        text-align: justify;
+        text-indent: 40px;
+        margin-bottom: 30px;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <!-- ANTET -->
+      <div class="paged-header" data-behavior="first-page-only" data-slot="top-center">
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px">
+          <tr>
+            <td style="text-align: center; font-weight: bold; font-size: 12pt; line-height: 1.3">
+              <div style="font-size: 13pt; margin-top: 3px">{{kurumAdi}}</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- EK NO -->
+      <div style="text-align: right; margin-bottom: 15px">
+        <strong>EK: {{ekNo}}{{^ekNo}}1{{/ekNo}}</strong>
+      </div>
+
+      <!-- CONTENT BODY -->
+      <div class="content-body">
+        <!-- BODY TEXT -->
+        <div class="body-paragraph">
+          {{kurumumuz}} birimlerinde kullanılmak üzere ekteki lüzum müzekkeresinde sunulan
+          <strong>{{isAdi}}</strong> için 4734 Sayılı Kamu İhale Kanununa göre görevlendirilen
+          kişilerin listesidir.
+        </div>
+
+        <!-- COMMISSION 1: PİYASA ARAŞTIRMA VE SATINALMA KOMİSYONU -->
+        <div class="commission-title">PİYASA ARAŞTIRMA VE SATINALMA KOMİSYONU</div>
+        <table class="commission-table">
+          <thead>
+            <tr>
+              <th style="width: 35%">Komisyondaki Sıfatı/Ünvanı</th>
+              <th style="width: 40%">Adı, Soyadı</th>
+              <th style="width: 25%">Pozisyonu</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#fiyatKomisyonu}}
+            <tr>
+              <td>{{gorevi}}</td>
+              <td>{{adSoyad}}</td>
+              <td>{{unvan}}</td>
+            </tr>
+            {{/fiyatKomisyonu}} {{^fiyatKomisyonu}}
+            <tr>
+              <td colspan="3" style="text-align: center; font-style: italic">
+                Komisyon üyesi bulunmamaktadır.
+              </td>
+            </tr>
+            {{/fiyatKomisyonu}}
+          </tbody>
+        </table>
+
+        <!-- COMMISSION 2: MUAYENE KABUL VE TESLİM ALMA KOMİSYONU -->
+        <div class="commission-title">MUAYENE KABUL VE TESLİM ALMA KOMİSYONU</div>
+        <table class="commission-table">
+          <thead>
+            <tr>
+              <th style="width: 35%">Komisyondaki Sıfatı/Ünvanı</th>
+              <th style="width: 40%">Adı, Soyadı</th>
+              <th style="width: 25%">Pozisyonu</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#muayeneKomisyonu}}
+            <tr>
+              <td>{{gorevi}}</td>
+              <td>{{adSoyad}}</td>
+              <td>{{unvan}}</td>
+            </tr>
+            {{/muayeneKomisyonu}} {{^muayeneKomisyonu}}
+            <tr>
+              <td colspan="3" style="text-align: center; font-style: italic">
+                Komisyon üyesi bulunmamaktadır.
+              </td>
+            </tr>
+            {{/muayeneKomisyonu}}
+          </tbody>
+        </table>
+
+        <!-- PREPARER SIGNATURE -->
+        <div style="width: 100%; display: flow-root">
+          <div class="preparer-signature">
+            <strong>{{hazirlayanPersonelAdi}}</strong><br />
+            {{hazirlayanPersonelUnvan}}
+          </div>
+        </div>
+      </div>
+      <!-- END CONTENT BODY -->
+    </div>
+  </body>
+</html>
