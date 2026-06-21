@@ -119,16 +119,32 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
         // En düşük fiyatlar ve genel toplam hesaplama
         let grandTotal = 0
         const needItems = kalemlerRes.data?.map((k: any, index: number) => {
-          const itemPrices = firms.map((f: any) => bidsMap[`${k.id}_${f.temin_firma_id}`] || 0)
-          const validPrices = itemPrices.filter((p: number) => p > 0)
-          const minPrice = validPrices.length > 0 ? Math.min(...validPrices) : 0
+          const itemPrices = firms.map((f: any) => ({
+            unvan: f.unvan,
+            price: bidsMap[`${k.id}_${f.temin_firma_id}`] || 0
+          }))
+          const validPrices = itemPrices.filter((p: any) => p.price > 0)
+          const minPrice = validPrices.length > 0 ? Math.min(...validPrices.map((p: any) => p.price)) : 0
           const toplamBedel = minPrice * (k.miktar || 0)
           grandTotal += toplamBedel
+
+          const enUygunFirma = validPrices.length > 0 ? validPrices.reduce((prev: any, curr: any) => prev.price < curr.price ? prev : curr) : null
+          const enUygunFirmaAdi = enUygunFirma ? enUygunFirma.unvan : 'Teklif Yok'
 
           const firmaTeklifleri = firms.map((f: any) => {
             const price = bidsMap[`${k.id}_${f.temin_firma_id}`] || 0
             return {
               fiyat: price > 0 ? formatTR(price) : '-'
+            }
+          })
+
+          const firmaTeklifleriDetay = firms.map((f: any) => {
+            const price = bidsMap[`${k.id}_${f.temin_firma_id}`] || 0
+            const total = price * (k.miktar || 0)
+            return {
+              birimFiyat: price > 0 ? formatTR(price) : '-',
+              tutar: total > 0 ? formatTR(total) : '-',
+              hasPrice: price > 0
             }
           })
 
@@ -141,6 +157,8 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
             kdvOrani: `%${k.kdv_orani}`,
             miktar: formatTR(k.miktar || 0),
             firmaTeklifleri,
+            firmaTeklifleriDetay,
+            enUygunFirmaAdi,
             enDusukFiyat: minPrice > 0 ? formatTR(minPrice) : '-',
             toplamBedel: toplamBedel > 0 ? formatTR(toplamBedel) : '-'
           }
@@ -172,6 +190,7 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
           firmalar: firms.map((f: any) => ({ unvan: f.unvan })),
           firmalarColspan: firms.length + 2,
           firmaToplamlari,
+          firmaToplamlariDetay: firmaToplamlari,
           genelToplam,
           ihtiyacKalemleri: needItems
         }

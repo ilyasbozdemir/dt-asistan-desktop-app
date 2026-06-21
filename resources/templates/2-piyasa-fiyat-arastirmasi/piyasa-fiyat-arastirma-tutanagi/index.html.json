@@ -1,0 +1,189 @@
+{
+  "kurumAdi": "ACME BELEDİYE BAŞKANLIĞI",
+  "tarih": "21/06/2026",
+  "isAdi": "Bilgi İşlem Altyapı ve Kablolama Malzemeleri Alımı İşi",
+  "dosyaTarihi": "21/06/2026",
+  "evrakSayisi": "2026/89",
+  "firmalar": [
+    {
+      "unvan": "Alfa Bilgisayar Ltd. Şti."
+    },
+    {
+      "unvan": "Beta İnşaat San. ve Tic. A.Ş."
+    },
+    {
+      "unvan": "Gama Teknoloji Hizmetleri A.Ş."
+    }
+  ],
+  "ihtiyacKalemleri": [
+    {
+      "siraNo": 1,
+      "malzemeAdi": "100X200X5 MM profil",
+      "ozelligi": "Çelik Konstrüksiyon Profili",
+      "birimi": "Adet",
+      "miktar": "27,00",
+      "firmaTeklifleriDetay": [
+        {
+          "birimFiyat": "4.200,00",
+          "tutar": "113.400,00",
+          "hasPrice": true
+        },
+        {
+          "birimFiyat": "4.397,00",
+          "tutar": "118.719,00",
+          "hasPrice": true
+        },
+        {
+          "birimFiyat": "4.900,00",
+          "tutar": "132.300,00",
+          "hasPrice": true
+        }
+      ],
+      "enUygunFirmaAdi": "Alfa Bilgisayar Ltd. Şti.",
+      "enDusukFiyat": "4.200,00",
+      "toplamBedel": "113.400,00"
+    },
+    {
+      "siraNo": 2,
+      "malzemeAdi": "SANDAVİÇ PANEL",
+      "ozelligi": "40mm Poliüretan Dolgulu",
+      "birimi": "Metre",
+      "miktar": "443,00",
+      "firmaTeklifleriDetay": [
+        {
+          "birimFiyat": "330,00",
+          "tutar": "146.190,00",
+          "hasPrice": true
+        },
+        {
+          "birimFiyat": "335,00",
+          "tutar": "148.405,00",
+          "hasPrice": true
+        },
+        {
+          "birimFiyat": "400,00",
+          "tutar": "177.200,00",
+          "hasPrice": true
+        }
+      ],
+      "enUygunFirmaAdi": "Alfa Bilgisayar Ltd. Şti.",
+      "enDusukFiyat": "330,00",
+      "toplamBedel": "146.190,00"
+    },
+    {
+      "siraNo": 3,
+      "malzemeAdi": "50x100x3 mm boyalı profil",
+      "ozelligi": "Astar Boyalı Kutu Profil",
+      "birimi": "Adet",
+      "miktar": "12,00",
+      "firmaTeklifleriDetay": [
+        {
+          "birimFiyat": "1.800,00",
+          "tutar": "21.600,00",
+          "hasPrice": true
+        },
+        {
+          "birimFiyat": "1.882,00",
+          "tutar": "22.584,00",
+          "hasPrice": true
+        },
+        {
+          "birimFiyat": "2.100,00",
+          "tutar": "25.200,00",
+          "hasPrice": true
+        }
+      ],
+      "enUygunFirmaAdi": "Alfa Bilgisayar Ltd. Şti.",
+      "enDusukFiyat": "1.800,00",
+      "toplamBedel": "21.600,00"
+    },
+    {
+      "siraNo": 4,
+      "malzemeAdi": "40x60x3 mm boyalı profil",
+      "ozelligi": "Astar Boyalı Kutu Profil",
+      "birimi": "Adet",
+      "miktar": "30,00",
+      "firmaTeklifleriDetay": [
+        {
+          "birimFiyat": "750,00",
+          "tutar": "22.500,00",
+          "hasPrice": true
+        },
+        {
+          "birimFiyat": "765,00",
+          "tutar": "22.950,00",
+          "hasPrice": true
+        },
+        {
+          "birimFiyat": "800,00",
+          "tutar": "24.000,00",
+          "hasPrice": true
+        }
+      ],
+      "enUygunFirmaAdi": "Alfa Bilgisayar Ltd. Şti.",
+      "enDusukFiyat": "750,00",
+      "toplamBedel": "22.500,00"
+    },
+    {
+      "siraNo": 5,
+      "malzemeAdi": "100x100x4 mm profil",
+      "ozelligi": "Kare Profil",
+      "birimi": "Adet",
+      "miktar": "13,00",
+      "firmaTeklifleriDetay": [
+        {
+          "birimFiyat": "2.100,00",
+          "tutar": "27.300,00",
+          "hasPrice": true
+        },
+        {
+          "birimFiyat": "2.115,00",
+          "tutar": "27.495,00",
+          "hasPrice": true
+        },
+        {
+          "birimFiyat": "2.200,00",
+          "tutar": "28.600,00",
+          "hasPrice": true
+        }
+      ],
+      "enUygunFirmaAdi": "Alfa Bilgisayar Ltd. Şti.",
+      "enDusukFiyat": "2.100,00",
+      "toplamBedel": "27.300,00"
+    }
+  ],
+  "firmaToplamlariDetay": [
+    {
+      "toplam": "335.790,00"
+    },
+    {
+      "toplam": "340.153,00"
+    },
+    {
+      "toplam": "387.300,00"
+    }
+  ],
+  "genelToplam": "330.990,00",
+  "komisyon": [
+    {
+      "adSoyad": "Ali YILMAZ",
+      "unvan": "Memur"
+    },
+    {
+      "adSoyad": "Canan DEMİR",
+      "unvan": "Tekniker"
+    },
+    {
+      "adSoyad": "Burak KAYA",
+      "unvan": "Tekniker"
+    },
+    {
+      "adSoyad": "Selin ŞAHİN",
+      "unvan": "Bld.Personeli"
+    }
+  ],
+  "baskanAdi": "Halis KARA",
+  "baskanUnvan": "Belediye Başkanı",
+  "solLogo": "https://raw.githubusercontent.com/ilyasbozdemir/dt-asistan-desktop-app/refs/heads/main/resources/icon.png",
+  "sagLogo": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Logo_of_100th_years_of_the_Republic_of_T%C3%BCrkiye.svg"
+}
