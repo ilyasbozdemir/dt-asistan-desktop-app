@@ -1,333 +1,16 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { SubScreen } from './SubScreens.screen'
 import { Printer, Download, FileText, CheckSquare, Square, Layers, Loader2 } from 'lucide-react'
 import { useWorkspaceStore } from '../../store/workspaceStore'
 import Mustache from 'mustache'
 import { Sablon } from '../sablonlar/sablonlar.hooks'
-import { SAYI_YAZI_MAP, sayiyiYaziyaCevir } from '../../constants/sayiEslesmeleri'
-import { getInstitutionSuffixes } from '../../utils/kurumHelper'
+import { useCiktiMerkeziData } from './CiktiMerkezi.hooks'
 
 export function CiktiMerkeziScreen(): React.JSX.Element {
   const { activeDosyaId } = useWorkspaceStore()
-  const [sablons, setSablons] = useState<Sablon[]>([])
+  const { sablons, loading, masterHtml, dosyaContext } = useCiktiMerkeziData(activeDosyaId)
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
-  const [loading, setLoading] = useState(true)
   const [processing, setProcessing] = useState(false)
-  const [masterHtml, setMasterHtml] = useState('')
-  const [dosyaContext, setDosyaContext] = useState<any>({})
-
-  // Veritabanından şablonları ve aktif dosya verisini çek
-  useEffect(() => {
-    if (!activeDosyaId) return
-
-    const loadData = async () => {
-      setLoading(true)
-      try {
-        // Master HTML'i al
-        const mHtml = await window.electron.ipcRenderer.invoke('template:read-system', 'master.html')
-        if (typeof mHtml === 'string') setMasterHtml(mHtml)
-
-        // Şablonları al (sadece en güncel versiyonlar)
-        const sablonsRes = await window.electron.ipcRenderer.invoke(
-          'db:query',
-          'SELECT * FROM TANIM_Sablon WHERE id IN (SELECT MAX(id) FROM TANIM_Sablon WHERE aktif_mi = 1 GROUP BY COALESCE(parent_id, id)) ORDER BY kategori ASC, ad ASC'
-        )
-        if (sablonsRes.success) setSablons(sablonsRes.data)
-
-        // Aktif dosya verisini al (Temel dosya bilgisi, onaylayan personel ve kalemler)
-        const dosyaRes = await window.electron.ipcRenderer.invoke(
-          'db:query',
-          `SELECT d.*, 
-                  p.ad_soyad as onaylayan_ad_soyad, p.unvan as onaylayan_unvan,
-                  h.ad_soyad as hazirlayan_ad_soyad, h.unvan as hazirlayan_unvan,
-                  f.unvan as yuklenici_firma_adi,
-                  f.adres as yuklenici_firma_adresi,
-                  f.ilce as yuklenici_firma_ilcesi,
-                  f.il as yuklenici_firma_ili
-           FROM DATA_TeminDosyasi d 
-           LEFT JOIN TANIM_Personel p ON d.onay_personel_id = p.id 
-           LEFT JOIN TANIM_Personel h ON d.hazirlayan_personel_id = h.id
-           LEFT JOIN TANIM_Firma f ON d.firma_id = f.id
-           WHERE d.id = ?`,
-          [activeDosyaId]
-        )
-        const kalemlerRes = await window.electron.ipcRenderer.invoke(
-          'db:query',
-          'SELECT * FROM DATA_TeminKalem WHERE temin_dosya_id = ? ORDER BY id ASC',
-          [activeDosyaId]
-        )
-
-        // Firmaları çek (DATA_TeminFirma ve TANIM_Firma birleşimi)
-        const firmsRes = await window.electron.ipcRenderer.invoke(
-          'db:query',
-          `SELECT df.id as temin_firma_id, f.unvan, f.id as firma_id 
-           FROM DATA_TeminFirma df 
-           JOIN TANIM_Firma f ON df.firma_id = f.id 
-           WHERE df.temin_dosya_id = ?`,
-          [activeDosyaId]
-        )
-        const firms = firmsRes.success ? firmsRes.data : []
-
-        // Teklifleri çek
-        const bidsRes = await window.electron.ipcRenderer.invoke(
-          'db:query',
-          'SELECT * FROM DATA_TeminKalemTeklif WHERE temin_dosya_id = ?',
-          [activeDosyaId]
-        )
-        const bids = bidsRes.success ? bidsRes.data : []
-        const bidsMap: Record<string, number> = {}
-        bids.forEach((b: any) => {
-          bidsMap[`${b.temin_kalem_id}_${b.temin_firma_id}`] = b.birim_fiyat || 0
-        })
-
-        // Komisyon üyelerini çek
-        const komsRes = await window.electron.ipcRenderer.invoke(
-          'db:query',
-          `SELECT tk.*, p.ad_soyad, p.unvan 
-           FROM DATA_TeminKomisyon tk 
-           JOIN TANIM_Personel p ON tk.personel_id = p.id 
-           WHERE tk.temin_dosya_id = ?`,
-          [activeDosyaId]
-        )
-        const allCommission = komsRes.success ? komsRes.data : []
-        const commission = allCommission.filter((c: any) => c.komisyon_turu === 'Fiyat Araştırma')
-        const muayeneKomisyonu = allCommission.filter((c: any) => c.komisyon_turu === 'Muayene Kabul')
-
-        const settings = await window.electron.ipcRenderer.invoke('db:get-settings')
-        const subInstType = settings?.subInstitutionType || ''
-        
-        const suffixes = getInstitutionSuffixes(subInstType, {
-          label: settings?.customSubInstitutionLabel,
-          kurumumuz: settings?.customSubInstitutionKurumumuz,
-          kurumunuz: settings?.customSubInstitutionKurumunuz,
-          kurumu: settings?.customSubInstitutionKurumu,
-          kurumlari: settings?.customSubInstitutionKurumlari
-        })
-
-        const today = new Intl.DateTimeFormat('tr-TR', { timeZone: 'Europe/Istanbul', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date())
-
-        const kalemSayisi = kalemlerRes.data?.length || 0
-        const kalemSayisiYazi = sayiyiYaziyaCevir(kalemSayisi)
-
-        // Para birimi formatlayıcı
-        const formatTR = (val: number) => {
-          return new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val)
-        }
-
-        // Firma toplamlarını hesapla
-        const firmaToplamlari = firms.map((f: any) => {
-          let sum = 0
-          kalemlerRes.data?.forEach((k: any) => {
-            const price = bidsMap[`${k.id}_${f.temin_firma_id}`] || 0
-            sum += price * (k.miktar || 0)
-          })
-          return {
-            toplam: formatTR(sum)
-          }
-        })
-
-        // En düşük fiyatlar ve genel toplam hesaplama
-        let grandTotal = 0
-        const needItems = kalemlerRes.data?.map((k: any, index: number) => {
-          const itemPrices = firms.map((f: any) => ({
-            unvan: f.unvan,
-            price: bidsMap[`${k.id}_${f.temin_firma_id}`] || 0
-          }))
-          const validPrices = itemPrices.filter((p: any) => p.price > 0)
-          const minPrice = validPrices.length > 0 ? Math.min(...validPrices.map((p: any) => p.price)) : 0
-          const toplamBedel = minPrice * (k.miktar || 0)
-          grandTotal += toplamBedel
-
-          const enUygunFirma = validPrices.length > 0 ? validPrices.reduce((prev: any, curr: any) => prev.price < curr.price ? prev : curr) : null
-          const enUygunFirmaAdi = enUygunFirma ? enUygunFirma.unvan : 'Teklif Yok'
-
-          const firmaTeklifleri = firms.map((f: any) => {
-            const price = bidsMap[`${k.id}_${f.temin_firma_id}`] || 0
-            return {
-              fiyat: price > 0 ? formatTR(price) : '-'
-            }
-          })
-
-          const firmaTeklifleriDetay = firms.map((f: any) => {
-            const price = bidsMap[`${k.id}_${f.temin_firma_id}`] || 0
-            const total = price * (k.miktar || 0)
-            return {
-              birimFiyat: price > 0 ? formatTR(price) : '-',
-              tutar: total > 0 ? formatTR(total) : '-',
-              hasPrice: price > 0
-            }
-          })
-
-          return {
-            siraNo: index + 1,
-            kodu: k.tasinir_kodu || k.okas_kodu || '-',
-            malzemeAdi: k.kalem_adi,
-            ozelligi: k.aciklama || '',
-            birimi: k.birim,
-            kdvOrani: `%${k.kdv_orani}`,
-            miktar: formatTR(k.miktar || 0),
-            firmaTeklifleri,
-            firmaTeklifleriDetay,
-            enUygunFirmaAdi,
-            enDusukFiyat: minPrice > 0 ? formatTR(minPrice) : '-',
-            toplamBedel: toplamBedel > 0 ? formatTR(toplamBedel) : '-'
-          }
-        }) || []
-
-        const genelToplam = formatTR(grandTotal)
-
-        const rawHarcamaBirimi = settings?.harcamaBirimAdi || dosyaRes.data?.[0]?.harcama_birimi || ''
-        const parentInstitutionName = settings?.parentInstitution || ''
-        const institutionName = settings?.institutionName || 'Kurum Adı Belirtilmedi'
-        const idareAdi = rawHarcamaBirimi ? `${institutionName} - ${rawHarcamaBirimi}` : institutionName
-
-        const rawTur = dosyaRes.data?.[0]?.tur || 'mal'
-        let alimTuruText = 'Mal Alımı'
-        if (rawTur === 'hizmet') alimTuruText = 'Hizmet Alımı'
-        else if (rawTur === 'yapim_isi' || rawTur === 'yapim') alimTuruText = 'Yapım İşi'
-        else if (rawTur === 'danismanlik') alimTuruText = 'Danışmanlık Hizmet Alımı'
-
-        const rawButceKodu = dosyaRes.data?.[0]?.butce_kodu || ''
-        const butceTertibiArray = rawButceKodu
-          .split(/[\n,;]+/)
-          .map((item: string) => item.trim())
-          .filter((item: string) => item.length > 0)
-          .map((item: string) => {
-            let cleanItem = item
-            if (cleanItem.startsWith('630.')) {
-              cleanItem = cleanItem.substring(4)
-            } else if (cleanItem.startsWith('630')) {
-              cleanItem = cleanItem.substring(3)
-            }
-            return cleanItem
-          })
-
-        const dbYaklasikMaliyet = dosyaRes.data?.[0]?.yaklasik_maliyet || 0
-        const yaklasikMaliyetText = dbYaklasikMaliyet > 0 ? formatTR(dbYaklasikMaliyet) : '0,00'
-
-        const teminSekliText = dosyaRes.data?.[0]?.ihale_sekli || '4734 sayılı Kanun\'un 22/d maddesi gereğince Doğrudan Temin'
-
-        const rawKapakDetaylari: any[] = []
-        if (dosyaRes.data?.[0]?.konu) {
-          rawKapakDetaylari.push({ label: 'İŞİN ADI', value: dosyaRes.data[0].konu, isBold: true })
-        }
-        if (dosyaRes.data?.[0]?.isin_aciklamasi) {
-          rawKapakDetaylari.push({ label: 'İŞİN AÇIKLAMASI', value: dosyaRes.data[0].isin_aciklamasi })
-        }
-        rawKapakDetaylari.push({ label: 'İŞİN TÜRÜ', value: alimTuruText })
-        if (dosyaRes.data?.[0]?.temin_no) {
-          rawKapakDetaylari.push({ label: 'TEMİN NUMARASI', value: dosyaRes.data[0].temin_no })
-        }
-        if (dbYaklasikMaliyet > 0) {
-          rawKapakDetaylari.push({ label: 'YAKLAŞIK MALİYET', value: `${yaklasikMaliyetText} TL` })
-        }
-        if (butceTertibiArray && butceTertibiArray.length > 0) {
-          rawKapakDetaylari.push({ label: 'BÜTÇE TERTİBİ', value: butceTertibiArray })
-        }
-        if (dosyaRes.data?.[0]?.yuklenici_firma_adi) {
-          rawKapakDetaylari.push({ label: 'İHALEYİ ALAN FİRMA', value: dosyaRes.data[0].yuklenici_firma_adi, isBold: true })
-        }
-        if (dosyaRes.data?.[0]?.tarih) {
-          rawKapakDetaylari.push({ label: 'DOSYA TARİHİ', value: dosyaRes.data[0].tarih })
-        }
-
-        const kapakDetaylari = rawKapakDetaylari.map((item) => ({
-          label: item.label,
-          lines: Array.isArray(item.value) ? item.value : [item.value],
-          isBold: item.isBold || false
-        }))
-
-        let context: any = {
-          kapakDetaylari,
-          tarih: today,
-          alimTuru: alimTuruText,
-          dosyaTarihi: dosyaRes.data?.[0]?.tarih || today,
-          yukleniciFirma: dosyaRes.data?.[0]?.yuklenici_firma_adi || null,
-          yukleniciAdresi: dosyaRes.data?.[0]?.yuklenici_firma_adresi || '',
-          yukleniciIlce: dosyaRes.data?.[0]?.yuklenici_firma_ilcesi || '',
-          yukleniciIl: dosyaRes.data?.[0]?.yuklenici_firma_ili || '',
-          kurumIci: false,
-          evrakSayisi: dosyaRes.data?.[0]?.temin_no || 'Belirtilmedi',
-          dosyaKonusu: dosyaRes.data?.[0]?.konu || 'Konu Belirtilmedi',
-          isAdi: dosyaRes.data?.[0]?.konu || 'Konu Belirtilmedi',
-          sayiYazıyla: SAYI_YAZI_MAP,
-          kurumumuz: suffixes.kurumumuz,
-          kurumunuz: suffixes.kurumunuz,
-          kurumu: suffixes.kurumu,
-          kurumlari: suffixes.kurumlari,
-          kalemSayisi,
-          kalemSayisiYazi,
-          solLogo: settings?.logoLeft || null,
-          sagLogo: settings?.logoRight || null,
-          kurumUst: parentInstitutionName,
-          kurumAdi: institutionName,
-          mudurluk: rawHarcamaBirimi,
-          idareAdi: idareAdi,
-          baskanAdi: dosyaRes.data?.[0]?.onaylayan_ad_soyad || 'Harcama Yetkilisi Belirtilmedi',
-          baskanUnvan: dosyaRes.data?.[0]?.onaylayan_unvan || 'Harcama Yetkilisi',
-          teminNo: dosyaRes.data?.[0]?.temin_no || 'Belirtilmedi',
-          teminSekli: teminSekliText,
-          yaklasikMaliyet: yaklasikMaliyetText,
-          odenekTutari: settings?.kullanilabilirOdenek || '500.000,00 TL',
-          projeNo: dosyaRes.data?.[0]?.yatirim_proje_no || 'Yok',
-          butceTertibi: butceTertibiArray,
-          butceKodu: rawButceKodu || 'Belirtilmedi',
-          avansSartlari: dosyaRes.data?.[0]?.avans_verilecek_mi === 1 ? 'Avans verilecektir.' : 'Avans verilmeyecek',
-          fiyatFarkiSartlari: dosyaRes.data?.[0]?.fiyat_farki_dayanagi || 'Fiyat Farkı Ödenmeyecek',
-          dokumanHazirlik: 'Hazırlanmayacaktır.',
-          isinAciklamasi: dosyaRes.data?.[0]?.isin_aciklamasi || dosyaRes.data?.[0]?.konu || 'Belirtilmedi',
-          onaylayanPersonelAdi: dosyaRes.data?.[0]?.onaylayan_ad_soyad || 'Harcama Yetkilisi Belirtilmedi',
-          onaylayanPersonelUnvan: dosyaRes.data?.[0]?.onaylayan_unvan || 'Harcama Yetkilisi',
-          onaylayanlar: [
-            {
-              onaylayanPersonelAdi: dosyaRes.data?.[0]?.onaylayan_ad_soyad || 'Harcama Yetkilisi Belirtilmedi',
-              onaylayanPersonelUnvan: dosyaRes.data?.[0]?.onaylayan_unvan || 'Harcama Yetkilisi'
-            }
-          ],
-          komisyon: commission.map((c: any) => ({
-            adSoyad: c.ad_soyad,
-            unvan: c.unvan,
-            gorevi: c.gorevi
-          })),
-          fiyatKomisyonu: commission.map((c: any) => ({
-            adSoyad: c.ad_soyad,
-            unvan: c.unvan,
-            gorevi: c.gorevi
-          })),
-          muayeneKomisyonu: muayeneKomisyonu.map((c: any) => ({
-            adSoyad: c.ad_soyad,
-            unvan: c.unvan,
-            gorevi: c.gorevi
-          })),
-          hazirlayanPersonelAdi: dosyaRes.data?.[0]?.hazirlayan_ad_soyad || 'Görevli Personel',
-          hazirlayanPersonelUnvan: dosyaRes.data?.[0]?.hazirlayan_unvan || 'Unvan Belirtilmedi',
-          firmalar: firms.map((f: any) => ({ unvan: f.unvan })),
-          firmalarColspan: firms.length + 2,
-          firmaToplamlari,
-          firmaToplamlariDetay: firmaToplamlari,
-          genelToplam,
-          ihtiyacKalemleri: needItems
-        }
-
-        // Varsa test/master dummy verisini de alıp birleştir, gerçek veriler üzerine yazsın
-        const mJson = await window.electron.ipcRenderer.invoke('template:read-system', 'master.html.json')
-        if (typeof mJson === 'string') {
-          try {
-            const parsedJson = JSON.parse(mJson)
-            context = { ...parsedJson, ...context }
-          } catch (e) {}
-        }
-        
-        setDosyaContext(context)
-      } catch (error) {
-        console.error('Veri yüklenirken hata:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadData()
-  }, [activeDosyaId])
 
   const groupedSablons = useMemo(() => {
     const groups: Record<string, Sablon[]> = {}
@@ -362,7 +45,18 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
   const renderHtml = (sablon: Sablon) => {
     try {
       if (!masterHtml) return sablon.icerik
-      return Mustache.render(masterHtml, dosyaContext, { content: sablon.icerik })
+      
+      let templateContext = { ...dosyaContext }
+      if (sablon.test_verisi) {
+        try {
+          const parsedTest = JSON.parse(sablon.test_verisi)
+          templateContext = { ...parsedTest, ...templateContext }
+        } catch (e) {
+          console.error('Şablon test verisi ayrıştırılamadı:', e)
+        }
+      }
+      
+      return Mustache.render(masterHtml, templateContext, { content: sablon.icerik })
     } catch (error) {
       console.error('Template render hatası:', error)
       return sablon.icerik
