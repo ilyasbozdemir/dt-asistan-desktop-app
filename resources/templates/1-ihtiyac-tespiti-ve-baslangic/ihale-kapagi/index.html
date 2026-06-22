@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>İhale Kapağı</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 1.5cm 1.2cm;
+    }
+    body {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 12pt;
+      color: #000;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .page-container {
+      max-width: 21cm;
+      min-height: 29.7cm;
+      margin: 20px auto;
+      padding: 2cm 1.5cm;
+      background: white;
+      box-sizing: border-box;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    @media print {
+      body {
+        background-color: white;
+      }
+      .page-container {
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        max-width: none;
+        min-height: 0;
+      }
+    }
+    .antet-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
+    }
+    .antet-table td {
+      vertical-align: middle;
+    }
+    .antet-text {
+      text-align: center;
+      font-weight: bold;
+      font-size: 13pt;
+      line-height: 1.4;
+    }
+    .logo-img {
+      max-width: 80px;
+      max-height: 80px;
+      object-fit: contain;
+    }
+    .cover-title-container {
+      text-align: center;
+      margin: 60px 0;
+    }
+    .cover-title {
+      font-size: 26pt;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    .cover-subtitle {
+      font-size: 18pt;
+      font-weight: bold;
+      color: #333;
+    }
+    .details-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 40px auto;
+      max-width: 90%;
+    }
+    .details-table td {
+      border: 1px solid #000;
+      padding: 12px 15px;
+      font-size: 12pt;
+      vertical-align: middle;
+    }
+    .details-table td.label {
+      width: 35%;
+      font-weight: bold;
+      background-color: #f9f9f9;
+    }
+    .details-table td.value {
+      width: 65%;
+      font-weight: 500;
+    }
+    .footer-info {
+      text-align: center;
+      margin-top: auto;
+      padding-top: 50px;
+      font-size: 11pt;
+      border-top: 1px dashed #ccc;
+    }
+    .footer-year {
+      font-size: 14pt;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <div>
+      <!-- ANTET -->
+      <table class="antet-table">
+        <tr>
+          <td style="width: 90px; text-align: left;">
+            {{#solLogo}}
+            <img src="{{solLogo}}" alt="Sol Logo" class="logo-img" />
+            {{/solLogo}}
+          </td>
+          
+          <td class="antet-text">
+            {{#antetSatirlari}}
+            <div>{{.}}</div>
+            {{/antetSatirlari}}
+            {{^antetSatirlari}}
+            <div>T.C.</div>
+            <div>ÖRNEK BELEDİYE BAŞKANLIĞI</div>
+            <div>Destek Hizmetleri Müdürlüğü</div>
+            {{/antetSatirlari}}
+          </td>
+
+          <td style="width: 90px; text-align: right;">
+            {{#sagLogo}}
+            <img src="{{sagLogo}}" alt="Sağ Logo" class="logo-img" />
+            {{/sagLogo}}
+          </td>
+        </tr>
+      </table>
+
+      <!-- TITLE -->
+      <div class="cover-title-container">
+        <div class="cover-title">DOĞRUDAN TEMİN DOSYASI</div>
+        <div class="cover-subtitle">(İHALE / ALIM KLASÖRÜ)</div>
+      </div>
+
+      <!-- DETAILS TABLE -->
+      <table class="details-table">
+        <tr>
+          <td class="label">İŞİN ADI</td>
+          <td class="value" style="font-weight: bold;">{{isAdi}}</td>
+        </tr>
+        <tr>
+          <td class="label">İŞİN TÜRÜ</td>
+          <td class="value">{{alimTuru}}</td>
+        </tr>
+        <tr>
+          <td class="label">TEMİN NUMARASI</td>
+          <td class="value">{{teminNo}}</td>
+        </tr>
+        <tr>
+          <td class="label">YAKLAŞIK MALİYET</td>
+          <td class="value">{{yaklasikMaliyet}} ₺</td>
+        </tr>
+        <tr>
+          <td class="label">BÜTÇE TERTİBİ</td>
+          <td class="value">
+            {{#butceTertibi}}
+            <div>{{.}}</div>
+            {{/butceTertibi}}
+            {{^butceTertibi}}
+            Belirtilmedi
+            {{/butceTertibi}}
+          </td>
+        </tr>
+        <tr>
+          <td class="label">DOSYA TARİHİ</td>
+          <td class="value">{{dosyaTarihi}}</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- FOOTER INFO -->
+    <div class="footer-info">
+      <div>Bu dosya doğrudan temin ihale usulü esaslarına göre düzenlenmiştir.</div>
+      <div class="footer-year">{{tarih}}</div>
+    </div>
+  </div>
+</body>
+</html>
