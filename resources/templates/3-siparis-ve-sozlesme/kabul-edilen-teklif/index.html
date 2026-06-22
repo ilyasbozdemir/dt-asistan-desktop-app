@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Kabul Edilen Teklif</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 1.5cm;
+    }
+    body {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 11pt;
+      color: #000;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+      background-color: #fff;
+    }
+    .page-container {
+      max-width: 21cm;
+      box-sizing: border-box;
+      margin: 0 auto;
+      padding: 0.5cm;
+    }
+    .header-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    .header-logo {
+      width: 80px;
+      max-height: 80px;
+      object-fit: contain;
+    }
+    .header-text {
+      text-align: center;
+      font-weight: bold;
+      font-size: 12pt;
+      line-height: 1.4;
+    }
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    .info-table td {
+      padding: 4px 0;
+      font-size: 11pt;
+    }
+    .info-table td.right {
+      text-align: right;
+    }
+    .subject {
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+    .recipient {
+      text-align: center;
+      margin: 20px 0 30px 0;
+      font-size: 12pt;
+      line-height: 1.5;
+    }
+    .recipient-title {
+      font-weight: bold;
+    }
+    .letter-body {
+      text-align: justify;
+      text-indent: 1.5cm;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    .sign-block {
+      width: 100%;
+      margin-bottom: 45px;
+    }
+    .sign-box {
+      float: right;
+      width: 250px;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .sign-name {
+      font-weight: bold;
+    }
+    .clearfix::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
+      font-size: 10pt;
+    }
+    .items-table th, .items-table td {
+      border: 1px solid #000;
+      padding: 6px 8px;
+    }
+    .items-table th {
+      background-color: #f7f7f7;
+      font-weight: bold;
+      text-align: center;
+    }
+    .items-table td.center {
+      text-align: center;
+    }
+    .items-table td.right {
+      text-align: right;
+    }
+    .items-table tr {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .olur-block {
+      text-align: center;
+      margin: 40px auto 0 auto;
+      width: 300px;
+      line-height: 1.4;
+    }
+    .olur-title {
+      font-weight: bold;
+      font-size: 12pt;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    
+    <!-- HEADER -->
+    <table class="header-table">
+      <tr>
+        <td style="width: 90px; text-align: left; vertical-align: middle;">
+          {{#solLogo}}
+          <img src="{{solLogo}}" alt="Sol Logo" class="header-logo" />
+          {{/solLogo}}
+        </td>
+        
+        <td class="header-text" style="vertical-align: middle;">
+          {{#antetSatirlari}}
+          <div>{{.}}</div>
+          {{/antetSatirlari}}
+          {{^antetSatirlari}}
+          <div>T.C.</div>
+          <div>{{kurumAdi}}</div>
+          {{/antetSatirlari}}
+        </td>
+
+        <td style="width: 90px; text-align: right; vertical-align: middle;">
+          {{#sagLogo}}
+          <img src="{{sagLogo}}" alt="Sağ Logo" class="header-logo" />
+          {{/sagLogo}}
+        </td>
+      </tr>
+    </table>
+
+    <!-- INFO: SAYI & TARIH -->
+    <table class="info-table">
+      <tr>
+        <td><strong>Sayı:</strong> {{evrakSayisi}}</td>
+        <td class="right"><strong>Tarih:</strong> {{dosyaTarihi}}</td>
+      </tr>
+      <tr>
+        <td colspan="2"><strong>Konu:</strong> Kabul Edilen Teklif</td>
+      </tr>
+    </table>
+
+    <!-- RECIPIENT -->
+    <div class="recipient">
+      Sayın, <span class="recipient-title">{{yukleniciFirma}}</span><br>
+      {{#yukleniciAdresi}}{{yukleniciAdresi}}<br>{{/yukleniciAdresi}}
+      {{#yukleniciIlce}}{{yukleniciIlce}}{{/yukleniciIlce}} {{#yukleniciIl}}/{{yukleniciIl}}{{/yukleniciIl}}
+    </div>
+
+    <!-- BODY -->
+    <div class="letter-body">
+      Aşağıdaki listede belirtilen ihtiyacın 4734 sayılı Kanun'un 22/d maddesi gereğince piyasa araştırması sırasında verdiğiniz teklif fiyatını dikkate alarak, doğrudan temin usulü ile firmanızdan satın alınmasına karar verilmiştir. Malı/Hizmeti/İşi <strong>{{#teslimGun}}{{teslimGun}}{{/teslimGun}}{{^teslimGun}}7{{/teslimGun}}</strong> gün içinde mesai saatleri dahilinde {{kurumAdi}} adresine teslim etmenizi rica ederiz.
+    </div>
+
+    <!-- PREPARED BY SIGNATURE -->
+    <div class="sign-block clearfix">
+      <div class="sign-box">
+        <br>
+        <span class="sign-name">{{hazirlayanPersonelAdi}}</span><br>
+        <span>{{hazirlayanPersonelUnvan}}</span>
+      </div>
+    </div>
+
+    <!-- ITEMS TABLE -->
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th style="width: 5%;">Sıra No</th>
+          <th style="width: 15%;">Malzeme Kodu</th>
+          <th>Malzeme/İş Adı</th>
+          <th>Özelliği</th>
+          <th style="width: 8%;">Birimi</th>
+          <th style="width: 12%;">Birim Fiyat (TL)</th>
+          <th style="width: 8%;">Miktar</th>
+          <th style="width: 15%;">Tutar (TL)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#ihtiyacKalemleri}}
+        <tr>
+          <td class="center">{{siraNo}}</td>
+          <td class="center">{{kodu}}</td>
+          <td>{{malzemeAdi}}</td>
+          <td>{{ozelligi}}</td>
+          <td class="center">{{birimi}}</td>
+          <td class="right">{{enDusukFiyat}}</td>
+          <td class="right">{{miktar}}</td>
+          <td class="right">{{toplamBedel}}</td>
+        </tr>
+        {{/ihtiyacKalemleri}}
+        <tr>
+          <td colspan="7" class="right" style="font-weight: bold;">Toplam Tutar (KDV Hariç)</td>
+          <td class="right" style="font-weight: bold;">{{genelToplam}} TL</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- APPROVAL (OLUR) SIGNATURE -->
+    <div class="olur-block">
+      <div class="olur-title">OLUR</div>
+      <div style="margin-bottom: 15px;">{{dosyaTarihi}}</div>
+      <br><br>
+      <span class="sign-name">{{baskanAdi}}</span><br>
+      <span>{{baskanUnvan}}</span>
+    </div>
+
+  </div>
+</body>
+</html>

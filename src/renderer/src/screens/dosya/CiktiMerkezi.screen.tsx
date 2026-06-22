@@ -40,7 +40,10 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
           `SELECT d.*, 
                   p.ad_soyad as onaylayan_ad_soyad, p.unvan as onaylayan_unvan,
                   h.ad_soyad as hazirlayan_ad_soyad, h.unvan as hazirlayan_unvan,
-                  f.unvan as yuklenici_firma_adi
+                  f.unvan as yuklenici_firma_adi,
+                  f.adres as yuklenici_firma_adresi,
+                  f.ilce as yuklenici_firma_ilcesi,
+                  f.il as yuklenici_firma_ili
            FROM DATA_TeminDosyasi d 
            LEFT JOIN TANIM_Personel p ON d.onay_personel_id = p.id 
            LEFT JOIN TANIM_Personel h ON d.hazirlayan_personel_id = h.id
@@ -240,6 +243,9 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
           alimTuru: alimTuruText,
           dosyaTarihi: dosyaRes.data?.[0]?.tarih || today,
           yukleniciFirma: dosyaRes.data?.[0]?.yuklenici_firma_adi || null,
+          yukleniciAdresi: dosyaRes.data?.[0]?.yuklenici_firma_adresi || '',
+          yukleniciIlce: dosyaRes.data?.[0]?.yuklenici_firma_ilcesi || '',
+          yukleniciIl: dosyaRes.data?.[0]?.yuklenici_firma_ili || '',
           kurumIci: false,
           evrakSayisi: dosyaRes.data?.[0]?.temin_no || 'Belirtilmedi',
           dosyaKonusu: dosyaRes.data?.[0]?.konu || 'Konu Belirtilmedi',
