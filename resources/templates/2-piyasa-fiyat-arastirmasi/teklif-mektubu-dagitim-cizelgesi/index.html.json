@@ -1,0 +1,48 @@
+{
+  "antetSatirlari": [
+    "T.C.",
+    "GÜNEYYURT BELEDİYE BAŞKANLIĞI"
+  ],
+  "kurumUst": "T.C. GÜNEYYURT BELEDİYE BAŞKANLIĞI",
+  "kurumAdi": "Güneyyurt Belediyesi",
+  "mudurluk": "Fen İşleri Müdürlüğü",
+  "belgeBasligi": "TEKLİF MEKTUBU DAĞITIM ÇİZELGESİ",
+  "isAdi": "Belediyemize ait Yeni Mahalle Mahallesinde yapımı devam etmekte olan Düğün Salonunun Çatı yapımında kullanılmak üzere malzeme alımı 3",
+  "satirlar": [
+    { "sira": 1 },
+    { "sira": 2 },
+    { "sira": 3 },
+    { "sira": 4 },
+    { "sira": 5 },
+    { "sira": 6 }
+  ],
+  "kalemSayisi": 5,
+  "kalemSayisiYazi": "beş",
+  "vtarih": "06/05/2026",
+  "baskanAdi": "Ahmet ARI",
+  "baskanUnvan": "Belediye Başkanı",
+  "komisyon": [
+    {
+      "gorev": "Komisyon Başkanı",
+      "adSoyad": "Mustafa ÇALIŞKAN",
+      "unvan": "Memur"
+    },
+    {
+      "gorev": "Komisyon Üyesi",
+      "adSoyad": "Hasan EROĞLU",
+      "unvan": "Tekniker"
+    },
+    {
+      "gorev": "Komisyon Üyesi",
+      "adSoyad": "Mustafa TUNCER",
+      "unvan": "Tekniker"
+    },
+    {
+      "gorev": "Komisyon Üyesi",
+      "adSoyad": "Mehmet MUTLU",
+      "unvan": "Bld.Personeli"
+    }
+  ],
+  "solLogo": "https://raw.githubusercontent.com/ilyasbozdemir/dt-asistan-desktop-app/refs/heads/main/resources/icon.png",
+  "sagLogo": ""
+}

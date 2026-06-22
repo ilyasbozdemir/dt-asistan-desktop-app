@@ -142,6 +142,7 @@ function seedTemplates(db: Database.Database): void {
       }
 
       if (ad === 'IHTIYAC LISTESI') ad = 'İHTİYAÇ LİSTESİ' 
+      if (ad === 'TEKLIF MEKTUBU DAGITIM CIZELGESI') ad = 'TEKLİF MEKTUBU DAĞITIM ÇİZELGESİ'
 
       if (parentDir !== 'templates') {
         // Kategori adını klasör adından (örn: 1-ihtiyac-tespiti -> İhtiyaç Tespiti) oluştur
