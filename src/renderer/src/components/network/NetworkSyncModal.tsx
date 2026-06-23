@@ -18,7 +18,7 @@ interface ServerInfo {
 
 export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.Element {
   const [ipAddress, setIpAddress] = useState('')
-  const [port] = useState('4000')
+  const [port, setPort] = useState('4000')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
   const [serverInfo, setServerInfo] = useState<ServerInfo | null>(null)
@@ -35,6 +35,7 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
           if (res && res.success) {
             setLocalServerActive(true)
             setLocalIp(res.ip)
+            setPort(res.port.toString())
           }
         })
         .catch(console.error)
@@ -63,12 +64,27 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
     }
   }, [])
 
+  const getCleanUrl = (rawIp: string) => {
+    let cleanIp = rawIp.trim()
+    // Başındaki http:// veya https:// protokollerini kaldır (büyük/küçük harf duyarsız)
+    cleanIp = cleanIp.replace(/^(https?:\/\/)/i, '')
+    
+    // Eğer sonda port varsa (:3000, :4000 gibi) ayıkla, yoksa varsayılan portu kullan
+    let targetPort = port
+    const portMatch = cleanIp.match(/:(\d+)$/)
+    if (portMatch) {
+      targetPort = portMatch[1]
+      cleanIp = cleanIp.substring(0, cleanIp.lastIndexOf(':'))
+    }
+    return `http://${cleanIp}:${targetPort}`
+  }
+
   const handleConnect = async () => {
     if (!ipAddress) return
     setStatus('loading')
     setMessage('Bağlanılıyor...')
     try {
-      const url = `http://${ipAddress}:${port}`
+      const url = getCleanUrl(ipAddress)
       const response = await fetch(`${url}/api/network/info`)
       if (!response.ok) throw new Error('Sunucuya ulaşılamadı.')
       
@@ -93,7 +109,7 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
     setStatus('loading')
     setMessage('Dosya çekiliyor...')
     try {
-      const url = `http://${ipAddress}:${port}`
+      const url = getCleanUrl(ipAddress)
       const res = await electron.invoke('network:pull-db', url)
       if (res.success) {
         setStatus('success')
@@ -114,7 +130,7 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
     setStatus('loading')
     setMessage('Dosya gönderiliyor...')
     try {
-      const url = `http://${ipAddress}:${port}`
+      const url = getCleanUrl(ipAddress)
       const res = await electron.invoke('network:push-db', url)
       if (res.success) {
         setStatus('success')

@@ -24,122 +24,143 @@ export function getLocalIP() {
   return '0.0.0.0'
 }
 
+let activePort: number = 4000
+
 export function startExpressServer(port: number = 4000) {
-  if (server) {
-    return { success: true, port, ip: getLocalIP() }
-  }
-
-  const expressApp = express()
-  expressApp.use(cors())
-  expressApp.use(express.json())
-
-  // Configure multer to save to temp directory
-  const uploadDir = path.join(app.getPath('userData'), 'dtm_uploads')
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true })
-  }
-  const upload = multer({ dest: uploadDir })
-
-  expressApp.get('/api/network/info', (_req, res) => {
-    try {
-      const meta = workspaceManager.getMeta()
-      const currentFile = workspaceManager.getCurrentFilePath()
-      if (!meta || !currentFile) {
-         res.status(404).json({ error: 'Açık bir dosya yok.' })
-         return
-      }
-      res.json({
-        success: true,
-        meta,
-        fileSize: fs.existsSync(currentFile) ? fs.statSync(currentFile).size : 0
-      })
-    } catch (err: any) {
-      res.status(500).json({ error: err.message })
+  return new Promise((resolve) => {
+    if (server) {
+      resolve({ success: true, port: activePort, ip: getLocalIP() })
+      return
     }
-  })
 
-  expressApp.get('/api/network/pull', (_req, res) => {
-    try {
-      const currentFile = workspaceManager.getCurrentFilePath()
-      if (!currentFile || !fs.existsSync(currentFile)) {
-         res.status(404).json({ error: 'Açık bir dosya yok.' })
-         return
-      }
-      
-      // Before downloading, make sure it's saved.
-      workspaceManager.save()
-      
-      res.download(currentFile, 'paylasim.dtm')
-    } catch (err: any) {
-      res.status(500).json({ error: err.message })
+    const expressApp = express()
+    expressApp.use(cors())
+    expressApp.use(express.json())
+
+    // Configure multer to save to temp directory
+    const uploadDir = path.join(app.getPath('userData'), 'dtm_uploads')
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true })
     }
-  })
+    const upload = multer({ dest: uploadDir })
 
-  expressApp.post('/api/network/push', upload.single('file'), (req, res) => {
-    try {
-      if (!req.file) {
-        res.status(400).json({ error: 'Dosya yüklenemedi.' })
-        return
-      }
-      
-      const uploadedFile = req.file.path
-      const currentFile = workspaceManager.getCurrentFilePath()
-      
-      if (!currentFile) {
-        // Hedef makinede açık dosya yoksa push yapılamaz
-        fs.unlinkSync(uploadedFile)
-        res.status(400).json({ error: 'Karşı tarafta açık bir dosya yok.' })
-        return
-      }
-
-      // Close the DB before overwriting
-      workspaceManager.close()
-
-      // Backup the old file just in case
-      const backupPath = currentFile + '.networkbak'
-      fs.copyFileSync(currentFile, backupPath)
-
+    expressApp.get('/api/network/info', (_req, res) => {
       try {
-        // Overwrite
-        fs.copyFileSync(uploadedFile, currentFile)
-        fs.unlinkSync(uploadedFile)
-
-        // Reopen DB via manager
-        workspaceManager.open(currentFile, false)
-        
-        // Broadcast change to renderer to reload data
-        BrowserWindow.getAllWindows().forEach((win) => {
-          if (!win.isDestroyed()) {
-            win.webContents.send('network:db-pushed')
-          }
-        })
-        
-        // Delete backup on success
-        if (fs.existsSync(backupPath)) fs.unlinkSync(backupPath)
-        
-        res.json({ success: true, message: 'Dosya başarıyla yüklendi ve güncellendi.' })
-      } catch (err: any) {
-        // Restore from backup
-        if (fs.existsSync(backupPath)) {
-           fs.copyFileSync(backupPath, currentFile)
-           fs.unlinkSync(backupPath)
-           
-           try {
-             workspaceManager.open(currentFile, false)
-           } catch(e) {}
+        const meta = workspaceManager.getMeta()
+        const currentFile = workspaceManager.getCurrentFilePath()
+        if (!meta || !currentFile) {
+           res.status(404).json({ error: 'Açık bir dosya yok.' })
+           return
         }
-        res.status(500).json({ error: 'Yükleme sırasında hata: ' + err.message })
+        res.json({
+          success: true,
+          meta,
+          fileSize: fs.existsSync(currentFile) ? fs.statSync(currentFile).size : 0
+        })
+      } catch (err: any) {
+        res.status(500).json({ error: err.message })
       }
-    } catch (err: any) {
-      res.status(500).json({ error: err.message })
+    })
+
+    expressApp.get('/api/network/pull', (_req, res) => {
+      try {
+        const currentFile = workspaceManager.getCurrentFilePath()
+        if (!currentFile || !fs.existsSync(currentFile)) {
+           res.status(404).json({ error: 'Açık bir dosya yok.' })
+           return
+        }
+        
+        // Before downloading, make sure it's saved.
+        workspaceManager.save()
+        
+        res.download(currentFile, 'paylasim.dtm')
+      } catch (err: any) {
+        res.status(500).json({ error: err.message })
+      }
+    })
+
+    expressApp.post('/api/network/push', upload.single('file'), (req, res) => {
+      try {
+        if (!req.file) {
+          res.status(400).json({ error: 'Dosya yüklenemedi.' })
+          return
+        }
+        
+        const uploadedFile = req.file.path
+        const currentFile = workspaceManager.getCurrentFilePath()
+        
+        if (!currentFile) {
+          // Hedef makinede açık dosya yoksa push yapılamaz
+          fs.unlinkSync(uploadedFile)
+          res.status(400).json({ error: 'Karşı tarafta açık bir dosya yok.' })
+          return
+        }
+
+        // Close the DB before overwriting
+        workspaceManager.close()
+
+        // Backup the old file just in case
+        const backupPath = currentFile + '.networkbak'
+        fs.copyFileSync(currentFile, backupPath)
+
+        try {
+          // Overwrite
+          fs.copyFileSync(uploadedFile, currentFile)
+          fs.unlinkSync(uploadedFile)
+
+          // Reopen DB via manager
+          workspaceManager.open(currentFile, false)
+          
+          // Broadcast change to renderer to reload data
+          BrowserWindow.getAllWindows().forEach((win) => {
+            if (!win.isDestroyed()) {
+              win.webContents.send('network:db-pushed')
+            }
+          })
+          
+          // Delete backup on success
+          if (fs.existsSync(backupPath)) fs.unlinkSync(backupPath)
+          
+          res.json({ success: true, message: 'Dosya başarıyla yüklendi ve güncellendi.' })
+        } catch (err: any) {
+          // Restore from backup
+          if (fs.existsSync(backupPath)) {
+             fs.copyFileSync(backupPath, currentFile)
+             fs.unlinkSync(backupPath)
+             
+             try {
+               workspaceManager.open(currentFile, false)
+             } catch(e) {}
+          }
+          res.status(500).json({ error: 'Yükleme sırasında hata: ' + err.message })
+        }
+      } catch (err: any) {
+        res.status(500).json({ error: err.message })
+      }
+    })
+
+    const tryListen = (currentPort: number) => {
+      const tempServer = http.createServer(expressApp)
+      
+      tempServer.on('error', (err: any) => {
+        if (err.code === 'EADDRINUSE') {
+          console.log(`Port ${currentPort} is in use, trying next port...`)
+          tryListen(currentPort + 1)
+        } else {
+          resolve({ success: false, port: currentPort, ip: getLocalIP(), error: err.message })
+        }
+      })
+
+      tempServer.listen(currentPort, '0.0.0.0', () => {
+        server = tempServer
+        activePort = currentPort
+        console.log(`Express server started on port ${currentPort} IP ${getLocalIP()}`)
+        resolve({ success: true, port: currentPort, ip: getLocalIP() })
+      })
     }
-  })
 
-  server = expressApp.listen(port, '0.0.0.0', () => {
-    console.log(`Express server started on port ${port} IP ${getLocalIP()}`)
+    tryListen(port)
   })
-
-  return { success: true, port, ip: getLocalIP() }
 }
 
 export function stopExpressServer() {
