@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { SAYI_YAZI_MAP, sayiyiYaziyaCevir } from '../../constants/sayiEslesmeleri'
+import { SAYI_YAZI_MAP, sayiyiYaziyaCevir, paraYaziyaCevir } from '../../constants/sayiEslesmeleri'
 import { getInstitutionSuffixes } from '../../utils/kurumHelper'
 import { Sablon } from '../sablonlar/sablonlar.hooks'
 
@@ -122,6 +122,26 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
             toplam: formatTR(sum)
           }
         })
+
+        const calculatedTeklifler = firms.map((f: any, index: number) => {
+          let sum = 0
+          kalemlerRes.data?.forEach((k: any) => {
+            const price = bidsMap[`${k.id}_${f.temin_firma_id}`] || 0
+            sum += price * (k.miktar || 0)
+          })
+          return {
+            siraNo: index + 1,
+            istekliUnvani: f.unvan,
+            teklifBedeli: formatTR(sum),
+            teklifBedeliRaw: sum,
+            yaziIle: paraYaziyaCevir(sum)
+          }
+        }).sort((a: any, b: any) => a.teklifBedeliRaw - b.teklifBedeliRaw)
+
+        const enAvantajliTeklifSahibi = calculatedTeklifler[0]?.istekliUnvani || ''
+        const enAvantajliTeklifBedeli = calculatedTeklifler[0]?.teklifBedeli || ''
+        const ikinciAvantajliTeklifSahibi = calculatedTeklifler[1]?.istekliUnvani || ''
+        const ikinciAvantajliTeklifBedeli = calculatedTeklifler[1]?.teklifBedeli || ''
 
         // En düşük fiyatlar ve genel toplam hesaplama
         let grandTotal = 0
@@ -313,9 +333,21 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
           firmaToplamlari,
           firmaToplamlariDetay: firmaToplamlari,
           genelToplam,
+          genelToplamYazi: paraYaziyaCevir(grandTotal),
           sozlesmeBedeli: genelToplam,
+          sozlesmeBedeliYazi: paraYaziyaCevir(grandTotal),
           pulBedeli: formatTR(grandTotal * 0.00948),
-          ihtiyacKalemleri: needItems
+          ihtiyacKalemleri: needItems,
+          teklifler: calculatedTeklifler,
+          enAvantajliTeklifSahibi,
+          enAvantajliTeklifBedeli,
+          ikinciAvantajliTeklifSahibi,
+          ikinciAvantajliTeklifBedeli,
+          ihaleKomisyonu: commission.map((c: any) => ({
+            adSoyad: c.ad_soyad,
+            unvan: c.unvan,
+            gorevi: c.gorevi
+          }))
         }
 
         // Varsa test/master dummy verisini de alıp birleştir, gerçek veriler üzerine yazsın
