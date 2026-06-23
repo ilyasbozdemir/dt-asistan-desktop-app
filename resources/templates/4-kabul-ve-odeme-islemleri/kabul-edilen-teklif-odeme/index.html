@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Kabul Edilen Teklif</title>
+  <title>Kabul Edilen Teklif (Ödeme Aşaması)</title>
   <style>
     @page {
       size: A4;
@@ -173,13 +173,10 @@
       {{#yukleniciAdresi}}{{yukleniciAdresi}}<br>{{/yukleniciAdresi}}
       {{#yukleniciIlce}}{{yukleniciIlce}}{{/yukleniciIlce}} {{#yukleniciIl}}/{{yukleniciIl}}{{/yukleniciIl}}
     </div>
-
     <!-- BODY -->
     <div class="letter-body">
       Aşağıdaki listede belirtilen ihtiyacın {{#teminSekli}}{{teminSekli}}{{/teminSekli}}{{^teminSekli}}4734 sayılı Kanun'un 22/d maddesi gereğince Doğrudan Temin{{/teminSekli}} usulü ile firmanızdan satın alınmasına karar verilmiştir. Malı/Hizmeti/İşi <strong>{{#teslimGun}}{{teslimGun}}{{/teslimGun}}{{^teslimGun}}7{{/teslimGun}}</strong> gün içinde mesai saatleri dahilinde {{kurumAdi}} adresine teslim etmenizi rica ederiz.
-    </div>
-
-    <!-- PREPARED BY SIGNATURE -->
+    </div>    <!-- PREPARED BY SIGNATURE -->
     <div class="sign-block clearfix">
       <div class="sign-box">
         <br>
