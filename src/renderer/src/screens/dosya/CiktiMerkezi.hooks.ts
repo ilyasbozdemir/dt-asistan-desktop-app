@@ -248,9 +248,9 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
           yukleniciEposta: dosyaRes.data?.[0]?.yuklenici_firma_email || '',
           yukleniciVergiDairesi: dosyaRes.data?.[0]?.yuklenici_firma_vergi_dairesi || '',
           yukleniciVergiNo: dosyaRes.data?.[0]?.yuklenici_firma_vergi_no || '',
-          idareAdresi: settings?.kurumAdres || 'GÜNEYYURT BELEDİYE BAŞKANLIĞI',
-          idareTelefon: settings?.kurumTelefon || '(0338) 736 80 03',
-          idareEposta: settings?.kurumEposta || 'guneyyurtbelediyesi@hotmail.com',
+          idareAdresi: settings?.kurumAdres || 'İdare Adresi Belirtilmedi',
+          idareTelefon: settings?.kurumTelefon || 'Telefon Belirtilmedi',
+          idareEposta: settings?.kurumEposta || 'E-posta Belirtilmedi',
           idareVergiDairesi: settings?.taxOffice || '',
           idareVergiNo: settings?.taxNumber || '',
           kurumIci: false,
@@ -313,6 +313,8 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
           firmaToplamlari,
           firmaToplamlariDetay: firmaToplamlari,
           genelToplam,
+          sozlesmeBedeli: genelToplam,
+          pulBedeli: formatTR(grandTotal * 0.00948),
           ihtiyacKalemleri: needItems
         }
 

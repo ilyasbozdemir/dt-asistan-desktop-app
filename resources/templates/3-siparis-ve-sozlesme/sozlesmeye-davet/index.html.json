@@ -8,37 +8,32 @@
   "sagLogo": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Logo_of_100th_years_of_the_Republic_of_T%C3%BCrkiye.svg",
   "evrakSayisi": "99887766-302.01",
   "dosyaTarihi": "20/10/2026",
-  "teminSekli": "4734 sayılı Kanun'un 22/d maddesi gereğince Doğrudan Temin",
   "yukleniciFirma": "ABC BİLİŞİM TEKNOLOJİLERİ SAN. VE TİC. A.Ş.",
   "yukleniciAdresi": "Atatürk Bulvarı Yenilik İş Merkezi No:45 Kat:3",
   "yukleniciIlce": "Çankaya",
   "yukleniciIl": "ANKARA",
-  "teslimGun": "7",
   "kurumAdi": "ÖRNEK KAMU KURUMU BAŞKANLIĞI",
-  "hazirlayanPersonelAdi": "Mustafa Yılmaz",
-  "hazirlayanPersonelUnvan": "Bilgisayar İşletmeni",
+  "dosyaKonusu": "Destek Hizmetleri Kapsamında Çatı Yapımı Malzeme Alımı İşi",
   "baskanAdi": "Aylin Kaya",
   "baskanUnvan": "Harcama Yetkilisi",
   "genelToplam": "18.600,00",
+  "sozlesmeBedeli": "18.600,00",
+  "pulBedeli": "176,33",
   "ihtiyacKalemleri": [
     {
       "siraNo": 1,
-      "kodu": "150.01.01.002",
       "malzemeAdi": "A4 Fotokopi Kağıdı (80 gr)",
-      "ozelligi": "Beyaz, 1. hamur",
       "birimi": "Koli",
-      "enDusukFiyat": "420,00",
       "miktar": "20",
+      "enDusukFiyat": "420,00",
       "toplamBedel": "8.400,00"
     },
     {
       "siraNo": 2,
-      "kodu": "150.01.02.015",
       "malzemeAdi": "Mavi Mürekkepli Jel Kalem",
-      "ozelligi": "0.7 mm, silinebilir",
       "birimi": "Adet",
-      "enDusukFiyat": "51,00",
       "miktar": "200",
+      "enDusukFiyat": "51,00",
       "toplamBedel": "10.200,00"
     }
   ]

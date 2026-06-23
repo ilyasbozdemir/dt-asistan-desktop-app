@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Sözleşmeye Davet</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 1.5cm;
+    }
+    body {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 11pt;
+      color: #000;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+      background-color: #fff;
+    }
+    .page-container {
+      max-width: 21cm;
+      box-sizing: border-box;
+      margin: 0 auto;
+      padding: 0.5cm;
+    }
+    .header-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    .header-logo {
+      width: 80px;
+      max-height: 80px;
+      object-fit: contain;
+    }
+    .header-text {
+      text-align: center;
+      font-weight: bold;
+      font-size: 12pt;
+      line-height: 1.4;
+    }
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    .info-table td {
+      padding: 4px 0;
+      font-size: 11pt;
+    }
+    .info-table td.right {
+      text-align: right;
+    }
+    .subject {
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+    .recipient {
+      text-align: center;
+      margin: 20px 0 30px 0;
+      font-size: 12pt;
+      line-height: 1.5;
+    }
+    .recipient-title {
+      font-weight: bold;
+    }
+    .interest {
+      margin-bottom: 20px;
+      font-size: 11pt;
+    }
+    .letter-body {
+      text-align: justify;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    .sign-block {
+      width: 100%;
+      margin-bottom: 45px;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .sign-box {
+      float: right;
+      width: 250px;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .sign-name {
+      font-weight: bold;
+    }
+    .clearfix::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
+      font-size: 10pt;
+    }
+    .items-table th, .items-table td {
+      border: 1px solid #000;
+      padding: 6px 8px;
+    }
+    .items-table th {
+      background-color: #f7f7f7;
+      font-weight: bold;
+      text-align: center;
+    }
+    .items-table td.center {
+      text-align: center;
+    }
+    .items-table td.right {
+      text-align: right;
+    }
+    .items-table tr {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .summary-block {
+      margin-top: 30px;
+      line-height: 1.6;
+      font-size: 11pt;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    
+    <!-- HEADER -->
+    <table class="header-table">
+      <tr>
+        <td style="width: 90px; text-align: left; vertical-align: middle;">
+          {{#solLogo}}
+          <img src="{{solLogo}}" alt="Sol Logo" class="header-logo" />
+          {{/solLogo}}
+        </td>
+        
+        <td class="header-text" style="vertical-align: middle;">
+          {{#antetSatirlari}}
+          <div>{{.}}</div>
+          {{/antetSatirlari}}
+          {{^antetSatirlari}}
+          <div>T.C.</div>
+          <div>{{kurumAdi}}</div>
+          {{/antetSatirlari}}
+        </td>
+
+        <td style="width: 90px; text-align: right; vertical-align: middle;">
+          {{#sagLogo}}
+          <img src="{{sagLogo}}" alt="Sağ Logo" class="header-logo" />
+          {{/sagLogo}}
+        </td>
+      </tr>
+    </table>
+
+    <!-- INFO: SAYI & TARIH -->
+    <table class="info-table">
+      <tr>
+        <td><strong>Sayı:</strong> {{evrakSayisi}}</td>
+        <td class="right"><strong>Tarih:</strong> {{dosyaTarihi}}</td>
+      </tr>
+      <tr>
+        <td colspan="2"><strong>Konu:</strong> Sözleşmeye Davet</td>
+      </tr>
+    </table>
+
+    <!-- RECIPIENT -->
+    <div class="recipient">
+      Sayın, <span class="recipient-title">{{yukleniciFirma}}</span><br>
+      {{#yukleniciAdresi}}{{yukleniciAdresi}}<br>{{/yukleniciAdresi}}
+      {{#yukleniciIlce}}{{yukleniciIlce}}{{/yukleniciIlce}} {{#yukleniciIl}}/{{yukleniciIl}}{{/yukleniciIl}}
+    </div>
+
+    <!-- INTEREST -->
+    <div class="interest">
+      <strong>İlgi:</strong> Bila tarihli teklifiniz.
+    </div>
+
+    <!-- BODY -->
+    <div class="letter-body">
+      <div style="text-indent: 1.5cm; margin-bottom: 10px;">
+        {{#kurumAdi}}{{kurumAdi}} idaremizce{{/kurumAdi}}{{^kurumAdi}}İdaremizce{{/kurumAdi}} ait/bünyesinde gerçekleştirilen "{{dosyaKonusu}}" işi uhdenizde kalmıştır.
+      </div>
+      <div style="text-indent: 1.5cm; margin-bottom: 10px;">
+        Yasal yükümlülükleri yerine getirmek suretiyle işe ilişkin sözleşmeyi imzalamanız gerekmektedir.
+      </div>
+      <div style="text-indent: 1.5cm;">
+        Bilgilerinizi ve gereğini rica ederim.
+      </div>
+    </div>
+
+    <!-- SIGNATURE -->
+    <div class="sign-block clearfix">
+      <div class="sign-box">
+        <br>
+        <span class="sign-name">{{baskanAdi}}</span><br>
+        <span>{{baskanUnvan}}</span>
+      </div>
+    </div>
+
+    <!-- ITEMS TABLE -->
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th style="width: 8%;">Sıra No</th>
+          <th>Malın / İşin Adı</th>
+          <th style="width: 15%;">Miktar</th>
+          <th style="width: 15%;">Birim</th>
+          <th style="width: 18%;">Birim Fiyat (TL)</th>
+          <th style="width: 18%;">Tutar (TL)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#ihtiyacKalemleri}}
+        <tr>
+          <td class="center">{{siraNo}}</td>
+          <td>{{malzemeAdi}}</td>
+          <td class="right">{{miktar}}</td>
+          <td class="center">{{birimi}}</td>
+          <td class="right">{{enDusukFiyat}}</td>
+          <td class="right">{{toplamBedel}}</td>
+        </tr>
+        {{/ihtiyacKalemleri}}
+        <tr>
+          <td colspan="5" class="right" style="font-weight: bold;">Genel Toplam (KDV Hariç)</td>
+          <td class="right" style="font-weight: bold;">{{genelToplam}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- CONTRACT SUMMARY -->
+    <table class="summary-block" style="width: 100%; border-collapse: collapse;">
+      <tr>
+        <td style="width: 250px; padding: 4px 0;"><strong>Sözleşme Bedeli:</strong></td>
+        <td style="padding: 4px 0;">{{sozlesmeBedeli}} TL</td>
+      </tr>
+      <tr>
+        <td style="padding: 4px 0;"><strong>Sözleşme Pul Bedeli (%0,948):</strong></td>
+        <td style="padding: 4px 0;">{{pulBedeli}} TL</td>
+      </tr>
+    </table>
+
+  </div>
+</body>
+</html>
