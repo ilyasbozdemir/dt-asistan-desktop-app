@@ -38,7 +38,9 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
                   f.il as yuklenici_firma_ili,
                   f.telefon as yuklenici_firma_telefon,
                   f.faks as yuklenici_firma_faks,
-                  f.email as yuklenici_firma_email
+                  f.email as yuklenici_firma_email,
+                  f.vergi_dairesi as yuklenici_firma_vergi_dairesi,
+                  f.vergi_no as yuklenici_firma_vergi_no
            FROM DATA_TeminDosyasi d 
            LEFT JOIN TANIM_Personel p ON d.onay_personel_id = p.id 
            LEFT JOIN TANIM_Personel h ON d.hazirlayan_personel_id = h.id
@@ -244,9 +246,13 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
           yukleniciTelefon: dosyaRes.data?.[0]?.yuklenici_firma_telefon || '',
           yukleniciFaks: dosyaRes.data?.[0]?.yuklenici_firma_faks || '',
           yukleniciEposta: dosyaRes.data?.[0]?.yuklenici_firma_email || '',
+          yukleniciVergiDairesi: dosyaRes.data?.[0]?.yuklenici_firma_vergi_dairesi || '',
+          yukleniciVergiNo: dosyaRes.data?.[0]?.yuklenici_firma_vergi_no || '',
           idareAdresi: settings?.kurumAdres || 'GÜNEYYURT BELEDİYE BAŞKANLIĞI',
           idareTelefon: settings?.kurumTelefon || '(0338) 736 80 03',
           idareEposta: settings?.kurumEposta || 'guneyyurtbelediyesi@hotmail.com',
+          idareVergiDairesi: settings?.taxOffice || '',
+          idareVergiNo: settings?.taxNumber || '',
           kurumIci: false,
           evrakSayisi: dosyaRes.data?.[0]?.temin_no || 'Belirtilmedi',
           dosyaKonusu: dosyaRes.data?.[0]?.konu || 'Konu Belirtilmedi',

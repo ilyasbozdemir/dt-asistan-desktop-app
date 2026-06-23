@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Doğrudan Temin Sözleşmesi (Alternatif)</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 1.5cm;
+    }
+    body {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 11pt;
+      color: #000;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+      background-color: #fff;
+    }
+    .page-container {
+      max-width: 21cm;
+      box-sizing: border-box;
+      margin: 0 auto;
+      padding: 0.5cm;
+    }
+    .title {
+      text-align: center;
+      font-weight: bold;
+      font-size: 12pt;
+      line-height: 1.5;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+    }
+    p {
+      text-align: justify;
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 15px 0;
+    }
+    .info-table td {
+      padding: 4px 6px;
+      vertical-align: top;
+    }
+    .info-table td.label {
+      font-weight: bold;
+      width: 220px;
+    }
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 10pt;
+    }
+    .items-table th, .items-table td {
+      border: 1px solid #000;
+      padding: 6px 8px;
+    }
+    .items-table th {
+      background-color: #f7f7f7;
+      font-weight: bold;
+      text-align: center;
+    }
+    .items-table td.center {
+      text-align: center;
+    }
+    .items-table td.right {
+      text-align: right;
+    }
+    .items-table tr {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .signature-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 40px;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .signature-table td {
+      width: 50%;
+      text-align: center;
+      vertical-align: top;
+      padding: 10px;
+    }
+    .sign-title {
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+    }
+    .sign-name {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    
+    <div class="title">
+      {{kalemSayisi}} KALEM {{kurumAdi}}'NA AİT "{{isinAdi}}" İŞİNE AİT SÖZLEŞME
+    </div>
+
+    <p>
+      <b>Madde 1 - Sözleşmenin Tarafları:</b><br>
+      Bu sözleşme, bir tarafta <b>{{kurumAdi}}</b> (Bundan böyle İdare diye anılacaktır) ile diğer tarafta <b>{{yukleniciFirma}}</b> (Bundan böyle Yüklenici olarak anılacaktır) arasında aşağıda yazılı şartlar dahilinde akdedilmiştir.
+    </p>
+
+    <p>
+      <b>Madde 2 - Taraflara Ait Bilgiler:</b>
+      <table class="info-table">
+        <tr>
+          <td class="label">2.1 İdarenin Adresi</td>
+          <td>: {{idareAdresi}}</td>
+        </tr>
+        <tr>
+          <td class="label">Telefon / Faks</td>
+          <td>: {{idareTelefon}} / {{#idareFaks}}{{idareFaks}}{{/idareFaks}}{{^idareFaks}}-{{/idareFaks}}</td>
+        </tr>
+        <tr>
+          <td class="label">E-Posta Adresi</td>
+          <td>: {{idareEposta}}</td>
+        </tr>
+        <tr>
+          <td class="label">Vergi Dairesi ve Numarası</td>
+          <td>: {{idareVergiDairesi}} {{idareVergiNo}}</td>
+        </tr>
+        <tr>
+          <td class="label">2.2 Yüklenicinin Tebligat Adresi</td>
+          <td>: {{yukleniciAdresi}} {{#yukleniciIlce}}{{yukleniciIlce}}{{/yukleniciIlce}} {{#yukleniciIl}}/{{yukleniciIl}}{{/yukleniciIl}}</td>
+        </tr>
+        <tr>
+          <td class="label">Telefon / Faks</td>
+          <td>: {{#yukleniciTelefon}}{{yukleniciTelefon}}{{/yukleniciTelefon}}{{^yukleniciTelefon}}-{{/yukleniciTelefon}} / {{#yukleniciFaks}}{{yukleniciFaks}}{{/yukleniciFaks}}{{^yukleniciFaks}}-{{/yukleniciFaks}}</td>
+        </tr>
+        <tr>
+          <td class="label">E-Posta Adresi</td>
+          <td>: {{#yukleniciEposta}}{{yukleniciEposta}}{{/yukleniciEposta}}{{^yukleniciEposta}}-{{/yukleniciEposta}}</td>
+        </tr>
+        <tr>
+          <td class="label">Vergi Dairesi ve Numarası</td>
+          <td>: {{yukleniciVergiDairesi}} {{yukleniciVergiNo}}</td>
+        </tr>
+      </table>
+    </p>
+
+    <p>
+      <b>2.3</b> Her iki taraf Madde 2.1 ve 2.2'de belirtilen adreslerini tebligat adresi olarak kabul etmişlerdir. Adres değişiklikleri usulüne uygun şekilde karşı tarafa tebliğ edilmedikçe en son bildirilen adrese yapılacak tebliğ ilgili tarafa yapılmış sayılır.
+    </p>
+
+    <p>
+      <b>Madde 3 - Sözleşmenin Dili:</b><br>
+      Sözleşme Türkçe olarak hazırlanmıştır.
+    </p>
+
+    <p>
+      <b>Madde 4 - Tanımlar:</b><br>
+      Bu sözleşmenin uygulanmasında, 4734 sayılı Kamu İhale Kanunu ve 4735 sayılı Kamu İhale Sözleşmeleri Kanunu ve ihale dokümanını oluşturan belgelerde yer alan tanımlar geçerlidir.
+    </p>
+
+    <p>
+      <b>Madde 5 - İşin Niteliği, Türü, Miktarı ve İşin Yapılma / Malın Teslim Edilme Yeri Tarihi:</b><br>
+      <b>5.1</b> İşin Niteliği, Türü, Miktarı: {{kalemSayisi}} kalem {{kurumAdi}}'na ait "{{isinAdi}}" işi.
+    </p>
+
+    <p>
+      {{#nitelikAciklama}}{{nitelikAciklama}}{{/nitelikAciklama}}{{^nitelikAciklama}}......................................................................................................................................................{{/nitelikAciklama}}
+    </p>
+
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th style="width: 8%;">Sıra No</th>
+          <th>Malzeme/Hizmet Adı</th>
+          <th>Özelliği</th>
+          <th style="width: 12%;">Birimi</th>
+          <th style="width: 15%;">Birim Fiyat</th>
+          <th style="width: 12%;">Miktarı</th>
+          <th style="width: 15%;">Tutar</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#ihtiyacKalemleri}}
+        <tr>
+          <td class="center">{{siraNo}}</td>
+          <td>{{malzemeAdi}}</td>
+          <td>{{ozelligi}}</td>
+          <td class="center">{{birimi}}</td>
+          <td class="right">{{enDusukFiyat}}</td>
+          <td class="right">{{miktar}}</td>
+          <td class="right">{{toplamBedel}}</td>
+        </tr>
+        {{/ihtiyacKalemleri}}
+        <tr>
+          <td colspan="6" class="right" style="font-weight: bold;">Toplam</td>
+          <td class="right" style="font-weight: bold;">{{genelToplam}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      <b>Madde 6 - Sözleşme Türü, Bedeli ve Süresi:</b><br>
+      <b>6.1</b> Sözleşme Türü: Bu sözleşme birim fiyat sözleşme olup, her bir mal/hizmet kaleminin miktarı ile bu kalemler için yüklenici tarafından teklif edilen fiyatların çarpımlarının toplamı üzerinden akdedilmiştir.<br>
+      <b>6.2</b> Sözleşme Bedeli: KDV Hariç <b>{{genelToplam}}</b> TL<br>
+      <b>6.3</b> Sözleşme Süresi: {{#sozlesmeSuresi}}{{sozlesmeSuresi}}{{/sozlesmeSuresi}}{{^sozlesmeSuresi}}................................................................................{{/sozlesmeSuresi}}
+    </p>
+
+    <p>
+      <b>Madde 7 - Vergi, Resim ve Harçlar ile Sözleşmeyle İlgili Diğer Giderler:</b><br>
+      <b>7.1</b> Taahhüdün yerine getirilmesine ilişkin ulaşım, sigorta, vergi resim ve harç giderleri sözleşme bedeline dahildir. İlgili mevzuat uyarınca hesaplanacak Katma Değer Vergisi (KDV) ise sözleşme bedeline dahil olmayıp İdare tarafından Yükleniciye ödenecektir.<br>
+      <b>7.2</b> {{#digerGiderler}}{{digerGiderler}}{{/digerGiderler}}{{^digerGiderler}}......................................................................................................................................................{{/digerGiderler}}
+    </p>
+
+    <p>
+      <b>Madde 8 - Sözleşmenin Ekleri:</b><br>
+      İhale dokümanı, bu sözleşmenin eki ve ayrılmaz parçası olup, İdareyi ve Yükleniciyi bağlar. Ancak, sözleşme hükümleri ile ihale dokümanını oluşturan belgelerdeki hükümler arasında çelişki ya da farklılık olması halinde, ihale dokümanında yer alan hükümler esas alınır.
+    </p>
+
+    <p>
+      <b>Madde 9 - Malın/İşin teslim alma şekil ve şartları ile teslim programı:</b><br>
+      <b>9.1</b> Malın teslim edilme/işin yapılma yeri veya yerleri: {{#malTeslimYeri}}{{malTeslimYeri}}{{/malTeslimYeri}}{{^malTeslimYeri}}<b>{{kurumAdi}}</b>{{/malTeslimYeri}}<br>
+      <b>9.2</b> İşe başlama tarihi: {{#iseBaslamaTarihi}}{{iseBaslamaTarihi}}{{/iseBaslamaTarihi}}{{^iseBaslamaTarihi}}................................................................................{{/iseBaslamaTarihi}}<br>
+      <b>9.3</b> Teslim programı ve teslim tarihi: {{#teslimProgrami}}{{teslimProgrami}}{{/teslimProgrami}}{{^teslimProgrami}}................................................................................{{/teslimProgrami}}
+    </p>
+
+    <p>
+      <b>Madde 10 - Teminata ilişkin hükümler:</b><br>
+      {{#iadeSartlari}}{{iadeSartlari}}{{/iadeSartlari}}{{^iadeSartlari}}......................................................................................................................................................{{/iadeSartlari}}
+    </p>
+
+    <p>
+      <b>Madde 11 - Ödeme yeri ve şartları:</b>
+      <table class="info-table">
+        <tr>
+          <td class="label">11.1 Ödeme Yeri</td>
+          <td>: {{#odemeYeri}}{{odemeYeri}}{{/odemeYeri}}{{^odemeYeri}}Sözleşme bedeli (ilave işler nedeniyle meydana gelebilecek artışlara ilişkin bedel dâhil) <b>{{kurumAdi}}</b>'nda ve Genel Şartnamenin hatalı, kusurlu ve eksik işlere ilişkin 32 nci maddesi hükümleri saklı kalmak kaydıyla aşağıda öngörülen plan ve şartlar çerçevesinde ödenecektir. {{kalemSayisi}} kalem {{kurumAdi}}'na ait "{{isinAdi}}" işi ödemeleri İdare tarafından yapılacaktır. Bunun dışında çıkacak arızalara yüklenici 24 saat içinde müdahale edecektir.{{/odemeYeri}}</td>
+        </tr>
+        <tr>
+          <td class="label">11.2 Ödeme koşulları ve zamanı</td>
+          <td>: {{#odemeSartlari}}{{odemeSartlari}}{{/odemeSartlari}}{{^odemeSartlari}}Yüklenici iş programına göre daha fazla iş yaparsa, İdare bu fazla işin bedelini imkân bulduğu takdirde öder.{{/odemeSartlari}}</td>
+        </tr>
+        <tr>
+          <td class="label">11.3 Hak ediş devri ve temlik</td>
+          <td>: {{#odemeSartlari2}}{{odemeSartlari2}}{{/odemeSartlari2}}{{^odemeSartlari2}}Yüklenici yapılan işe ilişkin hak ediş ve alacaklarını idarenin yazılı izni olmaksızın başkalarına devir veya temlik edemez. Temliknamelerin noterlikçe düzenlenmesi ve idare tarafından istenilen kayıt ve şartları taşıması zorunludur.{{/odemeSartlari2}}</td>
+        </tr>
+      </table>
+    </p>
+
+    <p>
+      <b>Madde 12 - Avans verilmesi şartları ve miktarı:</b><br>
+      <b>12.1</b> Yükleniciye taahhüdün gerçekleştirilmesi sırasında avans verilmeyecektir.<br>
+      <b>12.2</b> {{#avansSartlari}}{{avansSartlari}}{{/avansSartlari}}{{^avansSartlari}}................................................................................{{/avansSartlari}}
+    </p>
+
+    <p>
+      <b>Madde 13 - Fiyat farkı:</b><br>
+      <b>13.1</b> Fiyat farkı hesaplanmayacaktır. Ancak, mücbir sebepler veya idareden kaynaklanan nedenlerle işin bitim tarihinin süre uzatımı verilmek suretiyle uzatılması halinde, yürürlükte bulunan fiyat farkına ilişkin esaslar dikkate alınarak fiyat farkı hesaplanacaktır.<br>
+      {{#fiyatFarki}}{{fiyatFarki}}{{/fiyatFarki}}{{^fiyatFarki}}......................................................................................................................................................{{/fiyatFarki}}<br>
+      <b>13.2</b> Sözleşmede yer alan fiyat farkına ilişkin esas ve usullerde sözleşme imzalandıktan sonra değişiklik yapılamaz.
+    </p>
+
+    <p>
+      <b>Madde 14 - Alt yüklenicilere ilişkin bilgiler ve sorumluluklar:</b><br>
+      Bu işte alt yüklenici çalıştırılmayacak ve işlerin tamamı Yüklenicinin kendisi tarafından yapılacaktır.
+    </p>
+
+    <p>
+      <b>Madde 15 - Sözleşme ve eklerine uymayan işler:</b><br>
+      Yüklenici teslim, özellik ve durumu, sözleşme ve şartnamelere uymayan, eksik ve kusurlu oldukları tespit edilen mal/hizmeti, İdarenin talimatı ile belirlenen süre içinde bedelsiz olarak değiştirmek veya düzeltmek zorundadır. Bundan dolayı bir gecikme olursa bu sözleşmenin gecikme cezasına ilişkin hükümleri uygulanır.
+    </p>
+
+    <p>
+      <b>Madde 16 - Cezalar ve sözleşmenin feshi:</b><br>
+      <b>16.1</b> İdare tarafından sözleşmenin 17'nci maddesinde belirtilen süre uzatımı halleri hariç, iş zamanında bitirilmediği / mal teslim edilmediği takdirde geçen her takvim günü için Yükleniciye yapılacak ödemelerden sözleşme bedeli üzerinden binde <b>{{#gecikmeCezaOrani}}{{gecikmeCezaOrani}}{{/gecikmeCezaOrani}}{{^gecikmeCezaOrani}}................{{/gecikmeCezaOrani}}</b> oranında gecikme cezası uygulanacaktır. Uygulanacak toplam ceza tutarı hiçbir şekilde ihale bedelini aşamaz.<br>
+      <b>16.2</b> Gecikme cezası Yükleniciye ayrıca protesto çekmeye gerek kalmaksızın ödemelerden kesilir. Bu cezanın ödemelerden karşılanamaması halinde Yükleniciden ayrıca tahsil edilir.<br>
+      <b>16.3</b> İhtarda belirtilen sürenin bitmesine rağmen aynı durumun devam etmesi, Yüklenicinin 4735 sayılı Kanunun 25'inci maddesinde sayılan yasak fiil veya davranışlarda bulunduğunun tespit edilmesi veya mücbir sebep halleri dışında mali acz içinde bulunması nedeniyle taahhüdünü yerine getiremeyeceğini gerekçeleri ile birlikte İdareye yazılı olarak bildirmesi halinde, ayrıca protesto çekmeye gerek kalmaksızın sözleşme tek taraflı feshedilir.
+    </p>
+
+    <p>
+      <b>Madde 17 - Süre uzatımı verilebilecek haller ve şartları:</b><br>
+      <b>17.1</b> Mücbir sebepler, 4735 sayılı Kamu İhale Sözleşmeleri Kanununun 10. maddesinde belirtilen sebeplerdir. Mücbir sebepler nedeniyle Yükleniciye süre uzatımı verilebilir.<br>
+      <b>17.2</b> {{#sureUzatimi}}{{sureUzatimi}}{{/sureUzatimi}}{{^sureUzatimi}}......................................................................................................................................................{{/sureUzatimi}}
+    </p>
+
+    <p>
+      <b>Madde 18 - Yüklenicinin Yükümlülükleri:</b><br>
+      {{#yukleniciYukumlulukleri}}{{yukleniciYukumlulukleri}}{{/yukleniciYukumlulukleri}}{{^yukleniciYukumlulukleri}}İş yerinin korunması ve sigortalanması yüklenicinin sorumluluğundadır. {{kalemSayisi}} kalem {{kurumAdi}}'na ait "{{isinAdi}}" işi esnasında iş yerine zarar verilmeyecektir. Verilen zarar yüklenici tarafından tanzim edilecektir.{{/yukleniciYukumlulukleri}}
+    </p>
+
+    <p>
+      <b>Madde 19 - Yüklenicinin Sözleşmeyi Feshetmesi:</b><br>
+      Yüklenicinin, sözleşme yapıldıktan sonra mücbir sebep halleri dışında, malî acz içinde bulunması nedeniyle taahhüdünü yerine getiremeyeceğini gerekçeleri ile birlikte İdareye yazılı olarak bildirmesi halinde, ayrıca protesto çekmeye gerek kalmaksızın kesin teminat ve varsa ek kesin teminatlar gelir kaydedilir ve sözleşme feshedilerek hesabı genel hükümlere göre tasfiye edilir.
+    </p>
+
+    <p>
+      <b>Madde 20 - Sözleşmede değişiklik yapılması:</b><br>
+      <b>20.1</b> Sözleşme bedelinin aşılmaması ve İdare ile Yüklenicinin karşılıklı olarak anlaşması kaydıyla; işin yapılma veya teslim yeri, işin süresinden önce yapılması veya teslim edilmesi kaydıyla işin süresi ve bu süreye uygun olarak ödeme şartlarına ait hususlarda sözleşme hükümlerinde değişiklik yapılabilir.<br>
+      <b>20.2</b> Bu hallerin dışında sözleşme hükümlerinde değişiklik yapılamaz ve ek sözleşme düzenlenemez.
+    </p>
+
+    <p>
+      <b>Madde 21 - Denetim Muayene ve Kabul İşlemlerine ilişkin Şartlar:</b><br>
+      <b>21.1</b> Denetim Muayene ve Kabul İşlemlerine Dair Yönetmelik çerçevesinde İdarece yapılacaktır.<br>
+      <b>21.2</b> {{#muayene}}{{muayene}}{{/muayene}}{{^muayene}}......................................................................................................................................................{{/muayene}}
+    </p>
+
+    <p>
+      <b>Madde 22 - Diğer Hususlar:</b><br>
+      {{#digerHususlar}}{{digerHususlar}}{{/digerHususlar}}{{^digerHususlar}}......................................................................................................................................................{{/digerHususlar}}
+    </p>
+
+    <p>
+      <b>Madde 23 - Anlaşmazlıkların Çözümü:</b><br>
+      Anlaşmazlıkların çözümü konusunda {{#kurumIlce}}{{kurumIlce}}{{/kurumIlce}}{{^kurumIlce}}Güneyyurt{{/kurumIlce}} Mahkemeleri ve İcra Daireleri yetkilidir.
+    </p>
+
+    <p>
+      <b>Madde 24 - Yürürlük:</b><br>
+      İş bu sözleşme 24 maddeden ibaret olup, İdare ve Yüklenici tarafından tam olarak okunup anlaşıldıktan sonra <b>{{#sozlesmeTarihi}}{{sozlesmeTarihi}}{{/sozlesmeTarihi}}{{^sozlesmeTarihi}}..../..../20....{{/sozlesmeTarihi}}</b> tarihinde <b>{{#nusha}}{{nusha}}{{/nusha}}{{^nusha}}....{{/nusha}}</b> nüsha olarak imza altına alınmıştır.
+    </p>
+
+    <table class="signature-table">
+      <tr>
+        <td>
+          <div class="sign-title">İDARE</div>
+          <br>
+          <div class="sign-name">{{baskanAdi}}</div>
+          <div>{{baskanUnvan}}</div>
+        </td>
+        <td>
+          <div class="sign-title">YÜKLENİCİ</div>
+          <br>
+          <div class="sign-name">{{yukleniciFirma}}</div>
+        </td>
+      </tr>
+    </table>
+
+  </div>
+</body>
+</html>
