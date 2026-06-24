@@ -20,7 +20,7 @@ export function MalzemeListesi(): React.JSX.Element {
     try {
       setIsPrinting(true)
       const settingsRes = await (window as any).electron.ipcRenderer.invoke('db:get-settings')
-      const sablonIdStr = settingsRes?.success ? settingsRes.data['MAPPING_IHTIYAC_LISTESI_SABLON_ID'] : null
+      const sablonIdStr = settingsRes ? settingsRes['MAPPING_IHTIYAC_LISTESI_SABLON_ID'] : null
       
       if (!sablonIdStr) {
         alert("Lütfen Şablon & Kategori Yönetimi bölümünden İhtiyaç Listesi için bir şablon bağlayınız.")

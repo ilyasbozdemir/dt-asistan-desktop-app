@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Plus, LayoutTemplate, Edit, Calendar, History, Trash2 } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { Plus, LayoutTemplate, Edit, Calendar, History, Trash2, Search } from 'lucide-react'
 import { Button } from '../../../components/ui/Button'
 import { Modal } from '../../../components/ui/Modal'
 import { useSablonlar, Sablon, useSablonHistory, useDeleteSablon } from '../sablonlar.hooks'
@@ -59,6 +59,18 @@ export function SablonListesi({ onEdit, onCreate }: { onEdit: (s: Sablon) => voi
   const { data: sablonlar, isLoading } = useSablonlar()
   const [historySablon, setHistorySablon] = useState<Sablon | null>(null)
   const deleteSablon = useDeleteSablon()
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const filteredSablonlar = useMemo(() => {
+    if (!sablonlar) return []
+    if (!searchQuery.trim()) return sablonlar
+    const lowerQuery = searchQuery.toLowerCase()
+    return sablonlar.filter(s => 
+      s.ad.toLowerCase().includes(lowerQuery) || 
+      (s.kategori && s.kategori.toLowerCase().includes(lowerQuery)) ||
+      (s.aciklama && s.aciklama.toLowerCase().includes(lowerQuery))
+    )
+  }, [sablonlar, searchQuery])
 
   return (
     <div className="flex flex-col h-full animate-in fade-in duration-300">
@@ -69,8 +81,8 @@ export function SablonListesi({ onEdit, onCreate }: { onEdit: (s: Sablon) => voi
         onEdit={onEdit}
       />
 
-      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4 mb-6">
-        <div>
+      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4 mb-6 gap-4">
+        <div className="flex-1">
           <h1 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
             <LayoutTemplate className="w-6 h-6 text-purple-500" />
             Şablon Yönetimi
@@ -79,24 +91,37 @@ export function SablonListesi({ onEdit, onCreate }: { onEdit: (s: Sablon) => voi
             Sistemdeki tüm şablonları yönetin, düzenleyin veya yeni şablon oluşturun.
           </p>
         </div>
-        <Button onClick={onCreate} className="bg-purple-600 hover:bg-purple-700 text-white font-semibold flex items-center gap-2 px-4 shadow-md">
-          <Plus className="w-4 h-4" />
-          Yeni Şablon
-        </Button>
+        
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Şablonlarda ara..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 w-64 text-slate-800 dark:text-slate-200 transition-all"
+            />
+          </div>
+          <Button onClick={onCreate} className="bg-purple-600 hover:bg-purple-700 text-white font-semibold flex items-center gap-2 px-4 shadow-md whitespace-nowrap">
+            <Plus className="w-4 h-4" />
+            Yeni Şablon
+          </Button>
+        </div>
       </div>
 
       <div className="flex-1 overflow-auto">
         {isLoading ? (
           <div className="flex items-center justify-center h-full text-slate-500">Yükleniyor...</div>
-        ) : !sablonlar || sablonlar.length === 0 ? (
+        ) : !filteredSablonlar || filteredSablonlar.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-slate-500 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
             <LayoutTemplate className="w-12 h-12 mb-2 text-slate-300" />
-            <p>Henüz şablon bulunmuyor.</p>
+            <p>{searchQuery ? 'Aramanızla eşleşen şablon bulunamadı.' : 'Henüz şablon bulunmuyor.'}</p>
           </div>
         ) : (
           <div className="flex flex-col gap-8 pb-8">
             {Object.entries(
-              sablonlar.reduce((acc, sablon) => {
+              filteredSablonlar.reduce((acc, sablon) => {
                 const kat = sablon.kategori || 'Genel Şablonlar'
                 if (!acc[kat]) acc[kat] = []
                 acc[kat].push(sablon)
