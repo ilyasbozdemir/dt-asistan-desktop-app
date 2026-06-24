@@ -146,13 +146,20 @@ export function PlaceholderYonetimi(): React.JSX.Element {
   const selectedSablon = sablonlar.find(s => s.id === selectedSablonId)
   const templatePlaceholders = React.useMemo(() => {
     if (!selectedSablon) return null
-    const matches = selectedSablon.icerik.match(/\{\{([^}]+)\}\}/g) || []
-    return Array.from(new Set(matches.map(m => m.replace(/[{}]/g, ''))))
+    if (selectedSablon.test_verisi) {
+      try {
+        const parsed = JSON.parse(selectedSablon.test_verisi)
+        return Object.keys(parsed)
+      } catch (e) {
+        console.error('Test verisi JSON parse hatası:', e)
+      }
+    }
+    return []
   }, [selectedSablon])
 
   const getUsedInTemplates = (anahtar: string) => {
     return sablonlar
-      .filter(s => s.icerik && s.icerik.includes(`{{${anahtar}}}`))
+      .filter(s => s.icerik && s.icerik.includes(anahtar))
       .map(s => s.ad);
   }
 
