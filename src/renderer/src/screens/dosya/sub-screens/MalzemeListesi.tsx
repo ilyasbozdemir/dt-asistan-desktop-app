@@ -38,10 +38,21 @@ export function MalzemeListesi(): React.JSX.Element {
         return
       }
 
+      // Context ile override verilerini birleştir
+      let finalContext = { ...dosyaContext }
+      if (settingsRes['MAPPING_IHTIYAC_LISTESI_JSON_OVERRIDE']) {
+         try {
+            const overrideData = JSON.parse(settingsRes['MAPPING_IHTIYAC_LISTESI_JSON_OVERRIDE'])
+            finalContext = { ...finalContext, ...overrideData }
+         } catch (e) {
+            console.error('JSON Override parse hatası:', e)
+         }
+      }
+
       // İhtiyaç listesi şablonunu context ile işle
-      const renderedContent = Mustache.render(selectedSablon.icerik, dosyaContext)
+      const renderedContent = Mustache.render(selectedSablon.icerik, finalContext)
       // İşlenmiş şablonu master HTML içerisine göm
-      const finalHtml = Mustache.render(masterHtml, dosyaContext, { content: renderedContent })
+      const finalHtml = Mustache.render(masterHtml, finalContext, { content: renderedContent })
 
       await (window as any).electron.ipcRenderer.invoke('print-html', finalHtml, { silent: false })
     } catch (error: any) {

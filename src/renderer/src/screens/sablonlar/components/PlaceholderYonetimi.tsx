@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
-import { Plus, Edit2, Trash2, Key } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { Plus, Edit2, Trash2, Key, LayoutTemplate, Save } from 'lucide-react'
 import { Button } from '../../../components/ui/Button'
 import { Modal } from '../../../components/ui/Modal'
-import { Placeholder, usePlaceholders, useAddPlaceholder, useUpdatePlaceholder, useDeletePlaceholder, useDbTables, useDbColumns, useSablonlar, useResetPlaceholders } from '../sablonlar.hooks'
+import { cn } from '../../../utils/cn'
+import { Placeholder, usePlaceholders, useAddPlaceholder, useUpdatePlaceholder, useDeletePlaceholder, useDbTables, useDbColumns, useSablonlar, useResetPlaceholders, Sablon } from '../sablonlar.hooks'
 
 const UsedInCell = ({ usedIn }: { usedIn: string[] }) => {
   const [expanded, setExpanded] = useState(false)
@@ -44,6 +45,108 @@ const UsedInCell = ({ usedIn }: { usedIn: string[] }) => {
       >
         +{hiddenCount} daha
       </button>
+    </div>
+  )
+}
+
+function TemplateBindingSettings({ sablon }: { sablon: Sablon }) {
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [boundProcess, setBoundProcess] = useState<string>('')
+  const [jsonOverride, setJsonOverride] = useState<string>('')
+
+  const loadSettings = async () => {
+    try {
+      setLoading(true)
+      const res = await (window as any).electron.ipcRenderer.invoke('db:get-settings')
+      if (res && res['MAPPING_IHTIYAC_LISTESI_SABLON_ID'] === sablon.id.toString()) {
+        setBoundProcess('ihtiyac_listesi')
+        setJsonOverride(res['MAPPING_IHTIYAC_LISTESI_JSON_OVERRIDE'] || '')
+      } else {
+        setBoundProcess('')
+        setJsonOverride('')
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadSettings()
+  }, [sablon.id])
+
+  const handleSave = async () => {
+    try {
+      setSaving(true)
+      const current = await (window as any).electron.ipcRenderer.invoke('db:get-settings')
+      const newSettings = { ...current }
+      
+      if (boundProcess === 'ihtiyac_listesi') {
+        newSettings['MAPPING_IHTIYAC_LISTESI_SABLON_ID'] = sablon.id.toString()
+        newSettings['MAPPING_IHTIYAC_LISTESI_JSON_OVERRIDE'] = jsonOverride
+      } else {
+        if (current && current['MAPPING_IHTIYAC_LISTESI_SABLON_ID'] === sablon.id.toString()) {
+           newSettings['MAPPING_IHTIYAC_LISTESI_SABLON_ID'] = null
+           newSettings['MAPPING_IHTIYAC_LISTESI_JSON_OVERRIDE'] = null
+        }
+      }
+
+      const res = await (window as any).electron.ipcRenderer.invoke('db:save-settings', newSettings)
+      if (res.success) {
+        alert('Süreç bağlaması başarıyla kaydedildi!')
+      } else {
+        alert('Kaydetme hatası: ' + res.error)
+      }
+    } catch (e: any) {
+      alert('İşlem sırasında hata: ' + e.message)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (loading) return <div className="p-4 text-xs text-slate-500">Yükleniyor...</div>
+
+  return (
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
+      <h3 className="font-bold text-slate-800 dark:text-slate-100 text-sm mb-3">Bu Şablonu Bir Sürece Bağla</h3>
+      
+      <div className="flex items-center gap-4 mb-4">
+        <label className="text-sm font-semibold text-slate-600 dark:text-slate-300">Süreç Seçimi:</label>
+        <select 
+          value={boundProcess}
+          title="Süreç Seçimi"
+          onChange={e => setBoundProcess(e.target.value)}
+          className="flex-1 px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-sm text-slate-800 dark:text-slate-200"
+        >
+          <option value="">-- Sürece Bağlı Değil --</option>
+          <option value="ihtiyac_listesi">İhtiyaç Listesi Süreci (Malzeme Listesi Yazdırma)</option>
+        </select>
+      </div>
+
+      {boundProcess && (
+        <div className="mb-4">
+           <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
+             JSON Veri Override (İsteğe Bağlı)
+           </label>
+           <textarea 
+              rows={4}
+              value={jsonOverride}
+              onChange={e => setJsonOverride(e.target.value)}
+              placeholder='Örn: { "ekstraAciklama": "Özel metin..." }'
+              className="w-full font-mono px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-sm text-slate-800 dark:text-slate-200"
+           />
+           <p className="text-[10px] text-slate-400 mt-1">Bu sürece ait varsayılan JSON verisinin üzerine yazılacak değerleri buraya ekleyebilirsiniz.</p>
+        </div>
+      )}
+
+      <div className="flex justify-end">
+        <Button onClick={handleSave} disabled={saving} className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-1.5 rounded-lg flex items-center gap-2">
+           <Save className="w-3.5 h-3.5" />
+           {saving ? 'Kaydediliyor...' : 'Bağlamayı Kaydet'}
+        </Button>
+      </div>
     </div>
   )
 }
@@ -178,10 +281,10 @@ export function PlaceholderYonetimi(): React.JSX.Element {
         <div>
           <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
             <Key className="w-5 h-5 text-indigo-500" />
-            Değişken (Placeholder) Yönetimi
+            Değişkenler & Bağlamalar
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Şablonlarınızda kullanacağınız `{'{{değişken_adı}}'}` eşleştirmelerini buradan tanımlayabilirsiniz.
+            Şablonlarınızı belirli süreçlere bağlayın ve kullanacağınız `{'{{değişken_adı}}'}` parametrelerini yönetin.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -202,108 +305,128 @@ export function PlaceholderYonetimi(): React.JSX.Element {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden flex-1 flex flex-col">
-        <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
-          <label className="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
-            Şablona Göre Filtrele
-          </label>
-          <select
-            value={selectedSablonId || ''}
-            onChange={(e) => setSelectedSablonId(Number(e.target.value) || null)}
-            className="w-full max-w-md px-3 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-800 dark:text-slate-200"
-          >
-            <option value="">-- Tümü (Tüm Değişkenler) --</option>
-            {sablonlar.map(s => (
-              <option key={s.id} value={s.id}>{s.ad}</option>
-            ))}
-          </select>
+      <div className="flex h-full gap-4 overflow-hidden">
+        
+        {/* SIDEBAR */}
+        <div className="w-72 shrink-0 flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+           <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+             <h3 className="font-bold text-slate-700 dark:text-slate-300 text-sm uppercase tracking-wider">Şablon Seçimi</h3>
+           </div>
+           <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-1.5 custom-scrollbar">
+              <button 
+                onClick={() => setSelectedSablonId(null)}
+                className={cn("px-3 py-2.5 text-sm text-left rounded-xl transition-all flex items-center gap-3", !selectedSablonId ? "bg-indigo-50 text-indigo-700 font-bold dark:bg-indigo-900/40 dark:text-indigo-300 shadow-sm" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800")}
+              >
+                <Key className={cn("w-4 h-4", !selectedSablonId ? "text-indigo-600 dark:text-indigo-400" : "text-slate-400")} /> Tüm Değişkenler
+              </button>
+              
+              <div className="my-2 border-t border-slate-100 dark:border-slate-800"></div>
+              
+              {sablonlar.map(s => (
+                 <button 
+                  key={s.id}
+                  onClick={() => setSelectedSablonId(s.id)}
+                  className={cn("px-3 py-2.5 text-sm text-left rounded-xl transition-all flex items-center gap-3 truncate", selectedSablonId === s.id ? "bg-indigo-50 text-indigo-700 font-bold dark:bg-indigo-900/40 dark:text-indigo-300 shadow-sm" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800")}
+                  title={s.ad}
+                >
+                  <LayoutTemplate className={cn("w-4 h-4 shrink-0", selectedSablonId === s.id ? "text-indigo-600 dark:text-indigo-400" : "text-slate-400")} /> <span className="truncate">{s.ad}</span>
+                </button>
+              ))}
+           </div>
         </div>
 
-        {isLoading ? (
-          <div className="p-8 text-center text-slate-500 text-sm italic">Yükleniyor...</div>
-        ) : displayedList.length === 0 ? (
-          <div className="p-12 text-center flex flex-col items-center">
-            <Key className="w-12 h-12 text-slate-300 dark:text-slate-700 mb-3" />
-            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
-              {selectedSablonId ? 'Bu şablonda hiç değişken kullanılmamış.' : 'Henüz hiç değişken tanımlanmamış.'}
-            </p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto custom-scrollbar flex-1">
-            <table className="w-full text-left text-sm whitespace-nowrap">
-              <thead className="bg-slate-50 dark:bg-slate-950 text-slate-500 font-bold border-b border-slate-100 dark:border-slate-800 sticky top-0">
-                <tr>
-                  <th className="px-6 py-3">Anahtar (Key)</th>
-                  <th className="px-6 py-3">Kullanıldığı Şablonlar</th>
-                  <th className="px-6 py-3">Etiket (Label)</th>
-                  <th className="px-6 py-3">Veri Kaynağı</th>
-                  <th className="px-6 py-3">Varsayılan Değer</th>
-                  <th className="px-6 py-3 w-full">Açıklama</th>
-                  <th className="px-6 py-3 text-right">İşlemler</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium">
-                {displayedList.map((p, index) => (
-                  <tr key={p.id || `new-${index}`} className={`hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors ${p.isNew ? 'bg-orange-50/30 dark:bg-orange-900/10' : ''}`}>
-                    <td className="px-6 py-3">
-                      <span className="font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 px-2 py-1 rounded">
-                        {`{{${p.anahtar}}}`}
-                      </span>
-                    </td>
-                    <td className="px-6 py-3">
-                      <UsedInCell usedIn={p.usedIn} />
-                    </td>
-                    <td className="px-6 py-3 text-slate-800 dark:text-slate-200">{p.etiket}</td>
-                    <td className="px-6 py-3">
-                      {p.isNew ? (
-                        <span className="text-orange-500 text-xs italic font-semibold">Tanımlanmamış</span>
-                      ) : p.kaynak_tablo ? (
-                        <div className="flex flex-col text-xs">
-                          <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{p.kaynak_tablo}</span>
-                          <span className="text-slate-500">{p.kaynak_sutun ? `-> ${p.kaynak_sutun}` : ''}</span>
-                        </div>
-                      ) : (
-                        <span className="text-slate-400 text-xs italic">Manuel Giriş</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-3 text-slate-500 dark:text-slate-400">{p.varsayilan || '-'}</td>
-                    <td className="px-6 py-3 text-slate-500 dark:text-slate-400 text-xs truncate max-w-[250px]">{p.aciklama || '-'}</td>
-                    <td className="px-6 py-3 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        {p.isNew ? (
-                          <Button 
-                            variant="outline" 
-                            className="text-xs py-1 h-8 border-orange-200 text-orange-600 hover:bg-orange-50"
-                            onClick={() => handleOpenModal({ anahtar: p.anahtar })}
-                          >
-                            Tanımla
-                          </Button>
-                        ) : (
-                          <>
-                            <button
-                              onClick={() => handleOpenModal(p as Placeholder)}
-                              className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-                              title="Düzenle"
-                            >
-                              <Edit2 className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(p.id)}
-                              className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                              title="Sil"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        {/* MAIN CONTENT */}
+        <div className="flex-1 flex flex-col gap-4 overflow-hidden">
+            {selectedSablon && (
+              <TemplateBindingSettings sablon={selectedSablon} />
+            )}
+
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden flex-1 flex flex-col">
+              {isLoading ? (
+                <div className="p-8 text-center text-slate-500 text-sm italic">Yükleniyor...</div>
+              ) : displayedList.length === 0 ? (
+                <div className="p-12 text-center flex flex-col items-center">
+                  <Key className="w-12 h-12 text-slate-300 dark:text-slate-700 mb-3" />
+                  <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
+                    {selectedSablonId ? 'Bu şablonda hiç değişken kullanılmamış.' : 'Henüz hiç değişken tanımlanmamış.'}
+                  </p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto custom-scrollbar flex-1">
+                  <table className="w-full text-left text-sm whitespace-nowrap">
+                    <thead className="bg-slate-50 dark:bg-slate-950 text-slate-500 font-bold border-b border-slate-100 dark:border-slate-800 sticky top-0">
+                      <tr>
+                        <th className="px-6 py-3">Anahtar (Key)</th>
+                        <th className="px-6 py-3">Kullanıldığı Şablonlar</th>
+                        <th className="px-6 py-3">Etiket (Label)</th>
+                        <th className="px-6 py-3">Veri Kaynağı</th>
+                        <th className="px-6 py-3 w-full">Açıklama</th>
+                        <th className="px-6 py-3 text-right">İşlemler</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium">
+                      {displayedList.map((p, index) => (
+                        <tr key={p.id || `new-${index}`} className={`hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors ${p.isNew ? 'bg-orange-50/30 dark:bg-orange-900/10' : ''}`}>
+                          <td className="px-6 py-3">
+                            <span className="font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 px-2 py-1 rounded">
+                              {`{{${p.anahtar}}}`}
+                            </span>
+                          </td>
+                          <td className="px-6 py-3">
+                            <UsedInCell usedIn={p.usedIn} />
+                          </td>
+                          <td className="px-6 py-3 text-slate-800 dark:text-slate-200">{p.etiket}</td>
+                          <td className="px-6 py-3">
+                            {p.isNew ? (
+                              <span className="text-orange-500 text-xs italic font-semibold">Tanımlanmamış</span>
+                            ) : p.kaynak_tablo ? (
+                              <div className="flex flex-col text-xs">
+                                <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{p.kaynak_tablo}</span>
+                                <span className="text-slate-500">{p.kaynak_sutun ? `-> ${p.kaynak_sutun}` : ''}</span>
+                              </div>
+                            ) : (
+                              <span className="text-slate-400 text-xs italic">Manuel Giriş</span>
+                            )}
+                          </td>
+                          <td className="px-6 py-3 text-slate-500 dark:text-slate-400 text-xs truncate max-w-[250px]">{p.aciklama || '-'}</td>
+                          <td className="px-6 py-3 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              {p.isNew ? (
+                                <Button 
+                                  variant="outline" 
+                                  className="text-xs py-1 h-8 border-orange-200 text-orange-600 hover:bg-orange-50"
+                                  onClick={() => handleOpenModal({ anahtar: p.anahtar })}
+                                >
+                                  Tanımla
+                                </Button>
+                              ) : (
+                                <>
+                                  <button
+                                    onClick={() => handleOpenModal(p as Placeholder)}
+                                    className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                                    title="Düzenle"
+                                  >
+                                    <Edit2 className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDelete(p.id)}
+                                    className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                    title="Sil"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+        </div>
       </div>
 
       <Modal
@@ -349,6 +472,7 @@ export function PlaceholderYonetimi(): React.JSX.Element {
               </label>
               <select
                 value={kaynakTablo || ''}
+                title="Kaynak Tablo Seçimi"
                 onChange={(e) => {
                   setKaynakTablo(e.target.value || null)
                   setKaynakSutun(null)
@@ -366,6 +490,7 @@ export function PlaceholderYonetimi(): React.JSX.Element {
               </label>
               <select
                 value={kaynakSutun || ''}
+                title="Kaynak Sütun Seçimi"
                 onChange={(e) => setKaynakSutun(e.target.value || null)}
                 disabled={!kaynakTablo}
                 className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-800 dark:text-slate-200 disabled:opacity-50"
