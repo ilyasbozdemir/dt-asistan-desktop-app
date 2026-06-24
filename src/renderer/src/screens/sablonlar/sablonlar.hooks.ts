@@ -71,6 +71,36 @@ export function usePlaceholders() {
   })
 }
 
+export function useDbTables() {
+  return useQuery({
+    queryKey: ['dbTables'],
+    queryFn: async () => {
+      const res = await window.electron.ipcRenderer.invoke(
+        'db:query',
+        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name ASC"
+      )
+      if (res.error) throw new Error(res.error)
+      return res.data.map((row: any) => row.name) as string[]
+    }
+  })
+}
+
+export function useDbColumns(tableName: string | null) {
+  return useQuery({
+    queryKey: ['dbColumns', tableName],
+    queryFn: async () => {
+      if (!tableName) return []
+      const res = await window.electron.ipcRenderer.invoke(
+        'db:query',
+        `PRAGMA table_info(${tableName})`
+      )
+      if (res.error) throw new Error(res.error)
+      return res.data.map((row: any) => row.name) as string[]
+    },
+    enabled: !!tableName
+  })
+}
+
 export function useSaveSablon() {
   const queryClient = useQueryClient()
 
@@ -180,6 +210,74 @@ export function useDeleteSablon() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['sablonlar'] })
+    }
+  })
+}
+
+export function useAddPlaceholder() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (data: Omit<Placeholder, 'id'>) => {
+      const res = await window.electron.ipcRenderer.invoke(
+        'db:run',
+        'INSERT INTO TANIM_Placeholder (anahtar, etiket, kaynak_tablo, kaynak_sutun, varsayilan, aciklama) VALUES (?, ?, ?, ?, ?, ?)',
+        [data.anahtar, data.etiket, data.kaynak_tablo || null, data.kaynak_sutun || null, data.varsayilan || null, data.aciklama || null]
+      )
+      if (res.error) throw new Error(res.error)
+      return res.lastID
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['placeholders'] })
+    }
+  })
+}
+
+export function useUpdatePlaceholder() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: Omit<Placeholder, 'id'> }) => {
+      const res = await window.electron.ipcRenderer.invoke(
+        'db:run',
+        'UPDATE TANIM_Placeholder SET anahtar = ?, etiket = ?, kaynak_tablo = ?, kaynak_sutun = ?, varsayilan = ?, aciklama = ? WHERE id = ?',
+        [data.anahtar, data.etiket, data.kaynak_tablo || null, data.kaynak_sutun || null, data.varsayilan || null, data.aciklama || null, id]
+      )
+      if (res.error) throw new Error(res.error)
+      return id
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['placeholders'] })
+    }
+  })
+}
+
+export function useDeletePlaceholder() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const res = await window.electron.ipcRenderer.invoke('db:run', 'DELETE FROM TANIM_Placeholder WHERE id = ?', [
+        id
+      ])
+      if (res.error) throw new Error(res.error)
+      return res
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['placeholders'] })
+    }
+  })
+}
+
+export function useResetPlaceholders() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async () => {
+      const res = await window.electron.ipcRenderer.invoke('db:resetPlaceholders')
+      if (res.error) throw new Error(res.error)
+      return res
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['placeholders'] })
     }
   })
 }

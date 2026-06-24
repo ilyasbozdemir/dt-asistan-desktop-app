@@ -77,7 +77,6 @@ export const routeComponents: Record<string, React.ComponentType<any>> = {
   '/dosya/komisyon/fiyat-muayene': FiyatArastirmaMuayeneKomisyonu,
   '/dosya/komisyon/onay-eki': KomisyonAtamaOnayEki,
   '/dosya/malzemeler/liste': MalzemeListesi,
-  '/dosya/malzemeler/talep-formu': IhtiyacListesiTalepFormu,
   '/dosya/luzum/belge': LuzumMuzekkeresiBelgesi,
   '/dosya/luzum/onay-eki': LuzumOnayEki,
   '/dosya/luzum/teslim-tesellum': LuzumTeslimTesellum,

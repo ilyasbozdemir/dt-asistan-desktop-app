@@ -234,11 +234,6 @@ const malzemeListesiRoute = createRoute({
   path: '/dosya/malzemeler/liste',
   component: MalzemeListesi
 })
-const talepFormuRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dosya/malzemeler/talep-formu',
-  component: IhtiyacListesiTalepFormu
-})
 
 // 3. Luzum
 const luzumBelgeRoute = createRoute({

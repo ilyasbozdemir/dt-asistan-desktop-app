@@ -1960,6 +1960,27 @@ if (!gotTheLock && !isMultiInstance) {
       }
     })
 
+    // Reset Placeholders to defaults
+    ipcMain.handle('db:resetPlaceholders', async () => {
+      try {
+        const { TANIM_Placeholder } = require('./database/tables/TANIM_Placeholder')
+        const db = workspaceManager.getDb()
+        db.exec('DELETE FROM TANIM_Placeholder;')
+        if (TANIM_Placeholder.initialData && TANIM_Placeholder.initialData.length > 0) {
+          TANIM_Placeholder.initialData.forEach((row: any) => {
+            const keys = Object.keys(row)
+            const values = Object.values(row).map((v) =>
+              typeof v === 'string' ? "'" + (v as string).replace(/'/g, "''") + "'" : v
+            )
+            db.exec(`INSERT INTO TANIM_Placeholder (${keys.join(', ')}) VALUES (${values.join(', ')});`)
+          })
+        }
+        return { success: true }
+      } catch (error: any) {
+        return { success: false, error: error.message }
+      }
+    })
+
     // Genel okuma işlemi (SELECT)
     ipcMain.handle('db:query', async (_, sql: string, params: any[] = []) => {
 

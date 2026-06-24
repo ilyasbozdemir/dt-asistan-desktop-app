@@ -358,6 +358,16 @@ export function MalzemeListesi(): React.JSX.Element {
       icon={Package}
       description="Dosya kapsamındaki malzeme, hizmet veya yapım işi ihtiyaçlarını listeleyin ve yönetin."
     >
+      <div className="flex justify-end mb-4 print:hidden">
+        <button
+          onClick={() => window.print()}
+          className="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+        >
+          <Printer className="w-4 h-4" />
+          Yazdır / PDF Olarak Kaydet
+        </button>
+      </div>
+
       {/* ADD MODAL */}
       <Modal
         isOpen={isAddModalOpen}

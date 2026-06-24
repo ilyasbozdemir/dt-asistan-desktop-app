@@ -206,7 +206,6 @@ export function Sidebar(): React.JSX.Element {
     '/dosya/komisyon/muayene-kabul': ['Muayene Kabul ve Tespit Komisyonu Tutanağı', 'Hizmet İşleri Kabul Tutanağı', 'Yapım İşleri Kabul Tutanağı'],
     '/dosya/komisyon/fiyat-muayene': ['Piyasa Fiyat Araştırması Tutanağı', 'Muayene Kabul ve Tespit Komisyonu Tutanağı'],
     '/dosya/komisyon/onay-eki': ['Onay Belgesi'],
-    '/dosya/malzemeler/talep-formu': ['Onay Belgesi'],
     '/dosya/luzum/belge': ['Onay Belgesi'],
     '/dosya/luzum/onay-eki': ['Onay Belgesi'],
     '/dosya/luzum/teslim-tesellum': ['Muayene Kabul ve Tespit Komisyonu Tutanağı', 'Hizmet İşleri Kabul Tutanağı', 'Yapım İşleri Kabul Tutanağı'],
@@ -231,8 +230,7 @@ export function Sidebar(): React.JSX.Element {
   })
 
   const subPagesMapping = [
-    { name: 'Malzeme Listesi', path: '/dosya/malzemeler/liste', icon: PackageSearch, stage: 1 },
-    { name: 'İhtiyaç Listesi & Talep', path: '/dosya/malzemeler/talep-formu', icon: PackageSearch, stage: 1 },
+    { name: 'İhtiyaç Listesi', path: '/dosya/malzemeler/liste', icon: PackageSearch, stage: 1 },
     { name: 'Lüzum Müzekkeresi Belgesi', path: '/dosya/luzum/belge', icon: FileText, stage: 1 },
     { name: 'Onay Eki', path: '/dosya/luzum/onay-eki', icon: FileText, stage: 1 },
     { name: 'Bütçe Sorgusu', path: '/dosya/onay/butce-sorgu', icon: FileCheck, stage: 1 },
