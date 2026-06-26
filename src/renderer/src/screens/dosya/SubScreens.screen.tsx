@@ -37,10 +37,14 @@ interface SubScreenProps {
   children?: React.ReactNode
 }
 
+import { Star } from 'lucide-react'
+
 export function SubScreen({ title, icon: Icon, description, children }: SubScreenProps): React.JSX.Element {
   const { activeDosyaId } = useWorkspaceStore()
   const [activeDosya, setActiveDosya] = useState<any>(null)
   const [loading, setLoading] = useState(false)
+  const [isStarred, setIsStarred] = useState(false)
+  const [starredDocs, setStarredDocs] = useState<string[]>([])
 
   useEffect(() => {
     document.title = `${title} - Doğrudan Temin`
@@ -51,16 +55,40 @@ export function SubScreen({ title, icon: Icon, description, children }: SubScree
     setLoading(true)
     window.electron.ipcRenderer.invoke(
       'db:query',
-      'SELECT id, konu, temin_no FROM DATA_TeminDosyasi WHERE id = ?',
+      'SELECT id, konu, temin_no, starred_docs FROM DATA_TeminDosyasi WHERE id = ?',
       [activeDosyaId]
     ).then((res) => {
       if (res.success && res.data.length > 0) {
         setActiveDosya(res.data[0])
+        try {
+          const docs = res.data[0].starred_docs ? JSON.parse(res.data[0].starred_docs) : []
+          setStarredDocs(docs)
+          setIsStarred(docs.includes(title))
+        } catch (e) {}
       }
     }).finally(() => {
       setLoading(false)
     })
-  }, [activeDosyaId])
+  }, [activeDosyaId, title])
+
+  const toggleStar = async () => {
+    if (!activeDosyaId) return
+    let newDocs = [...starredDocs]
+    if (isStarred) {
+      newDocs = newDocs.filter(d => d !== title)
+    } else {
+      newDocs.push(title)
+    }
+    setStarredDocs(newDocs)
+    setIsStarred(!isStarred)
+    
+    await window.electron.ipcRenderer.invoke(
+      'db:execute',
+      'UPDATE DATA_TeminDosyasi SET starred_docs = ? WHERE id = ?',
+      JSON.stringify(newDocs),
+      activeDosyaId
+    )
+  }
 
   return (
     <div className="p-6 md:p-8 max-w-6xl mx-auto flex flex-col gap-6 w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -84,6 +112,23 @@ export function SubScreen({ title, icon: Icon, description, children }: SubScree
             </p>
           </div>
         </div>
+
+        {/* STAR TOGGLE BUTTON */}
+        <button
+          onClick={toggleStar}
+          className={cn(
+            "flex items-center gap-2 px-4 py-2 rounded-xl border font-bold text-sm transition-all shadow-sm",
+            isStarred 
+              ? "bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-800/50 text-amber-700 dark:text-amber-500 hover:bg-amber-100 dark:hover:bg-amber-900/50" 
+              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 hover:text-amber-600 hover:border-amber-200 hover:bg-amber-50 dark:hover:bg-slate-800"
+          )}
+          title={isStarred ? "Kısayollardan Çıkar" : "Hızlı Erişime Ekle"}
+        >
+          <Star className={cn("w-5 h-5", isStarred && "fill-amber-500")} />
+          <span className="hidden sm:inline-block">
+            {isStarred ? "Hızlı Erişimde" : "Hızlı Erişime Ekle"}
+          </span>
+        </button>
       </div>
 
       {/* ACTIVE DOSYA CONTEXT */}

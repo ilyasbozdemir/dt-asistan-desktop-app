@@ -26,7 +26,8 @@ import {
   HelpCircle,
   Key,
   ArrowRightLeft,
-  Printer
+  Printer,
+  Star
 } from 'lucide-react'
 import { cn } from '../../utils/cn'
 import { useSettingsStore } from '../../store/settingsStore'
@@ -97,6 +98,7 @@ const menuGroups: MenuGroup[] = [
     title: 'Sistem',
     items: [
       { name: 'Raporlar', path: '/raporlar', icon: BarChart3 },
+      { name: 'Kısayol & Taslaklar', path: '/taslakyonetim', icon: Star },
       { name: 'Sürüm Notları', path: '/changelog', icon: Megaphone },
       { name: 'Yardım & Kılavuzlar', path: '/yardim', icon: HelpCircle },
       {

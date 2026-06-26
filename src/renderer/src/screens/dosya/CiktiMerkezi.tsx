@@ -47,6 +47,22 @@ export function CiktiMerkezi(): React.JSX.Element {
       })
     : null
 
+  // Fetch Produced Documents
+  const { data: dbBelgeler = [] } = useQuery<any[]>({
+    queryKey: ['cikti_belgeler', activeDosyaId],
+    queryFn: async () => {
+      if (!activeDosyaId) return []
+      const res = await window.electron.ipcRenderer.invoke(
+        'db:query', 
+        `SELECT belge_adi FROM DATA_TeminBelge WHERE temin_dosya_id = ?`,
+        [activeDosyaId]
+      )
+      if (!res.success) return []
+      return res.data
+    },
+    enabled: !!activeDosyaId
+  })
+
   const getDocumentRoute = (docName: string) => {
     const lower = docName.toLowerCase()
     if (lower.includes('yaklaşık maliyet')) return '/dosya/firmalar-maliyet/yaklasik'
@@ -64,19 +80,10 @@ export function CiktiMerkezi(): React.JSX.Element {
     if (!activeDosya) return 'bekliyor'
     if (skippedDocs.includes(docName)) return 'atlandi'
     
-    const lowerName = docName.toLowerCase()
-    if (lowerName.includes('yaklaşık maliyet') || lowerName.includes('fiyat araştırma')) {
-      return activeDosya.yaklasik_maliyet > 0 ? 'tamamlandi' : 'aktif'
-    }
-    if (lowerName.includes('onay')) {
-      return activeDosya.durum_asama_id && activeDosya.durum_asama_id >= 3 ? 'tamamlandi' : 'aktif'
-    }
-    if (lowerName.includes('fatura') || lowerName.includes('ödeme') || lowerName.includes('teslim')) {
-      return activeDosya.durum_asama_id && activeDosya.durum_asama_id >= 4 ? 'tamamlandi' : 'bekliyor'
-    }
-    if (activeDosya.firma_id && (lowerName.includes('sözleşme') || lowerName.includes('firma'))) {
-      return 'tamamlandi'
-    }
+    // Gerçek Belge Kontrolü: Bu belge DATA_TeminBelge tablosunda üretilmiş olarak var mı?
+    const isProduced = dbBelgeler.some((b: any) => b.belge_adi === docName)
+    if (isProduced) return 'tamamlandi'
+
     return 'bekliyor'
   }
 

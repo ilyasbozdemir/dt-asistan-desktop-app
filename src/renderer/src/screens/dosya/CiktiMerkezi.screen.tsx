@@ -5,10 +5,12 @@ import { useWorkspaceStore } from '../../store/workspaceStore'
 import Mustache from 'mustache'
 import { Sablon } from '../sablonlar/sablonlar.hooks'
 import { useCiktiMerkeziData } from './CiktiMerkezi.hooks'
+import { useDocumentLogger } from '../../hooks/useDocumentLogger'
 
 export function CiktiMerkeziScreen(): React.JSX.Element {
   const { activeDosyaId } = useWorkspaceStore()
   const { sablons, loading, masterHtml, dosyaContext } = useCiktiMerkeziData(activeDosyaId)
+  const { logDocument } = useDocumentLogger()
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
   const [processing, setProcessing] = useState(false)
 
@@ -79,17 +81,23 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
 
         if (action === 'pdf') {
           await window.electron.ipcRenderer.invoke('export-pdf', html, null, `${safeName}_${activeDosyaId}`)
+          await logDocument(sablon.ad, `${safeName}_${activeDosyaId}.pdf`)
         } else if (action === 'udf') {
           await window.electron.ipcRenderer.invoke('export-udf', html, `${safeName}_${activeDosyaId}`)
+          await logDocument(sablon.ad, `${safeName}_${activeDosyaId}.udf`)
         } else if (action === 'docx') {
           await window.electron.ipcRenderer.invoke('export-docx', html, `${safeName}_${activeDosyaId}`)
+          await logDocument(sablon.ad, `${safeName}_${activeDosyaId}.docx`)
         } else if (action === 'print') {
           await window.electron.ipcRenderer.invoke('print-html', html, { silent: true }) // Silent true for batch printing
+          await logDocument(sablon.ad, 'Yazdırıldı')
         }
       }
 
       if (action === 'print') {
         alert('Belgeler başarıyla yazdırma kuyruğuna gönderildi.')
+      } else {
+        alert('Belgeler başarıyla oluşturuldu ve kaydedildi.')
       }
     } catch (error: any) {
       alert(`İşlem sırasında hata oluştu: ${error.message}`)
