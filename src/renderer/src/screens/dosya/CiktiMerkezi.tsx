@@ -35,12 +35,14 @@ export function CiktiMerkezi(): React.JSX.Element {
 
   const activeAlimTuru = activeDosya
     ? dbAlimTurleri.find((t) => {
-        const fileTur = activeDosya.tur?.toLowerCase()
+        const fileTur = activeDosya.tur?.toLowerCase() || ''
         const dbTur = t.tur_adi?.toLowerCase() || ''
-        if (fileTur === 'mal' && dbTur.includes('mal')) return true
-        if (fileTur === 'hizmet' && dbTur.includes('hizmet')) return true
-        if (fileTur === 'yapim_isi' && (dbTur.includes('yapım') || dbTur.includes('yapim'))) return true
-        if (fileTur === 'danismanlik' && (dbTur.includes('danışmanlık') || dbTur.includes('danismanlik'))) return true
+        
+        if (fileTur.includes('mal') && dbTur.includes('mal')) return true
+        if (fileTur.includes('hizmet') && dbTur.includes('hizmet')) return true
+        if ((fileTur.includes('yapım') || fileTur.includes('yapim')) && (dbTur.includes('yapım') || dbTur.includes('yapim'))) return true
+        if ((fileTur.includes('danışmanlık') || fileTur.includes('danismanlik')) && (dbTur.includes('danışmanlık') || dbTur.includes('danismanlik'))) return true
+        
         return dbTur === fileTur
       })
     : null
@@ -78,20 +80,49 @@ export function CiktiMerkezi(): React.JSX.Element {
     return 'bekliyor'
   }
 
+  // Tab Title Update
+  useEffect(() => {
+    document.title = '🖨️ Çıktı & Üretim Merkezi - Doğrudan Temin'
+  }, [])
+
   if (!activeDosyaId || !activeDosya) {
     return (
-      <div className="p-8">
-        <div className="bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-400 p-4 rounded-xl">
-          Lütfen önce bir dosya seçin.
+      <div className="p-8 max-w-7xl mx-auto w-full">
+        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900/30 text-amber-800 dark:text-amber-400 p-6 rounded-2xl flex items-center gap-3">
+          <FileText className="w-6 h-6" />
+          <div className="font-semibold">Lütfen önce bir dosya seçin. İşlem yapabilmek için sol taraftan veya "Dosyalar" menüsünden aktif bir dosya seçmeniz gerekmektedir.</div>
         </div>
       </div>
     )
   }
 
-  const orderedDocs: string[] = activeDosya.ordered_docs ? JSON.parse(activeDosya.ordered_docs) : null
-  const skippedDocs: string[] = activeDosya.skipped_docs ? JSON.parse(activeDosya.skipped_docs) : []
+  let orderedDocs: string[] | null = null
+  let skippedDocs: string[] = []
   
-  const documentList = orderedDocs || (activeAlimTuru ? activeAlimTuru.belgeler.map((b: any) => typeof b === 'string' ? b : (b?.ad || '')) : [])
+  try {
+    orderedDocs = activeDosya.ordered_docs ? JSON.parse(activeDosya.ordered_docs) : null
+  } catch (e) {
+    console.error("ordered_docs parse error", e)
+  }
+  
+  try {
+    skippedDocs = activeDosya.skipped_docs ? JSON.parse(activeDosya.skipped_docs) : []
+  } catch (e) {
+    console.error("skipped_docs parse error", e)
+  }
+  
+  const documentList = orderedDocs && Array.isArray(orderedDocs) && orderedDocs.length > 0 
+    ? orderedDocs 
+    : (activeAlimTuru && activeAlimTuru.belgeler && activeAlimTuru.belgeler.length > 0 
+        ? activeAlimTuru.belgeler.map((b: any) => typeof b === 'string' ? b : (b?.ad || '')) 
+        : [
+            'Yaklaşık Maliyet Cetveli',
+            'Piyasa Fiyat Araştırma Tutanağı',
+            'Onay Belgesi',
+            'Harcama Talimatı',
+            'Muayene Kabul Komisyonu Tutanağı',
+            'Harcama Pusulası'
+          ])
 
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
