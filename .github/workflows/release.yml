@@ -48,6 +48,24 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Prepare Release Notes
+        shell: bash
+        run: |
+          if [[ "${{ github.ref_name }}" == *"beta"* || "${{ github.ref_name }}" == *"alpha"* ]]; then
+            echo "RELEASE_NAME=dt-asistan-desktop-app ${{ github.ref_name }} (Erken Erişim)" >> $GITHUB_ENV
+            echo "RELEASE_BODY<<EOF" >> $GITHUB_ENV
+            echo "Doğrudan Temin Masaüstü Yönetim uygulaması sürümü. 🚀" >> $GITHUB_ENV
+            echo "" >> $GITHUB_ENV
+            echo "**Erken Erişim Sürümü (Early Access)**" >> $GITHUB_ENV
+            echo "Bu sürüm erken erişim aşamasında olup tüm temel fonksiyonları içermektedir." >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          else
+            echo "RELEASE_NAME=dt-asistan-desktop-app ${{ github.ref_name }}" >> $GITHUB_ENV
+            echo "RELEASE_BODY<<EOF" >> $GITHUB_ENV
+            echo "Doğrudan Temin Masaüstü Yönetim uygulaması sürümü." >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          fi
+
       - name: Release Files
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
@@ -57,8 +75,8 @@ jobs:
             dist/*.exe.blockmap
             dist/*.yml
           draft: false
-          prerelease: ${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') }}
-          name: "dt-asistan-desktop-app ${{ github.ref_name }}"
-          body: "Doğrudan Temin Masaüstü Yönetim uygulaması sürümü."
+          prerelease: false
+          name: ${{ env.RELEASE_NAME }}
+          body: ${{ env.RELEASE_BODY }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
