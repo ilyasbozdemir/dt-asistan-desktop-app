@@ -12,5 +12,27 @@ export const TANIM_SurecTaslak = {
     { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' },
     { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' }
   ],
-  initialData: []
+  initialData: [
+    {
+      taslak_adi: 'Mal Alımı Süreç Belgeleri',
+      tur: 'Mal Alımı',
+      ordered_docs: JSON.stringify([
+        "Malzeme / Hizmet Kalem Listesi",
+        "Lüzum Müzekkeresi Belgesi",
+        "Lüzum Onay Eki",
+        "İstekli Tedarikçi Firmalar",
+        "Yaklaşık Maliyet Hesap Cetveli",
+        "Fiyat Araştırma Komisyonu Atama",
+        "Piyasa Fiyat Araştırma Tutanağı",
+        "Doğrudan Temin Onay Belgesi",
+        "Muayene Kabul Komisyonu Atama",
+        "Teslim Tesellüm Belgesi",
+        "Bütçe Sorgusu",
+        "Harcama Talimatı",
+        "Harcama Pusulası"
+      ]),
+      starred_docs: JSON.stringify([]),
+      skipped_docs: JSON.stringify([])
+    }
+  ]
 }

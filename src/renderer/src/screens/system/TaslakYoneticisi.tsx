@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Link } from '@tanstack/react-router'
+import React, { useState } from 'react'
+import { Link, useNavigate } from '@tanstack/react-router'
 import {
   Star,
   FileText,
@@ -10,9 +10,31 @@ import {
   FolderOpen
 } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
+import { useWorkspaceStore } from '../../store/workspaceStore'
+
+const ROUTE_MAP: Record<string, string> = {
+  "Fiyat Araştırma Komisyonu Atama": "/dosya/komisyon/fiyat-arastirma",
+  "Muayene Kabul Komisyonu Atama": "/dosya/komisyon/muayene-kabul",
+  "Fiyat Araştırma ve Muayene Komisyonu": "/dosya/komisyon/fiyat-muayene",
+  "Komisyon Atama Onay Eki": "/dosya/komisyon/onay-eki",
+  "Malzeme / Hizmet Kalem Listesi": "/dosya/malzemeler/liste",
+  "Lüzum Müzekkeresi Belgesi": "/dosya/luzum/belge",
+  "Lüzum Onay Eki": "/dosya/luzum/onay-eki",
+  "Teslim Tesellüm Belgesi": "/dosya/luzum/teslim-tesellum",
+  "İstekli Tedarikçi Firmalar": "/dosya/firmalar-maliyet/istekliler",
+  "Yaklaşık Maliyet Hesap Cetveli": "/dosya/firmalar-maliyet/yaklasik",
+  "Piyasa Fiyat Araştırma Tutanağı": "/dosya/firmalar-maliyet/tutanak",
+  "Doğrudan Temin Onay Belgesi": "/dosya/onay/dt-onay",
+  "İhale Onay Belgesi": "/dosya/onay/ihale-onay",
+  "Bütçe Sorgusu": "/dosya/onay/butce-sorgu",
+  "Harcama Talimatı": "/dosya/harcama/talimat",
+  "Harcama Pusulası": "/dosya/harcama/pusula"
+}
 
 export default function TaslakYoneticisi(): React.JSX.Element {
   const [activeTab, setActiveTab] = useState<'kisayollar' | 'taslaklar'>('kisayollar')
+  const { setActiveDosyaId } = useWorkspaceStore()
+  const navigate = useNavigate()
 
   // Dosyalardaki kısayolları bulalım
   const { data: dosyalar = [], isLoading: dosyalarLoading } = useQuery({
@@ -106,12 +128,22 @@ export default function TaslakYoneticisi(): React.JSX.Element {
                     </div>
                   </div>
                   <div className="space-y-2 mt-4">
-                    {dosya.starred.map((doc: string, idx: number) => (
-                      <div key={idx} className="flex items-center gap-2 bg-amber-50 dark:bg-amber-900/10 text-amber-700 dark:text-amber-500 p-2 rounded-lg text-xs font-bold border border-amber-100 dark:border-amber-900/30">
+                    {dosya.starred.map((doc: string, idx: number) => {
+                      const route = ROUTE_MAP[doc] || '/dosya/cikti-merkezi'
+                      return (
+                      <Link 
+                        key={idx} 
+                        to={route} 
+                        onClick={() => {
+                          window.electron.ipcRenderer.invoke('store:set', 'activeDosyaId', dosya.id)
+                          setActiveDosyaId(dosya.id)
+                        }}
+                        className="flex items-center gap-2 bg-amber-50 hover:bg-amber-100 transition-colors cursor-pointer dark:bg-amber-900/10 dark:hover:bg-amber-900/20 text-amber-700 dark:text-amber-500 p-2 rounded-lg text-xs font-bold border border-amber-100 dark:border-amber-900/30"
+                      >
                         <Star className="w-3 h-3 fill-amber-500" />
                         {doc}
-                      </div>
-                    ))}
+                      </Link>
+                    )})}
                   </div>
                   <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 text-right">
                     <Link to="/" search={{ mode: 'dosya_window' }} onClick={() => window.electron.ipcRenderer.invoke('store:set', 'activeDosyaId', dosya.id)} className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center justify-end gap-1">
@@ -143,18 +175,44 @@ export default function TaslakYoneticisi(): React.JSX.Element {
               </p>
             </div>
           ) : (
-             <div className="grid grid-cols-1 gap-4">
-                {taslaklar.map((taslak: any) => (
-                  <div key={taslak.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 flex items-center justify-between">
-                     <div>
-                       <div className="font-bold text-slate-800 dark:text-slate-200">{taslak.taslak_adi}</div>
-                       <div className="text-xs text-slate-500 mt-1">Tür: {taslak.tur}</div>
-                     </div>
-                     <button className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg">
-                       <Trash2 className="w-4 h-4" />
-                     </button>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {taslaklar.map((taslak: any) => {
+                  const orderedDocs: string[] = JSON.parse(taslak.ordered_docs || '[]')
+                  return (
+                  <div key={taslak.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-5 h-5 text-blue-500" />
+                        <div>
+                          <div className="font-bold text-slate-800 dark:text-slate-200">{taslak.taslak_adi}</div>
+                          <div className="text-[10px] text-slate-500">{taslak.tur}</div>
+                        </div>
+                      </div>
+                      <button className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors cursor-pointer" title="Taslağı Sil">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-2 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
+                      {orderedDocs.map((doc, idx) => {
+                        const route = ROUTE_MAP[doc] || '/dosya/cikti-merkezi'
+                        return (
+                          <Link
+                            key={idx}
+                            to={route}
+                            className="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 transition-colors cursor-pointer dark:bg-blue-900/10 dark:hover:bg-blue-900/20 text-blue-700 dark:text-blue-500 p-2 rounded-lg text-xs font-bold border border-blue-100 dark:border-blue-900/30"
+                          >
+                            <span className="w-4 text-center font-black opacity-50">{idx + 1}.</span>
+                            {doc}
+                          </Link>
+                        )
+                      })}
+                      {orderedDocs.length === 0 && (
+                        <div className="text-xs text-slate-400 italic">Bu taslakta henüz belge yok.</div>
+                      )}
+                    </div>
                   </div>
-                ))}
+                )})}
              </div>
           )}
         </div>

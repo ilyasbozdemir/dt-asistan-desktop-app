@@ -8,6 +8,7 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
   const [loading, setLoading] = useState(true)
   const [masterHtml, setMasterHtml] = useState('')
   const [dosyaContext, setDosyaContext] = useState<any>({})
+  const [activeDosya, setActiveDosya] = useState<any>(null)
 
   useEffect(() => {
     if (!activeDosyaId) return
@@ -360,6 +361,7 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
         }
         
         setDosyaContext(context)
+        setActiveDosya(dosyaRes.data?.[0] || null)
       } catch (error) {
         console.error('Veri yüklenirken hata:', error)
       } finally {
@@ -370,5 +372,5 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
     loadData()
   }, [activeDosyaId])
 
-  return { sablons, loading, masterHtml, dosyaContext }
+  return { sablons, loading, masterHtml, dosyaContext, activeDosya }
 }
