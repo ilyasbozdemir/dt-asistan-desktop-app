@@ -1,19 +1,19 @@
 appId: dev.ilyasbozdemir.dtasistan
-productName: DT Asistan
+productName: DT Asistan Lite
 fileAssociations:
   - ext: dta
-    name: DT Asistan Proje Dosyası
-    description: DT Asistan Proje Dosyası
+    name: DT Asistan Lite Proje Dosyası
+    description: DT Asistan Lite Proje Dosyası
     role: Editor
     icon: build/icon.png
   - ext: dtm
-    name: Doğrudan Temin Çalışma Dosyası
-    description: DT Asistan Çalışma Dosyası
+    name: Doğrudan Temin Çalışma Dosyası Lite
+    description: DT Asistan Lite Çalışma Dosyası
     role: Editor
     icon: build/icon.png
   - ext: dte
-    name: Doğrudan Temin Veri Aktarım Dosyası
-    description: DT Asistan Veri Aktarım Dosyası
+    name: Doğrudan Temin Veri Aktarım Dosyası Lite
+    description: DT Asistan Lite Veri Aktarım Dosyası
     role: Editor
     icon: build/icon.png
 directories:
@@ -44,8 +44,8 @@ win:
         - x64
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
-  shortcutName: DT Asistan
-  uninstallDisplayName: DT Asistan
+  shortcutName: DT Asistan Lite
+  uninstallDisplayName: DT Asistan Lite
   createDesktopShortcut: always
   include: build/installer.nsh
 mac:
