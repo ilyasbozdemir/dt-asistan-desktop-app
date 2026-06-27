@@ -683,11 +683,29 @@ if (!gotTheLock && !isMultiInstance) {
         }
       })
 
-      // Versionlara göre sırala (basit string sıralaması yeterli olmayabilir ama alpha versiyonları için idare eder)
+      // Versionlara göre SemVer formatında sırala (descending)
       return allChanges.sort((a, b) => {
-        const aNum = parseInt(a.version.split('.').pop() || '0')
-        const bNum = parseInt(b.version.split('.').pop() || '0')
-        return bNum - aNum
+        const regex = /^v?(\d+)\.(\d+)\.(\d+)(?:-([a-zA-Z]+)\.(\d+))?$/
+        const parseVer = (v: string) => {
+          const m = v.match(regex)
+          if (!m) return { major: 0, minor: 0, patch: 0, preType: '', preNum: 0 }
+          return {
+            major: parseInt(m[1]),
+            minor: parseInt(m[2]),
+            patch: parseInt(m[3]),
+            preType: m[4] || 'z', // no pre-release (z) is greater than alpha/beta
+            preNum: parseInt(m[5] || '0')
+          }
+        }
+        
+        const va = parseVer(a.version)
+        const vb = parseVer(b.version)
+        
+        if (va.major !== vb.major) return vb.major - va.major
+        if (va.minor !== vb.minor) return vb.minor - va.minor
+        if (va.patch !== vb.patch) return vb.patch - va.patch
+        if (va.preType !== vb.preType) return vb.preType.localeCompare(va.preType)
+        return vb.preNum - va.preNum
       })
     })
 
@@ -968,13 +986,18 @@ if (!gotTheLock && !isMultiInstance) {
         
         await new Promise(resolve => setTimeout(resolve, 500))
         
-        win.webContents.print({ printBackground: true, ...printOptions })
-        
-        setTimeout(() => {
-          if (!win.isDestroyed()) win.destroy()
-        }, 10000)
-        
-        return { success: true }
+        return await new Promise((resolve) => {
+          win.webContents.print({ printBackground: true, ...printOptions }, (success, failureReason) => {
+            if (!win.isDestroyed()) {
+              win.destroy()
+            }
+            if (success) {
+              resolve({ success: true })
+            } else {
+              resolve({ success: false, error: failureReason || 'Yazdırma işlemi iptal edildi veya başarısız oldu' })
+            }
+          })
+        })
       } catch (err: any) {
         return { success: false, error: err.message }
       }

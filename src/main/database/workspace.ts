@@ -301,6 +301,16 @@ export class DtmWorkspace {
     this.ensureTempDir()
 
     const zipBuffer = fs.readFileSync(filePath)
+    
+    // Sağ Tık -> Yeni ile oluşturulmuş 0 baytlık bir dosya ise, 
+    // yeni bir çalışma alanı olarak başlat (boş zip hatası almamak için)
+    if (zipBuffer.length === 0) {
+      if (fs.existsSync(lockPath)) {
+        fs.unlinkSync(lockPath)
+      }
+      return this.createWorkspace(filePath, 'Yeni Kurum')
+    }
+
     const zip = new AdmZip(zipBuffer)
     zip.extractAllTo(this.tempDir, true)
 

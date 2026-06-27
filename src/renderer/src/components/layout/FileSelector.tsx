@@ -8,8 +8,7 @@ export function FileSelector(): React.JSX.Element {
   const [isOpen, setIsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
-  // We don't have a real list of recent files yet, so this will be empty initially or populated from local storage later.
-  const [recentFiles] = useState<{ id: string; name: string; path: string }[]>([])
+  const [recentFiles, setRecentFiles] = useState<{ name: string; path: string; lastOpened: number }[]>([])
   const [selectedFile, setSelectedFile] = useState<{
     id: string
     name: string
@@ -33,6 +32,16 @@ export function FileSelector(): React.JSX.Element {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
+
+  useEffect(() => {
+    if (isOpen) {
+      window.electron?.ipcRenderer.invoke('app:get-recent-files')
+        .then(files => {
+          if (files) setRecentFiles(files)
+        })
+        .catch(console.error)
+    }
+  }, [isOpen])
 
   const filteredFiles = recentFiles.filter((f) =>
     f.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -122,23 +131,24 @@ export function FileSelector(): React.JSX.Element {
                 Geçmiş kurum bulunamadı.
               </div>
             ) : (
-              filteredFiles.map((file) => (
+              filteredFiles.map((file, index) => (
                 <button
-                  key={file.id}
+                  key={file.path || index}
                   onClick={() => {
-                    setSelectedFile(file)
+                    setSelectedFile(file as any)
                     setIsOpen(false)
                     setSearchQuery('')
+                    openWorkspace(file.path)
                   }}
                   className={cn(
                     'w-full flex items-center justify-between px-2 py-2 text-sm rounded-md transition-colors text-left',
-                    selectedFile?.id === file.id
+                    fileName === file.name || selectedFile?.path === file.path
                       ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium'
                       : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                   )}
                 >
                   <span className="truncate">{file.name}</span>
-                  {selectedFile?.id === file.id && <Check className="w-4 h-4 shrink-0" />}
+                  {(fileName === file.name || selectedFile?.path === file.path) && <Check className="w-4 h-4 shrink-0" />}
                 </button>
               ))
             )}
