@@ -1,7 +1,6 @@
 import React from 'react'
 import { X, Printer, AlertCircle, Trash2, CheckCircle2 } from 'lucide-react'
 import { Sablon } from '../../sablonlar/sablonlar.hooks'
-import { getMissingRequirement } from '../CiktiMerkezi.utils'
 
 interface PrintManagerModalProps {
   isOpen: boolean
@@ -13,6 +12,7 @@ interface PrintManagerModalProps {
   onPrint: (validSablonIds: number[]) => Promise<void>
   processing: boolean
   normalizeForMatch: (str: string) => string
+  getMissingRequirement: (sablon: Sablon) => string | null
 }
 
 export function PrintManagerModal({
@@ -24,7 +24,8 @@ export function PrintManagerModal({
   onRemoveFromQueue,
   onPrint,
   processing,
-  normalizeForMatch
+  normalizeForMatch,
+  getMissingRequirement
 }: PrintManagerModalProps) {
   if (!isOpen) return null
 

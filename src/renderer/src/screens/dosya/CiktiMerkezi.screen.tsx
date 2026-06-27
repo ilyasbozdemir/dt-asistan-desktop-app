@@ -464,6 +464,19 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
                       ? 'bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:hover:bg-amber-900/60 border border-amber-300 dark:border-amber-700/50'
                       : 'bg-white text-slate-600 hover:text-amber-600 hover:border-amber-400 dark:bg-slate-800 dark:text-slate-300 border border-slate-300 dark:border-slate-700'
                   }`}
+                >
+                  <Star className={`w-4 h-4 ${activeStarredDocs.some(d => d.localeCompare(previewSablon.ad, 'tr', { sensitivity: 'base' }) === 0) ? 'fill-current' : ''}`} />
+                  {activeStarredDocs.some(d => d.localeCompare(previewSablon.ad, 'tr', { sensitivity: 'base' }) === 0) ? 'Hızlı Erişimden Çıkar' : 'Hızlı Erişime Ekle'}
+                </button>
+                <button
+                  onClick={() => setPreviewSablon(null)}
+                  className="p-2 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+            
             {/* Modal Body */}
             <div className="flex-1 bg-slate-100 dark:bg-slate-950 p-4 relative min-h-0">
               <iframe
@@ -475,6 +488,29 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
           </div>
         </div>
       )}
+
+      <PrintManagerModal
+        isOpen={isPrintManagerOpen}
+        onClose={() => setIsPrintManagerOpen(false)}
+        sablons={sablons}
+        activeStarredDocs={activeStarredDocs}
+        selectedIds={selectedIds}
+        onRemoveFromQueue={(sablonId) => {
+          setSelectedIds(prev => {
+            const next = new Set(prev)
+            next.delete(sablonId)
+            return next
+          })
+          const sab = sablons.find(s => s.id === sablonId)
+          if (sab && activeStarredDocs.some(d => normalizeForMatch(d) === normalizeForMatch(sab.ad))) {
+             toggleStar(sab.ad, { stopPropagation: () => {} } as any)
+          }
+        }}
+        onPrint={(validIds) => handleAction('print', validIds)}
+        processing={processing}
+        normalizeForMatch={normalizeForMatch}
+        getMissingRequirement={getMissingRequirement}
+      />
     </SubScreen>
   )
 }
