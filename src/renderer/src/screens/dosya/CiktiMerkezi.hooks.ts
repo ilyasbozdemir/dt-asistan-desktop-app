@@ -13,15 +13,17 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
   useEffect(() => {
     if (!activeDosyaId) return
 
-    const loadData = async () => {
-      setLoading(true)
-      try {
-        // Master HTML'i al
-        const mHtml = await window.electron.ipcRenderer.invoke('template:read-system', 'master.html')
-        if (typeof mHtml === 'string') setMasterHtml(mHtml)
+  const loadData = async (isBackgroundRefresh = false) => {
+    if (!activeDosyaId) return
+    if (!isBackgroundRefresh) setLoading(true)
+    try {
+      // Master HTML'i al
+      const mHtml = await window.electron.ipcRenderer.invoke('template:read-system', 'master.html')
+      if (typeof mHtml === 'string') setMasterHtml(mHtml)
 
-        // Şablonları al (sadece en güncel versiyonlar)
-        const sablonsRes = await window.electron.ipcRenderer.invoke(
+      // Şablonları al (sadece en güncel versiyonlar)
+      const sablonsRes = await window.electron.ipcRenderer.invoke(
+
           'db:query',
           'SELECT * FROM TANIM_Sablon WHERE id IN (SELECT MAX(id) FROM TANIM_Sablon WHERE aktif_mi = 1 GROUP BY COALESCE(parent_id, id)) ORDER BY kategori ASC, ad ASC'
         )
@@ -362,14 +364,22 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
         
         setDosyaContext(context)
         setActiveDosya(dosyaRes.data?.[0] || null)
-      } catch (error) {
-        console.error('Veri yüklenirken hata:', error)
+      } catch (err) {
+        console.error('Veri yükleme hatası:', err)
       } finally {
         setLoading(false)
       }
     }
 
     loadData()
+
+    const unlisten = window.electron.ipcRenderer.on('db:invalidated', () => {
+      loadData(true)
+    })
+
+    return () => {
+      if (unlisten) unlisten()
+    }
   }, [activeDosyaId])
 
   return { sablons, loading, masterHtml, dosyaContext, activeDosya }
