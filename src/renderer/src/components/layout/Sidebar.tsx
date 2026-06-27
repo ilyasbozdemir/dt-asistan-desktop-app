@@ -531,7 +531,7 @@ export function Sidebar(): React.JSX.Element {
             'w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-sidebar-text/80 hover:text-red-400 hover:bg-red-500/10 transition-colors border border-sidebar-border hover:border-red-500/20',
             isCollapsed ? 'py-2 px-0' : 'py-2'
           )}
-          title="Kurum Dosyasını Kapat (.dtm)"
+          title="Kurum Dosyasını Kapat (.dtal)"
         >
           <LogOut size={16} />
           {!isCollapsed && <span>Kurum Dosyasını Kapat</span>}

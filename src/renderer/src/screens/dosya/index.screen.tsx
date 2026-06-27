@@ -304,7 +304,7 @@ export default function DosyaScreen(): React.JSX.Element {
           <div>
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-855 dark:text-slate-100 flex items-center gap-2">
               <FileArchive className="w-7 h-7 text-amber-500" />
-              Aktif Çalışma Dosyası (.dtm)
+              Aktif Çalışma Dosyası (.dtal)
             </h1>
             <p className="text-slate-500 dark:text-slate-400 mt-1 text-xs">
               Uygulamanın veri alışverişi yaptığı sıkıştırılmış veritabanı arşiv paketinin detayları.
@@ -616,7 +616,7 @@ export default function DosyaScreen(): React.JSX.Element {
               Dosya Değişiklik Davranışı
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-normal font-medium">
-              Uygulama çalışırken SQLite veritabanında yaptığınız tüm işlemler anlık kaydedilir. Uygulamadan çıkış yaparken veya dosya kapatılırken tüm veriler ve ekler otomatik olarak tekrar sıkıştırılıp tek bir <strong>.dtm</strong> arşiv dosyası olarak paketlenir.
+              Uygulama çalışırken SQLite veritabanında yaptığınız tüm işlemler anlık kaydedilir. Uygulamadan çıkış yaparken veya dosya kapatılırken tüm veriler ve ekler otomatik olarak tekrar sıkıştırılıp tek bir <strong>.dtal</strong> arşiv dosyası olarak paketlenir.
             </p>
           </div>
         </div>
@@ -774,7 +774,7 @@ export default function DosyaScreen(): React.JSX.Element {
                   <div className="p-4 bg-amber-50/40 dark:bg-amber-955/10 border border-amber-250/35 dark:border-amber-900/30 rounded-2xl flex gap-2.5 text-xs text-slate-650 dark:text-slate-400">
                     <Info className="w-4 h-4 text-amber-550 shrink-0 mt-0.5" />
                     <span>
-                      Ekler, dosya açıldığında geçici olarak işletim sisteminin geçici dizinine (Temp) çıkarılır ve üzerinde işlem yapılır. Dosya kapatıldığında ise tüm ekler verilerinizle birlikte sıkıştırılarak <strong>.dtm</strong> dosyasına gömülür.
+                      Ekler, dosya açıldığında geçici olarak işletim sisteminin geçici dizinine (Temp) çıkarılır ve üzerinde işlem yapılır. Dosya kapatıldığında ise tüm ekler verilerinizle birlikte sıkıştırılarak <strong>.dtal</strong> dosyasına gömülür.
                     </span>
                   </div>
                 </div>

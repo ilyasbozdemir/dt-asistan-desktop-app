@@ -446,7 +446,7 @@ export function IstekliFirmalar(): React.JSX.Element {
               <div className="p-4 bg-slate-50 dark:bg-slate-950 border border-slate-150 dark:border-slate-800 rounded-2xl space-y-3">
                 <p className="text-[10px] text-slate-500 leading-normal">
                   Sorgulama sonucunu içeren ekran çıktısını PDF veya Görsel olarak kaydedip dosyaya
-                  ekleyin. Belge doğrudan çalışma dosyanıza (.dtm) kaydedilecektir.
+                  ekleyin. Belge doğrudan çalışma dosyanıza (.dtal) kaydedilecektir.
                 </p>
 
                 {activeFirmaForQuery.yasaklilik_belgesi ? (

@@ -243,10 +243,10 @@ export default function LauncherScreen(): React.ReactNode {
               <FolderOpen className="w-8 h-8" />
             </div>
             <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">
-              DT Asistan&apos;a Hoş Geldiniz
+              DT Asistan Lite&apos;a Hoş Geldiniz
             </h1>
             <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md mx-auto">
-              Çalışmaya başlamak için yeni bir kurum/çalışma alanı dosyası (.dtm, .dta) oluşturun veya
+              Çalışmaya başlamak için yeni bir kurum/çalışma alanı dosyası (.dtal) oluşturun veya
               mevcut bir kurumu açın.
             </p>
           </div>
@@ -274,7 +274,7 @@ export default function LauncherScreen(): React.ReactNode {
             </div>
             <div className="text-left">
               <h3 className="font-bold text-base">Mevcut Kurumu Aç</h3>
-              <p className="text-xs opacity-80 mt-0.5">Önceden oluşturulmuş .dtm dosyasını yükle</p>
+              <p className="text-xs opacity-80 mt-0.5">Önceden oluşturulmuş .dtal dosyasını yükle</p>
             </div>
           </button>
           </div>

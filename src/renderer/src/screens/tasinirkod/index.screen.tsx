@@ -163,7 +163,7 @@ export default function TasinirKodScreen(): React.JSX.Element {
               Muhasebat Genel Müdürlüğü <ExternalLink className="w-3 h-3" />
             </a>{' '}
             standartlarına uygun olarak sisteme gömülüdür. 
-            Eğer yeni bir kod eklerseniz, bu kod yalnızca <strong>aktif .dtm (kurum) dosyanıza</strong> kaydedilir. 
+            Eğer yeni bir kod eklerseniz, bu kod yalnızca <strong>aktif .dtal (kurum) dosyanıza</strong> kaydedilir. 
             Listeyi veya eklediğiniz özel kodları başka kurumlara da taşımak isterseniz, ilerleyen güncellemelerde "Dışa Aktar (.dte)" menüsü ile bu verileri paylaşabilirsiniz. Lütfen kodu noktalarla (150.xx.xx) girmeye özen gösterin.
           </p>
         </div>
