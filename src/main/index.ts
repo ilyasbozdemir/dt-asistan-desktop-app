@@ -932,10 +932,8 @@ if (!gotTheLock && !isMultiInstance) {
         })
         if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
         
-        const htmlDocx = require('html-docx-js')
-        const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${htmlContent}</body></html>`
-        const docxBuffer = htmlDocx.asBlob(fullHtml)
-        const buffer = Buffer.from(await docxBuffer.arrayBuffer())
+        const { renderDocxBuffer } = await import('./docxService')
+        const buffer = await renderDocxBuffer(htmlContent)
         fs.writeFileSync(filePath, buffer)
         
         return { success: true, filePath }
