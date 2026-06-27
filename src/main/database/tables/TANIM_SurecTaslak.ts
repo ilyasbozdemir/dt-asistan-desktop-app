@@ -17,7 +17,7 @@ export const TANIM_SurecTaslak = {
       taslak_adi: 'Mal Alımı Süreç Belgeleri',
       tur: 'Mal Alımı',
       ordered_docs: JSON.stringify([
-        "Malzeme / Hizmet Kalem Listesi",
+        "İhtiyaç Listesi",
         "Lüzum Müzekkeresi Belgesi",
         "Lüzum Onay Eki",
         "İstekli Tedarikçi Firmalar",

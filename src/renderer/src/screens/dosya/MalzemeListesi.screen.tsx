@@ -154,7 +154,7 @@ export function MalzemeListesi(): React.JSX.Element {
     : []
 
   return (
-    <SubScreen title="Malzeme / Hizmet Kalem Listesi" icon={Package} description="Dosya kapsamındaki malzeme, hizmet veya yapım işi ihtiyaçlarını listeleyin ve yönetin.">
+    <SubScreen title="İhtiyaç Listesi" icon={Package} description="Dosya kapsamındaki malzeme, hizmet veya yapım işi ihtiyaçlarını listeleyin ve yönetin.">
       {/* ADD MODAL */}
       <Modal isOpen={isAddModalOpen} onClose={() => { setIsAddModalOpen(false); setSelectedItemIds(new Set()); setItemMiktarlar({}); setLibSearchQuery('') }}
         title="Dosyaya Kalem Ekle" description="Kütüphaneden seçin veya yeni bir kalem oluşturun.">

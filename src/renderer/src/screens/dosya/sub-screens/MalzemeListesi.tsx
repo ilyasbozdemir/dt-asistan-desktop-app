@@ -72,7 +72,7 @@ export function MalzemeListesi(): React.JSX.Element {
 
   return (
     <SubScreen
-      title="Malzeme / Hizmet Kalem Listesi"
+      title="İhtiyaç Listesi"
       icon={Package}
       description="Dosya kapsamındaki malzeme, hizmet veya yapım işi ihtiyaçlarını listeleyin ve yönetin."
     >
