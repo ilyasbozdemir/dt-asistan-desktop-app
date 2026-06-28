@@ -4,6 +4,7 @@ import { TANIM_Mevzuat } from './tables/TANIM_Mevzuat'
 import { TANIM_Personel } from './tables/TANIM_Personel'
 import { TANIM_Roller } from './tables/TANIM_Roller'
 import { TANIM_Birim } from './tables/TANIM_Birim'
+import { TANIM_Kurum } from './tables/TANIM_Kurum'
 import { TANIM_Asama } from './tables/TANIM_Asama'
 import { DATA_TeminDosyasi } from './tables/DATA_TeminDosyasi'
 import { TANIM_Firma } from './tables/TANIM_Firma'
@@ -53,6 +54,7 @@ export const schema = {
    */
   tables: [
     // --- Sistem Tanımları ---
+    TANIM_Kurum, // İdari Kurum Bilgileri
     TANIM_Mevzuat, // Yıllara göre limitler ve vergi oranları
     TANIM_Birim, // Kurum birimleri (Müdürlükler)
     TANIM_Personel, // Personel havuzu

@@ -1,0 +1,53 @@
+export const TANIM_Kurum = {
+  name: 'TANIM_Kurum',
+  description: 'İdari Kurum Bilgileri',
+  columns: [
+    { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
+    { name: 'kurum_adi', type: 'TEXT', notNull: true, default: '""', description: 'Kurum Adı' },
+    { name: 'kurum_anteti', type: 'TEXT', default: '"[]"', description: 'Kurum Anteti (JSON Dizi)' },
+    { name: 'makam_adi', type: 'TEXT', default: '""', description: 'Sunulacak Makam Adı' },
+    { name: 'ust_kurum_adi', type: 'TEXT', default: '""', description: 'Bağlı Olduğu Kurum' },
+    { name: 'logo_sol', type: 'TEXT', default: '""' },
+    { name: 'logo_sag', type: 'TEXT', default: '""' },
+    { name: 'logo_kurum', type: 'TEXT', default: '""' },
+    { name: 'limit_tipi', type: 'TEXT', default: '"diger"', description: 'Limit Tipi' },
+    { name: 'finansman_kodu', type: 'TEXT', default: '"5"' },
+    { name: 'kurum_tipi', type: 'TEXT', default: '""' },
+    { name: 'alt_kurum_tipi', type: 'TEXT', default: '"belediye"' },
+    { name: 'alt_kurum_ozel_tanim', type: 'TEXT', default: '""' },
+    { name: 'alt_kurum_bizim', type: 'TEXT', default: '""' },
+    { name: 'alt_kurum_sizin', type: 'TEXT', default: '""' },
+    { name: 'alt_kurum_onun', type: 'TEXT', default: '""' },
+    { name: 'alt_kurum_onlarin', type: 'TEXT', default: '""' },
+    { name: 'ebutce_kodu', type: 'TEXT', default: '""' },
+    { name: 'say2000i_kodu', type: 'TEXT', default: '""' },
+    { name: 'fonksiyonel_kod', type: 'TEXT', default: '""' },
+    { name: 'muhasebe_birim_kodu', type: 'TEXT', default: '""' },
+    { name: 'muhasebe_birim_adi', type: 'TEXT', default: '""' },
+    { name: 'harcama_birim_kodu', type: 'TEXT', default: '""' },
+    { name: 'harcama_birim_adi', type: 'TEXT', default: '""' },
+    { name: 'dtvt_kodu', type: 'TEXT', default: '""' },
+    { name: 'detsis_kodu', type: 'TEXT', default: '""' },
+    { name: 'konu_ortalama_siniri', type: 'TEXT', default: '"true"' },
+    { name: 'adres', type: 'TEXT', default: '""' },
+    { name: 'ilce', type: 'TEXT', default: '""' },
+    { name: 'posta_kodu', type: 'TEXT', default: '""' },
+    { name: 'il', type: 'TEXT', default: '""' },
+    { name: 'telefon', type: 'TEXT', default: '""' },
+    { name: 'faks', type: 'TEXT', default: '""' },
+    { name: 'eposta', type: 'TEXT', default: '""' },
+    { name: 'kep_adresi', type: 'TEXT', default: '""' },
+    { name: 'web_sitesi', type: 'TEXT', default: '""' }
+  ],
+  initialData: [
+    {
+      id: 1,
+      kurum_adi: '',
+      kurum_anteti: '[""]',
+      makam_adi: '',
+      limit_tipi: 'diger',
+      finansman_kodu: '5',
+      alt_kurum_tipi: 'belediye'
+    }
+  ]
+}
