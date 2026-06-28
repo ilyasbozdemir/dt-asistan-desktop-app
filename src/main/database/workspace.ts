@@ -177,7 +177,7 @@ function seedTemplates(db: Database.Database): void {
       'komisyon-atama-onay-eki': '/dosya/komisyon/onay-eki',
       // Malzemeler
       'ihtiyac-listesi': '/dosya/malzemeler/liste',
-      'ihtiyac-talep-formu': '/dosya/malzemeler/liste',
+      'ihtiyac-talep-formu': '/dosya/luzum/talep-formu',
       'malzeme-hizmet-kalem-listesi': '/dosya/malzemeler/liste',
       // Lüzum
       'luzum-muzekkeresi-belgesi': '/dosya/luzum/belge',
