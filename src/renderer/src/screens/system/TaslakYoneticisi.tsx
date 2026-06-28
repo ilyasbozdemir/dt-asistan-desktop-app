@@ -134,20 +134,24 @@ export default function TaslakYoneticisi(): React.JSX.Element {
       '1. İhtiyaç Tespiti & Başlangıç': [],
       '2. Piyasa Fiyat Araştırması': [],
       '3. Sipariş & Sözleşme': [],
-      '4. Kabul & Ödeme İşlemleri': []
+      '4. Kabul & Ödeme İşlemleri': [],
+      '5. Klasör & Kapaklar': []
     }
 
     sablonlar.forEach((s) => {
-      const cat = s.kategori || '1. İhtiyaç Tespiti & Başlangıç'
-      if (groups[cat]) {
-        groups[cat].push(s)
+      const cat = (s.kategori || '').toLowerCase()
+      if (cat.includes('1') || cat.includes('ihtiyac') || cat.includes('başlangıç') || cat.includes('baslangic')) {
+        groups['1. İhtiyaç Tespiti & Başlangıç'].push(s)
+      } else if (cat.includes('2') || cat.includes('fiyat') || cat.includes('araştırma') || cat.includes('arastirma') || cat.includes('maliyet') || cat.includes('piyasa')) {
+        groups['2. Piyasa Fiyat Araştırması'].push(s)
+      } else if (cat.includes('3') || cat.includes('sipariş') || cat.includes('siparis') || cat.includes('sözleşme') || cat.includes('sozlesme') || cat.includes('ihale') || cat.includes('onay')) {
+        groups['3. Sipariş & Sözleşme'].push(s)
+      } else if (cat.includes('4') || cat.includes('kabul') || cat.includes('ödeme') || cat.includes('odeme') || cat.includes('teslim')) {
+        groups['4. Kabul & Ödeme İşlemleri'].push(s)
+      } else if (cat.includes('5') || cat.includes('klasör') || cat.includes('klasor') || cat.includes('kapak')) {
+        groups['5. Klasör & Kapaklar'].push(s)
       } else {
-        const match = Object.keys(groups).find((k) => k.toLowerCase().includes(cat.toLowerCase()))
-        if (match) {
-          groups[match].push(s)
-        } else {
-          groups['1. İhtiyaç Tespiti & Başlangıç'].push(s)
-        }
+        groups['1. İhtiyaç Tespiti & Başlangıç'].push(s)
       }
     })
 

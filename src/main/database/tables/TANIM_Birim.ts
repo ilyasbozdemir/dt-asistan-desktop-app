@@ -27,7 +27,7 @@ export const TANIM_Birim = {
       type: 'TEXT',
       description: 'Gerçekleştirme Görevlisi Unvanı'
     },
-    { name: 'aktif_mi', type: 'INTEGER', default: 1, description: 'Aktif Birim mi?' },
+    { name: 'aktif_mi', type: 'INTEGER', notNull: true, default: 1, description: 'Aktif Birim mi?' },
     { name: 'say2000i', type: 'TEXT', description: 'Say2000i Kodu' },
     { name: 'dtvt_kodu', type: 'TEXT', description: 'DTVT Kodu' },
     { name: 'detsis_kodu', type: 'TEXT', description: 'DETSİS Kodu' },
@@ -43,7 +43,6 @@ export const TANIM_Birim = {
     { name: 'harcama_adi', type: 'TEXT', description: 'Harcama Adi' },
     { name: 'ayrintili_bilgi_personel', type: 'TEXT', description: 'Ayrintili Bilgi Personel' },
     { name: 'ilgili_personel_id', type: 'INTEGER', description: 'Ilgili Personel ID' },
-    { name: 'aktif_mi', type: 'INTEGER', notNull: true, default: 1, description: 'Aktif mı?' },
     {
       name: 'created_at',
       type: 'DATETIME',
