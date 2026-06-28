@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   ArrowLeft,
-  Save,
-  FileText,
+  Bot,
   Building2,
-  DollarSign,
-  User,
-  HelpCircle,
+  ChevronDown,
+  ChevronRight,
   Copy,
+  DollarSign,
+  FileText,
+  HelpCircle,
+  Info,
+  Loader2,
+  Save,
   Search,
   Sparkles,
-  ChevronRight,
-  ChevronDown,
-  Bot,
-  Loader2,
-  Info
+  User
 } from 'lucide-react'
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
-import { useDosyalarHooks, TeminDosyasi } from './dosyalar.hooks'
+import { TeminDosyasi, useDosyalarHooks } from './dosyalar.hooks'
 import { useTabStore } from '../../store/tabStore'
 import { useSettingsStore } from '../../store/settingsStore'
 import { cn } from '../../utils/cn'
-import { AIFormFillModal, AIFilledValues } from '../../components/ui/AIFormFillModal'
+import { AIFilledValues, AIFormFillModal } from '../../components/ui/AIFormFillModal'
 import { AITextGeneratorModal } from '../../components/ui/AITextGeneratorModal'
 import { logActivity } from '../../utils/logger'
 import { EskiDosyaKopyalaModal } from './components/EskiDosyaKopyalaModal'
@@ -388,14 +388,22 @@ export default function YeniDosyaScreen(): React.JSX.Element {
           zorunlu: true,
           ornekDeger: 'Fen İşleri Kırtasiye Malzemesi Alımı'
         },
-        { alan: 'isin_aciklamasi', etiket: 'İşin Açıklaması / Kapsamı', tip: 'textarea' as const },
+        {
+          alan: 'isin_aciklamasi',
+          etiket: 'İşin Açıklaması / Kapsamı',
+          tip: 'textarea' as const
+        },
         {
           alan: 'temin_no',
           etiket: 'Doğrudan Temin Numarası',
           tip: 'text' as const,
           ornekDeger: '2026/DT-001'
         },
-        { alan: 'dosya_acilis_tarihi', etiket: 'Dosya Açılış Tarihi', tip: 'date' as const },
+        {
+          alan: 'dosya_acilis_tarihi',
+          etiket: 'Dosya Açılış Tarihi',
+          tip: 'date' as const
+        },
         { alan: 'butce_yili', etiket: 'Bütçe Yılı', tip: 'number' as const },
         { alan: 'butce_tipi', etiket: 'Bütçe Tipi', tip: 'text' as const },
         {
@@ -405,40 +413,112 @@ export default function YeniDosyaScreen(): React.JSX.Element {
           ornekDeger: 'BAŞKANLIK MAKAMINA'
         },
         { alan: 'ihtiyac_yeri', etiket: 'İhtiyaç Yeri', tip: 'text' as const },
-        { alan: 'antet_ek_satir', etiket: 'Antet Ek Satır', tip: 'text' as const },
+        {
+          alan: 'antet_ek_satir',
+          etiket: 'Antet Ek Satır',
+          tip: 'text' as const
+        },
         { alan: 'e_butce', etiket: 'e-Bütçe Kodu', tip: 'text' as const },
-        { alan: 'fonksiyonel_kod', etiket: 'Fonksiyonel Kod', tip: 'text' as const },
-        { alan: 'muhasebe_birimi', etiket: 'Muhasebe Birimi Kodu', tip: 'text' as const },
-        { alan: 'harcama_birimi', etiket: 'Harcama Birimi Kodu', tip: 'text' as const },
-        { alan: 'finansman_kodu', etiket: 'Finansman Kodu', tip: 'text' as const },
+        {
+          alan: 'fonksiyonel_kod',
+          etiket: 'Fonksiyonel Kod',
+          tip: 'text' as const
+        },
+        {
+          alan: 'muhasebe_birimi',
+          etiket: 'Muhasebe Birimi Kodu',
+          tip: 'text' as const
+        },
+        {
+          alan: 'harcama_birimi',
+          etiket: 'Harcama Birimi Kodu',
+          tip: 'text' as const
+        },
+        {
+          alan: 'finansman_kodu',
+          etiket: 'Finansman Kodu',
+          tip: 'text' as const
+        },
         { alan: 'ekonomik_kod', etiket: 'Ekonomik Kod', tip: 'text' as const },
         { alan: 'talep_tarihi', etiket: 'Talep Tarihi', tip: 'date' as const },
         { alan: 'talep_sayisi', etiket: 'Talep Sayısı', tip: 'text' as const },
         { alan: 'ihale_tipi', etiket: 'İhale Tipi', tip: 'text' as const },
-        { alan: 'tur', etiket: 'Tür (mal/hizmet/yapim/danismanlik)', tip: 'text' as const },
-        { alan: 'ihale_sekli', etiket: 'İhale Şekli (22/d* vb.)', tip: 'text' as const },
-        { alan: 'teklif_sozlesme_turu', etiket: 'Teklif/Sözleşme Türü', tip: 'text' as const },
-        { alan: 'alt_yuklenici_olacak_mi', etiket: 'Alt Yüklenici (0/1)', tip: 'number' as const },
-        { alan: 'kismi_teklif_verilecek_mi', etiket: 'Kısmi Teklif (0/1)', tip: 'number' as const },
-        { alan: 'fiyat_farki_dayanagi', etiket: 'Fiyat Farkı Dayanağı', tip: 'text' as const },
-        { alan: 'yatirim_proje_no', etiket: 'Yatırım Proje No', tip: 'text' as const },
-        { alan: 'avans_verilecek_mi', etiket: 'Avans Verilecek (0/1)', tip: 'number' as const },
+        {
+          alan: 'tur',
+          etiket: 'Tür (mal/hizmet/yapim/danismanlik)',
+          tip: 'text' as const
+        },
+        {
+          alan: 'ihale_sekli',
+          etiket: 'İhale Şekli (22/d* vb.)',
+          tip: 'text' as const
+        },
+        {
+          alan: 'teklif_sozlesme_turu',
+          etiket: 'Teklif/Sözleşme Türü',
+          tip: 'text' as const
+        },
+        {
+          alan: 'alt_yuklenici_olacak_mi',
+          etiket: 'Alt Yüklenici (0/1)',
+          tip: 'number' as const
+        },
+        {
+          alan: 'kismi_teklif_verilecek_mi',
+          etiket: 'Kısmi Teklif (0/1)',
+          tip: 'number' as const
+        },
+        {
+          alan: 'fiyat_farki_dayanagi',
+          etiket: 'Fiyat Farkı Dayanağı',
+          tip: 'text' as const
+        },
+        {
+          alan: 'yatirim_proje_no',
+          etiket: 'Yatırım Proje No',
+          tip: 'text' as const
+        },
+        {
+          alan: 'avans_verilecek_mi',
+          etiket: 'Avans Verilecek (0/1)',
+          tip: 'number' as const
+        },
         {
           alan: 'yaklasik_maliyet_hesaplamasi',
           etiket: 'Yaklaşık Maliyet Hesaplama Yöntemi',
           tip: 'text' as const
         },
         { alan: 'kdv', etiket: 'KDV Oranı (%)', tip: 'text' as const },
-        { alan: 'hesaplama_esasi', etiket: 'Hesaplama Esası', tip: 'text' as const },
-        { alan: 'komisyon_takdiri', etiket: 'Komisyon Takdir Yazısı', tip: 'text' as const },
-        { alan: 'tibbi_cihaz_alimi_mi', etiket: 'Tıbbi Cihaz Alımı (0/1)', tip: 'number' as const },
+        {
+          alan: 'hesaplama_esasi',
+          etiket: 'Hesaplama Esası',
+          tip: 'text' as const
+        },
+        {
+          alan: 'komisyon_takdiri',
+          etiket: 'Komisyon Takdir Yazısı',
+          tip: 'text' as const
+        },
+        {
+          alan: 'tibbi_cihaz_alimi_mi',
+          etiket: 'Tıbbi Cihaz Alımı (0/1)',
+          tip: 'number' as const
+        },
         {
           alan: 'son_teklif_verme_tarihi',
           etiket: 'Son Teklif Verme Tarihi',
           tip: 'date' as const
         },
-        { alan: 'teslim_tarihi', etiket: 'Teslim Tarihi', tip: 'date' as const },
-        { alan: 'yaklasik_maliyet', etiket: 'Yaklaşık Maliyet (₺)', tip: 'number' as const },
+        {
+          alan: 'teslim_tarihi',
+          etiket: 'Teslim Tarihi',
+          tip: 'date' as const
+        },
+        {
+          alan: 'yaklasik_maliyet',
+          etiket: 'Yaklaşık Maliyet (₺)',
+          tip: 'number' as const
+        },
         { alan: 'butce_kodu', etiket: 'Bütçe Kodu', tip: 'text' as const },
         { alan: 'temin_tarihi', etiket: 'Temin Tarihi', tip: 'date' as const },
         { alan: 'notlar', etiket: 'Notlar', tip: 'textarea' as const }
@@ -482,9 +562,15 @@ export default function YeniDosyaScreen(): React.JSX.Element {
     try {
       const prompt = `Şu kamu alım işi/ihalesi için sadece 1-2 cümlelik, çok kısa ve öz bir "İşin Kapsamı ve Tanımı" metni oluştur. İhale/İş Adı: "${formData.konu}". Metin kurumsal bir dilde olmalı, ancak ASLA başlık (örn: 1. İşin konusu vb.), madde imi veya uzun paragraflar KULLANMA. İdare adını anonim olarak "İdaremiz" veya "Kurumumuz" şeklinde belirt, gerçek isim verme. Sadece doğrudan açıklamayı düz metin olarak ver.`
 
-      const res = await window.api.aiGenerate({ prompt, enableDatabaseAccess: false })
+      const res = await window.api.aiGenerate({
+        prompt,
+        enableDatabaseAccess: false
+      })
       if (res.success && res.data) {
-        setFormData((prev) => ({ ...prev, isin_aciklamasi: res.data?.trim() || '' }))
+        setFormData((prev) => ({
+          ...prev,
+          isin_aciklamasi: res.data?.trim() || ''
+        }))
       } else {
         alert('Yapay zeka yanıt üretemedi: ' + (res.error || 'Bilinmeyen hata'))
       }
@@ -994,7 +1080,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                                 <button
                                   type="button"
                                   onClick={() => {
-                                    setFormData((prev) => ({ ...prev, konu: suggestion }))
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      konu: suggestion
+                                    }))
                                     setShowKonuSuggestions(false)
                                   }}
                                   className="w-full text-left px-3.5 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/10 text-xs text-slate-700 dark:text-slate-300 font-semibold transition-colors flex items-center gap-2 cursor-pointer border-none bg-transparent"
@@ -1043,7 +1132,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         rows={3}
                         value={formData.isin_aciklamasi || ''}
                         onChange={(e) =>
-                          setFormData({ ...formData, isin_aciklamasi: e.target.value })
+                          setFormData({
+                            ...formData,
+                            isin_aciklamasi: e.target.value
+                          })
                         }
                         placeholder="İşin detaylı açıklaması veya şartnamedeki kapsam açıklaması..."
                         className="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/30 text-slate-800 dark:text-white leading-normal resize-none"
@@ -1057,7 +1149,12 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                       <input
                         type="text"
                         value={formData.temin_no || ''}
-                        onChange={(e) => setFormData({ ...formData, temin_no: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            temin_no: e.target.value
+                          })
+                        }
                         placeholder="Örn: 2026/DT-001 (Opsiyonel)"
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
                       />
@@ -1071,7 +1168,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         type="date"
                         value={formData.dosya_acilis_tarihi || ''}
                         onChange={(e) =>
-                          setFormData({ ...formData, dosya_acilis_tarihi: e.target.value })
+                          setFormData({
+                            ...formData,
+                            dosya_acilis_tarihi: e.target.value
+                          })
                         }
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
                       />
@@ -1143,7 +1243,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         type="text"
                         value={formData.antet_ek_satir || ''}
                         onChange={(e) =>
-                          setFormData({ ...formData, antet_ek_satir: e.target.value })
+                          setFormData({
+                            ...formData,
+                            antet_ek_satir: e.target.value
+                          })
                         }
                         placeholder="Örn: Fen İşleri Dairesi Başkanlığı"
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
@@ -1158,7 +1261,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         type="text"
                         value={formData.sunulacak_makam || ''}
                         onChange={(e) =>
-                          setFormData({ ...formData, sunulacak_makam: e.target.value })
+                          setFormData({
+                            ...formData,
+                            sunulacak_makam: e.target.value
+                          })
                         }
                         placeholder="Örn: BAŞKANLIK MAKAMINA veya MÜDÜRLÜK MAKAMINA"
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
@@ -1167,12 +1273,17 @@ export default function YeniDosyaScreen(): React.JSX.Element {
 
                     <div>
                       <label className="block text-xs font-bold text-slate-600 dark:text-slate-450 mb-1.5">
-                        İhtiyaç Yeri (Lüzum Birimi)
+                        İhtiyaç Yeri
                       </label>
                       <input
                         type="text"
                         value={formData.ihtiyac_yeri || ''}
-                        onChange={(e) => setFormData({ ...formData, ihtiyac_yeri: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            ihtiyac_yeri: e.target.value
+                          })
+                        }
                         placeholder="Örn: Fen İşleri Şantiyesi"
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
                       />
@@ -1200,7 +1311,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         type="number"
                         value={formData.butce_yili || new Date().getFullYear()}
                         onChange={(e) =>
-                          setFormData({ ...formData, butce_yili: parseInt(e.target.value, 10) })
+                          setFormData({
+                            ...formData,
+                            butce_yili: parseInt(e.target.value, 10)
+                          })
                         }
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
                       />
@@ -1212,7 +1326,12 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                       </label>
                       <select
                         value={formData.butce_tipi || 'Genel Bütçe'}
-                        onChange={(e) => setFormData({ ...formData, butce_tipi: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            butce_tipi: e.target.value
+                          })
+                        }
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
                       >
                         <option value="Genel Bütçe">Genel Bütçe</option>
@@ -1230,7 +1349,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         type="text"
                         value={formData.finansman_kodu || ''}
                         onChange={(e) =>
-                          setFormData({ ...formData, finansman_kodu: e.target.value })
+                          setFormData({
+                            ...formData,
+                            finansman_kodu: e.target.value
+                          })
                         }
                         placeholder="Örn: 2, 5 veya 8"
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
@@ -1260,7 +1382,12 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                       <input
                         type="text"
                         value={formData.butce_kodu || ''}
-                        onChange={(e) => setFormData({ ...formData, butce_kodu: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            butce_kodu: e.target.value
+                          })
+                        }
                         placeholder="Örn: 46.30.11.23-01.3.9.00-5-03.2.1.01"
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-850 dark:text-slate-200 font-mono font-bold"
                       />
@@ -1279,7 +1406,12 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         </label>
                         <select
                           value={formData.e_butce || ''}
-                          onChange={(e) => setFormData({ ...formData, e_butce: e.target.value })}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              e_butce: e.target.value
+                            })
+                          }
                           className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs rounded-xl py-2 px-3 focus:outline-none text-slate-800 dark:text-slate-200"
                         >
                           <option value="">Seçiniz...</option>
@@ -1307,7 +1439,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         <select
                           value={formData.fonksiyonel_kod || ''}
                           onChange={(e) =>
-                            setFormData({ ...formData, fonksiyonel_kod: e.target.value })
+                            setFormData({
+                              ...formData,
+                              fonksiyonel_kod: e.target.value
+                            })
                           }
                           className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs rounded-xl py-2 px-3 focus:outline-none text-slate-800 dark:text-slate-200"
                         >
@@ -1329,7 +1464,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         <select
                           value={formData.muhasebe_birimi || ''}
                           onChange={(e) =>
-                            setFormData({ ...formData, muhasebe_birimi: e.target.value })
+                            setFormData({
+                              ...formData,
+                              muhasebe_birimi: e.target.value
+                            })
                           }
                           className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs rounded-xl py-2 px-3 focus:outline-none text-slate-800 dark:text-slate-200"
                         >
@@ -1351,7 +1489,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         <select
                           value={formData.harcama_birimi || ''}
                           onChange={(e) =>
-                            setFormData({ ...formData, harcama_birimi: e.target.value })
+                            setFormData({
+                              ...formData,
+                              harcama_birimi: e.target.value
+                            })
                           }
                           className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs rounded-xl py-2 px-3 focus:outline-none text-slate-800 dark:text-slate-200"
                         >
@@ -1422,7 +1563,12 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         value={
                           formData.ihale_sekli || (limitType === 'buyuksehir' ? '22/d*' : '22/d**')
                         }
-                        onChange={(e) => setFormData({ ...formData, ihale_sekli: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            ihale_sekli: e.target.value
+                          })
+                        }
                         className="w-full px-3.5 py-2.5 bg-slate-55 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
                       >
                         {limitType === 'buyuksehir' ? (
@@ -1456,7 +1602,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                       <select
                         value={formData.teklif_sozlesme_turu || 'Birim Fiyat'}
                         onChange={(e) =>
-                          setFormData({ ...formData, teklif_sozlesme_turu: e.target.value })
+                          setFormData({
+                            ...formData,
+                            teklif_sozlesme_turu: e.target.value
+                          })
                         }
                         className="w-full px-3.5 py-2.5 bg-slate-55 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
                       >
@@ -1510,7 +1659,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         type="text"
                         value={formData.fiyat_farki_dayanagi || ''}
                         onChange={(e) =>
-                          setFormData({ ...formData, fiyat_farki_dayanagi: e.target.value })
+                          setFormData({
+                            ...formData,
+                            fiyat_farki_dayanagi: e.target.value
+                          })
                         }
                         placeholder="Örn: 2026/123 Fiyat Farkı Kararnamesi"
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
@@ -1525,7 +1677,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         type="text"
                         value={formData.yatirim_proje_no || ''}
                         onChange={(e) =>
-                          setFormData({ ...formData, yatirim_proje_no: e.target.value })
+                          setFormData({
+                            ...formData,
+                            yatirim_proje_no: e.target.value
+                          })
                         }
                         placeholder="Örn: 2026-03-Y-12"
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200 font-mono"
@@ -1540,7 +1695,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         type="text"
                         value={formData.yaklasik_maliyet_hesaplamasi || ''}
                         onChange={(e) =>
-                          setFormData({ ...formData, yaklasik_maliyet_hesaplamasi: e.target.value })
+                          setFormData({
+                            ...formData,
+                            yaklasik_maliyet_hesaplamasi: e.target.value
+                          })
                         }
                         placeholder="Örn: Piyasa Fiyat Araştırması"
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
@@ -1597,7 +1755,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         id="avans"
                         checked={formData.avans_verilecek_mi === 1}
                         onChange={(e) =>
-                          setFormData({ ...formData, avans_verilecek_mi: e.target.checked ? 1 : 0 })
+                          setFormData({
+                            ...formData,
+                            avans_verilecek_mi: e.target.checked ? 1 : 0
+                          })
                         }
                         className="w-4 h-4 text-blue-600 border-slate-350 dark:border-slate-800 rounded focus:ring-blue-500"
                       />
@@ -1686,7 +1847,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                                   key={p.id}
                                   type="button"
                                   onClick={() => {
-                                    setFormData((prev) => ({ ...prev, irtibat_yetkilisi_id: p.id }))
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      irtibat_yetkilisi_id: p.id
+                                    }))
                                     setShowPersonelSearch(null)
                                     setPersonelSearchQuery('')
                                   }}
@@ -1743,7 +1907,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                                 key={p.id}
                                 type="button"
                                 onClick={() => {
-                                  setFormData((prev) => ({ ...prev, hazirlayan_personel_id: p.id }))
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    hazirlayan_personel_id: p.id
+                                  }))
                                   setShowPersonelSearch(null)
                                   setPersonelSearchQuery('')
                                 }}
@@ -1796,7 +1963,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                                 key={p.id}
                                 type="button"
                                 onClick={() => {
-                                  setFormData((prev) => ({ ...prev, talep_eden_personel_id: p.id }))
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    talep_eden_personel_id: p.id
+                                  }))
                                   setShowPersonelSearch(null)
                                   setPersonelSearchQuery('')
                                 }}
@@ -1846,7 +2016,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                                 key={p.id}
                                 type="button"
                                 onClick={() => {
-                                  setFormData((prev) => ({ ...prev, sunan_personel_id: p.id }))
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    sunan_personel_id: p.id
+                                  }))
                                   setShowPersonelSearch(null)
                                   setPersonelSearchQuery('')
                                 }}
@@ -1896,7 +2069,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                                 key={p.id}
                                 type="button"
                                 onClick={() => {
-                                  setFormData((prev) => ({ ...prev, onay_personel_id: p.id }))
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    onay_personel_id: p.id
+                                  }))
                                   setShowPersonelSearch(null)
                                   setPersonelSearchQuery('')
                                 }}
@@ -1917,7 +2093,12 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                       <input
                         type="date"
                         value={formData.talep_tarihi || ''}
-                        onChange={(e) => setFormData({ ...formData, talep_tarihi: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            talep_tarihi: e.target.value
+                          })
+                        }
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
                       />
                     </div>
@@ -1929,7 +2110,12 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                       <input
                         type="text"
                         value={formData.talep_sayisi || ''}
-                        onChange={(e) => setFormData({ ...formData, talep_sayisi: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            talep_sayisi: e.target.value
+                          })
+                        }
                         placeholder="Örn: E-12345"
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
                       />
@@ -1943,7 +2129,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         type="datetime-local"
                         value={formData.son_teklif_verme_tarihi || ''}
                         onChange={(e) =>
-                          setFormData({ ...formData, son_teklif_verme_tarihi: e.target.value })
+                          setFormData({
+                            ...formData,
+                            son_teklif_verme_tarihi: e.target.value
+                          })
                         }
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
                       />
@@ -1957,7 +2146,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                         type="date"
                         value={formData.teslim_tarihi || ''}
                         onChange={(e) =>
-                          setFormData({ ...formData, teslim_tarihi: e.target.value })
+                          setFormData({
+                            ...formData,
+                            teslim_tarihi: e.target.value
+                          })
                         }
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
                       />
