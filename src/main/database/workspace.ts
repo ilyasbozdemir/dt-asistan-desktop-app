@@ -102,6 +102,64 @@ function ensureSchemaIntegrity(db: Database.Database): void {
   }
 }
 
+const TEMPLATE_NAMES: Record<string, string> = {
+  'harcama-talimati': 'HARCAMA TALİMATI',
+  'ihtiyac-listesi': 'İHTİYAÇ LİSTESİ',
+  'ihtiyac-talep-formu': 'İHTİYAÇ TALEP FORMU',
+  'komisyon-gorevlendirme-onayi': 'KOMİSYON GÖREVLENDİRME ONAYI',
+  'komisyon-gorevlendirme-onayi-eki': 'KOMİSYON GÖREVLENDİRME ONAYI EKİ',
+  'luzum-muzekkeresi': 'LÜZUM MÜZEKKERESİ',
+  'luzum-muzekkeresi-onay-eki': 'LÜZUM MÜZEKKERESİ ONAY EKİ',
+  'luzum-muzekkeresi-teslim-tesellum': 'LÜZUM MÜZEKKERESİ TESLİM TESELLÜM',
+  'son-alim-fiyat-cetveli': 'SON ALIM FİYAT CETVELİ',
+  'arastirma-mektubu': 'ARAŞTIRMA MEKTUBU',
+  'birim-fiyat-teklif-cetveli': 'BİRİM FİYAT TEKLİF CETVELİ',
+  'birim-fiyat-teklif-mektubu': 'BİRİM FİYAT TEKLİF MEKTUBU',
+  'dagitim-cizelgesi': 'DAĞITIM ÇİZELGESİ',
+  'dagitim-cizelgesi-karma': 'DAĞITIM ÇİZELGESİ (KARMA)',
+  'fiyat-arastirma-mektubu': 'FİYAT ARAŞTIRMA MEKTUBU',
+  'fiyat-arastirmasi': 'FİYAT ARAŞTIRMASI',
+  'gorevlendirme-yazisi': 'GÖREVLENDİRME YAZISI',
+  'piyasa-fiyat-arastirma-gorevlendirmesi': 'PİYASA FİYAT ARAŞTIRMA GÖREVLENDİRMESİ',
+  'piyasa-fiyat-arastirma-tutanagi': 'PİYASA FİYAT ARAŞTIRMA TUTANAĞI',
+  'teklif-mektubu-dagitim-cizelgesi': 'TEKLİF MEKTUBU DAĞITIM ÇİZELGESİ',
+  'yaklasik-maliyet-cetveli': 'YAKLAŞIK MALİYET CETVELİ',
+  'butce-sorgusu': 'BÜTÇE SORGUSU',
+  'dogrudan-temin-onay-belgesi': 'DOĞRUDAN TEMİN ONAY BELGESİ',
+  'dogrudan-temin-sonuc-onay-belgesi': 'DOĞRUDAN TEMİN SONUÇ ONAY BELGESİ',
+  'dogrudan-temin-sozlesmesi': 'DOĞRUDAN TEMİN SÖZLEŞMESİ',
+  'dogrudan-temin-sozlesmesi-alternatif': 'DOĞRUDAN TEMİN SÖZLEŞMESİ (ALTERNATİF)',
+  'dogrudan-temin-sozlesmesi-uzun': 'DOĞRUDAN TEMİN SÖZLEŞMESİ (UZUN)',
+  'idare-onay-belgesi': 'İDARE ONAY BELGESİ',
+  'ihale-komisyon-karari': 'İHALE KOMİSYON KARARI',
+  'kabul-edilen-teklif': 'KABUL EDİLEN TEKLİF',
+  'sozlesmeye-davet': 'SÖZLEŞMEYE DAVET',
+  'teklif-mektubu': 'TEKLİF MEKTUBU',
+  'hakedis-raporu': 'HAKEDİŞ RAPORU',
+  'harcama-pusulasi': 'HARCAMA PUSULASI',
+  'hizmet-isleri-kabul-teklif-belgesi': 'HİZMET İŞLERİ KABUL TEKLİF BELGESİ',
+  'hizmet-isleri-kabul-tutanagi': 'HİZMET İŞLERİ KABUL TUTANAĞI',
+  'kabul-edilen-teklif-odeme': 'KABUL EDİLEN TEKLİF (ÖDEME AŞAMASI)',
+  'muayene-kabul-komisyonu': 'MUAYENE VE KABUL KOMİSYONU',
+  'muayene-kabul-tutanagi': 'MUAYENE VE KABUL TUTANAĞI',
+  'odeme-emri-belgesi': 'ÖDEME EMRİ BELGESİ',
+  'odeme-yazisi': 'ÖDEME YAZISI',
+  'tasinir-islem-fisi': 'TAŞINIR İŞLEM FİŞİ',
+  'ihale-kapagi': 'İHALE KAPAĞI',
+  'kapak-ici-indeks-sablonu': 'KAPAK İÇİ İNDEKS ŞABLONU',
+  'klasor-sirtligi-3cm': 'KLASÖR SIRTLIĞI (3 CM)',
+  'klasor-sirtligi-5cm': 'KLASÖR SIRTLIĞI (5 CM)',
+  'klasor-sirtligi-7-5cm': 'KLASÖR SIRTLIĞI (7.5 CM)'
+}
+
+const TEMPLATE_CATEGORIES: Record<string, string> = {
+  '1-ihtiyac-tespiti-ve-baslangic': '1. İhtiyaç Tespiti ve Başlangıç',
+  '2-fiyat-arastirma-ve-yaklasik-maliyet': '2. Fiyat Araştırma ve Yaklaşık Maliyet',
+  '3-ihale-ve-onay-sureci': '3. İhale ve Onay Süreci',
+  '4-sozlesme-ve-teslimat': '4. Sözleşme ve Teslimat',
+  '5-klasor-ve-kapaklar': '5. Klasör Sırtlıkları & Kapaklar'
+}
+
 function seedTemplates(db: Database.Database): void {
   try {
     const templatesDirDev = path.join(app.getAppPath(), 'resources', 'templates')
@@ -168,46 +226,16 @@ function seedTemplates(db: Database.Database): void {
       
       if (file === 'index.html' && parentDir && parentDir !== 'templates') {
         dosya_adi = `${parentDir}.html`
-        ad = parentDir.replace(/-/g, ' ').toUpperCase()
+        ad = TEMPLATE_NAMES[parentDir] || parentDir.replace(/-/g, ' ').toUpperCase()
       }
 
-      if (ad === 'KABUL EDILEN TEKLIF') ad = 'KABUL EDİLEN TEKLİF'
-      if (ad === 'KABUL EDILEN TEKLIF ODEME') ad = 'KABUL EDİLEN TEKLİF (ÖDEME AŞAMASI)'
-      if (ad === 'DOGRUDAN TEMIN SOZLESMESI') ad = 'DOĞRUDAN TEMİN SÖZLEŞMESİ'
-      if (ad === 'DOGRUDAN TEMIN SOZLESMESI UZUN') ad = 'DOĞRUDAN TEMİN SÖZLEŞMESİ (UZUN)'
-      if (ad === 'DOGRUDAN TEMIN SOZLESMESI ALTERNATIF') ad = 'DOĞRUDAN TEMİN SÖZLEŞMESİ (ALTERNATİF)'
-      if (ad === 'SOZLESMEYE DAVET') ad = 'SÖZLEŞMEYE DAVET'
-      if (ad === 'MUAYENE KABUL TUTANAGI') ad = 'MUAYENE VE KABUL TUTANAĞI'
-      if (ad === 'HIZMET ISLERI KABUL TEKLIF BELGESI') ad = 'HİZMET İŞLERİ KABUL TEKLİF BELGESİ'
-      if (ad === 'HIZMET ISLERI KABUL TUTANAGI') ad = 'HİZMET İŞLERİ KABUL TUTANAĞI'
-      if (ad === 'TASINIR ISLEM FISI') ad = 'TAŞINIR İŞLEM FİŞİ'
-      if (ad === 'IHALE KOMISYON KARARI') ad = 'İHALE KOMİSYON KARARI'
-      if (ad === 'ODEME YAZISI') ad = 'ÖDEME YAZISI'
-      if (ad === 'KLASOR SIRTLIGI 3CM') ad = 'KLASÖR SIRTLIĞI (3 CM)'
-      if (ad === 'KLASOR SIRTLIGI 5CM') ad = 'KLASÖR SIRTLIĞI (5 CM)'
-      if (ad === 'KLASOR SIRTLIGI 7 5CM' || ad === 'KLASOR SIRTLIGI 7.5CM') ad = 'KLASÖR SIRTLIĞI (7.5 CM)'
-      if (ad === 'KAPAK ICI INDEKS SABLONU') ad = 'KAPAK İÇİ İNDEKS ŞABLONU'
-
       if (parentDir !== 'templates') {
-        // Kategori adını klasör adından (örn: 1-ihtiyac-tespiti -> İhtiyaç Tespiti) oluştur
-        // Burada parentDir yerine, kategori klasörünü bulmalıyız
         const relPath = path.relative(targetDir, filePath)
         const pathParts = relPath.split(path.sep)
         if (pathParts.length > 1) {
           const topLevelFolder = pathParts[0]
-          const parts = topLevelFolder.split('-')
-          if (parts.length > 1 && !isNaN(parseInt(parts[0], 10))) {
-            const no = parts[0]
-            const name = parts.slice(1).map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join(' ')
-            kategori = `${no}. ${name}`
-          } else {
-            kategori = topLevelFolder.charAt(0).toUpperCase() + topLevelFolder.slice(1).replace(/-/g, ' ')
-          }
+          kategori = TEMPLATE_CATEGORIES[topLevelFolder] || topLevelFolder.charAt(0).toUpperCase() + topLevelFolder.slice(1).replace(/-/g, ' ')
         }
-      }
-
-      if (kategori === '5. Klasor Ve Kapaklar') {
-        kategori = '5. Klasör Sırtlıkları & Kapaklar'
       }
 
       const jsonFilePath = filePath + '.json'
@@ -219,7 +247,6 @@ function seedTemplates(db: Database.Database): void {
       const relativeHtmlPath = path.relative(targetDir, filePath)
       const relativeJsonPath = fs.existsSync(jsonFilePath) ? path.relative(targetDir, jsonFilePath) : null
 
-      // route_path: dosya_adi'nın uzantsız hali ile ara
       const dosya_adi_no_ext = dosya_adi.replace(/\.html$/, '')
       const route_path = ROUTE_BY_DOSYA_ADI[dosya_adi_no_ext] || null
 
@@ -231,16 +258,14 @@ function seedTemplates(db: Database.Database): void {
         `).run(ad, dosya_adi, content, 'Sistem varsayılan şablonu', kategori, testJsonContent, relativeHtmlPath, relativeJsonPath, route_path)
         console.log(`[Seed] Seeded default template: ${dosya_adi} in category: ${kategori}`)
       } else {
-        // Güncelle: Sadece sistem şablonu (versiyon = 1) ise diskteki güncel dosyadan güncelle
         if (existing.versiyon === 1) {
           db.prepare(`
             UPDATE TANIM_Sablon 
-            SET kategori = ?, icerik = ?, test_verisi = ?, html_yolu = ?, json_yolu = ?, route_path = COALESCE(route_path, ?)
+            SET ad = ?, kategori = ?, icerik = ?, test_verisi = ?, html_yolu = ?, json_yolu = ?, route_path = COALESCE(route_path, ?)
             WHERE id = ?
-          `).run(kategori, content, testJsonContent, relativeHtmlPath, relativeJsonPath, route_path, existing.id)
+          `).run(ad, kategori, content, testJsonContent, relativeHtmlPath, relativeJsonPath, route_path, existing.id)
           console.log(`[Seed] Updated default template: ${dosya_adi}`)
         } else {
-          // Kullanıcı özelleştirmişse (versiyon > 1) üzerine yazma, sadece yolları ve route'u ekle
           db.prepare(`
             UPDATE TANIM_Sablon 
             SET html_yolu = COALESCE(html_yolu, ?), json_yolu = COALESCE(json_yolu, ?), route_path = COALESCE(route_path, ?)

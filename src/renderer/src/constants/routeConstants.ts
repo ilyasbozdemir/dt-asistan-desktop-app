@@ -46,6 +46,7 @@ export const APP_ROUTES = {
   MALZEME_LISTESI: '/dosya/malzemeler/liste',
   
   // 3. Lüzum
+  LUZUM_TALEP_FORMU: '/dosya/luzum/talep-formu',
   LUZUM_BELGESI: '/dosya/luzum/belge',
   LUZUM_ONAY_EKI: '/dosya/luzum/onay-eki',
   LUZUM_TESLIM_TESELLUM: '/dosya/luzum/teslim-tesellum',
