@@ -33,6 +33,7 @@ import { startServer, stopServer, getSocketServer } from './server'
 import { connectToServer, disconnectFromServer, emitEvent } from './client'
 import { generateContent, testConnection, AIGenerateOptions } from './ai/index'
 import { renderPdfBuffer } from './pdfService'
+import { renderDocxBuffer } from './docxService'
 import { startExpressServer, stopExpressServer } from './network/expressServer'
 import { registerArchiveHandlers } from './archive'
 import { TANIM_Placeholder } from './database/tables/TANIM_Placeholder'
@@ -1030,7 +1031,6 @@ if (!gotTheLock && !isMultiInstance) {
         })
         if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
 
-        const { renderDocxBuffer } = await import('./docxService')
         const buffer = await renderDocxBuffer(htmlContent)
         fs.writeFileSync(filePath, buffer)
 
