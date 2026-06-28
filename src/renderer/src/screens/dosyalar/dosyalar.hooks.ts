@@ -21,9 +21,6 @@ export interface TeminDosyasi {
   finansman_kodu: string | null
   ekonomik_kod: string | null
 
-  talep_tarihi: string | null
-  talep_sayisi: string | null
-
   ihale_tipi: string | null
   tur: string
   ihale_sekli: string | null

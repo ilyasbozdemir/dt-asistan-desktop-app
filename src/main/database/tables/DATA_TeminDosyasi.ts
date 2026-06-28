@@ -31,10 +31,6 @@ export const DATA_TeminDosyasi = {
     { name: 'finansman_kodu', type: 'TEXT', description: 'Finansman Kodu' },
     { name: 'ekonomik_kod', type: 'TEXT', description: 'Ekonomik Kod' },
 
-    // Talep
-    { name: 'talep_tarihi', type: 'DATE', description: 'Talep Tarihi' },
-    { name: 'talep_sayisi', type: 'TEXT', description: 'Talep Sayısı (Belge No)' },
-
     // İhale / Alım Türü
     { name: 'ihale_tipi', type: 'TEXT', default: "'Doğrudan Temin'", description: 'Ihale Tipi' },
     { name: 'tur', type: 'TEXT', notNull: true, default: "'mal'", description: 'Tur' }, // Alım Türü: mal | hizmet | yapim_isi | danismanlik

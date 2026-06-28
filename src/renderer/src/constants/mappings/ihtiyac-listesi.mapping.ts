@@ -47,5 +47,6 @@ export const IhtiyacListesiMapping: ProcessMapping = {
   },
   kurumIci: {
     deger: true
-  }
+  },
+  
 }

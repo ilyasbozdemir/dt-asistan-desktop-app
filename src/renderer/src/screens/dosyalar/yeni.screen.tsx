@@ -99,8 +99,6 @@ export default function YeniDosyaScreen(): React.JSX.Element {
     harcama_birimi: '',
     finansman_kodu: '1',
     ekonomik_kod: '',
-    talep_tarihi: '',
-    talep_sayisi: '',
     ihale_tipi: 'Doğrudan Temin',
     tur: 'mal',
     ihale_sekli: limitType === 'buyuksehir' ? '22/d*' : '22/d**',
@@ -170,7 +168,6 @@ export default function YeniDosyaScreen(): React.JSX.Element {
             setFormData({
               ...doc,
               dosya_acilis_tarihi: formatForInput(doc.dosya_acilis_tarihi),
-              talep_tarihi: formatForInput(doc.talep_tarihi),
               son_teklif_verme_tarihi: doc.son_teklif_verme_tarihi
                 ? doc.son_teklif_verme_tarihi.replace(' ', 'T')
                 : '',
@@ -208,20 +205,23 @@ export default function YeniDosyaScreen(): React.JSX.Element {
     loadData()
   }, [isEdit, editId])
 
-  // Otomatik Temin Numarası (DT2026/01) Oluşturma
+  // Otomatik Temin Numarası (2026/1) Oluşturma
   useEffect(() => {
     if (!isEdit && !formData.temin_no && !loadingDb) {
       const year = new Date().getFullYear()
       const yearStr = year.toString()
 
       const yearDosyalar = dosyalar.filter(
-        (d) => d.temin_no && d.temin_no.startsWith(`DT${yearStr}/`)
+        (d) =>
+          d.temin_no &&
+          (d.temin_no.startsWith(`${yearStr}/`) || d.temin_no.startsWith(`DT${yearStr}/`))
       )
 
       let maxSeq = 0
       yearDosyalar.forEach((d) => {
         const no = d.temin_no!
-        let seqStr = no.split('/')[1]
+        const parts = no.split('/')
+        const seqStr = parts[parts.length - 1]
 
         if (seqStr) {
           const seq = parseInt(seqStr, 10)
@@ -231,10 +231,10 @@ export default function YeniDosyaScreen(): React.JSX.Element {
         }
       })
 
-      const nextSeq = String(maxSeq + 1).padStart(2, '0')
+      const nextSeq = maxSeq + 1
       setFormData((prev) => ({
         ...prev,
-        temin_no: `DT${yearStr}/${nextSeq}`
+        temin_no: `${yearStr}/${nextSeq}`
       }))
     }
   }, [isEdit, formData.temin_no, loadingDb, dosyalar])
@@ -286,8 +286,6 @@ export default function YeniDosyaScreen(): React.JSX.Element {
       // Sıfırlanan / Güncellenen alanlar
       temin_no: '',
       dosya_acilis_tarihi: new Date().toISOString().split('T')[0],
-      talep_tarihi: new Date().toISOString().split('T')[0],
-      talep_sayisi: '',
       son_teklif_verme_tarihi: '',
       teslim_tarihi: ''
     })
@@ -440,8 +438,6 @@ export default function YeniDosyaScreen(): React.JSX.Element {
           tip: 'text' as const
         },
         { alan: 'ekonomik_kod', etiket: 'Ekonomik Kod', tip: 'text' as const },
-        { alan: 'talep_tarihi', etiket: 'Talep Tarihi', tip: 'date' as const },
-        { alan: 'talep_sayisi', etiket: 'Talep Sayısı', tip: 'text' as const },
         { alan: 'ihale_tipi', etiket: 'İhale Tipi', tip: 'text' as const },
         {
           alan: 'tur',
@@ -844,8 +840,6 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                   finansman_kodu: '5',
                   ekonomik_kod: '03.2.1.01',
                   butce_kodu: '46.30.11.23-01.3.9.00-5-03.2.1.01',
-                  talep_tarihi: '2026-06-03',
-                  talep_sayisi: 'E-2026-456',
                   ihale_tipi: 'Doğrudan Temin',
                   tur: 'mal',
                   ihale_sekli: '22/d*',
@@ -1155,7 +1149,7 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                             temin_no: e.target.value
                           })
                         }
-                        placeholder="Örn: 2026/DT-001 (Opsiyonel)"
+                        placeholder="Örn: 2026/5"
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
                       />
                     </div>
@@ -1804,6 +1798,24 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                     </h2>
                   </div>
 
+                  <div className="flex items-start gap-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/50 p-4 rounded-xl text-xs text-blue-700 dark:text-blue-300">
+                    <Info className="w-5 h-5 shrink-0 text-blue-500 dark:text-blue-400 mt-0.5" />
+                    <div className="space-y-1">
+                      <p className="font-bold">Yetkili Personel & Tarih Bilgilendirmesi</p>
+                      <p className="leading-relaxed opacity-90">
+                        Doğrudan temin evraklarının alt bilgileri, onay ve imza alanlarında yer
+                        alacak personelleri (İrtibat Yetkilisi, Dosyayı Hazırlayan, Talep Eden,
+                        Sunan ve Onaylayan) buradan belirleyebilirsiniz. Ayrıca talebe ait resmî
+                        evrak numarası, teklif alma ve teslim tarihlerini girerek şablonların
+                        otomatik dolmasını sağlayabilirsiniz.
+                      </p>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 italic mt-2 block">
+                        * Not: Bu alanlar üzerinde ilerleyen süreçlerde daha da sadeleştirme ve
+                        otomatik tamamlama iyileştirmeleri yapılabilir.
+                      </p>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                     {/* İRTİBAT YETKİLİSİ AUTOCOMPLETE */}
                     <div className="relative">
@@ -2084,41 +2096,6 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                           </div>
                         </div>
                       )}
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-slate-600 dark:text-slate-450 mb-1.5">
-                        Talep Tarihi
-                      </label>
-                      <input
-                        type="date"
-                        value={formData.talep_tarihi || ''}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            talep_tarihi: e.target.value
-                          })
-                        }
-                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-slate-600 dark:text-slate-450 mb-1.5">
-                        Talep Sayısı (Evrak No)
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.talep_sayisi || ''}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            talep_sayisi: e.target.value
-                          })
-                        }
-                        placeholder="Örn: E-12345"
-                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
-                      />
                     </div>
 
                     <div>

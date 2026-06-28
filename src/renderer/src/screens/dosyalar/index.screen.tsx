@@ -22,7 +22,6 @@ import {
   AlertCircle,
   CheckCircle2,
   Clock,
-  FileCheck,
   Sparkles,
   Lock,
   Unlock
@@ -543,16 +542,6 @@ export default function DosyalarScreen(): React.ReactNode {
                         {dosya.ekonomik_kod || '-'}
                       </span>
                     </div>
-                    {dosya.talep_sayisi && (
-                      <div className="col-span-2 flex items-center gap-1 truncate">
-                        <FileCheck size={9} className="text-slate-400 shrink-0" />
-                        <span className="text-slate-400 font-semibold shrink-0">Talep:</span>
-                        <span className="font-bold text-slate-700 dark:text-slate-300 truncate">
-                          {dosya.talep_sayisi}{' '}
-                          {dosya.talep_tarihi ? `· ${formatDate(dosya.talep_tarihi)}` : ''}
-                        </span>
-                      </div>
-                    )}
                   </div>
 
                   {/* Alt Bölüm: Maliyet + Tarih */}
@@ -812,15 +801,7 @@ export default function DosyalarScreen(): React.ReactNode {
                         label="Sözleşme Türü"
                         value={selectedDosya.teklif_sozlesme_turu || '-'}
                       />
-                      {selectedDosya.talep_sayisi && (
-                        <DetailRow label="Talep Sayısı" value={selectedDosya.talep_sayisi} />
-                      )}
-                      {selectedDosya.talep_tarihi && (
-                        <DetailRow
-                          label="Talep Tarihi"
-                          value={formatDate(selectedDosya.talep_tarihi)}
-                        />
-                      )}
+
                       {selectedDosya.son_teklif_verme_tarihi && (
                         <DetailRow
                           label="Son Teklif Tarihi"
