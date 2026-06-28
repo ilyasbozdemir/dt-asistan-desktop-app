@@ -1,71 +1,75 @@
-import React, { useEffect, useState } from 'react'
-import { useWorkspaceStore } from '../../../store/workspaceStore'
-import { Link } from '@tanstack/react-router'
+import React, { useEffect, useState } from "react";
+import { useWorkspaceStore } from "../../../store/workspaceStore";
+import { Link } from "@tanstack/react-router";
 import {
-  ArrowLeft,
   AlertCircle,
-  FileText,
-  Users,
-  Package,
-  Layers,
-  Compass,
-  FileCheck,
-  CreditCard,
-  FileSpreadsheet,
-  Plus,
-  Trash2,
-  Edit2,
-  Check,
-  X,
-  Search,
+  ArrowLeft,
   Building2,
-  Printer,
-  TrendingUp,
-  UserPlus,
+  Check,
+  Compass,
   Copy,
+  CreditCard,
+  Edit2,
+  Eye,
+  FileCheck,
+  FileSpreadsheet,
+  FileText,
+  Layers,
+  Package,
+  Plus,
+  Printer,
+  Search,
+  Trash2,
+  TrendingUp,
   Upload,
-  Eye
-} from 'lucide-react'
-import { cn } from '../../../utils/cn'
-import { Modal } from '../../../components/ui/Modal'
+  UserPlus,
+  Users,
+  X,
+} from "lucide-react";
+import { cn } from "../../../utils/cn";
+import { Modal } from "../../../components/ui/Modal";
 
 interface SubScreenProps {
-  title: string
-  icon: React.ElementType
-  description: string
-  children?: React.ReactNode
+  title: string;
+  icon: React.ElementType;
+  description: string;
+  children?: React.ReactNode;
 }
 
 export function SubScreen({
   title,
   icon: Icon,
   description,
-  children
+  children,
 }: SubScreenProps): React.JSX.Element {
-  const { activeDosyaId } = useWorkspaceStore()
-  const [activeDosya, setActiveDosya] = useState<any>(null)
-  const [loading, setLoading] = useState(false)
+  const { activeDosyaId } = useWorkspaceStore();
+  const [activeDosya, setActiveDosya] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    document.title = `${title} - Doğrudan Temin`
-  }, [title])
+    document.title = `${title} - Doğrudan Temin`;
+  }, [title]);
 
   useEffect(() => {
-    if (!activeDosyaId) return
-    setLoading(true)
+    if (!activeDosyaId) return;
+    setLoading(true);
     window.electron.ipcRenderer
-      .invoke('db:query', 'SELECT id, konu, temin_no FROM DATA_TeminDosyasi WHERE id = ?', [
-        activeDosyaId
-      ])
+      .invoke(
+        "db:query",
+        "SELECT id, konu, temin_no FROM DATA_TeminDosyasi WHERE id = ?",
+        [
+          activeDosyaId,
+        ],
+      )
       .then((res) => {
         if (res.success && res.data.length > 0) {
-          setActiveDosya(res.data[0])
+          setActiveDosya(res.data[0]);
         }
       })
       .finally(() => {
-        setLoading(false)
-      })
-  }, [activeDosyaId])
+        setLoading(false);
+      });
+  }, [activeDosyaId]);
 
   return (
     <div className="p-6 md:p-8 max-w-6xl mx-auto flex flex-col gap-6 w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -84,50 +88,26 @@ export function SubScreen({
               <Icon className="w-7 h-7 text-blue-600" />
               {title}
             </h1>
-            <p className="text-slate-500 dark:text-slate-400 mt-1 text-xs">{description}</p>
+            <p className="text-slate-500 dark:text-slate-400 mt-1 text-xs">
+              {description}
+            </p>
           </div>
         </div>
       </div>
 
       {/* ACTIVE DOSYA CONTEXT */}
-      {activeDosyaId ? (
-        <div className="bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/20 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-sm">
-          <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 shrink-0">
-              <FileText className="w-5 h-5" />
-            </div>
-            <div>
-              <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block">
-                İLİŞKİLİ AKTİF ÇALIŞMA DOSYASI
-              </span>
-              {loading ? (
-                <span className="text-xs text-slate-500 italic">Yükleniyor...</span>
-              ) : activeDosya ? (
-                <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mt-0.5">
-                  {activeDosya.temin_no || 'No Bekliyor'} — {activeDosya.konu} (ID: #
-                  {activeDosya.id})
-                </h3>
-              ) : (
-                <span className="text-xs text-slate-500">Dosya bulunamadı (#{activeDosyaId})</span>
-              )}
-            </div>
-          </div>
-          <Link
-            to="/dosyalar"
-            className="px-3.5 py-1.5 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-350 border border-slate-200 dark:border-slate-800 text-xs font-bold rounded-xl hover:bg-slate-50 transition-colors inline-block text-center cursor-pointer shrink-0 shadow-sm"
-          >
-            Dosyayı Değiştir
-          </Link>
-        </div>
-      ) : (
+      {!activeDosyaId && (
         <div className="bg-amber-50/50 dark:bg-amber-955/10 border border-amber-200 dark:border-amber-900/20 rounded-2xl p-4 flex items-start gap-2.5 text-xs text-amber-800 dark:text-amber-400 font-semibold shadow-sm">
           <AlertCircle className="w-5 h-5 shrink-0 text-amber-600" />
           <div>
-            Aktif bir doğrudan temin dosyası seçmediniz. Bu ekranda işlem yapabilmek için lütfen
-            önce{' '}
-            <Link to="/dosyalar" className="underline font-bold text-blue-600 dark:text-blue-400">
+            Aktif bir doğrudan temin dosyası seçmediniz. Bu ekranda işlem
+            yapabilmek için lütfen önce{" "}
+            <Link
+              to="/dosyalar"
+              className="underline font-bold text-blue-600 dark:text-blue-400"
+            >
               dosyalar listesinden
-            </Link>{' '}
+            </Link>{" "}
             bir dosya seçin.
           </div>
         </div>
@@ -136,7 +116,7 @@ export function SubScreen({
       {/* CHILDREN VIEW */}
       {activeDosyaId && children}
     </div>
-  )
+  );
 }
 
 // 1. MALZEME LİSTESİ SCREEN
