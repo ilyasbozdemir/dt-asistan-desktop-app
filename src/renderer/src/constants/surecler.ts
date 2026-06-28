@@ -9,6 +9,7 @@ export interface ProcessStage {
 
 export const subPagesMapping: ProcessStage[] = [
   { name: 'İhtiyaç Listesi', path: '/dosya/malzemeler/liste', icon: PackageSearch, stage: 1 },
+  { name: 'İhtiyaç Talep Formu', path: '/dosya/luzum/talep-formu', icon: FileText, stage: 1 },
   { name: 'Lüzum Müzekkeresi Belgesi', path: '/dosya/luzum/belge', icon: FileText, stage: 1 },
   { name: 'Onay Eki', path: '/dosya/luzum/onay-eki', icon: FileText, stage: 1 },
   { name: 'Bütçe Sorgusu', path: '/dosya/onay/butce-sorgu', icon: FileCheck, stage: 1 },
