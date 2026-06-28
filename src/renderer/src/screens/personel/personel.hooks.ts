@@ -75,7 +75,7 @@ export function usePersonelHooks() {
 
       // Rol atamaları
       if (personel.assignedRoles && personel.assignedRoles.length > 0) {
-        const transactions = []
+        const transactions: any[] = []
         // Yeni seçilen rolleri bu personele ata
         for (const r of personel.assignedRoles) {
           transactions.push({
@@ -115,7 +115,7 @@ export function usePersonelHooks() {
 
       // Rol atamalarını güncelle
       if (personel.assignedRoles) {
-        const transactions = []
+        const transactions: any[] = []
         // Önce bu personelin tüm rollerden çıkarılması
         transactions.push({
           sql: 'UPDATE TANIM_Roller SET varsayilan_personel_id = NULL WHERE varsayilan_personel_id = ?',

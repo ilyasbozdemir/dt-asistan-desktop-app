@@ -273,7 +273,7 @@ export default function YeniDosyaScreen(): React.JSX.Element {
   // Search states for custom select/autocomplete dropdowns
   const [showBirimSearch, setShowBirimSearch] = useState(false)
   const [birimSearchQuery, setBirimSearchQuery] = useState('')
-  const [showPersonelSearch, setShowPersonelSearch] = useState<'irtibat' | 'hazirlayan' | 'onay' | null>(null)
+  const [showPersonelSearch, setShowPersonelSearch] = useState<'irtibat' | 'hazirlayan' | 'onay' | 'talep_eden' | 'sunan' | null>(null)
   const [personelSearchQuery, setPersonelSearchQuery] = useState('')
 
   // Filtered lists
