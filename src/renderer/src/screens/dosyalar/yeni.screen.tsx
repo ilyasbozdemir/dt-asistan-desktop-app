@@ -205,39 +205,44 @@ export default function YeniDosyaScreen(): React.JSX.Element {
     loadData()
   }, [isEdit, editId])
 
+  // Yıla göre sıradaki Doğrudan Temin Numarasını Hesaplama
+  const getNextTeminNo = (year: number) => {
+    const yearStr = year.toString()
+    const yearDosyalar = dosyalar.filter(
+      (d) =>
+        d.temin_no &&
+        (d.temin_no.startsWith(`${yearStr}/`) || d.temin_no.startsWith(`DT${yearStr}/`))
+    )
+
+    let maxSeq = 0
+    yearDosyalar.forEach((d) => {
+      const no = d.temin_no!
+      const parts = no.split('/')
+      const seqStr = parts[parts.length - 1]
+
+      if (seqStr) {
+        const seq = parseInt(seqStr, 10)
+        if (!isNaN(seq) && seq > maxSeq) {
+          maxSeq = seq
+        }
+      }
+    })
+
+    return `${yearStr}/${maxSeq + 1}`
+  }
+
   // Otomatik Temin Numarası (2026/1) Oluşturma
   useEffect(() => {
     if (!isEdit && !formData.temin_no && !loadingDb) {
-      const year = new Date().getFullYear()
-      const yearStr = year.toString()
-
-      const yearDosyalar = dosyalar.filter(
-        (d) =>
-          d.temin_no &&
-          (d.temin_no.startsWith(`${yearStr}/`) || d.temin_no.startsWith(`DT${yearStr}/`))
-      )
-
-      let maxSeq = 0
-      yearDosyalar.forEach((d) => {
-        const no = d.temin_no!
-        const parts = no.split('/')
-        const seqStr = parts[parts.length - 1]
-
-        if (seqStr) {
-          const seq = parseInt(seqStr, 10)
-          if (!isNaN(seq) && seq > maxSeq) {
-            maxSeq = seq
-          }
-        }
-      })
-
-      const nextSeq = maxSeq + 1
+      const year = formData.dosya_acilis_tarihi
+        ? new Date(formData.dosya_acilis_tarihi).getFullYear()
+        : new Date().getFullYear()
       setFormData((prev) => ({
         ...prev,
-        temin_no: `${yearStr}/${nextSeq}`
+        temin_no: getNextTeminNo(year)
       }))
     }
-  }, [isEdit, formData.temin_no, loadingDb, dosyalar])
+  }, [isEdit, formData.temin_no, loadingDb, dosyalar, formData.dosya_acilis_tarihi])
 
   // Active Tab (Stepper)
   const [activeTab, setActiveTab] = useState<'genel' | 'ihtiyac' | 'teknik'>('genel')
@@ -821,10 +826,11 @@ export default function YeniDosyaScreen(): React.JSX.Element {
             <button
               type="button"
               onClick={() => {
+                const currentYear = new Date().getFullYear()
                 setFormData({
-                  temin_no: '2026/DT-084',
-                  dosya_acilis_tarihi: '2026-06-03',
-                  butce_yili: 2026,
+                  temin_no: getNextTeminNo(currentYear),
+                  dosya_acilis_tarihi: `${currentYear}-06-03`,
+                  butce_yili: currentYear,
                   butce_tipi: 'Genel Bütçe',
                   konu: 'Park Bahçeler Müdürlüğü Elektrik Kablosu ve Aydınlatma Armatürü Alımı',
                   isin_aciklamasi:
@@ -1161,12 +1167,31 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                       <input
                         type="date"
                         value={formData.dosya_acilis_tarihi || ''}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          const newDate = e.target.value
+                          const oldDate = formData.dosya_acilis_tarihi
+                          const newYear = newDate ? new Date(newDate).getFullYear() : null
+                          const oldYear = oldDate ? new Date(oldDate).getFullYear() : null
+                          
+                          let updatedTeminNo = formData.temin_no
+                          if (newYear && newYear !== oldYear) {
+                            const oldYearStr = oldYear ? oldYear.toString() : ''
+                            const isOldPattern = !formData.temin_no || 
+                              formData.temin_no.startsWith(`${oldYearStr}/`) || 
+                              formData.temin_no.startsWith(`DT${oldYearStr}/`)
+                            
+                            if (isOldPattern) {
+                              updatedTeminNo = getNextTeminNo(newYear)
+                            }
+                          }
+
                           setFormData({
                             ...formData,
-                            dosya_acilis_tarihi: e.target.value
+                            dosya_acilis_tarihi: newDate,
+                            butce_yili: newYear || formData.butce_yili,
+                            temin_no: updatedTeminNo
                           })
-                        }
+                        }}
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
                       />
                     </div>
@@ -1304,12 +1329,28 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                       <input
                         type="number"
                         value={formData.butce_yili || new Date().getFullYear()}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          const newYear = parseInt(e.target.value, 10)
+                          const oldYear = formData.butce_yili
+                          let updatedTeminNo = formData.temin_no
+
+                          if (newYear && newYear !== oldYear) {
+                            const oldYearStr = oldYear ? oldYear.toString() : ''
+                            const isOldPattern = !formData.temin_no || 
+                              formData.temin_no.startsWith(`${oldYearStr}/`) || 
+                              formData.temin_no.startsWith(`DT${oldYearStr}/`)
+                            
+                            if (isOldPattern) {
+                              updatedTeminNo = getNextTeminNo(newYear)
+                            }
+                          }
+
                           setFormData({
                             ...formData,
-                            butce_yili: parseInt(e.target.value, 10)
+                            butce_yili: newYear,
+                            temin_no: updatedTeminNo
                           })
-                        }
+                        }}
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
                       />
                     </div>

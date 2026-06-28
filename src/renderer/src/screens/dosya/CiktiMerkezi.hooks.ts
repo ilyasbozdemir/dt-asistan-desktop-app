@@ -229,7 +229,10 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
               }
 
               if (val === null || val === undefined || val === '') {
-                val = `[Belirtilmedi: ${colMap.aciklama || sablonKey}]`
+                val =
+                  colMap.varsayilan !== undefined
+                    ? colMap.varsayilan
+                    : `[Belirtilmedi: ${colMap.aciklama || sablonKey}]`
               }
 
               if (val !== null && val !== undefined) {
