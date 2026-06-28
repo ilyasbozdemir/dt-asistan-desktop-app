@@ -24,6 +24,7 @@ export function MalzemeListesi(): React.JSX.Element {
       title: string;
       templateHtml: string;
       processPath: string;
+      templateTestVerisi?: string;
     } | null
   >(null);
 
@@ -64,6 +65,7 @@ export function MalzemeListesi(): React.JSX.Element {
         title,
         templateHtml: selectedSablon.icerik,
         processPath,
+        templateTestVerisi: selectedSablon.test_verisi || "",
       });
       setPreviewModalOpen(true);
     } catch (error: any) {
@@ -88,6 +90,24 @@ export function MalzemeListesi(): React.JSX.Element {
     );
   };
 
+  if (previewData && previewModalOpen) {
+    return (
+      <DocumentPreviewModal
+        isOpen={previewModalOpen}
+        onClose={() => setPreviewModalOpen(false)}
+        title={previewData.title}
+        templateHtml={previewData.templateHtml}
+        masterHtml={masterHtml || ""}
+        baseContext={dosyaContext}
+        placeholders={placeholders}
+        onPrint={executePrint}
+        onExportPdf={executeExportPdf}
+        isInline={true}
+        templateTestVerisi={previewData.templateTestVerisi}
+      />
+    );
+  }
+
   return (
     <SubScreen
       title="İhtiyaç Listesi"
@@ -102,8 +122,8 @@ export function MalzemeListesi(): React.JSX.Element {
           <button
             onClick={() =>
               handleOpenPreview(
-                '/dosya/malzemeler/liste',
-                'Son Alım Fiyat Cetveli',
+                "/dosya/malzemeler/liste",
+                "Son Alım Fiyat Cetveli",
               )}
             disabled={ciktiLoading}
             className="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm disabled:opacity-50"
@@ -137,20 +157,6 @@ export function MalzemeListesi(): React.JSX.Element {
 
       <MalzemeEkleModal state={state} />
       <MalzemeTablosu state={state} />
-
-      {previewData && (
-        <DocumentPreviewModal
-          isOpen={previewModalOpen}
-          onClose={() => setPreviewModalOpen(false)}
-          title={previewData.title}
-          templateHtml={previewData.templateHtml}
-          masterHtml={masterHtml || ""}
-          baseContext={dosyaContext}
-          placeholders={placeholders}
-          onPrint={executePrint}
-          onExportPdf={executeExportPdf}
-        />
-      )}
     </SubScreen>
   );
 }

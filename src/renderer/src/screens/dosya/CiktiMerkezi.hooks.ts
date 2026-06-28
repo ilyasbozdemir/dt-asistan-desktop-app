@@ -310,7 +310,22 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
           for (const [sablonKey, colMap] of Object.entries(activeMap)) {
             if (colMap && colMap.tablo && colMap.sutun) {
               let val: any = null
-              if (colMap.tablo === 'TANIM_Kurum' && kurum) {
+              
+              if (colMap.iliskili_id) {
+                // Dynamic query filtered by activeDosyaId
+                try {
+                  const dynamicRes = await window.electron.ipcRenderer.invoke(
+                    'db:query',
+                    `SELECT ${colMap.sutun} FROM ${colMap.tablo} WHERE ${colMap.iliskili_id} = ? LIMIT 1`,
+                    [activeDosyaId]
+                  )
+                  if (dynamicRes.success && dynamicRes.data?.length > 0) {
+                    val = dynamicRes.data[0][colMap.sutun]
+                  }
+                } catch (err) {
+                  console.error(`Dynamic mapping query failed for ${sablonKey}:`, err)
+                }
+              } else if (colMap.tablo === 'TANIM_Kurum' && kurum) {
                 val = kurum[colMap.sutun as keyof typeof kurum]
               } else if (colMap.tablo === 'DATA_TeminDosyasi' && dosyaRes.data?.[0]) {
                 val = dosyaRes.data[0][colMap.sutun]
