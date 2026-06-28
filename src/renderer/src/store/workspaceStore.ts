@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 
 export interface WorkspaceMeta {
-
   dtal_version: string
   app_version: string
   created_at: string
@@ -10,7 +9,6 @@ export interface WorkspaceMeta {
   updated_at?: string
   warnings?: string[]
 }
-
 
 interface WorkspaceState {
   activeFilePath: string | null
@@ -25,7 +23,15 @@ interface WorkspaceState {
   setIsAuthenticated: (auth: boolean) => void
   setActiveDosyaId: (id: number | null) => void
   setActiveStarredDocs: (docs: string[]) => void
-  openWorkspace: (filePath: string, allowMigration?: boolean) => Promise<{ success: boolean; error?: string; requiresMigration?: boolean; pendingUpdates?: any[] }>
+  openWorkspace: (
+    filePath: string,
+    allowMigration?: boolean
+  ) => Promise<{
+    success: boolean
+    error?: string
+    requiresMigration?: boolean
+    pendingUpdates?: any[]
+  }>
   createWorkspace: (
     filePath: string,
     institutionName: string,
@@ -41,7 +47,8 @@ interface WorkspaceState {
 export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   activeFilePath: sessionStorage.getItem('workspace_path') || null,
   fileName: sessionStorage.getItem('workspace_path')
-    ? sessionStorage.getItem('workspace_path')!.split('\\').pop()?.split('/').pop() || 'Bilinmeyen Dosya'
+    ? sessionStorage.getItem('workspace_path')!.split('\\').pop()?.split('/').pop() ||
+      'Bilinmeyen Dosya'
     : 'Veri Dosyası Seçilmedi',
   isAuthenticated: sessionStorage.getItem('workspace_auth') === 'true',
   activeDosyaId: sessionStorage.getItem('workspace_dosya_id')
@@ -79,10 +86,14 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   },
   openWorkspace: async (filePath: string, allowMigration: boolean = false) => {
     try {
-      const result = await window.electron.ipcRenderer.invoke('workspace:open', filePath, allowMigration)
-      
+      const result = await window.electron.ipcRenderer.invoke(
+        'workspace:open',
+        filePath,
+        allowMigration
+      )
+
       if (result.requiresMigration) {
-         return { success: false, requiresMigration: true, pendingUpdates: result.pendingUpdates }
+        return { success: false, requiresMigration: true, pendingUpdates: result.pendingUpdates }
       }
 
       if (result.success) {
@@ -93,7 +104,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 
         sessionStorage.setItem('workspace_path', actualFilePath)
         sessionStorage.setItem('workspace_auth', keepAuth ? 'true' : 'false')
-        
+
         if (!keepAuth) {
           sessionStorage.removeItem('workspace_dosya_id')
         }
@@ -109,10 +120,16 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
               : null
             : null
         })
-        
+
         // Add to recent files
-        const nameWithoutExt = actualFilePath.split(/[/\\]/).pop()?.replace(/\.dt[ma]$/i, '') || 'Bilinmeyen Kurum'
-        window.electron.ipcRenderer.invoke('app:add-recent-file', actualFilePath, nameWithoutExt).catch(console.error)
+        const nameWithoutExt =
+          actualFilePath
+            .split(/[/\\]/)
+            .pop()
+            ?.replace(/\.dt[ma]$/i, '') || 'Bilinmeyen Kurum'
+        window.electron.ipcRenderer
+          .invoke('app:add-recent-file', actualFilePath, nameWithoutExt)
+          .catch(console.error)
 
         return { success: true }
       }
@@ -152,8 +169,14 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
         })
 
         // Add to recent files
-        const nameWithoutExt = actualFilePath.split(/[/\\]/).pop()?.replace(/\.dt[ma]$/i, '') || 'Bilinmeyen Kurum'
-        window.electron.ipcRenderer.invoke('app:add-recent-file', actualFilePath, nameWithoutExt).catch(console.error)
+        const nameWithoutExt =
+          actualFilePath
+            .split(/[/\\]/)
+            .pop()
+            ?.replace(/\.dt[ma]$/i, '') || 'Bilinmeyen Kurum'
+        window.electron.ipcRenderer
+          .invoke('app:add-recent-file', actualFilePath, nameWithoutExt)
+          .catch(console.error)
 
         return { success: true }
       }

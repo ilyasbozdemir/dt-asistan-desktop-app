@@ -1,8 +1,5 @@
 {
-  "antetSatirlari": [
-    "T.C.",
-    "ÖRNEK BELEDİYE BAŞKANLIĞI"
-  ],
+  "antetSatirlari": ["T.C.", "ÖRNEK BELEDİYE BAŞKANLIĞI"],
   "solLogo": "https://raw.githubusercontent.com/ilyasbozdemir/dt-asistan-desktop-app/refs/heads/main/resources/icon.png",
   "sagLogo": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Logo_of_100th_years_of_the_Republic_of_T%C3%BCrkiye.svg",
   "isAdi": "Belediyemiz Hizmet Binası Çatı Onarım İşi İçin Malzeme Alımı",
@@ -25,7 +22,9 @@
     },
     {
       "label": "İŞİN AÇIKLAMASI",
-      "lines": ["Belediyemiz Hizmet Binası Çatı Onarım İşi Kapsamında İhtiyaç Duyulan İnşaat ve Çatı Malzemelerinin Satın Alınması İşi"],
+      "lines": [
+        "Belediyemiz Hizmet Binası Çatı Onarım İşi Kapsamında İhtiyaç Duyulan İnşaat ve Çatı Malzemelerinin Satın Alınması İşi"
+      ],
       "isBold": false
     },
     {

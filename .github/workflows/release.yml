@@ -3,7 +3,7 @@ name: Build and Release
 on:
   push:
     tags:
-      - "v*"
+      - 'v*'
 
 permissions:
   contents: write
@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: npm install
         env:
-          npm_config_msvs_version: "2022"
+          npm_config_msvs_version: '2022'
 
       - name: Verify ee-first
         shell: cmd

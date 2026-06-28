@@ -1,225 +1,243 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <title>İhale Komisyon Kararı</title>
-  <style>
-    @page {
-      size: A4;
-      margin: 1.5cm 1cm;
-    }
-    body {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 10.5pt;
-      color: #000;
-      line-height: 1.4;
-      margin: 0;
-      padding: 0;
-      background-color: #fff;
-    }
-    .page-container {
-      max-width: 21cm;
-      box-sizing: border-box;
-      margin: 0 auto;
-      padding: 0.2cm;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin-bottom: 15px;
-    }
-    .bordered td, .bordered th {
-      border: 1px solid #000;
-      padding: 5px 8px;
-      vertical-align: middle;
-    }
-    .bordered th {
-      background-color: #f2f2f2;
-      text-align: center;
-      font-weight: bold;
-    }
-    h3 {
-      text-align: center;
-      margin: 10px 0 15px;
-      font-size: 13pt;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-    .text-center {
-      text-align: center;
-    }
-    .text-right {
-      text-align: right;
-    }
-    .font-bold {
-      font-weight: bold;
-    }
-    .bg-light {
-      background-color: #f9f9f9;
-    }
-    .gerekceler-box {
-      border: 1px solid #000;
-      padding: 8px;
-      min-height: 80px;
-      text-align: justify;
-      margin-top: 5px;
-      font-size: 10pt;
-    }
-    .commission-table {
-      margin-top: 30px;
-      break-inside: avoid;
-      page-break-inside: avoid;
-    }
-    .commission-table td {
-      border: none;
-      padding: 10px;
-      text-align: center;
-      vertical-align: top;
-      width: 25%;
-      line-height: 1.3;
-    }
-  </style>
-</head>
-<body>
-  <div class="page-container">
+  <head>
+    <meta charset="UTF-8" />
+    <title>İhale Komisyon Kararı</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 1.5cm 1cm;
+      }
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 10.5pt;
+        color: #000;
+        line-height: 1.4;
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+      }
+      .page-container {
+        max-width: 21cm;
+        box-sizing: border-box;
+        margin: 0 auto;
+        padding: 0.2cm;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 15px;
+      }
+      .bordered td,
+      .bordered th {
+        border: 1px solid #000;
+        padding: 5px 8px;
+        vertical-align: middle;
+      }
+      .bordered th {
+        background-color: #f2f2f2;
+        text-align: center;
+        font-weight: bold;
+      }
+      h3 {
+        text-align: center;
+        margin: 10px 0 15px;
+        font-size: 13pt;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .text-right {
+        text-align: right;
+      }
+      .font-bold {
+        font-weight: bold;
+      }
+      .bg-light {
+        background-color: #f9f9f9;
+      }
+      .gerekceler-box {
+        border: 1px solid #000;
+        padding: 8px;
+        min-height: 80px;
+        text-align: justify;
+        margin-top: 5px;
+        font-size: 10pt;
+      }
+      .commission-table {
+        margin-top: 30px;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .commission-table td {
+        border: none;
+        padding: 10px;
+        text-align: center;
+        vertical-align: top;
+        width: 25%;
+        line-height: 1.3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <h3>İHALE KOMİSYON KARARI</h3>
 
-    <h3>İHALE KOMİSYON KARARI</h3>
+      <!-- GENEL BİLGİLER -->
+      <table class="bordered">
+        <tbody>
+          <tr>
+            <td width="280" class="font-bold">İhale Kayıt Numarası</td>
+            <td>{{ihaleKayitNo}}{{^ihaleKayitNo}}................{{/ihaleKayitNo}}</td>
+          </tr>
+          <tr>
+            <td class="font-bold">Karar No</td>
+            <td>{{kararNo}}{{^kararNo}}................{{/kararNo}}</td>
+          </tr>
+          <tr>
+            <td class="font-bold">İdarenin Adı</td>
+            <td>{{kurumAdi}}{{^kurumAdi}}................{{/kurumAdi}}</td>
+          </tr>
+          <tr>
+            <td class="font-bold">İşin Adı</td>
+            <td>
+              {{isinAdi}}{{^isinAdi}}{{dosyaKonusu}}{{^dosyaKonusu}}................{{/dosyaKonusu}}{{/isinAdi}}
+            </td>
+          </tr>
+          <tr>
+            <td class="font-bold">İhale Tarihi ve Saati</td>
+            <td>
+              {{ihaleTarihiVeSaati}}{{^ihaleTarihiVeSaati}}................{{/ihaleTarihiVeSaati}}
+            </td>
+          </tr>
+          <tr>
+            <td class="font-bold">İhale Usulü</td>
+            <td>{{ihaleUsulu}}{{^ihaleUsulu}}Doğrudan Temin 22/d{{/ihaleUsulu}}</td>
+          </tr>
+          <tr>
+            <td class="font-bold">Döküman Satın Alanların Sayısı</td>
+            <td>{{dokumanAlanSayisi}}{{^dokumanAlanSayisi}}0{{/dokumanAlanSayisi}}</td>
+          </tr>
+          <tr>
+            <td class="font-bold">Toplam Teklif Sayısı</td>
+            <td>{{toplamTeklifSayisi}}{{^toplamTeklifSayisi}}0{{/toplamTeklifSayisi}}</td>
+          </tr>
+          <tr>
+            <td class="font-bold">Geçerli Teklif Sayısı</td>
+            <td>{{gecerliTeklifSayisi}}{{^gecerliTeklifSayisi}}0{{/gecerliTeklifSayisi}}</td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- GENEL BİLGİLER -->
-    <table class="bordered">
-      <tbody>
-        <tr>
-          <td width="280" class="font-bold">İhale Kayıt Numarası</td>
-          <td>{{ihaleKayitNo}}{{^ihaleKayitNo}}................{{/ihaleKayitNo}}</td>
-        </tr>
-        <tr>
-          <td class="font-bold">Karar No</td>
-          <td>{{kararNo}}{{^kararNo}}................{{/kararNo}}</td>
-        </tr>
-        <tr>
-          <td class="font-bold">İdarenin Adı</td>
-          <td>{{kurumAdi}}{{^kurumAdi}}................{{/kurumAdi}}</td>
-        </tr>
-        <tr>
-          <td class="font-bold">İşin Adı</td>
-          <td>{{isinAdi}}{{^isinAdi}}{{dosyaKonusu}}{{^dosyaKonusu}}................{{/dosyaKonusu}}{{/isinAdi}}</td>
-        </tr>
-        <tr>
-          <td class="font-bold">İhale Tarihi ve Saati</td>
-          <td>{{ihaleTarihiVeSaati}}{{^ihaleTarihiVeSaati}}................{{/ihaleTarihiVeSaati}}</td>
-        </tr>
-        <tr>
-          <td class="font-bold">İhale Usulü</td>
-          <td>{{ihaleUsulu}}{{^ihaleUsulu}}Doğrudan Temin 22/d{{/ihaleUsulu}}</td>
-        </tr>
-        <tr>
-          <td class="font-bold">Döküman Satın Alanların Sayısı</td>
-          <td>{{dokumanAlanSayisi}}{{^dokumanAlanSayisi}}0{{/dokumanAlanSayisi}}</td>
-        </tr>
-        <tr>
-          <td class="font-bold">Toplam Teklif Sayısı</td>
-          <td>{{toplamTeklifSayisi}}{{^toplamTeklifSayisi}}0{{/toplamTeklifSayisi}}</td>
-        </tr>
-        <tr>
-          <td class="font-bold">Geçerli Teklif Sayısı</td>
-          <td>{{gecerliTeklifSayisi}}{{^gecerliTeklifSayisi}}0{{/gecerliTeklifSayisi}}</td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- AVANTAJLI TEKLİFLER -->
+      <table class="bordered">
+        <tbody>
+          <tr class="bg-light">
+            <td colspan="2" class="font-bold">Ekonomik açıdan en avantajlı teklifin</td>
+          </tr>
+          <tr>
+            <td width="280">a) Sahibinin adı ve soyadı / ticari ünvanı</td>
+            <td class="font-bold">
+              {{enAvantajliTeklifSahibi}}{{^enAvantajliTeklifSahibi}}................{{/enAvantajliTeklifSahibi}}
+            </td>
+          </tr>
+          <tr>
+            <td>b) Tutarı</td>
+            <td class="font-bold">
+              {{enAvantajliTeklifBedeli}}{{^enAvantajliTeklifBedeli}}................{{/enAvantajliTeklifBedeli}}
+              TL
+            </td>
+          </tr>
+          <tr class="bg-light">
+            <td colspan="2" class="font-bold">Ekonomik açıdan en avantajlı ikinci teklifin</td>
+          </tr>
+          <tr>
+            <td>a) Sahibinin adı ve soyadı / ticari ünvanı</td>
+            <td>
+              {{ikinciAvantajliTeklifSahibi}}{{^ikinciAvantajliTeklifSahibi}}................{{/ikinciAvantajliTeklifSahibi}}
+            </td>
+          </tr>
+          <tr>
+            <td>b) Tutarı</td>
+            <td>
+              {{ikinciAvantajliTeklifBedeli}}{{^ikinciAvantajliTeklifBedeli}}................{{/ikinciAvantajliTeklifBedeli}}
+              TL
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- AVANTAJLI TEKLİFLER -->
-    <table class="bordered">
-      <tbody>
-        <tr class="bg-light">
-          <td colspan="2" class="font-bold">Ekonomik açıdan en avantajlı teklifin</td>
-        </tr>
-        <tr>
-          <td width="280">a) Sahibinin adı ve soyadı / ticari ünvanı</td>
-          <td class="font-bold">{{enAvantajliTeklifSahibi}}{{^enAvantajliTeklifSahibi}}................{{/enAvantajliTeklifSahibi}}</td>
-        </tr>
-        <tr>
-          <td>b) Tutarı</td>
-          <td class="font-bold">{{enAvantajliTeklifBedeli}}{{^enAvantajliTeklifBedeli}}................{{/enAvantajliTeklifBedeli}} TL</td>
-        </tr>
-        <tr class="bg-light">
-          <td colspan="2" class="font-bold">Ekonomik açıdan en avantajlı ikinci teklifin</td>
-        </tr>
-        <tr>
-          <td>a) Sahibinin adı ve soyadı / ticari ünvanı</td>
-          <td>{{ikinciAvantajliTeklifSahibi}}{{^ikinciAvantajliTeklifSahibi}}................{{/ikinciAvantajliTeklifSahibi}}</td>
-        </tr>
-        <tr>
-          <td>b) Tutarı</td>
-          <td>{{ikinciAvantajliTeklifBedeli}}{{^ikinciAvantajliTeklifBedeli}}................{{/ikinciAvantajliTeklifBedeli}} TL</td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- TUTANAK TARİH/SAAT -->
+      <p class="text-center" style="margin: 15px 0; font-size: 10pt">
+        Bu tutanak
+        <b>{{tutanakTarihi}}{{^tutanakTarihi}}{{dosyaTarihi}}{{/tutanakTarihi}}</b> tarihinde, saat
+        : <b>{{tutanakSaati}}{{^tutanakSaati}}....:....{{/tutanakSaati}}</b> de düzenlenmiştir.
+      </p>
 
-    <!-- TUTANAK TARİH/SAAT -->
-    <p class="text-center" style="margin: 15px 0; font-size: 10pt;">
-      Bu tutanak <b>{{tutanakTarihi}}{{^tutanakTarihi}}{{dosyaTarihi}}{{/tutanakTarihi}}</b> tarihinde, saat : <b>{{tutanakSaati}}{{^tutanakSaati}}....:....{{/tutanakSaati}}</b> de düzenlenmiştir.
-    </p>
+      <!-- İSTEKLİLERİN TEKLİF ETTİĞİ BEDELLER -->
+      <p
+        class="text-center font-bold"
+        style="margin: 20px 0 10px; font-size: 11pt; text-transform: uppercase"
+      >
+        İsteklilerin Teklif Ettiği Bedeller
+      </p>
 
-    <!-- İSTEKLİLERİN TEKLİF ETTİĞİ BEDELLER -->
-    <p class="text-center font-bold" style="margin: 20px 0 10px; font-size: 11pt; text-transform: uppercase;">
-      İsteklilerin Teklif Ettiği Bedeller
-    </p>
+      <table class="bordered">
+        <thead>
+          <tr>
+            <th width="8%">Sıra No</th>
+            <th>İsteklinin Ünvanı</th>
+            <th width="25%">Teklif Edilen Tutar (Rakam ile)</th>
+            <th width="35%">Yazı ile</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#teklifler}}
+          <tr>
+            <td class="text-center">{{siraNo}}</td>
+            <td>{{istekliUnvani}}</td>
+            <td class="text-right font-bold">{{teklifBedeli}} TL</td>
+            <td>{{yaziIle}}</td>
+          </tr>
+          {{/teklifler}} {{^teklifler}}
+          <tr>
+            <td colspan="4" class="text-center">Kayıtlı teklif bulunmamaktadır.</td>
+          </tr>
+          {{/teklifler}}
+        </tbody>
+      </table>
 
-    <table class="bordered">
-      <thead>
-        <tr>
-          <th width="8%">Sıra No</th>
-          <th>İsteklinin Ünvanı</th>
-          <th width="25%">Teklif Edilen Tutar (Rakam ile)</th>
-          <th width="35%">Yazı ile</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#teklifler}}
-        <tr>
-          <td class="text-center">{{siraNo}}</td>
-          <td>{{istekliUnvani}}</td>
-          <td class="text-right font-bold">{{teklifBedeli}} TL</td>
-          <td>{{yaziIle}}</td>
-        </tr>
-        {{/teklifler}}
-        {{^teklifler}}
-        <tr>
-          <td colspan="4" class="text-center">Kayıtlı teklif bulunmamaktadır.</td>
-        </tr>
-        {{/teklifler}}
-      </tbody>
-    </table>
+      <!-- GEREKÇELER -->
+      <p class="font-bold" style="margin: 15px 0 5px">Komisyon Karar Gerekçeleri:</p>
+      <div class="gerekceler-box">
+        {{gerekceler}}{{^gerekceler}}Komisyon karar gerekçesi girilmemiştir.{{/gerekceler}}
+      </div>
 
-    <!-- GEREKÇELER -->
-    <p class="font-bold" style="margin: 15px 0 5px;">Komisyon Karar Gerekçeleri:</p>
-    <div class="gerekceler-box">
-      {{gerekceler}}{{^gerekceler}}Komisyon karar gerekçesi girilmemiştir.{{/gerekceler}}
+      <!-- İHALE KOMİSYONU İMZALAR -->
+      <table class="commission-table">
+        <tbody>
+          <tr>
+            <td colspan="4" class="font-bold" style="font-size: 11pt; padding-bottom: 15px">
+              İHALE KOMİSYONU
+            </td>
+          </tr>
+          <tr>
+            {{#ihaleKomisyonu}}
+            <td>
+              <span class="font-bold">{{gorevi}}</span><br />
+              <span>{{adSoyad}}</span><br />
+              <span>{{unvan}}</span><br />
+              <br />
+              <span>(İmza)</span>
+            </td>
+            {{/ihaleKomisyonu}} {{^ihaleKomisyonu}}
+            <td colspan="4">Komisyon üyeleri tanımlanmamıştır.</td>
+            {{/ihaleKomisyonu}}
+          </tr>
+        </tbody>
+      </table>
     </div>
-
-    <!-- İHALE KOMİSYONU İMZALAR -->
-    <table class="commission-table">
-      <tbody>
-        <tr>
-          <td colspan="4" class="font-bold" style="font-size: 11pt; padding-bottom: 15px;">İHALE KOMİSYONU</td>
-        </tr>
-        <tr>
-          {{#ihaleKomisyonu}}
-          <td>
-            <span class="font-bold">{{gorevi}}</span><br>
-            <span>{{adSoyad}}</span><br>
-            <span>{{unvan}}</span><br>
-            <br>
-            <span>(İmza)</span>
-          </td>
-          {{/ihaleKomisyonu}}
-          {{^ihaleKomisyonu}}
-          <td colspan="4">Komisyon üyeleri tanımlanmamıştır.</td>
-          {{/ihaleKomisyonu}}
-        </tr>
-      </tbody>
-    </table>
-
-  </div>
-</body>
+  </body>
 </html>

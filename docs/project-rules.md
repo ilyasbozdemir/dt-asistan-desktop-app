@@ -41,13 +41,12 @@ göz önünde bulunduracağım.
   tanımlı, tipli API'leri kullanır.
 - `preload/index.ts` örneği:
   ```typescript
-  contextBridge.exposeInMainWorld("api", {
+  contextBridge.exposeInMainWorld('api', {
     dosya: {
-      create: (input: CreateDosyaInput) =>
-        ipcRenderer.invoke("dosya:create", input),
-      list: (filter: DosyaFilter) => ipcRenderer.invoke("dosya:list", filter),
-    },
-  });
+      create: (input: CreateDosyaInput) => ipcRenderer.invoke('dosya:create', input),
+      list: (filter: DosyaFilter) => ipcRenderer.invoke('dosya:list', filter)
+    }
+  })
   ```
 - Her IPC kanalı isimlendirmesi `<modül>:<eylem>` formatında olacaktır (örn.
   `dosya:create`, `komisyon:list`).

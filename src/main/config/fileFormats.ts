@@ -41,7 +41,6 @@ export const SUPPORTED_FORMATS: FileFormat[] = [
   }
 ]
 
-
 /** Tüm desteklenen uzantıları ['dtm', 'dta', ...] olarak döner */
 export const allExtensions = SUPPORTED_FORMATS.map((f) => f.ext)
 

@@ -15,11 +15,26 @@ export const TANIM_Kalem = {
     { name: 'kdv_orani', type: 'REAL', default: 20, description: 'Kdv Orani' },
     { name: 'mensei', type: 'TEXT', description: 'Mensei' }, // Yerli, Yabancı
     { name: 'is_personel', type: 'INTEGER', default: 0, description: 'Is Personel' },
-    { name: 'personel_asgari_fark_oran', type: 'REAL', default: 0, description: 'Personel Asgari Fark Oran' },
+    {
+      name: 'personel_asgari_fark_oran',
+      type: 'REAL',
+      default: 0,
+      description: 'Personel Asgari Fark Oran'
+    },
     { name: 'aktif_mi', type: 'INTEGER', notNull: true, default: 1, description: 'Aktif mı?' },
     { name: 'notlar', type: 'TEXT', description: 'Notlar' },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
+    {
+      name: 'created_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Created At'
+    },
+    {
+      name: 'updated_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Updated At'
+    }
   ],
   initialData: []
 }

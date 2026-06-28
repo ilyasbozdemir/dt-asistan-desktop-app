@@ -68,7 +68,7 @@ export function PreviewTab({
                 Test Verisi (JSON)
               </button>
             </div>
-            
+
             {/* EDITOR BODY */}
             <div className="flex-1 min-h-0 relative">
               {activeEditorTab === 'html' ? (
@@ -112,7 +112,9 @@ export function PreviewTab({
             <div className="px-4 py-2 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2">
                 <FileText className="w-4 h-4 text-slate-500" />
-                <h2 className="text-xs font-bold text-slate-700 dark:text-slate-300">İndirilecek Çıktı Önizleme (Varsayılan: A4)</h2>
+                <h2 className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                  İndirilecek Çıktı Önizleme (Varsayılan: A4)
+                </h2>
               </div>
               <button
                 onClick={handleOpenNewWindow}

@@ -63,7 +63,7 @@ export const schema = {
     TANIM_Firma, // Kayıtlı firmalar havuzu
     TANIM_Ambar, // Ambar depoları
     TANIM_TasinirKod, // Taşınır Kod Ağacı
-    TANIM_OkasKod,    // OKAS Kod Listesi
+    TANIM_OkasKod, // OKAS Kod Listesi
     TANIM_Kalem, // Malzeme ve Hizmet Kalemleri
     TANIM_OlcuBirimi, // Ölçü Birimleri
     TANIM_AlimTuru, // Alım Türleri
@@ -90,7 +90,6 @@ export const schema = {
   ]
 }
 
-
 export function initializeDatabase(db: Database.Database, institutionName: string): void {
   const currentAppVersion = app.getVersion()
   // Temel ayarlar tablosu
@@ -111,7 +110,6 @@ export function initializeDatabase(db: Database.Database, institutionName: strin
     INSERT OR REPLACE INTO settings (key, value) VALUES ('adminTitle', 'Sistem Yöneticisi');
     INSERT OR IGNORE INTO settings (key, value) VALUES ('rates', '[{"id":"1","ad":"Damga Vergisi","oran":"9,48","tur":"binde","hesapKodu":""},{"id":"2","ad":"Karar Pulu","oran":"5,69","tur":"binde","hesapKodu":""},{"id":"3","ad":"KDV (Genel)","oran":"20","tur":"yuzde","hesapKodu":""},{"id":"4","ad":"KDV (İndirimli)","oran":"10","tur":"yuzde","hesapKodu":""},{"id":"5","ad":"KDV (Özel)","oran":"1","tur":"yuzde","hesapKodu":""}]');
   `)
-
 
   // Tüm tabloları sırayla oluştur
   schema.tables.forEach((table: any) => {

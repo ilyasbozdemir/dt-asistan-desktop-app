@@ -15,17 +15,19 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
   useEffect(() => {
     if (!activeDosyaId) return
 
-  const loadData = async (isBackgroundRefresh = false) => {
-    if (!activeDosyaId) return
-    if (!isBackgroundRefresh) setLoading(true)
-    try {
-      // Master HTML'i al
-      const mHtml = await window.electron.ipcRenderer.invoke('template:read-system', 'master.html')
-      if (typeof mHtml === 'string') setMasterHtml(mHtml)
+    const loadData = async (isBackgroundRefresh = false) => {
+      if (!activeDosyaId) return
+      if (!isBackgroundRefresh) setLoading(true)
+      try {
+        // Master HTML'i al
+        const mHtml = await window.electron.ipcRenderer.invoke(
+          'template:read-system',
+          'master.html'
+        )
+        if (typeof mHtml === 'string') setMasterHtml(mHtml)
 
-      // Şablonları al (sadece en güncel versiyonlar)
-      const sablonsRes = await window.electron.ipcRenderer.invoke(
-
+        // Şablonları al (sadece en güncel versiyonlar)
+        const sablonsRes = await window.electron.ipcRenderer.invoke(
           'db:query',
           'SELECT * FROM TANIM_Sablon WHERE id IN (SELECT MAX(id) FROM TANIM_Sablon WHERE aktif_mi = 1 GROUP BY COALESCE(parent_id, id)) ORDER BY kategori ASC, ad ASC'
         )
@@ -107,11 +109,13 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
         )
         const allCommission = komsRes.success ? komsRes.data : []
         const commission = allCommission.filter((c: any) => c.komisyon_turu === 'Fiyat Araştırma')
-        const muayeneKomisyonu = allCommission.filter((c: any) => c.komisyon_turu === 'Muayene Kabul')
+        const muayeneKomisyonu = allCommission.filter(
+          (c: any) => c.komisyon_turu === 'Muayene Kabul'
+        )
 
         const settings = await window.electron.ipcRenderer.invoke('db:get-settings')
         const subInstType = settings?.subInstitutionType || ''
-        
+
         // TANIM_Kurum'dan kurum bilgilerini al (yeni tablo)
         const kurumRes = await window.electron.ipcRenderer.invoke(
           'db:query',
@@ -150,16 +154,17 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
           for (const [sablonKey, colMap] of Object.entries(activeMap)) {
             if (colMap) {
               let val: any = null
-              
+
               if (colMap.deger !== undefined) {
                 val = colMap.deger
               } else if (colMap.tablo && colMap.sutun) {
                 if (colMap.iliskili_id) {
                   // Dynamic query filtered by activeDosyaId
                   try {
-                    const queryStr = colMap.sutun === '*'
-                      ? `SELECT * FROM ${colMap.tablo} WHERE ${colMap.iliskili_id} = ?`
-                      : `SELECT ${colMap.sutun} FROM ${colMap.tablo} WHERE ${colMap.iliskili_id} = ? LIMIT 1`
+                    const queryStr =
+                      colMap.sutun === '*'
+                        ? `SELECT * FROM ${colMap.tablo} WHERE ${colMap.iliskili_id} = ?`
+                        : `SELECT ${colMap.sutun} FROM ${colMap.tablo} WHERE ${colMap.iliskili_id} = ? LIMIT 1`
 
                     const dynamicRes = await window.electron.ipcRenderer.invoke(
                       'db:query',
@@ -172,7 +177,9 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
                         if (colMap.altEslestirme && Array.isArray(rows)) {
                           rows = rows.map((row: any, idx: number) => {
                             const mapped: any = { siraNo: idx + 1 }
-                            for (const [mustacheKey, dbCol] of Object.entries(colMap.altEslestirme!)) {
+                            for (const [mustacheKey, dbCol] of Object.entries(
+                              colMap.altEslestirme!
+                            )) {
                               mapped[mustacheKey] = row[dbCol]
                             }
                             return mapped
@@ -198,7 +205,11 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
               }
 
               if (val !== null && val !== undefined) {
-                if (typeof val === 'string' && ((val.startsWith('[') && val.endsWith(']')) || (val.startsWith('{') && val.endsWith('}')))) {
+                if (
+                  typeof val === 'string' &&
+                  ((val.startsWith('[') && val.endsWith(']')) ||
+                    (val.startsWith('{') && val.endsWith('}')))
+                ) {
                   try {
                     val = JSON.parse(val)
                   } catch {
@@ -224,7 +235,10 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
         )
 
         // Varsa test/master dummy verisini de alıp birleştir, gerçek veriler üzerine yazsın
-        const mJson = await window.electron.ipcRenderer.invoke('template:read-system', 'master.html.json')
+        const mJson = await window.electron.ipcRenderer.invoke(
+          'template:read-system',
+          'master.html.json'
+        )
         if (typeof mJson === 'string') {
           try {
             const parsedJson = JSON.parse(mJson)
@@ -233,7 +247,7 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
             // Hata durumunda master.html.json yok sayılır
           }
         }
-        
+
         setDosyaContext(context)
         setActiveDosya(dosyaRes.data?.[0] || null)
       } catch (err) {

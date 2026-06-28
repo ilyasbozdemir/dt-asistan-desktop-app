@@ -44,8 +44,8 @@ export function BentlerTab(): React.JSX.Element {
             <div className="text-sm">
               <p className="font-semibold mb-1">4734 Sayılı KİK - Madde 22 Bentleri</p>
               <p>
-                Aşağıda belirtilen hallerde ihtiyaçların ilân yapılmaksızın ve teminat
-                alınmaksızın doğrudan temin usulüyle karşılanması mümkündür.
+                Aşağıda belirtilen hallerde ihtiyaçların ilân yapılmaksızın ve teminat alınmaksızın
+                doğrudan temin usulüyle karşılanması mümkündür.
               </p>
             </div>
           </div>
@@ -67,9 +67,7 @@ export function BentlerTab(): React.JSX.Element {
                     <span className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-slate-700 dark:text-slate-300 shrink-0">
                       {bent.bent.toUpperCase()}
                     </span>
-                    <h3 className="font-bold text-slate-800 dark:text-slate-200">
-                      {bent.kisaAd}
-                    </h3>
+                    <h3 className="font-bold text-slate-800 dark:text-slate-200">{bent.kisaAd}</h3>
                     {isSikKullanilan && (
                       <span className="ml-auto text-[10px] font-bold text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30 px-2 py-1 rounded-full shrink-0">
                         SIK KULLANILAN
@@ -108,9 +106,7 @@ export function BentlerTab(): React.JSX.Element {
                   <span className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-slate-700 dark:text-slate-300 shrink-0">
                     {bent.bent.toUpperCase()}
                   </span>
-                  <h3 className="font-bold text-slate-800 dark:text-slate-200">
-                    {bent.kisaAd}
-                  </h3>
+                  <h3 className="font-bold text-slate-800 dark:text-slate-200">{bent.kisaAd}</h3>
                 </div>
                 <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                   {bent.aciklama}

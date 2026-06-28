@@ -1,341 +1,354 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <title>Onay Belgesi</title>
-  <style>
-    @page {
-      size: A4 portrait;
-      margin: 1.2cm;
-    }
-    body {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 9.5pt;
-      color: #000;
-      line-height: 1.25;
-      margin: 0;
-      padding: 0;
-      background-color: #fff;
-    }
-    .page-container {
-      max-width: 21cm;
-      margin: 0 auto;
-      padding: 0.2cm;
-      box-sizing: border-box;
-    }
-    .title {
-      text-align: center;
-      font-weight: bold;
-      font-size: 13pt;
-      margin-bottom: 12px;
-      letter-spacing: 0.5px;
-    }
-    .kik-table {
-      width: 100%;
-      border-collapse: collapse;
-      border: 1px solid #000;
-      margin-bottom: 8px;
-    }
-    .kik-table th, .kik-table td {
-      border: 1px solid #000;
-      padding: 5px 7px;
-      vertical-align: top;
-    }
-    .kik-table .header-cell {
-      font-weight: bold;
-      text-transform: uppercase;
-      font-size: 9.5pt;
-    }
-    .kik-table .label-cell {
-      width: 45%;
-      font-size: 9pt;
-      font-weight: normal;
-    }
-    .kik-table .value-cell {
-      width: 55%;
-      font-size: 9pt;
-    }
-    .kik-table .center-box {
-      text-align: center;
-      font-weight: bold;
-      text-transform: uppercase;
-      font-size: 11pt;
-      background-color: #fff;
-    }
-    .kik-table .section-title-cell {
-      text-align: center;
-      font-weight: bold;
-      background-color: #fff;
-      font-size: 9.5pt;
-      padding: 6px;
-    }
-    .desc-box {
-      border: 1px solid #000;
-      padding: 8px;
-      min-height: 60px;
-      font-size: 9pt;
-      margin-bottom: 8px;
-      text-align: justify;
-      white-space: pre-wrap;
-    }
-    .signature-container {
-      width: 100%;
-      border-collapse: collapse;
-      border: 1px solid #000;
-    }
-    .signature-container td {
-      border: 1px solid #000;
-      padding: 8px;
-      width: 50%;
-      vertical-align: top;
-      font-size: 9.5pt;
-    }
-    .signature-title {
-      text-align: center;
-      font-weight: bold;
-      font-size: 9.5pt;
-      margin-bottom: 6px;
-    }
-    .signature-text {
-      text-align: justify;
-      text-indent: 15px;
-      margin-bottom: 15px;
-      line-height: 1.35;
-    }
-    .signature-olur {
-      text-align: center;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-    .signature-block-left {
-      margin-top: 35px;
-      text-align: center;
-    }
-    .signature-block-right {
-      margin-top: 35px;
-      text-align: center;
-    }
-    @media print {
+  <head>
+    <meta charset="UTF-8" />
+    <title>Onay Belgesi</title>
+    <style>
+      @page {
+        size: A4 portrait;
+        margin: 1.2cm;
+      }
       body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 9.5pt;
+        color: #000;
+        line-height: 1.25;
+        margin: 0;
+        padding: 0;
         background-color: #fff;
       }
       .page-container {
-        padding: 0;
-        margin: 0;
-        max-width: none;
+        max-width: 21cm;
+        margin: 0 auto;
+        padding: 0.2cm;
+        box-sizing: border-box;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="page-container">
-    <div class="title">ONAY BELGESİ</div>
+      .title {
+        text-align: center;
+        font-weight: bold;
+        font-size: 13pt;
+        margin-bottom: 12px;
+        letter-spacing: 0.5px;
+      }
+      .kik-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #000;
+        margin-bottom: 8px;
+      }
+      .kik-table th,
+      .kik-table td {
+        border: 1px solid #000;
+        padding: 5px 7px;
+        vertical-align: top;
+      }
+      .kik-table .header-cell {
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 9.5pt;
+      }
+      .kik-table .label-cell {
+        width: 45%;
+        font-size: 9pt;
+        font-weight: normal;
+      }
+      .kik-table .value-cell {
+        width: 55%;
+        font-size: 9pt;
+      }
+      .kik-table .center-box {
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 11pt;
+        background-color: #fff;
+      }
+      .kik-table .section-title-cell {
+        text-align: center;
+        font-weight: bold;
+        background-color: #fff;
+        font-size: 9.5pt;
+        padding: 6px;
+      }
+      .desc-box {
+        border: 1px solid #000;
+        padding: 8px;
+        min-height: 60px;
+        font-size: 9pt;
+        margin-bottom: 8px;
+        text-align: justify;
+        white-space: pre-wrap;
+      }
+      .signature-container {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #000;
+      }
+      .signature-container td {
+        border: 1px solid #000;
+        padding: 8px;
+        width: 50%;
+        vertical-align: top;
+        font-size: 9.5pt;
+      }
+      .signature-title {
+        text-align: center;
+        font-weight: bold;
+        font-size: 9.5pt;
+        margin-bottom: 6px;
+      }
+      .signature-text {
+        text-align: justify;
+        text-indent: 15px;
+        margin-bottom: 15px;
+        line-height: 1.35;
+      }
+      .signature-olur {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 15px;
+      }
+      .signature-block-left {
+        margin-top: 35px;
+        text-align: center;
+      }
+      .signature-block-right {
+        margin-top: 35px;
+        text-align: center;
+      }
+      @media print {
+        body {
+          background-color: #fff;
+        }
+        .page-container {
+          padding: 0;
+          margin: 0;
+          max-width: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <div class="title">ONAY BELGESİ</div>
 
-    <!-- Top table: Idare and Belge info -->
-    <table class="kik-table">
-      <tr>
-        <td class="header-cell" style="width: 35%;">İHALEYİ YAPAN İDARENİN ADI</td>
-        <td style="width: 65%;">{{idareAdi}}</td>
-      </tr>
-      <tr>
-        <td class="header-cell">BELGE TARİH VE SAYISI</td>
-        <td>{{tarih}} &nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp; {{evrakSayisi}}</td>
-      </tr>
-      <tr>
-        <td colspan="2" class="center-box" style="padding: 6px;">{{idareAdi}}</td>
-      </tr>
-    </table>
+      <!-- Top table: Idare and Belge info -->
+      <table class="kik-table">
+        <tr>
+          <td class="header-cell" style="width: 35%">İHALEYİ YAPAN İDARENİN ADI</td>
+          <td style="width: 65%">{{idareAdi}}</td>
+        </tr>
+        <tr>
+          <td class="header-cell">BELGE TARİH VE SAYISI</td>
+          <td>{{tarih}} &nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp; {{evrakSayisi}}</td>
+        </tr>
+        <tr>
+          <td colspan="2" class="center-box" style="padding: 6px">{{idareAdi}}</td>
+        </tr>
+      </table>
 
-    <!-- Main side-by-side layout using a 2-column table structure -->
-    <table style="width: 100%; border-collapse: collapse; border: none; margin-bottom: 8px;">
-      <tr>
-        <!-- Left column: Ön İlan Aşaması -->
-        <td style="width: 50%; padding-right: 4px; vertical-align: top; border: none;">
-          <table class="kik-table" style="margin-bottom: 0;">
-            <tr>
-              <td colspan="2" class="section-title-cell">İHALE İLGİLİ BİLGİLER [Ön İlan Aşaması]</td>
-            </tr>
-            <tr>
-              <td class="label-cell">İşin Adı, Tanımı ve Niteliği</td>
-              <td class="value-cell">{{onIlanIsAdi}}</td>
-            </tr>
-            <tr>
-              <td class="label-cell">İşin Tahmini Miktarı</td>
-              <td class="value-cell">{{onIlanIsMiktari}}</td>
-            </tr>
-            <tr>
-              <td class="label-cell">Yaklaşık Maliyet</td>
-              <td class="value-cell">
-                {{#onIlanYaklasikMaliyet}}
-                {{onIlanYaklasikMaliyet}} ₺
-                {{/onIlanYaklasikMaliyet}}
-              </td>
-            </tr>
-            <tr>
-              <td class="label-cell">Kullanılabilir Ödenek Tutarı</td>
-              <td class="value-cell">
-                {{#onIlanOdenekTutari}}
-                {{onIlanOdenekTutari}} ₺
-                {{/onIlanOdenekTutari}}
-              </td>
-            </tr>
-            <tr>
-              <td class="label-cell">Yatırım Proje Numarası (varsa)</td>
-              <td class="value-cell">{{onIlanProjeNo}}</td>
-            </tr>
-            <tr>
-              <td class="label-cell">Bütçe Tertibi</td>
-              <td class="value-cell">
-                {{#onIlanButceTertibi}}
-                <div>{{.}}</div>
-                {{/onIlanButceTertibi}}
-              </td>
-            </tr>
-            <tr>
-              <td class="label-cell" style="height: 120px;">İhale Usulü ve İhale İlanının Yılın Hangi Çeyreğinde Yayımlanacağı</td>
-              <td class="value-cell">{{onIlanIhaleUsulu}}</td>
-            </tr>
-          </table>
-        </td>
+      <!-- Main side-by-side layout using a 2-column table structure -->
+      <table style="width: 100%; border-collapse: collapse; border: none; margin-bottom: 8px">
+        <tr>
+          <!-- Left column: Ön İlan Aşaması -->
+          <td style="width: 50%; padding-right: 4px; vertical-align: top; border: none">
+            <table class="kik-table" style="margin-bottom: 0">
+              <tr>
+                <td colspan="2" class="section-title-cell">
+                  İHALE İLGİLİ BİLGİLER [Ön İlan Aşaması]
+                </td>
+              </tr>
+              <tr>
+                <td class="label-cell">İşin Adı, Tanımı ve Niteliği</td>
+                <td class="value-cell">{{onIlanIsAdi}}</td>
+              </tr>
+              <tr>
+                <td class="label-cell">İşin Tahmini Miktarı</td>
+                <td class="value-cell">{{onIlanIsMiktari}}</td>
+              </tr>
+              <tr>
+                <td class="label-cell">Yaklaşık Maliyet</td>
+                <td class="value-cell">
+                  {{#onIlanYaklasikMaliyet}} {{onIlanYaklasikMaliyet}} ₺ {{/onIlanYaklasikMaliyet}}
+                </td>
+              </tr>
+              <tr>
+                <td class="label-cell">Kullanılabilir Ödenek Tutarı</td>
+                <td class="value-cell">
+                  {{#onIlanOdenekTutari}} {{onIlanOdenekTutari}} ₺ {{/onIlanOdenekTutari}}
+                </td>
+              </tr>
+              <tr>
+                <td class="label-cell">Yatırım Proje Numarası (varsa)</td>
+                <td class="value-cell">{{onIlanProjeNo}}</td>
+              </tr>
+              <tr>
+                <td class="label-cell">Bütçe Tertibi</td>
+                <td class="value-cell">
+                  {{#onIlanButceTertibi}}
+                  <div>{{.}}</div>
+                  {{/onIlanButceTertibi}}
+                </td>
+              </tr>
+              <tr>
+                <td class="label-cell" style="height: 120px">
+                  İhale Usulü ve İhale İlanının Yılın Hangi Çeyreğinde Yayımlanacağı
+                </td>
+                <td class="value-cell">{{onIlanIhaleUsulu}}</td>
+              </tr>
+            </table>
+          </td>
 
-        <!-- Right column: İhale Bilgileri -->
-        <td style="width: 50%; padding-left: 4px; vertical-align: top; border: none;">
-          <table class="kik-table" style="margin-bottom: 0;">
-            <tr>
-              <td colspan="2" class="section-title-cell">İHALE İLGİLİ BİLGİLER</td>
-            </tr>
-            <tr>
-              <td class="label-cell">İşin Adı, Tanımı ve Niteliği</td>
-              <td class="value-cell" style="font-weight: normal;">{{isAdi}}</td>
-            </tr>
-            <tr>
-              <td class="label-cell">İş Miktarı</td>
-              <td class="value-cell">{{isMiktari}}</td>
-            </tr>
-            <tr>
-              <td class="label-cell">Yaklaşık Maliyet</td>
-              <td class="value-cell">{{yaklasikMaliyet}} ₺</td>
-            </tr>
-            <tr>
-              <td class="label-cell">Kullanılabilir Ödenek Tutarı</td>
-              <td class="value-cell">{{odenekTutari}} ₺</td>
-            </tr>
-            <tr>
-              <td class="label-cell">Yatırım Proje Numarası (varsa)</td>
-              <td class="value-cell">
-                {{#projeNo}}
-                {{.}}
-                {{/projeNo}}
-                {{^projeNo}}
-                -
-                {{/projeNo}}
-              </td>
-            </tr>
-            <tr>
-              <td class="label-cell">Bütçe Tertibi</td>
-              <td class="value-cell">
-                {{#butceTertibi}}
-                <div>{{.}}</div>
-                {{/butceTertibi}}
-                {{^butceTertibi}}
-                -
-                {{/butceTertibi}}
-              </td>
-            </tr>
-            <tr>
-              <td class="label-cell">Avans Verilecekse şartları</td>
-              <td class="value-cell">{{avansSartlari}}</td>
-            </tr>
-            <tr>
-              <td class="label-cell">İhale usulü</td>
-              <td class="value-cell">{{teminSekli}}</td>
-            </tr>
-            <tr>
-              <td class="label-cell">İlanın Şekli ve Adedi</td>
-              <td class="value-cell">{{ilanSekli}}</td>
-            </tr>
-            <tr>
-              <td class="label-cell">Döküman Satış Bedeli</td>
-              <td class="value-cell">{{dokumanBedeli}} ₺</td>
-            </tr>
-            <tr>
-              <td class="label-cell">Fiyat Farkı Ödenecekse Dayanağı Bakanlar Kurulu Kararı</td>
-              <td class="value-cell">{{fiyatFarkiSartlari}}</td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
+          <!-- Right column: İhale Bilgileri -->
+          <td style="width: 50%; padding-left: 4px; vertical-align: top; border: none">
+            <table class="kik-table" style="margin-bottom: 0">
+              <tr>
+                <td colspan="2" class="section-title-cell">İHALE İLGİLİ BİLGİLER</td>
+              </tr>
+              <tr>
+                <td class="label-cell">İşin Adı, Tanımı ve Niteliği</td>
+                <td class="value-cell" style="font-weight: normal">{{isAdi}}</td>
+              </tr>
+              <tr>
+                <td class="label-cell">İş Miktarı</td>
+                <td class="value-cell">{{isMiktari}}</td>
+              </tr>
+              <tr>
+                <td class="label-cell">Yaklaşık Maliyet</td>
+                <td class="value-cell">{{yaklasikMaliyet}} ₺</td>
+              </tr>
+              <tr>
+                <td class="label-cell">Kullanılabilir Ödenek Tutarı</td>
+                <td class="value-cell">{{odenekTutari}} ₺</td>
+              </tr>
+              <tr>
+                <td class="label-cell">Yatırım Proje Numarası (varsa)</td>
+                <td class="value-cell">
+                  {{#projeNo}} {{.}} {{/projeNo}} {{^projeNo}} - {{/projeNo}}
+                </td>
+              </tr>
+              <tr>
+                <td class="label-cell">Bütçe Tertibi</td>
+                <td class="value-cell">
+                  {{#butceTertibi}}
+                  <div>{{.}}</div>
+                  {{/butceTertibi}} {{^butceTertibi}} - {{/butceTertibi}}
+                </td>
+              </tr>
+              <tr>
+                <td class="label-cell">Avans Verilecekse şartları</td>
+                <td class="value-cell">{{avansSartlari}}</td>
+              </tr>
+              <tr>
+                <td class="label-cell">İhale usulü</td>
+                <td class="value-cell">{{teminSekli}}</td>
+              </tr>
+              <tr>
+                <td class="label-cell">İlanın Şekli ve Adedi</td>
+                <td class="value-cell">{{ilanSekli}}</td>
+              </tr>
+              <tr>
+                <td class="label-cell">Döküman Satış Bedeli</td>
+                <td class="value-cell">{{dokumanBedeli}} ₺</td>
+              </tr>
+              <tr>
+                <td class="label-cell">Fiyat Farkı Ödenecekse Dayanağı Bakanlar Kurulu Kararı</td>
+                <td class="value-cell">{{fiyatFarkiSartlari}}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
 
-    <div style="font-weight: bold; margin-bottom: 2px; text-transform: uppercase; font-size: 9.5pt;">İHALE İLE İLGİLİ DİĞER AÇIKLAMALAR</div>
-    <div class="desc-box">{{isinAciklamasi}}</div>
+      <div
+        style="font-weight: bold; margin-bottom: 2px; text-transform: uppercase; font-size: 9.5pt"
+      >
+        İHALE İLE İLGİLİ DİĞER AÇIKLAMALAR
+      </div>
+      <div class="desc-box">{{isinAciklamasi}}</div>
 
-    <!-- Signature block layout -->
-    <table style="width: 100%; border-collapse: collapse; border: none;">
-      <tr>
-        <!-- Left half: Ön İlan Aşaması Onay -->
-        <td style="width: 50%; padding-right: 4px; vertical-align: top; border: none;">
-          <table class="signature-container">
-            <tr>
-              <td colspan="2" class="section-title-cell" style="background-color: #fff; padding: 4px;">ONAY</td>
-            </tr>
-            <tr>
-              <td style="height: 110px;">
-                <div class="signature-text">
-                  Yukarıda belirtilen işin yapılması için ön ilana çıkılması hususunu onaylarınıza arz ederim.
-                </div>
-                <div class="signature-block-left">
-                  {{#onIlanTarih}}{{onIlanTarih}}{{/onIlanTarih}}{{^onIlanTarih}}.../.../20...{{/onIlanTarih}}<br><br><br>
-                  <strong>{{#onIlanHazirlayanAdi}}{{onIlanHazirlayanAdi}}{{/onIlanHazirlayanAdi}}{{^onIlanHazirlayanAdi}}Adı SOYADI{{/onIlanHazirlayanAdi}}</strong><br>
-                  {{#onIlanHazirlayanUnvan}}{{onIlanHazirlayanUnvan}}{{/onIlanHazirlayanUnvan}}{{^onIlanHazirlayanUnvan}}Ünvanı{{/onIlanHazirlayanUnvan}}
-                </div>
-              </td>
-              <td style="height: 110px;">
-                <div class="signature-olur">
-                  OLUR.
-                </div>
-                <div class="signature-block-right">
-                  {{#onIlanTarih}}{{onIlanTarih}}{{/onIlanTarih}}{{^onIlanTarih}}.../.../20...{{/onIlanTarih}}<br><br><br>
-                  <strong>{{#onIlanOnaylayanAdi}}{{onIlanOnaylayanAdi}}{{/onIlanOnaylayanAdi}}{{^onIlanOnaylayanAdi}}Adı SOYADI{{/onIlanOnaylayanAdi}}</strong><br>
-                  {{#onIlanOnaylayanUnvan}}{{onIlanOnaylayanUnvan}}{{/onIlanOnaylayanUnvan}}{{^onIlanOnaylayanUnvan}}Ünvanı{{/onIlanOnaylayanUnvan}}
-                </div>
-              </td>
-            </tr>
-          </table>
-        </td>
+      <!-- Signature block layout -->
+      <table style="width: 100%; border-collapse: collapse; border: none">
+        <tr>
+          <!-- Left half: Ön İlan Aşaması Onay -->
+          <td style="width: 50%; padding-right: 4px; vertical-align: top; border: none">
+            <table class="signature-container">
+              <tr>
+                <td
+                  colspan="2"
+                  class="section-title-cell"
+                  style="background-color: #fff; padding: 4px"
+                >
+                  ONAY
+                </td>
+              </tr>
+              <tr>
+                <td style="height: 110px">
+                  <div class="signature-text">
+                    Yukarıda belirtilen işin yapılması için ön ilana çıkılması hususunu onaylarınıza
+                    arz ederim.
+                  </div>
+                  <div class="signature-block-left">
+                    {{#onIlanTarih}}{{onIlanTarih}}{{/onIlanTarih}}{{^onIlanTarih}}.../.../20...{{/onIlanTarih}}<br /><br /><br />
+                    <strong
+                      >{{#onIlanHazirlayanAdi}}{{onIlanHazirlayanAdi}}{{/onIlanHazirlayanAdi}}{{^onIlanHazirlayanAdi}}Adı
+                      SOYADI{{/onIlanHazirlayanAdi}}</strong
+                    ><br />
+                    {{#onIlanHazirlayanUnvan}}{{onIlanHazirlayanUnvan}}{{/onIlanHazirlayanUnvan}}{{^onIlanHazirlayanUnvan}}Ünvanı{{/onIlanHazirlayanUnvan}}
+                  </div>
+                </td>
+                <td style="height: 110px">
+                  <div class="signature-olur">OLUR.</div>
+                  <div class="signature-block-right">
+                    {{#onIlanTarih}}{{onIlanTarih}}{{/onIlanTarih}}{{^onIlanTarih}}.../.../20...{{/onIlanTarih}}<br /><br /><br />
+                    <strong
+                      >{{#onIlanOnaylayanAdi}}{{onIlanOnaylayanAdi}}{{/onIlanOnaylayanAdi}}{{^onIlanOnaylayanAdi}}Adı
+                      SOYADI{{/onIlanOnaylayanAdi}}</strong
+                    ><br />
+                    {{#onIlanOnaylayanUnvan}}{{onIlanOnaylayanUnvan}}{{/onIlanOnaylayanUnvan}}{{^onIlanOnaylayanUnvan}}Ünvanı{{/onIlanOnaylayanUnvan}}
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </td>
 
-        <!-- Right half: İhale Aşaması Onay -->
-        <td style="width: 50%; padding-left: 4px; vertical-align: top; border: none;">
-          <table class="signature-container">
-            <tr>
-              <td colspan="2" class="section-title-cell" style="background-color: #fff; padding: 4px;">ONAY</td>
-            </tr>
-            <tr>
-              <td style="height: 110px;">
-                <div class="signature-text">
-                  Yukarıda belirtilen işin yaptırılması için ihaleye çıkılması hususunu onaylarınıza arz ederim.
-                </div>
-                <div class="signature-block-left">
-                  {{tarih}}<br><br><br>
-                  <strong>{{hazirlayanPersonelAdi}}</strong><br>
-                  {{hazirlayanPersonelUnvan}}
-                </div>
-              </td>
-              <td style="height: 110px;">
-                <div class="signature-olur">
-                  OLUR.
-                </div>
-                <div class="signature-block-right">
-                  {{tarih}}<br><br><br>
-                  <strong>{{onaylayanPersonelAdi}}</strong><br>
-                  {{onaylayanPersonelUnvan}}
-                </div>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-  </div>
-</body>
+          <!-- Right half: İhale Aşaması Onay -->
+          <td style="width: 50%; padding-left: 4px; vertical-align: top; border: none">
+            <table class="signature-container">
+              <tr>
+                <td
+                  colspan="2"
+                  class="section-title-cell"
+                  style="background-color: #fff; padding: 4px"
+                >
+                  ONAY
+                </td>
+              </tr>
+              <tr>
+                <td style="height: 110px">
+                  <div class="signature-text">
+                    Yukarıda belirtilen işin yaptırılması için ihaleye çıkılması hususunu
+                    onaylarınıza arz ederim.
+                  </div>
+                  <div class="signature-block-left">
+                    {{tarih}}<br /><br /><br />
+                    <strong>{{hazirlayanPersonelAdi}}</strong><br />
+                    {{hazirlayanPersonelUnvan}}
+                  </div>
+                </td>
+                <td style="height: 110px">
+                  <div class="signature-olur">OLUR.</div>
+                  <div class="signature-block-right">
+                    {{tarih}}<br /><br /><br />
+                    <strong>{{onaylayanPersonelAdi}}</strong><br />
+                    {{onaylayanPersonelUnvan}}
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
 </html>

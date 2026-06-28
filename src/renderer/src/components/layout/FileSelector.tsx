@@ -8,7 +8,9 @@ export function FileSelector(): React.JSX.Element {
   const [isOpen, setIsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
-  const [recentFiles, setRecentFiles] = useState<{ name: string; path: string; lastOpened: number }[]>([])
+  const [recentFiles, setRecentFiles] = useState<
+    { name: string; path: string; lastOpened: number }[]
+  >([])
   const [selectedFile, setSelectedFile] = useState<{
     id: string
     name: string
@@ -35,8 +37,9 @@ export function FileSelector(): React.JSX.Element {
 
   useEffect(() => {
     if (isOpen) {
-      window.electron?.ipcRenderer.invoke('app:get-recent-files')
-        .then(files => {
+      window.electron?.ipcRenderer
+        .invoke('app:get-recent-files')
+        .then((files) => {
           if (files) setRecentFiles(files)
         })
         .catch(console.error)
@@ -59,7 +62,9 @@ export function FileSelector(): React.JSX.Element {
         if (result.success) {
           queryClient.clear()
         } else {
-          alert(`Çalışma dosyası (.dtal) oluşturulamadı!\nHata: ${result.error || 'Bilinmeyen hata'}`)
+          alert(
+            `Çalışma dosyası (.dtal) oluşturulamadı!\nHata: ${result.error || 'Bilinmeyen hata'}`
+          )
         }
       }
     } catch (e) {
@@ -83,7 +88,6 @@ export function FileSelector(): React.JSX.Element {
       console.error(e)
     }
   }
-
 
   return (
     <div className="relative" ref={containerRef}>
@@ -148,7 +152,9 @@ export function FileSelector(): React.JSX.Element {
                   )}
                 >
                   <span className="truncate">{file.name}</span>
-                  {(fileName === file.name || selectedFile?.path === file.path) && <Check className="w-4 h-4 shrink-0" />}
+                  {(fileName === file.name || selectedFile?.path === file.path) && (
+                    <Check className="w-4 h-4 shrink-0" />
+                  )}
                 </button>
               ))
             )}

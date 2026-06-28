@@ -62,9 +62,7 @@ const menuGroups: MenuGroup[] = [
   },
   {
     title: 'Süreç Yönetimi',
-    items: [
-      { name: 'Doğrudan Temin Dosyaları', path: '/dosyalar', icon: FileText },
-    ]
+    items: [{ name: 'Doğrudan Temin Dosyaları', path: '/dosyalar', icon: FileText }]
   },
   {
     title: 'Kayıtlar & Tanımlar',
@@ -117,7 +115,9 @@ const menuGroups: MenuGroup[] = [
 
 export function Sidebar(): React.JSX.Element {
   const [isCollapsed, setIsCollapsed] = useState(false)
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set(['/malzemeler', 'Malzeme & Kodlar']))
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(
+    new Set(['/malzemeler', 'Malzeme & Kodlar'])
+  )
   const { institutionName, institutionLogo, adminUsername, eButceKodu, loadSettings } =
     useSettingsStore()
   const { closeWorkspace, fileName, activeDosyaId, setActiveDosyaId } = useWorkspaceStore()
@@ -130,9 +130,8 @@ export function Sidebar(): React.JSX.Element {
 
   const searchParams = new URLSearchParams(window.location.search)
   const hashParams = new URLSearchParams(window.location.hash.split('?')[1] || '')
-  const isDosyaWindowMode = searchParams.get('mode') === 'dosya_window' || hashParams.get('mode') === 'dosya_window'
-
-
+  const isDosyaWindowMode =
+    searchParams.get('mode') === 'dosya_window' || hashParams.get('mode') === 'dosya_window'
 
   React.useEffect(() => {
     loadSettings()
@@ -170,25 +169,31 @@ export function Sidebar(): React.JSX.Element {
       <button
         type="button"
         className={cn(
-          "absolute -right-3.5 top-1/2 -translate-y-1/2 z-50",
-          "flex items-center justify-center",
-          "w-7 h-7 rounded-full cursor-pointer group",
-          "bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white",
-          "border-2 border-slate-50 dark:border-slate-950",
-          "shadow-md hover:shadow-lg hover:scale-110 active:scale-95",
-          "transition-all duration-300 ease-out"
+          'absolute -right-3.5 top-1/2 -translate-y-1/2 z-50',
+          'flex items-center justify-center',
+          'w-7 h-7 rounded-full cursor-pointer group',
+          'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white',
+          'border-2 border-slate-50 dark:border-slate-950',
+          'shadow-md hover:shadow-lg hover:scale-110 active:scale-95',
+          'transition-all duration-300 ease-out'
         )}
         style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
         onClick={(e) => {
           e.stopPropagation()
           setIsCollapsed(!isCollapsed)
         }}
-        title={isCollapsed ? "Menüyü Genişlet" : "Menüyü Daralt"}
+        title={isCollapsed ? 'Menüyü Genişlet' : 'Menüyü Daralt'}
       >
         {isCollapsed ? (
-          <ChevronRight size={16} className="transition-transform duration-200 group-hover:translate-x-0.5" />
+          <ChevronRight
+            size={16}
+            className="transition-transform duration-200 group-hover:translate-x-0.5"
+          />
         ) : (
-          <ChevronLeft size={16} className="transition-transform duration-200 group-hover:-translate-x-0.5" />
+          <ChevronLeft
+            size={16}
+            className="transition-transform duration-200 group-hover:-translate-x-0.5"
+          />
         )}
       </button>
 
@@ -207,7 +212,9 @@ export function Sidebar(): React.JSX.Element {
           {institutionLogo ? (
             <img src={institutionLogo} alt="Logo" className="w-full h-full object-contain" />
           ) : (
-            <Building2 className={cn('text-sidebar-active-text', isCollapsed ? 'w-6 h-6' : 'w-10 h-10')} />
+            <Building2
+              className={cn('text-sidebar-active-text', isCollapsed ? 'w-6 h-6' : 'w-10 h-10')}
+            />
           )}
         </div>
         {!isCollapsed && (
@@ -267,7 +274,9 @@ export function Sidebar(): React.JSX.Element {
                         >
                           <item.icon size={18} className="shrink-0" />
                           {!isCollapsed && (
-                            <span className="text-sm font-medium whitespace-nowrap flex-1">{item.name}</span>
+                            <span className="text-sm font-medium whitespace-nowrap flex-1">
+                              {item.name}
+                            </span>
                           )}
                         </Link>
                       ) : (
@@ -280,7 +289,9 @@ export function Sidebar(): React.JSX.Element {
                         >
                           <item.icon size={18} className="shrink-0" />
                           {!isCollapsed && (
-                            <span className="text-sm font-medium whitespace-nowrap flex-1">{item.name}</span>
+                            <span className="text-sm font-medium whitespace-nowrap flex-1">
+                              {item.name}
+                            </span>
                           )}
                         </div>
                       )}
@@ -381,7 +392,10 @@ export function Sidebar(): React.JSX.Element {
           </div>
           {!isCollapsed && (
             <div className="ml-3 overflow-hidden flex-1">
-              <p className="text-sm font-medium text-sidebar-hover-text truncate" title={adminUsername}>
+              <p
+                className="text-sm font-medium text-sidebar-hover-text truncate"
+                title={adminUsername}
+              >
                 {adminUsername}
               </p>
               <p className="text-[10px] text-sidebar-text/75 truncate" title={eButceKodu || ''}>

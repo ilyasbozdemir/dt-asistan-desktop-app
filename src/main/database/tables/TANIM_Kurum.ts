@@ -4,7 +4,12 @@ export const TANIM_Kurum = {
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
     { name: 'kurum_adi', type: 'TEXT', notNull: true, default: '""', description: 'Kurum Adı' },
-    { name: 'kurum_anteti', type: 'TEXT', default: '"[]"', description: 'Kurum Anteti (JSON Dizi)' },
+    {
+      name: 'kurum_anteti',
+      type: 'TEXT',
+      default: '"[]"',
+      description: 'Kurum Anteti (JSON Dizi)'
+    },
     { name: 'makam_adi', type: 'TEXT', default: '""', description: 'Sunulacak Makam Adı' },
     { name: 'ust_kurum_adi', type: 'TEXT', default: '""', description: 'Bağlı Olduğu Kurum' },
     { name: 'logo_sol', type: 'TEXT', default: '""' },

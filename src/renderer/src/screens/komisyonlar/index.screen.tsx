@@ -22,7 +22,7 @@ export default function KomisyonlarScreen(): React.JSX.Element {
   const [searchTerm, setSearchTerm] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingKomisyonId, setEditingKomisyonId] = useState<number | null>(null)
-  
+
   const [isAtaModalOpen, setIsAtaModalOpen] = useState(false)
   const [ataRoleId, setAtaRoleId] = useState<number | null>(null)
   const [ataKomisyonId, setAtaKomisyonId] = useState<number | null>(null)
@@ -45,7 +45,7 @@ export default function KomisyonlarScreen(): React.JSX.Element {
          LEFT JOIN TANIM_Personel p ON u.personel_id = p.id
          JOIN TANIM_KomisyonGorevi g ON u.gorev_id = g.id`
       )
-      
+
       const sablonlarRes = await window.electron.ipcRenderer.invoke(
         'db:query',
         `SELECT ks.komisyon_id, s.id as sablon_id, s.ad, s.aciklama 
@@ -53,11 +53,15 @@ export default function KomisyonlarScreen(): React.JSX.Element {
          JOIN TANIM_Sablon s ON ks.sablon_id = s.id
          WHERE s.aktif_mi = 1`
       )
-      
+
       const komisyonlarData = res.data.map((k: any) => ({
         ...k,
-        uyeler: membersRes.success ? membersRes.data.filter((m: any) => m.komisyon_id === k.id) : [],
-        sablonlar: sablonlarRes.success ? sablonlarRes.data.filter((s: any) => s.komisyon_id === k.id) : []
+        uyeler: membersRes.success
+          ? membersRes.data.filter((m: any) => m.komisyon_id === k.id)
+          : [],
+        sablonlar: sablonlarRes.success
+          ? sablonlarRes.data.filter((s: any) => s.komisyon_id === k.id)
+          : []
       }))
 
       return komisyonlarData
@@ -66,11 +70,12 @@ export default function KomisyonlarScreen(): React.JSX.Element {
 
   const getIconForTur = (ad: string) => {
     if (ad.toLowerCase().includes('fiyat')) return <FileSearch className="w-4 h-4 shrink-0" />
-    if (ad.toLowerCase().includes('muayene') || ad.toLowerCase().includes('kabul')) return <CheckCircle2 className="w-4 h-4 shrink-0" />
+    if (ad.toLowerCase().includes('muayene') || ad.toLowerCase().includes('kabul'))
+      return <CheckCircle2 className="w-4 h-4 shrink-0" />
     return <ShieldCheck className="w-4 h-4 shrink-0" />
   }
 
-  const filteredKomisyonlar = komisyonlar.filter((k: any) => 
+  const filteredKomisyonlar = komisyonlar.filter((k: any) =>
     k.ad.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
@@ -88,8 +93,7 @@ export default function KomisyonlarScreen(): React.JSX.Element {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-
-          <Button 
+          <Button
             className="gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow-sm shadow-blue-500/20 rounded-xl px-4 py-2 text-sm font-semibold transition-all"
             onClick={() => {
               setEditingKomisyonId(null)
@@ -102,147 +106,159 @@ export default function KomisyonlarScreen(): React.JSX.Element {
       </div>
 
       <div className="grid grid-cols-1 gap-8 items-start flex-1 min-h-0">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm min-h-[450px] flex flex-col overflow-hidden relative">
-            
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-              <div className="relative flex-1 max-w-md">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                <Input
-                  type="text"
-                  placeholder="Komisyon adı veya üye ara..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-9 pr-4 py-2 w-full bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-xl text-sm"
-                />
-              </div>
-              <Button variant="outline" className="gap-2 rounded-xl text-slate-600 dark:text-slate-300">
-                <Filter className="w-4 h-4" /> Filtrele
-              </Button>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm min-h-[450px] flex flex-col overflow-hidden relative">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div className="relative flex-1 max-w-md">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Input
+                type="text"
+                placeholder="Komisyon adı veya üye ara..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9 pr-4 py-2 w-full bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-xl text-sm"
+              />
             </div>
+            <Button
+              variant="outline"
+              className="gap-2 rounded-xl text-slate-600 dark:text-slate-300"
+            >
+              <Filter className="w-4 h-4" /> Filtrele
+            </Button>
+          </div>
 
-            <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-800/50 rounded-xl flex flex-col p-6">
-              {isKomisyonLoading ? (
-                 <div className="flex-1 flex items-center justify-center text-slate-500">Yükleniyor...</div>
-              ) : filteredKomisyonlar.length === 0 ? (
-                <div className="flex-1 flex items-center justify-center">
-                  <div className="text-center max-w-md">
-                    <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-2">
-                      Kayıtlı Komisyon Bulunamadı
-                    </h3>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                      Henüz bir komisyon tanımı bulunmuyor. Yeni bir komisyon eklemek için yukarıdaki "Komisyon Oluştur" butonunu kullanabilirsiniz.
-                    </p>
-                  </div>
+          <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-800/50 rounded-xl flex flex-col p-6">
+            {isKomisyonLoading ? (
+              <div className="flex-1 flex items-center justify-center text-slate-500">
+                Yükleniyor...
+              </div>
+            ) : filteredKomisyonlar.length === 0 ? (
+              <div className="flex-1 flex items-center justify-center">
+                <div className="text-center max-w-md">
+                  <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-2">
+                    Kayıtlı Komisyon Bulunamadı
+                  </h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Henüz bir komisyon tanımı bulunmuyor. Yeni bir komisyon eklemek için yukarıdaki
+                    "Komisyon Oluştur" butonunu kullanabilirsiniz.
+                  </p>
                 </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {filteredKomisyonlar.map((komisyon: any) => (
-                    <div key={komisyon.id} className="p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center">
-                            {getIconForTur(komisyon.ad)}
-                          </div>
-                          <div>
-                            <h3 className="font-bold text-slate-800 dark:text-slate-200">{komisyon.ad}</h3>
-                          </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {filteredKomisyonlar.map((komisyon: any) => (
+                  <div
+                    key={komisyon.id}
+                    className="p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center">
+                          {getIconForTur(komisyon.ad)}
                         </div>
-                      </div>
-                      
-                      <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Button 
-                            variant="outline" 
-                            className="text-xs py-1.5 px-3 h-auto rounded-lg text-blue-600 border-blue-200 hover:bg-blue-50"
-                            onClick={() => {
-                              addTab('/komisyonlar/detay?id=' + komisyon.id)
-                            }}
-                          >
-                            <Users className="w-3.5 h-3.5 mr-1.5" />
-                            Üyeler ve Detaylar ({komisyon.uyeler?.length || 0})
-                          </Button>
-
-                          {komisyon.sablonlar && komisyon.sablonlar.length > 0 && (
-                            <div className="flex items-center gap-2">
-                              <span className="text-slate-300 dark:text-slate-700">|</span>
-                              <div className="flex flex-wrap gap-1.5">
-                                {komisyon.sablonlar.map((sablon: any) => (
-                                  <Button
-                                    key={sablon.sablon_id}
-                                    variant="outline"
-                                    className="text-xs py-1.5 px-3 h-auto rounded-lg text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
-                                    onClick={() => {
-                                      alert(`Şablon üretiliyor: ${sablon.ad}\n(Bu özellik yapım aşamasındadır)`)
-                                    }}
-                                  >
-                                    <Printer className="w-3.5 h-3.5 mr-1.5" />
-                                    {sablon.ad}
-                                  </Button>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <Button 
-                            variant="outline" 
-                            className="text-xs py-1.5 h-auto rounded-lg"
-                            onClick={() => {
-                              setEditingKomisyonId(komisyon.id)
-                              setIsModalOpen(true)
-                            }}
-                          >
-                            Düzenle
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            className="text-xs py-1.5 h-auto rounded-lg text-red-500 hover:text-red-600 hover:bg-red-50"
-                            onClick={async () => {
-                              if (window.confirm('Bu komisyonu silmek istediğinize emin misiniz?')) {
-                                const res = await window.electron.ipcRenderer.invoke(
-                                  'db:run',
-                                  'UPDATE TANIM_Komisyon SET aktif_mi = 0 WHERE id = ?',
-                                  [komisyon.id]
-                                )
-                                if (res.success) {
-                                  queryClient.invalidateQueries({ queryKey: ['komisyonlar'] })
-                                } else {
-                                  alert('Silme işlemi başarısız oldu: ' + res.error)
-                                }
-                              }
-                            }}
-                          >
-                            Sil
-                          </Button>
+                        <div>
+                          <h3 className="font-bold text-slate-800 dark:text-slate-200">
+                            {komisyon.ad}
+                          </h3>
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
+
+                    <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          className="text-xs py-1.5 px-3 h-auto rounded-lg text-blue-600 border-blue-200 hover:bg-blue-50"
+                          onClick={() => {
+                            addTab('/komisyonlar/detay?id=' + komisyon.id)
+                          }}
+                        >
+                          <Users className="w-3.5 h-3.5 mr-1.5" />
+                          Üyeler ve Detaylar ({komisyon.uyeler?.length || 0})
+                        </Button>
+
+                        {komisyon.sablonlar && komisyon.sablonlar.length > 0 && (
+                          <div className="flex items-center gap-2">
+                            <span className="text-slate-300 dark:text-slate-700">|</span>
+                            <div className="flex flex-wrap gap-1.5">
+                              {komisyon.sablonlar.map((sablon: any) => (
+                                <Button
+                                  key={sablon.sablon_id}
+                                  variant="outline"
+                                  className="text-xs py-1.5 px-3 h-auto rounded-lg text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
+                                  onClick={() => {
+                                    alert(
+                                      `Şablon üretiliyor: ${sablon.ad}\n(Bu özellik yapım aşamasındadır)`
+                                    )
+                                  }}
+                                >
+                                  <Printer className="w-3.5 h-3.5 mr-1.5" />
+                                  {sablon.ad}
+                                </Button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          className="text-xs py-1.5 h-auto rounded-lg"
+                          onClick={() => {
+                            setEditingKomisyonId(komisyon.id)
+                            setIsModalOpen(true)
+                          }}
+                        >
+                          Düzenle
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="text-xs py-1.5 h-auto rounded-lg text-red-500 hover:text-red-600 hover:bg-red-50"
+                          onClick={async () => {
+                            if (window.confirm('Bu komisyonu silmek istediğinize emin misiniz?')) {
+                              const res = await window.electron.ipcRenderer.invoke(
+                                'db:run',
+                                'UPDATE TANIM_Komisyon SET aktif_mi = 0 WHERE id = ?',
+                                [komisyon.id]
+                              )
+                              if (res.success) {
+                                queryClient.invalidateQueries({ queryKey: ['komisyonlar'] })
+                              } else {
+                                alert('Silme işlemi başarısız oldu: ' + res.error)
+                              }
+                            }
+                          }}
+                        >
+                          Sil
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
-        <KomisyonOlusturModal
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false)
-            setEditingKomisyonId(null)
-          }}
-          komisyonId={editingKomisyonId}
-        />
+      </div>
+      <KomisyonOlusturModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false)
+          setEditingKomisyonId(null)
+        }}
+        komisyonId={editingKomisyonId}
+      />
 
-        <PersonelAtaModal
-          isOpen={isAtaModalOpen}
-          onClose={() => {
-            setIsAtaModalOpen(false)
-            setAtaRoleId(null)
-            setAtaKomisyonId(null)
-          }}
-          roleId={ataRoleId}
-          komisyonId={ataKomisyonId}
-        />
+      <PersonelAtaModal
+        isOpen={isAtaModalOpen}
+        onClose={() => {
+          setIsAtaModalOpen(false)
+          setAtaRoleId(null)
+          setAtaKomisyonId(null)
+        }}
+        roleId={ataRoleId}
+        komisyonId={ataKomisyonId}
+      />
     </div>
   )
 }

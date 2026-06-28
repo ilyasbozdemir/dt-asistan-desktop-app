@@ -72,7 +72,7 @@ export function AITextGeneratorModal({
     setLoading(true)
     setError('')
     try {
-      let finalPrompt = systemInstruction 
+      let finalPrompt = systemInstruction
         ? `${systemInstruction}\n\nKullanıcı İsteği:\n${prompt}`
         : prompt
 
@@ -84,9 +84,9 @@ export function AITextGeneratorModal({
         finalPrompt += `\n\nÖNEMLİ: Yanıtını LÜTFEN HİÇBİR MARKDOWN İŞARETİ KULLANMADAN (**, ###, \`\`\` vb.) düz metin (plain text) olarak üret.`
       }
 
-      const res = await window.api.aiGenerate({ 
+      const res = await window.api.aiGenerate({
         prompt: finalPrompt,
-        enableDatabaseAccess: isAdvisorMode 
+        enableDatabaseAccess: isAdvisorMode
       })
 
       if (res.success && res.data) {
@@ -134,7 +134,9 @@ export function AITextGeneratorModal({
         const parsedData = JSON.parse(result)
         onApply(parsedData)
       } catch (err) {
-        setError('Oluşturulan metin geçerli bir JSON formatında değil. Lütfen düzenleyip tekrar deneyin.')
+        setError(
+          'Oluşturulan metin geçerli bir JSON formatında değil. Lütfen düzenleyip tekrar deneyin.'
+        )
         return
       }
     } else {
@@ -169,10 +171,12 @@ export function AITextGeneratorModal({
       />
 
       {/* Modal Dialog */}
-      <div className={cn(
-        'relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden',
-        'animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-300'
-      )}>
+      <div
+        className={cn(
+          'relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden',
+          'animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-300'
+        )}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-linear-to-r from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20">
           <div className="flex items-center gap-2.5">
@@ -182,7 +186,9 @@ export function AITextGeneratorModal({
             <div>
               <h2 className="text-sm font-bold text-slate-850 dark:text-slate-100">{title}</h2>
               <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
-                {isAdvisorMode ? 'Yapay zekaya danışın ve süreç hakkında bilgi alın' : 'Yapay zeka ile metin oluşturun ve düzenleyin'}
+                {isAdvisorMode
+                  ? 'Yapay zekaya danışın ve süreç hakkında bilgi alın'
+                  : 'Yapay zeka ile metin oluşturun ve düzenleyin'}
               </p>
             </div>
           </div>
@@ -200,7 +206,7 @@ export function AITextGeneratorModal({
           {/* Instructions Input */}
           <div className="space-y-1.5">
             <label className="block text-xs font-bold text-slate-650 dark:text-slate-400">
-              {isAdvisorMode ? 'Yapay Zeka\'ya Mesajınız veya Sorunuz' : 'Yapay Zekaya Talimatınız'}
+              {isAdvisorMode ? "Yapay Zeka'ya Mesajınız veya Sorunuz" : 'Yapay Zekaya Talimatınız'}
             </label>
             <textarea
               rows={3}
@@ -214,7 +220,11 @@ export function AITextGeneratorModal({
                   }
                 }
               }}
-              placeholder={isAdvisorMode ? "Yapay zekaya sormak istediğiniz soruyu veya tavsiye konusunu yazın..." : "Yapay zekanın nasıl bir metin üretmesini istediğinizi yazın (örn: Belediye binası temizlik işi ihalesi için idari şartnameye uygun iş tanımı oluştur.)"}
+              placeholder={
+                isAdvisorMode
+                  ? 'Yapay zekaya sormak istediğiniz soruyu veya tavsiye konusunu yazın...'
+                  : 'Yapay zekanın nasıl bir metin üretmesini istediğinizi yazın (örn: Belediye binası temizlik işi ihalesi için idari şartnameye uygun iş tanımı oluştur.)'
+              }
               className="w-full px-3.5 py-2.5 bg-slate-55 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-purple-500/30 text-slate-800 dark:text-slate-250 font-semibold custom-scrollbar"
             />
           </div>
@@ -224,33 +234,49 @@ export function AITextGeneratorModal({
             <span className="text-[10px] font-bold text-slate-400 dark:text-slate-550 flex items-center mr-1">
               Örnekler:
             </span>
-            
+
             {isAdvisorMode ? (
               <>
                 <button
                   type="button"
-                  onClick={() => setPrompt('Bu dosyanın bir sonraki yasal/idari aşamalarını ve kritik süreçlerini listele.')}
+                  onClick={() =>
+                    setPrompt(
+                      'Bu dosyanın bir sonraki yasal/idari aşamalarını ve kritik süreçlerini listele.'
+                    )
+                  }
                   className="text-[10px] px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-350 rounded-lg transition-colors font-medium border-none"
                 >
                   Sonraki Aşamalar
                 </button>
                 <button
                   type="button"
-                  onClick={() => setPrompt('Bu ihale dosyası için mevzuata (4734 Sayılı Kanun) uygunluk analizi yap ve varsa riskli kısımları uyar.')}
+                  onClick={() =>
+                    setPrompt(
+                      'Bu ihale dosyası için mevzuata (4734 Sayılı Kanun) uygunluk analizi yap ve varsa riskli kısımları uyar.'
+                    )
+                  }
                   className="text-[10px] px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-350 rounded-lg transition-colors font-medium border-none"
                 >
                   Mevzuat Analizi
                 </button>
                 <button
                   type="button"
-                  onClick={() => setPrompt('Bu tür bir alım için en doğru piyasa fiyat araştırması yöntemi ne olmalıdır? Nereden teklif istenmeli?')}
+                  onClick={() =>
+                    setPrompt(
+                      'Bu tür bir alım için en doğru piyasa fiyat araştırması yöntemi ne olmalıdır? Nereden teklif istenmeli?'
+                    )
+                  }
                   className="text-[10px] px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-350 rounded-lg transition-colors font-medium border-none"
                 >
                   Piyasa Araştırması
                 </button>
                 <button
                   type="button"
-                  onClick={() => setPrompt('Bu dosya için örnek bir komisyon onay yazısı veya gerekçe taslağı oluşturur musun?')}
+                  onClick={() =>
+                    setPrompt(
+                      'Bu dosya için örnek bir komisyon onay yazısı veya gerekçe taslağı oluşturur musun?'
+                    )
+                  }
                   className="text-[10px] px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-350 rounded-lg transition-colors font-medium border-none"
                 >
                   Onay Taslağı
@@ -327,7 +353,9 @@ export function AITextGeneratorModal({
             <div className="space-y-4 border-t border-slate-100 dark:border-slate-800 pt-4 animate-in fade-in duration-300">
               <div className="flex items-center justify-between">
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                  {isAdvisorMode ? 'Sohbet & Tavsiye Sonucu' : `Üretilen ${mode === 'json' ? 'JSON Verisi' : 'Metin'} (Düzenleyebilirsiniz)`}
+                  {isAdvisorMode
+                    ? 'Sohbet & Tavsiye Sonucu'
+                    : `Üretilen ${mode === 'json' ? 'JSON Verisi' : 'Metin'} (Düzenleyebilirsiniz)`}
                 </label>
                 {result && !isAdvisorMode && (
                   <button
@@ -345,10 +373,25 @@ export function AITextGeneratorModal({
                   {/* User Balloon */}
                   <div className="flex gap-2.5 flex-row-reverse animate-in fade-in zoom-in-95">
                     <div className="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center flex-none">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-600 dark:text-slate-300"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-slate-600 dark:text-slate-300"
+                      >
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </svg>
                     </div>
                     <div className="max-w-[85%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed bg-gradient-to-br from-purple-500 to-indigo-600 text-white rounded-tr-sm">
-                      {prompt.split('\n').map((line, li) => <p key={li}>{line || <br />}</p>)}
+                      {prompt.split('\n').map((line, li) => (
+                        <p key={li}>{line || <br />}</p>
+                      ))}
                     </div>
                   </div>
 
@@ -364,13 +407,19 @@ export function AITextGeneratorModal({
                           <span className="text-slate-500 italic">Asistan değerlendiriyor...</span>
                         </div>
                       ) : (
-                        <div 
+                        <div
                           className="space-y-1.5 [&>p]:mb-2 last:[&>p]:mb-0 [&_strong]:font-extrabold [&_strong]:text-slate-900 dark:[&_strong]:text-white [&_ul]:list-disc [&_ul]:pl-4 [&_ol]:list-decimal [&_ol]:pl-4 [&_li]:mb-1"
                           dangerouslySetInnerHTML={{
                             __html: result
                               // Header
-                              .replace(/### (.*?)\n/g, '<h3 class="text-sm font-bold mt-3 mb-1 text-purple-600 dark:text-purple-400">$1</h3>')
-                              .replace(/## (.*?)\n/g, '<h2 class="text-base font-extrabold mt-4 mb-2 text-slate-900 dark:text-white">$1</h2>')
+                              .replace(
+                                /### (.*?)\n/g,
+                                '<h3 class="text-sm font-bold mt-3 mb-1 text-purple-600 dark:text-purple-400">$1</h3>'
+                              )
+                              .replace(
+                                /## (.*?)\n/g,
+                                '<h2 class="text-base font-extrabold mt-4 mb-2 text-slate-900 dark:text-white">$1</h2>'
+                              )
                               // Bold
                               .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                               // Italic
@@ -379,7 +428,10 @@ export function AITextGeneratorModal({
                               .replace(/^- (.*)/gm, '<li>$1</li>')
                               // New lines (only if not wrapped in tags to avoid <br> between list items, simple logic: just newline)
                               // First wrap consecutive list items in <ul>
-                              .replace(/(<li>.*<\/li>\n?)+/g, match => `<ul class="my-2">${match}</ul>`)
+                              .replace(
+                                /(<li>.*<\/li>\n?)+/g,
+                                (match) => `<ul class="my-2">${match}</ul>`
+                              )
                               // Then convert remaining \n to <br/>
                               .replace(/\n/g, '<br/>')
                               .replace(/<br\/><\/ul>/g, '</ul>')
@@ -412,7 +464,9 @@ export function AITextGeneratorModal({
                 <div className="p-2.5 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 rounded-xl text-[10px] font-semibold flex items-start gap-1.5 mt-3 mb-2 animate-in fade-in">
                   <span className="text-xs">⚠️</span>
                   <span className="leading-relaxed">
-                    Yapay zeka tarafından üretilen içerikler, <b>ekonomik kodlar</b>, bütçe tertipleri ve diğer teknik veriler hata veya tutarsızlık içerebilir. Lütfen doğruluğunu <b>teyit etmeden</b> kaydetmeyiniz.
+                    Yapay zeka tarafından üretilen içerikler, <b>ekonomik kodlar</b>, bütçe
+                    tertipleri ve diğer teknik veriler hata veya tutarsızlık içerebilir. Lütfen
+                    doğruluğunu <b>teyit etmeden</b> kaydetmeyiniz.
                   </span>
                 </div>
               )}
@@ -422,10 +476,10 @@ export function AITextGeneratorModal({
                   type="button"
                   onClick={isAdvisorMode ? onClose : handleApply}
                   className={cn(
-                    "w-full py-2.5 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md",
-                    isAdvisorMode 
-                      ? "bg-slate-800 hover:bg-slate-900 shadow-slate-900/20" 
-                      : "bg-linear-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-emerald-500/20"
+                    'w-full py-2.5 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md',
+                    isAdvisorMode
+                      ? 'bg-slate-800 hover:bg-slate-900 shadow-slate-900/20'
+                      : 'bg-linear-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-emerald-500/20'
                   )}
                 >
                   <Check size={14} />

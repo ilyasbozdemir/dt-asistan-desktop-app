@@ -1,10 +1,10 @@
 export type KurumKoduFormat = 'eski' | 'yeni' | 'bilinmiyor'
 
 export interface KurumKodu {
-  ham: string           // girilen ham değer
+  ham: string // girilen ham değer
   format: KurumKoduFormat
-  yeni?: string         // Noktalı ayrılmış 4 parça
-  eski?: string         // Tire ile ayrılmış
+  yeni?: string // Noktalı ayrılmış 4 parça
+  eski?: string // Tire ile ayrılmış
 }
 
 export function kurumKoduAlgila(input: string): KurumKodu {
@@ -41,7 +41,7 @@ export function kurumKoduAlgila(input: string): KurumKodu {
 // Mapping tablosu DB'de veya çevresel değişkenlerde tutulmalıdır.
 // Güvenlik ve gizlilik sebepleriyle kod içinde sabit (hardcoded) veri bırakılmamıştır.
 const formatMap: Record<string, string> = {
-  // 'EskiFormat': 'YeniFormat' 
+  // 'EskiFormat': 'YeniFormat'
 }
 
 export function eskidenYeniye(eski: string): string | null {
@@ -49,6 +49,5 @@ export function eskidenYeniye(eski: string): string | null {
 }
 
 export function yenidentEskiye(yeni: string): string | null {
-  return Object.entries(formatMap)
-    .find(([_, v]) => v === yeni)?.[0] ?? null
+  return Object.entries(formatMap).find(([_, v]) => v === yeni)?.[0] ?? null
 }

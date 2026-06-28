@@ -96,12 +96,7 @@ export default function LockScreen(): React.JSX.Element {
         }
       } else {
         // Login with existing credentials
-        const res = await window.electron.ipcRenderer.invoke(
-          'db:login',
-          '',
-          username,
-          password
-        )
+        const res = await window.electron.ipcRenderer.invoke('db:login', '', username, password)
         if (res.success) {
           if (rememberMe && fileName) {
             localStorage.setItem(`rememberMe_${fileName}`, 'true')
@@ -167,12 +162,7 @@ export default function LockScreen(): React.JSX.Element {
     setError(null)
     setLoading(true)
     try {
-      const res = await window.electron.ipcRenderer.invoke(
-        'db:setup-auth',
-        '',
-        username,
-        password
-      )
+      const res = await window.electron.ipcRenderer.invoke('db:setup-auth', '', username, password)
       if (res.success) {
         setIsAuthenticated(true)
         await loadSettings()
@@ -298,8 +288,6 @@ export default function LockScreen(): React.JSX.Element {
 
         {recoveryStep === 'login' && (
           <form onSubmit={handleSubmit} className="space-y-4">
-
-
             <div>
               <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5 ml-1">
                 Kullanıcı Adı
@@ -346,8 +334,8 @@ export default function LockScreen(): React.JSX.Element {
               <div className="flex gap-2 p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl text-amber-700 dark:text-amber-550 text-[10px] leading-relaxed">
                 <ShieldAlert className="w-5 h-5 shrink-0" />
                 <span>
-                  Bu şifre veritabanına kaydedilir. İnternet olmasa dahi bu kurum
-                  dosyasına girmek için bu şifreyi kullanacaksınız. Lütfen unutmayın.
+                  Bu şifre veritabanına kaydedilir. İnternet olmasa dahi bu kurum dosyasına girmek
+                  için bu şifreyi kullanacaksınız. Lütfen unutmayın.
                 </span>
               </div>
             )}
@@ -482,7 +470,6 @@ export default function LockScreen(): React.JSX.Element {
               Kod başarıyla doğrulandı! Lütfen kurum dosyanız için yeni erişim bilgilerini
               tanımlayın.
             </p>
-
 
             <div>
               <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5 ml-1">

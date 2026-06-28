@@ -1,9 +1,5 @@
 {
-  "antetSatirlari": [
-    "T.C.",
-    "YEŞİLVADİ BELEDİYE BAŞKANLIĞI",
-    "Destek Hizmetleri Müdürlüğü"
-  ],
+  "antetSatirlari": ["T.C.", "YEŞİLVADİ BELEDİYE BAŞKANLIĞI", "Destek Hizmetleri Müdürlüğü"],
   "evrakSayisi": "E-68493012-902.03-3456",
   "dosyaKonusu": "Bütçe ve Ödenek Sorgusu",
   "tarih": "06/05/2026",
@@ -13,9 +9,7 @@
   "hazirlayanPersonelAdi": "Gökhan TEKİN",
   "hazirlayanPersonelUnvan": "Teknisyen",
   "butceYili": "2026",
-  "butceTertibi": [
-    "46.70.03.01.02.05-03.2.9.90"
-  ],
+  "butceTertibi": ["46.70.03.01.02.05-03.2.9.90"],
   "kullanilabilirOdenek": "185.000,00",
   "solLogo": "https://raw.githubusercontent.com/ilyasbozdemir/dt-asistan-desktop-app/refs/heads/main/resources/icon.png",
   "sagLogo": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Logo_of_100th_years_of_the_Republic_of_T%C3%BCrkiye.svg"

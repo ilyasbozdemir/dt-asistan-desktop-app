@@ -7,7 +7,7 @@ export interface InstitutionSuffixes {
   label: string
   kurumumuz: string // 1st person plural (bizim)
   kurumunuz: string // 2nd person plural (sizin)
-  kurumu: string    // 3rd person singular possessive (onun)
+  kurumu: string // 3rd person singular possessive (onun)
   kurumlari: string // 3rd person plural possessive (onların)
 }
 

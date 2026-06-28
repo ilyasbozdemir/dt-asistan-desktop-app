@@ -23,13 +23,29 @@ import {
   ExternalLink,
   User
 } from 'lucide-react'
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell
+} from 'recharts'
 import { Link } from '@tanstack/react-router'
 import { cn } from '../../utils/cn'
 import { useSettingsStore } from '../../store/settingsStore'
 import { useWorkspaceStore } from '../../store/workspaceStore'
 import { Button } from '../../components/ui/Button'
-import { useDashboardStats, useActiveDosyaSummary, useAnnouncements, useSmartAlerts } from './dashboard.hooks'
+import {
+  useDashboardStats,
+  useActiveDosyaSummary,
+  useAnnouncements,
+  useSmartAlerts
+} from './dashboard.hooks'
 import { useDosyalarHooks } from '../dosyalar/dosyalar.hooks'
 import { AITextGeneratorModal } from '../../components/ui/AITextGeneratorModal'
 import { TakipScreen } from '../system/TakipScreen'
@@ -52,7 +68,6 @@ export default function DashboardScreen(): React.JSX.Element {
     say2000iKodu,
     detsisKodu
   } = useSettingsStore()
-
 
   const { activeDosyaId } = useWorkspaceStore()
   const { stats, isLoading } = useDashboardStats()
@@ -85,17 +100,27 @@ export default function DashboardScreen(): React.JSX.Element {
   // Kurum Türü Mapping
   const getInstitutionTypeLabel = (type: string) => {
     switch (type) {
-      case 'belediye': return 'Belediye / Mahalli İdare'
-      case 'genel_butce': return 'Bakanlık / Genel Bütçe'
-      case 'ozel_butce': return 'Üniversite / Özel Bütçe'
-      case 'duzenleyici': return 'Düzenleyici / Denetleyici Kurum'
-      case 'diger': return 'Diğer Kurum'
-      default: return 'Kurum Tipi Belirtilmedi'
+      case 'belediye':
+        return 'Belediye / Mahalli İdare'
+      case 'genel_butce':
+        return 'Bakanlık / Genel Bütçe'
+      case 'ozel_butce':
+        return 'Üniversite / Özel Bütçe'
+      case 'duzenleyici':
+        return 'Düzenleyici / Denetleyici Kurum'
+      case 'diger':
+        return 'Diğer Kurum'
+      default:
+        return 'Kurum Tipi Belirtilmedi'
     }
   }
   const kurumTuruLabel = getInstitutionTypeLabel(institutionType || '')
 
-  const { summary: activeSummary, isLoading: isActiveSummaryLoading } = useActiveDosyaSummary(activeDosyaId, institutionName, kurumTuruLabel)
+  const { summary: activeSummary, isLoading: isActiveSummaryLoading } = useActiveDosyaSummary(
+    activeDosyaId,
+    institutionName,
+    kurumTuruLabel
+  )
 
   // Use real database files for listing (last 5 files)
   const activeFiles = dosyalar.slice(0, 5)
@@ -118,13 +143,16 @@ export default function DashboardScreen(): React.JSX.Element {
   const yapimPct = Math.max(0, 100 - malPct - hizmetPct)
 
   // Monthly trends from database
-  const monthlyData = stats.aylikHarcamalar && stats.aylikHarcamalar.length > 0 ? stats.aylikHarcamalar : [
-    { ay: 'Ocak', tutar: 0 },
-    { ay: 'Şubat', tutar: 0 },
-    { ay: 'Mart', tutar: 0 },
-    { ay: 'Nisan', tutar: 0 },
-    { ay: 'Mayıs', tutar: 0 }
-  ]
+  const monthlyData =
+    stats.aylikHarcamalar && stats.aylikHarcamalar.length > 0
+      ? stats.aylikHarcamalar
+      : [
+          { ay: 'Ocak', tutar: 0 },
+          { ay: 'Şubat', tutar: 0 },
+          { ay: 'Mart', tutar: 0 },
+          { ay: 'Nisan', tutar: 0 },
+          { ay: 'Mayıs', tutar: 0 }
+        ]
 
   const formatCurrency = (value: number): string => {
     return new Intl.NumberFormat('tr-TR', {
@@ -152,10 +180,13 @@ export default function DashboardScreen(): React.JSX.Element {
     const asama = asamalar.find((a: any) => a.asama_sira === asamaSira)
     if (asama) {
       const colorMap: Record<string, string> = {
-        amber: 'bg-amber-50 text-amber-700 dark:bg-amber-950/20 dark:text-amber-450 border-amber-500/10',
+        amber:
+          'bg-amber-50 text-amber-700 dark:bg-amber-950/20 dark:text-amber-450 border-amber-500/10',
         blue: 'bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-450 border-blue-500/10',
-        purple: 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/20 dark:text-indigo-450 border-indigo-500/10',
-        emerald: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-450 border-emerald-500/10'
+        purple:
+          'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/20 dark:text-indigo-450 border-indigo-500/10',
+        emerald:
+          'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-450 border-emerald-500/10'
       }
       return { name: asama.asama_adi, color: colorMap[asama.rozet_rengi] || colorMap['blue'] }
     }
@@ -163,17 +194,40 @@ export default function DashboardScreen(): React.JSX.Element {
     // Fallback if db not loaded
     switch (asamaSira) {
       case 1:
-        return { name: 'Hazırlık Aşaması', color: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-500/10' }
+        return {
+          name: 'Hazırlık Aşaması',
+          color:
+            'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-500/10'
+        }
       case 2:
-        return { name: 'Piyasa Araştırması', color: 'bg-amber-50 text-amber-700 dark:bg-amber-950/20 dark:text-amber-450 border-amber-500/10' }
+        return {
+          name: 'Piyasa Araştırması',
+          color:
+            'bg-amber-50 text-amber-700 dark:bg-amber-950/20 dark:text-amber-450 border-amber-500/10'
+        }
       case 3:
-        return { name: 'Teklif Toplama', color: 'bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-450 border-blue-500/10' }
+        return {
+          name: 'Teklif Toplama',
+          color:
+            'bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-450 border-blue-500/10'
+        }
       case 4:
-        return { name: 'Karar & Onay', color: 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/20 dark:text-indigo-450 border-indigo-500/10' }
+        return {
+          name: 'Karar & Onay',
+          color:
+            'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/20 dark:text-indigo-450 border-indigo-500/10'
+        }
       case 5:
-        return { name: 'Fatura / Ödeme', color: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-450 border-emerald-500/10' }
+        return {
+          name: 'Fatura / Ödeme',
+          color:
+            'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-450 border-emerald-500/10'
+        }
       default:
-        return { name: 'Belirsiz Aşama', color: 'bg-slate-50 text-slate-700 dark:bg-slate-900 dark:text-slate-400' }
+        return {
+          name: 'Belirsiz Aşama',
+          color: 'bg-slate-50 text-slate-700 dark:bg-slate-900 dark:text-slate-400'
+        }
     }
   }
 
@@ -193,7 +247,11 @@ export default function DashboardScreen(): React.JSX.Element {
               <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
               <div>
                 <h4 className="text-sm font-bold">Mail (SMTP) Ayarları Yapılandırılmamış</h4>
-                <p className="text-xs mt-0.5 opacity-90">Sistem üzerinden şifre sıfırlama veya onay mailleri alabilmeniz için posta sunucunuzu ayarlamanız gerekmektedir. Şifrenizi unutursanız sisteme erişiminizi kaybedebilirsiniz!</p>
+                <p className="text-xs mt-0.5 opacity-90">
+                  Sistem üzerinden şifre sıfırlama veya onay mailleri alabilmeniz için posta
+                  sunucunuzu ayarlamanız gerekmektedir. Şifrenizi unutursanız sisteme erişiminizi
+                  kaybedebilirsiniz!
+                </p>
               </div>
             </div>
             <Link to="/ayarlar" search={{ tab: 'smtp' }}>
@@ -207,16 +265,25 @@ export default function DashboardScreen(): React.JSX.Element {
 
         {smartAlerts.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {smartAlerts.map(alert => (
-              <div key={alert.id} className={`p-4 rounded-2xl border flex flex-col justify-between gap-3 shadow-sm ${
-                alert.type === 'error' ? 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-400' :
-                alert.type === 'warning' ? 'bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-900/50 text-orange-700 dark:text-orange-400' :
-                'bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900/50 text-blue-700 dark:text-blue-400'
-              }`}>
+            {smartAlerts.map((alert) => (
+              <div
+                key={alert.id}
+                className={`p-4 rounded-2xl border flex flex-col justify-between gap-3 shadow-sm ${
+                  alert.type === 'error'
+                    ? 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-400'
+                    : alert.type === 'warning'
+                      ? 'bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-900/50 text-orange-700 dark:text-orange-400'
+                      : 'bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900/50 text-blue-700 dark:text-blue-400'
+                }`}
+              >
                 <div className="flex items-start gap-3">
-                  {alert.type === 'error' ? <ShieldAlert className="w-5 h-5 shrink-0 mt-0.5" /> : 
-                   alert.type === 'warning' ? <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" /> : 
-                   <Info className="w-5 h-5 shrink-0 mt-0.5" />}
+                  {alert.type === 'error' ? (
+                    <ShieldAlert className="w-5 h-5 shrink-0 mt-0.5" />
+                  ) : alert.type === 'warning' ? (
+                    <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
+                  ) : (
+                    <Info className="w-5 h-5 shrink-0 mt-0.5" />
+                  )}
                   <div>
                     <h4 className="text-sm font-bold">{alert.title}</h4>
                     <p className="text-xs mt-0.5 opacity-90 leading-relaxed">{alert.message}</p>
@@ -224,11 +291,16 @@ export default function DashboardScreen(): React.JSX.Element {
                 </div>
                 <div className="flex justify-end">
                   <Link to={alert.actionLink} search={alert.actionSearch}>
-                    <Button variant="outline" className={`h-7 px-3 text-[10px] font-bold uppercase tracking-wider rounded-lg border-current hover:bg-white/50 dark:hover:bg-black/20 ${
-                      alert.type === 'error' ? 'text-red-700 dark:text-red-400' :
-                      alert.type === 'warning' ? 'text-orange-700 dark:text-orange-400' :
-                      'text-blue-700 dark:text-blue-400'
-                    }`}>
+                    <Button
+                      variant="outline"
+                      className={`h-7 px-3 text-[10px] font-bold uppercase tracking-wider rounded-lg border-current hover:bg-white/50 dark:hover:bg-black/20 ${
+                        alert.type === 'error'
+                          ? 'text-red-700 dark:text-red-400'
+                          : alert.type === 'warning'
+                            ? 'text-orange-700 dark:text-orange-400'
+                            : 'text-blue-700 dark:text-blue-400'
+                      }`}
+                    >
                       {alert.actionText} <ChevronRight className="w-3 h-3 ml-1" />
                     </Button>
                   </Link>
@@ -268,49 +340,87 @@ export default function DashboardScreen(): React.JSX.Element {
               >
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 Aktif Dosya
-                <ChevronDown className={`w-3.5 h-3.5 transform transition-transform ${isActivePopoverOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transform transition-transform ${isActivePopoverOpen ? 'rotate-180' : ''}`}
+                />
               </Button>
               {isActivePopoverOpen && (
                 <div className="absolute right-0 mt-2 w-80 md:w-96 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-5 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="flex items-center gap-2 mb-3 pb-3 border-b border-slate-100 dark:border-slate-850">
                     <FileText className="w-4 h-4 text-blue-600" />
                     <div>
-                      <h4 className="text-xs font-bold text-slate-800 dark:text-slate-100">Çalışılan Aktif Dosya</h4>
-                      <p className="text-[9px] text-slate-400">Şu anda üzerinde işlem yapılan doğrudan temin dosyası</p>
+                      <h4 className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                        Çalışılan Aktif Dosya
+                      </h4>
+                      <p className="text-[9px] text-slate-400">
+                        Şu anda üzerinde işlem yapılan doğrudan temin dosyası
+                      </p>
                     </div>
                   </div>
                   <div className="space-y-2.5">
                     <div className="grid grid-cols-2 gap-2 text-[11px]">
                       <div className="p-2.5 rounded-xl bg-slate-50/50 dark:bg-slate-950/20 border border-slate-100/50 dark:border-slate-850/50">
-                        <span className="text-[9px] font-bold text-slate-400 uppercase block">No & Konu</span>
-                        <span className="font-mono text-blue-650 dark:text-blue-450 font-bold block">{activeSummary.dosyaNo}</span>
-                        <span className="font-semibold text-slate-700 dark:text-slate-350 truncate block mt-0.5" title={activeSummary.konu}>{activeSummary.konu}</span>
+                        <span className="text-[9px] font-bold text-slate-400 uppercase block">
+                          No & Konu
+                        </span>
+                        <span className="font-mono text-blue-650 dark:text-blue-450 font-bold block">
+                          {activeSummary.dosyaNo}
+                        </span>
+                        <span
+                          className="font-semibold text-slate-700 dark:text-slate-350 truncate block mt-0.5"
+                          title={activeSummary.konu}
+                        >
+                          {activeSummary.konu}
+                        </span>
                       </div>
                       <div className="p-2.5 rounded-xl bg-slate-50/50 dark:bg-slate-950/20 border border-slate-100/50 dark:border-slate-850/50">
-                        <span className="text-[9px] font-bold text-slate-400 uppercase block">Maliyet & KDV</span>
-                        <span className="font-bold text-slate-800 dark:text-slate-100 block">{formatCurrency(activeSummary.yaklasikMaliyet)}</span>
-                        <span className="text-slate-450 block mt-0.5">KDV: %{activeSummary.kdv}</span>
+                        <span className="text-[9px] font-bold text-slate-400 uppercase block">
+                          Maliyet & KDV
+                        </span>
+                        <span className="font-bold text-slate-800 dark:text-slate-100 block">
+                          {formatCurrency(activeSummary.yaklasikMaliyet)}
+                        </span>
+                        <span className="text-slate-450 block mt-0.5">
+                          KDV: %{activeSummary.kdv}
+                        </span>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-[11px]">
                       <div className="p-2.5 rounded-xl bg-slate-50/50 dark:bg-slate-950/20 border border-slate-100/50 dark:border-slate-850/50">
-                        <span className="text-[9px] font-bold text-slate-400 uppercase block">Birim & Tür</span>
-                        <span className="font-semibold text-slate-700 dark:text-slate-305 block truncate">{activeSummary.birimAdi}</span>
-                        <span className="text-slate-450 capitalize block mt-0.5">{activeSummary.tur} Alımı</span>
+                        <span className="text-[9px] font-bold text-slate-400 uppercase block">
+                          Birim & Tür
+                        </span>
+                        <span className="font-semibold text-slate-700 dark:text-slate-305 block truncate">
+                          {activeSummary.birimAdi}
+                        </span>
+                        <span className="text-slate-450 capitalize block mt-0.5">
+                          {activeSummary.tur} Alımı
+                        </span>
                       </div>
                       <div className="p-2.5 rounded-xl bg-slate-50/50 dark:bg-slate-950/20 border border-slate-100/50 dark:border-slate-850/50">
-                        <span className="text-[9px] font-bold text-slate-400 uppercase block">Yüklenici Firma</span>
-                        <span className="font-semibold text-emerald-650 dark:text-emerald-450 block truncate" title={activeSummary.secilenFirma}>{activeSummary.secilenFirma}</span>
+                        <span className="text-[9px] font-bold text-slate-400 uppercase block">
+                          Yüklenici Firma
+                        </span>
+                        <span
+                          className="font-semibold text-emerald-650 dark:text-emerald-450 block truncate"
+                          title={activeSummary.secilenFirma}
+                        >
+                          {activeSummary.secilenFirma}
+                        </span>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-[11px] pt-1">
                       <div className="flex items-center justify-between p-2 rounded-xl bg-indigo-50/30 dark:bg-indigo-950/10 border border-indigo-100/50 dark:border-indigo-900/30">
                         <span className="font-bold text-indigo-600">Firmalar:</span>
-                        <span className="font-bold text-indigo-700 dark:text-indigo-400">{activeSummary.katilanFirmaSayisi} Firma</span>
+                        <span className="font-bold text-indigo-700 dark:text-indigo-400">
+                          {activeSummary.katilanFirmaSayisi} Firma
+                        </span>
                       </div>
                       <div className="flex items-center justify-between p-2 rounded-xl bg-amber-50/30 dark:bg-amber-950/10 border border-amber-100/50 dark:border-amber-900/30">
                         <span className="font-bold text-amber-600">Kalemler:</span>
-                        <span className="font-bold text-amber-700 dark:text-amber-400">{activeSummary.malzemeSayisi} Kalem</span>
+                        <span className="font-bold text-amber-700 dark:text-amber-400">
+                          {activeSummary.malzemeSayisi} Kalem
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -326,7 +436,10 @@ export default function DashboardScreen(): React.JSX.Element {
             </Button>
           </Link>
           <Link to="/mevzuat">
-            <Button variant="outline" className="text-xs font-semibold py-2 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900">
+            <Button
+              variant="outline"
+              className="text-xs font-semibold py-2 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900"
+            >
               Limitleri Gör
             </Button>
           </Link>
@@ -334,7 +447,12 @@ export default function DashboardScreen(): React.JSX.Element {
       </div>
 
       {/* 2. KPI CARDS */}
-      <div className={cn("grid grid-cols-1 gap-4", activeDosyaId ? "md:grid-cols-2" : "md:grid-cols-2 lg:grid-cols-4")}>
+      <div
+        className={cn(
+          'grid grid-cols-1 gap-4',
+          activeDosyaId ? 'md:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-4'
+        )}
+      >
         {!activeDosyaId && (
           <>
             {/* Card 1: Total Dossiers (Genel) */}
@@ -348,9 +466,14 @@ export default function DashboardScreen(): React.JSX.Element {
                 </span>
               </div>
               <div>
-                <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Toplam Temin Dosyası (Genel)</div>
+                <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                  Toplam Temin Dosyası (Genel)
+                </div>
                 <div className="text-2xl font-extrabold text-slate-800 dark:text-slate-100 mt-1 flex items-baseline gap-1">
-                  {isLoading ? '-' : stats.ihaleDosyaSayisi} <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">Dosya</span>
+                  {isLoading ? '-' : stats.ihaleDosyaSayisi}{' '}
+                  <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">
+                    Dosya
+                  </span>
                 </div>
               </div>
             </div>
@@ -366,7 +489,9 @@ export default function DashboardScreen(): React.JSX.Element {
                 </span>
               </div>
               <div>
-                <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Toplam Yaklaşık Maliyet (Genel)</div>
+                <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                  Toplam Yaklaşık Maliyet (Genel)
+                </div>
                 <div className="text-2xl font-extrabold text-slate-800 dark:text-slate-100 mt-1">
                   {isLoading ? '-' : formatCurrency(stats.toplamYaklasikMaliyet)}
                 </div>
@@ -383,9 +508,14 @@ export default function DashboardScreen(): React.JSX.Element {
                 </span>
               </div>
               <div>
-                <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Aktif Temin Süreçleri</div>
+                <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                  Aktif Temin Süreçleri
+                </div>
                 <div className="text-2xl font-extrabold text-slate-800 dark:text-slate-100 mt-1 flex items-baseline gap-1">
-                  {isLoading ? '-' : stats.aktifDosyaSayisi} <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">Dosya</span>
+                  {isLoading ? '-' : stats.aktifDosyaSayisi}{' '}
+                  <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">
+                    Dosya
+                  </span>
                 </div>
               </div>
             </div>
@@ -401,9 +531,14 @@ export default function DashboardScreen(): React.JSX.Element {
                 </span>
               </div>
               <div>
-                <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Tamamlanan İhaleler</div>
+                <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                  Tamamlanan İhaleler
+                </div>
                 <div className="text-2xl font-extrabold text-slate-800 dark:text-slate-100 mt-1 flex items-baseline gap-1">
-                  {isLoading ? '-' : stats.tamamlananDosyaSayisi} <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">Dosya</span>
+                  {isLoading ? '-' : stats.tamamlananDosyaSayisi}{' '}
+                  <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">
+                    Dosya
+                  </span>
                 </div>
               </div>
             </div>
@@ -423,9 +558,15 @@ export default function DashboardScreen(): React.JSX.Element {
                 </span>
               </div>
               <div>
-                <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Aktif Dosya Maliyeti</div>
+                <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                  Aktif Dosya Maliyeti
+                </div>
                 <div className="text-2xl font-extrabold text-slate-800 dark:text-slate-100 mt-1 truncate">
-                  {isActiveSummaryLoading ? 'Yükleniyor...' : activeSummary ? formatCurrency(activeSummary.yaklasikMaliyet) : 'Dosya Seçilmedi'}
+                  {isActiveSummaryLoading
+                    ? 'Yükleniyor...'
+                    : activeSummary
+                      ? formatCurrency(activeSummary.yaklasikMaliyet)
+                      : 'Dosya Seçilmedi'}
                 </div>
               </div>
             </div>
@@ -441,7 +582,9 @@ export default function DashboardScreen(): React.JSX.Element {
                 </span>
               </div>
               <div>
-                <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Aktif Dosya Limit Tüketim Oranı</div>
+                <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                  Aktif Dosya Limit Tüketim Oranı
+                </div>
                 <div className="flex items-center justify-between mt-1.5">
                   <span className="text-2xl font-extrabold text-slate-850 dark:text-slate-100">
                     {activeSummary ? `%${activeSpentPercent.toFixed(1)}` : '-%'}
@@ -475,16 +618,26 @@ export default function DashboardScreen(): React.JSX.Element {
                   </div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">İhale Dosya Sayısı</div>
+                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                    İhale Dosya Sayısı
+                  </div>
                   <div className="text-3xl font-extrabold text-slate-800 dark:text-slate-100 mt-1">
                     {isLoading ? '-' : stats.ihaleDosyaSayisi}
                   </div>
                   <div className="flex flex-wrap gap-1 mt-2">
-                    <span className="text-[8px] bg-blue-50 dark:bg-blue-950 px-1.5 py-0.5 rounded text-blue-650 dark:text-blue-400 font-bold">Mal: {stats.malDosyaSayisi}</span>
-                    <span className="text-[8px] bg-emerald-50 dark:bg-emerald-950 px-1.5 py-0.5 rounded text-emerald-600 dark:text-emerald-450 font-bold">Hizmet: {stats.hizmetDosyaSayisi}</span>
-                    <span className="text-[8px] bg-amber-50 dark:bg-amber-950 px-1.5 py-0.5 rounded text-amber-600 dark:text-amber-450 font-bold">Yapım: {stats.yapimDosyaSayisi}</span>
+                    <span className="text-[8px] bg-blue-50 dark:bg-blue-950 px-1.5 py-0.5 rounded text-blue-650 dark:text-blue-400 font-bold">
+                      Mal: {stats.malDosyaSayisi}
+                    </span>
+                    <span className="text-[8px] bg-emerald-50 dark:bg-emerald-950 px-1.5 py-0.5 rounded text-emerald-600 dark:text-emerald-450 font-bold">
+                      Hizmet: {stats.hizmetDosyaSayisi}
+                    </span>
+                    <span className="text-[8px] bg-amber-50 dark:bg-amber-950 px-1.5 py-0.5 rounded text-amber-600 dark:text-amber-450 font-bold">
+                      Yapım: {stats.yapimDosyaSayisi}
+                    </span>
                     {stats.danismanlikDosyaSayisi > 0 && (
-                      <span className="text-[8px] bg-purple-50 dark:bg-purple-950 px-1.5 py-0.5 rounded text-purple-600 dark:text-purple-400 font-bold">Danış: {stats.danismanlikDosyaSayisi}</span>
+                      <span className="text-[8px] bg-purple-50 dark:bg-purple-950 px-1.5 py-0.5 rounded text-purple-600 dark:text-purple-400 font-bold">
+                        Danış: {stats.danismanlikDosyaSayisi}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -498,18 +651,24 @@ export default function DashboardScreen(): React.JSX.Element {
                   </div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Aktif & Tamamlanan</div>
+                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                    Aktif & Tamamlanan
+                  </div>
                   <div className="text-3xl font-extrabold text-slate-800 dark:text-slate-100 mt-1">
                     {isLoading ? '-' : stats.ihaleDosyaSayisi}
                   </div>
                   <div className="text-[9px] text-slate-500 dark:text-slate-450 mt-2 flex flex-col gap-0.5 font-semibold">
                     <div className="flex justify-between">
                       <span>Aktif Süreç:</span>
-                      <span className="font-bold text-blue-600 dark:text-blue-400">{stats.aktifDosyaSayisi}</span>
+                      <span className="font-bold text-blue-600 dark:text-blue-400">
+                        {stats.aktifDosyaSayisi}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Tamamlanan:</span>
-                      <span className="font-bold text-emerald-600 dark:text-emerald-400">{stats.tamamlananDosyaSayisi}</span>
+                      <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                        {stats.tamamlananDosyaSayisi}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -523,7 +682,9 @@ export default function DashboardScreen(): React.JSX.Element {
                   </div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">İhalelere Katılan Firma Sayısı</div>
+                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                    İhalelere Katılan Firma Sayısı
+                  </div>
                   <div className="text-3xl font-extrabold text-slate-800 dark:text-slate-100 mt-1">
                     {isLoading ? '-' : stats.ihalelereKatilanFirmaSayisi}
                   </div>
@@ -541,7 +702,9 @@ export default function DashboardScreen(): React.JSX.Element {
                   </div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">İhalelere Seçilen Firma Sayısı</div>
+                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                    İhalelere Seçilen Firma Sayısı
+                  </div>
                   <div className="text-3xl font-extrabold text-slate-800 dark:text-slate-100 mt-1">
                     {isLoading ? '-' : stats.ihalelereSecilenFirmaSayisi}
                   </div>
@@ -557,11 +720,18 @@ export default function DashboardScreen(): React.JSX.Element {
                   <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400 flex items-center justify-center shrink-0">
                     <Building className="w-5 h-5" />
                   </div>
-                  <span className="text-[9px] font-bold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/30 px-2 py-0.5 rounded-full border border-violet-500/10">Lider Tedarikçi</span>
+                  <span className="text-[9px] font-bold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/30 px-2 py-0.5 rounded-full border border-violet-500/10">
+                    Lider Tedarikçi
+                  </span>
                 </div>
                 <div>
-                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">En Çok Tercih Edilen</div>
-                  <div className="text-xs font-black text-slate-850 dark:text-slate-100 mt-1 truncate" title={stats.enCokSecilenFirma?.unvan || 'Veri Yok'}>
+                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                    En Çok Tercih Edilen
+                  </div>
+                  <div
+                    className="text-xs font-black text-slate-850 dark:text-slate-100 mt-1 truncate"
+                    title={stats.enCokSecilenFirma?.unvan || 'Veri Yok'}
+                  >
                     {stats.enCokSecilenFirma?.unvan || 'Kayıt Bulunamadı'}
                   </div>
                   {stats.enCokSecilenFirma && (
@@ -578,11 +748,18 @@ export default function DashboardScreen(): React.JSX.Element {
                   <div className="w-10 h-10 rounded-xl bg-pink-50 dark:bg-pink-900/20 text-pink-650 dark:text-pink-400 flex items-center justify-center shrink-0">
                     <Landmark className="w-5 h-5" />
                   </div>
-                  <span className="text-[9px] font-bold text-pink-600 dark:text-pink-450 bg-pink-50 dark:bg-pink-950/30 px-2 py-0.5 rounded-full border border-pink-500/10">Lider Birim</span>
+                  <span className="text-[9px] font-bold text-pink-600 dark:text-pink-450 bg-pink-50 dark:bg-pink-950/30 px-2 py-0.5 rounded-full border border-pink-500/10">
+                    Lider Birim
+                  </span>
                 </div>
                 <div>
-                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">En Çok Harcama Yapan</div>
-                  <div className="text-xs font-black text-slate-850 dark:text-slate-100 mt-1 truncate" title={stats.enCokHarcamaYapanBirim?.birim_adi || 'Veri Yok'}>
+                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                    En Çok Harcama Yapan
+                  </div>
+                  <div
+                    className="text-xs font-black text-slate-850 dark:text-slate-100 mt-1 truncate"
+                    title={stats.enCokHarcamaYapanBirim?.birim_adi || 'Veri Yok'}
+                  >
                     {stats.enCokHarcamaYapanBirim?.birim_adi || 'Kayıt Bulunamadı'}
                   </div>
                   {stats.enCokHarcamaYapanBirim && (
@@ -601,7 +778,9 @@ export default function DashboardScreen(): React.JSX.Element {
                   </div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">İhale Edilen Kalem Sayısı</div>
+                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                    İhale Edilen Kalem Sayısı
+                  </div>
                   <div className="text-3xl font-extrabold text-slate-800 dark:text-slate-100 mt-1">
                     {isLoading ? '-' : stats.ihaleEdilenMalzemeSayisi}
                   </div>
@@ -619,7 +798,9 @@ export default function DashboardScreen(): React.JSX.Element {
                   </div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Kayıtlı Tedarikçi Havuzu</div>
+                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                    Kayıtlı Tedarikçi Havuzu
+                  </div>
                   <div className="text-3xl font-extrabold text-slate-800 dark:text-slate-100 mt-1">
                     {isLoading ? '-' : stats.kayitliFirmaSayisi}
                   </div>
@@ -637,7 +818,9 @@ export default function DashboardScreen(): React.JSX.Element {
                   </div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Kayıtlı Personel Sayısı</div>
+                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                    Kayıtlı Personel Sayısı
+                  </div>
                   <div className="text-3xl font-extrabold text-slate-800 dark:text-slate-100 mt-1">
                     {isLoading ? '-' : stats.kayitliPersonelSayisi}
                   </div>
@@ -661,23 +844,40 @@ export default function DashboardScreen(): React.JSX.Element {
               <div className="p-1.5 bg-blue-100/80 dark:bg-blue-900/40 rounded-xl shadow-sm border border-blue-200/50 dark:border-blue-800/50">
                 <Building className="w-4 h-4 text-blue-700 dark:text-blue-400" />
               </div>
-              <h3 className="text-sm font-extrabold text-slate-800 dark:text-slate-200 tracking-tight">Kurum Kimlik Kartı</h3>
+              <h3 className="text-sm font-extrabold text-slate-800 dark:text-slate-200 tracking-tight">
+                Kurum Kimlik Kartı
+              </h3>
             </div>
 
             <div className="space-y-3 text-xs relative z-10">
               <div className="bg-white/80 dark:bg-slate-800/40 p-2.5 rounded-xl border border-blue-50 dark:border-slate-700/50 shadow-sm backdrop-blur-sm">
-                <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 block uppercase tracking-wider mb-0.5">Kurum Adı</span>
-                <span className="font-extrabold text-slate-800 dark:text-slate-100 text-[13px] leading-tight block">{institutionName || 'Belirtilmemiş'}</span>
+                <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 block uppercase tracking-wider mb-0.5">
+                  Kurum Adı
+                </span>
+                <span className="font-extrabold text-slate-800 dark:text-slate-100 text-[13px] leading-tight block">
+                  {institutionName || 'Belirtilmemiş'}
+                </span>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div className="bg-white/60 dark:bg-slate-800/20 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800/60 hover:bg-white dark:hover:bg-slate-800/40 transition-colors">
-                  <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 block uppercase mb-0.5">Kurum Türü</span>
-                  <span className="font-bold text-slate-700 dark:text-slate-300">{kurumTuruLabel}</span>
+                  <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 block uppercase mb-0.5">
+                    Kurum Türü
+                  </span>
+                  <span className="font-bold text-slate-700 dark:text-slate-300">
+                    {kurumTuruLabel}
+                  </span>
                 </div>
                 <div className="bg-white/60 dark:bg-slate-800/20 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800/60 hover:bg-white dark:hover:bg-slate-800/40 transition-colors">
-                  <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 block uppercase mb-0.5">Limit Grubu</span>
-                  <span className="font-bold text-slate-700 dark:text-slate-300 truncate block" title={limitType === 'buyuksehir' ? 'Büyükşehir Limitleri' : 'Diğer İdare Limitleri'}>
+                  <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 block uppercase mb-0.5">
+                    Limit Grubu
+                  </span>
+                  <span
+                    className="font-bold text-slate-700 dark:text-slate-300 truncate block"
+                    title={
+                      limitType === 'buyuksehir' ? 'Büyükşehir Limitleri' : 'Diğer İdare Limitleri'
+                    }
+                  >
                     {limitType === 'buyuksehir' ? 'Büyükşehir' : 'Diğer İdare'}
                   </span>
                 </div>
@@ -691,9 +891,13 @@ export default function DashboardScreen(): React.JSX.Element {
                   <div>
                     <span className="text-[9px] font-bold text-blue-500 dark:text-blue-400 block uppercase leading-none mb-0.5 flex items-center gap-1">
                       e-Bütçe Kodu
-                      <span title="Kurumun e-Bütçe sistemindeki ön ek kodu"><Info className="w-2.5 h-2.5 cursor-help" /></span>
+                      <span title="Kurumun e-Bütçe sistemindeki ön ek kodu">
+                        <Info className="w-2.5 h-2.5 cursor-help" />
+                      </span>
                     </span>
-                    <span className="font-mono font-bold text-slate-850 dark:text-slate-100">{eButceKodu}</span>
+                    <span className="font-mono font-bold text-slate-850 dark:text-slate-100">
+                      {eButceKodu}
+                    </span>
                   </div>
                 </div>
               )}
@@ -707,9 +911,13 @@ export default function DashboardScreen(): React.JSX.Element {
                     <div>
                       <span className="text-[9px] font-bold text-indigo-500 dark:text-indigo-400 block uppercase leading-none mb-0.5 flex items-center gap-1">
                         Say2000i Kodu
-                        <span title="Kurumun Say2000i sistemindeki kodu"><Info className="w-2.5 h-2.5 cursor-help" /></span>
+                        <span title="Kurumun Say2000i sistemindeki kodu">
+                          <Info className="w-2.5 h-2.5 cursor-help" />
+                        </span>
                       </span>
-                      <span className="font-mono font-bold text-slate-850 dark:text-slate-100">{say2000iKodu}</span>
+                      <span className="font-mono font-bold text-slate-850 dark:text-slate-100">
+                        {say2000iKodu}
+                      </span>
                     </div>
                   </div>
                 )}
@@ -720,11 +928,23 @@ export default function DashboardScreen(): React.JSX.Element {
                   <div className="bg-slate-50/80 dark:bg-slate-800/30 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700/50 relative group/link">
                     <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 block uppercase mb-0.5 flex items-center justify-between">
                       DETSİS Kodu
-                      <a href={detsisKodu ? `https://detsis.gov.tr/birim/${detsisKodu}/${detsisKodu}/${new Date().toISOString().split('T')[0]}` : "https://detsis.gov.tr/"} target="_blank" rel="noreferrer" className="text-blue-500 hover:text-blue-600 opacity-0 group-hover/link:opacity-100 transition-opacity" title="DETSİS'te Sorgula">
+                      <a
+                        href={
+                          detsisKodu
+                            ? `https://detsis.gov.tr/birim/${detsisKodu}/${detsisKodu}/${new Date().toISOString().split('T')[0]}`
+                            : 'https://detsis.gov.tr/'
+                        }
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-blue-500 hover:text-blue-600 opacity-0 group-hover/link:opacity-100 transition-opacity"
+                        title="DETSİS'te Sorgula"
+                      >
                         <ExternalLink className="w-2.5 h-2.5" />
                       </a>
                     </span>
-                    <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{detsisKodu}</span>
+                    <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
+                      {detsisKodu}
+                    </span>
                   </div>
                 )}
                 {kurumsalKod && (
@@ -732,13 +952,19 @@ export default function DashboardScreen(): React.JSX.Element {
                     <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 block uppercase mb-0.5 flex items-center justify-between">
                       Kurumsal Kod
                     </span>
-                    <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{kurumsalKod}</span>
+                    <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
+                      {kurumsalKod}
+                    </span>
                   </div>
                 )}
                 {fonksiyonelKod && (
                   <div className="bg-slate-50/80 dark:bg-slate-800/30 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700/50">
-                    <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 block uppercase mb-0.5">Fonksiyonel Kod</span>
-                    <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{fonksiyonelKod}</span>
+                    <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 block uppercase mb-0.5">
+                      Fonksiyonel Kod
+                    </span>
+                    <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
+                      {fonksiyonelKod}
+                    </span>
                   </div>
                 )}
               </div>
@@ -749,9 +975,17 @@ export default function DashboardScreen(): React.JSX.Element {
                     <div className="flex items-start gap-2">
                       <div className="w-1 h-3.5 bg-indigo-400 rounded-full mt-0.5 shrink-0" />
                       <div>
-                        <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 block uppercase leading-none mb-0.5">Harcama Birimi</span>
+                        <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 block uppercase leading-none mb-0.5">
+                          Harcama Birimi
+                        </span>
                         <span className="font-bold text-slate-700 dark:text-slate-300 block leading-tight">
-                          {harcamaBirimKodu ? <span className="font-mono text-indigo-500 dark:text-indigo-400 mr-1">[{harcamaBirimKodu}]</span> : ''}
+                          {harcamaBirimKodu ? (
+                            <span className="font-mono text-indigo-500 dark:text-indigo-400 mr-1">
+                              [{harcamaBirimKodu}]
+                            </span>
+                          ) : (
+                            ''
+                          )}
                           {harcamaBirimAdi}
                         </span>
                       </div>
@@ -768,7 +1002,13 @@ export default function DashboardScreen(): React.JSX.Element {
                           </span>
                         </span>
                         <span className="font-bold text-slate-700 dark:text-slate-300 block leading-tight">
-                          {muhasebeBirimKodu ? <span className="font-mono text-emerald-500 dark:text-emerald-400 mr-1">[{muhasebeBirimKodu}]</span> : ''}
+                          {muhasebeBirimKodu ? (
+                            <span className="font-mono text-emerald-500 dark:text-emerald-400 mr-1">
+                              [{muhasebeBirimKodu}]
+                            </span>
+                          ) : (
+                            ''
+                          )}
                           {muhasebeBirimAdi}
                         </span>
                       </div>
@@ -778,10 +1018,18 @@ export default function DashboardScreen(): React.JSX.Element {
               )}
 
               <div className="grid grid-cols-2 gap-2 pt-1 border-t border-blue-100/50 dark:border-slate-800">
-                <Link to="/birimler" className="flex items-center justify-between p-2 rounded-xl bg-slate-50/80 dark:bg-slate-800/30 hover:bg-blue-50 hover:border-blue-100 dark:hover:bg-slate-800/80 border border-transparent transition-all group/stat">
+                <Link
+                  to="/birimler"
+                  className="flex items-center justify-between p-2 rounded-xl bg-slate-50/80 dark:bg-slate-800/30 hover:bg-blue-50 hover:border-blue-100 dark:hover:bg-slate-800/80 border border-transparent transition-all group/stat"
+                >
                   <div>
-                    <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 block uppercase mb-0.5">Birimler</span>
-                    <span className="font-extrabold text-slate-800 dark:text-slate-200">{stats.kayitliBirimSayisi} <span className="text-[10px] font-medium text-slate-500">Adet</span></span>
+                    <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 block uppercase mb-0.5">
+                      Birimler
+                    </span>
+                    <span className="font-extrabold text-slate-800 dark:text-slate-200">
+                      {stats.kayitliBirimSayisi}{' '}
+                      <span className="text-[10px] font-medium text-slate-500">Adet</span>
+                    </span>
                   </div>
                   <div className="w-6 h-6 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm group-hover/stat:bg-blue-100 dark:group-hover/stat:bg-blue-900/50 transition-colors">
                     <ExternalLink className="w-3 h-3 text-slate-400 group-hover/stat:text-blue-500" />
@@ -789,8 +1037,13 @@ export default function DashboardScreen(): React.JSX.Element {
                 </Link>
                 <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50/80 dark:bg-slate-800/30 border border-transparent">
                   <div>
-                    <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 block uppercase mb-0.5">Ambarlar</span>
-                    <span className="font-extrabold text-slate-800 dark:text-slate-200">{stats.kayitliAmbarSayisi} <span className="text-[10px] font-medium text-slate-500">Depo</span></span>
+                    <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 block uppercase mb-0.5">
+                      Ambarlar
+                    </span>
+                    <span className="font-extrabold text-slate-800 dark:text-slate-200">
+                      {stats.kayitliAmbarSayisi}{' '}
+                      <span className="text-[10px] font-medium text-slate-500">Depo</span>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -802,7 +1055,9 @@ export default function DashboardScreen(): React.JSX.Element {
                   Harcama Yetkilisi
                 </span>
                 <span className="font-extrabold text-sm block leading-tight">{adminName}</span>
-                <span className="text-[10px] text-blue-100 font-medium block mt-0.5 opacity-90">{adminTitle}</span>
+                <span className="text-[10px] text-blue-100 font-medium block mt-0.5 opacity-90">
+                  {adminTitle}
+                </span>
               </div>
             </div>
           </div>
@@ -811,7 +1066,9 @@ export default function DashboardScreen(): React.JSX.Element {
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm flex flex-col max-h-[360px] overflow-hidden">
             <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
               <Megaphone className="w-5 h-5 text-amber-500" />
-              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">Duyurular ve İşlem Logları</h3>
+              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                Duyurular ve İşlem Logları
+              </h3>
             </div>
 
             <div className="flex-1 overflow-y-auto pr-1 space-y-4 min-h-0 custom-scrollbar">
@@ -841,15 +1098,21 @@ export default function DashboardScreen(): React.JSX.Element {
 
                   return (
                     <div key={ann.id} className="flex gap-3 items-start">
-                      <div className={`mt-0.5 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${colorClass}`}>
+                      <div
+                        className={`mt-0.5 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${colorClass}`}
+                      >
                         <DotIcon className="w-4 h-4" />
                       </div>
                       <div>
-                        <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">{ann.title}</h4>
+                        <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                          {ann.title}
+                        </h4>
                         <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
                           {ann.content}
                         </p>
-                        <span className="text-[9px] text-slate-400 font-medium mt-1 block">{ann.date}</span>
+                        <span className="text-[9px] text-slate-400 font-medium mt-1 block">
+                          {ann.date}
+                        </span>
                       </div>
                     </div>
                   )
@@ -866,8 +1129,12 @@ export default function DashboardScreen(): React.JSX.Element {
         <div className="lg:col-span-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">Aylık Harcama Hacmi</h3>
-              <p className="text-[11px] text-slate-450 mt-0.5">Yıl genelinde doğrudan temin kalemlerine yapılan harcamalar</p>
+              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                Aylık Harcama Hacmi
+              </h3>
+              <p className="text-[11px] text-slate-450 mt-0.5">
+                Yıl genelinde doğrudan temin kalemlerine yapılan harcamalar
+              </p>
             </div>
             <span className="text-xs font-mono font-bold bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 px-3 py-1 rounded-xl text-slate-700 dark:text-slate-350">
               2026 (Toplam: {formatCurrency(stats.toplamYaklasikMaliyet)})
@@ -896,13 +1163,17 @@ export default function DashboardScreen(): React.JSX.Element {
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 10, fill: '#94a3b8' }}
-                  tickFormatter={(val) => val > 0 ? `${(val / 1000).toFixed(0)}K` : '0'}
+                  tickFormatter={(val) => (val > 0 ? `${(val / 1000).toFixed(0)}K` : '0')}
                   dx={-10}
                 />
                 <Tooltip
                   formatter={(value: any) => [formatCurrency(value as number), 'Harcama']}
                   labelStyle={{ color: '#0f172a', fontWeight: 'bold' }}
-                  contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                  contentStyle={{
+                    borderRadius: '12px',
+                    border: '1px solid #e2e8f0',
+                    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'
+                  }}
                 />
                 <Area
                   type="monotone"
@@ -921,8 +1192,12 @@ export default function DashboardScreen(): React.JSX.Element {
         {/* Right: Spend Distribution (SVG Donut) */}
         <div className="lg:col-span-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
           <div>
-            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">Kategori Dağılımı</h3>
-            <p className="text-[11px] text-slate-450 mt-0.5">Yaklaşık maliyetlerin mal, hizmet ve yapım türlerine oranı</p>
+            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
+              Kategori Dağılımı
+            </h3>
+            <p className="text-[11px] text-slate-450 mt-0.5">
+              Yaklaşık maliyetlerin mal, hizmet ve yapım türlerine oranı
+            </p>
           </div>
 
           {/* Donut Chart via Recharts */}
@@ -943,19 +1218,21 @@ export default function DashboardScreen(): React.JSX.Element {
                   dataKey="value"
                   stroke="none"
                 >
-                  {
-                    [
-                      { name: 'Mal Alımı', value: categoryData.Mal, color: '#3b82f6' },
-                      { name: 'Hizmet Alımı', value: categoryData.Hizmet, color: '#10b981' },
-                      { name: 'Yapım İşi', value: categoryData.Yapım, color: '#f59e0b' }
-                    ].map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))
-                  }
+                  {[
+                    { name: 'Mal Alımı', value: categoryData.Mal, color: '#3b82f6' },
+                    { name: 'Hizmet Alımı', value: categoryData.Hizmet, color: '#10b981' },
+                    { name: 'Yapım İşi', value: categoryData.Yapım, color: '#f59e0b' }
+                  ].map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
                 </Pie>
                 <Tooltip
                   formatter={(value: any) => formatCurrency(value as number)}
-                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  contentStyle={{
+                    borderRadius: '8px',
+                    border: 'none',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                  }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -963,7 +1240,9 @@ export default function DashboardScreen(): React.JSX.Element {
               <span className="text-xl font-extrabold text-slate-800 dark:text-slate-100">
                 %{totalCat > 1 ? 100 : 0}
               </span>
-              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Dağılım</span>
+              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                Dağılım
+              </span>
             </div>
           </div>
 
@@ -972,7 +1251,9 @@ export default function DashboardScreen(): React.JSX.Element {
             <div className="flex justify-between items-center p-2 rounded-xl bg-slate-50/50 dark:bg-slate-950/20 border border-slate-100/50 dark:border-slate-850/50">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-                <span className="text-xs font-bold text-slate-700 dark:text-slate-350">Mal Alımı</span>
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-350">
+                  Mal Alımı
+                </span>
               </div>
               <span className="text-xs font-mono font-bold text-slate-850 dark:text-slate-105">
                 {formatCurrency(categoryData.Mal)} (%{malPct})
@@ -982,7 +1263,9 @@ export default function DashboardScreen(): React.JSX.Element {
             <div className="flex justify-between items-center p-2 rounded-xl bg-slate-50/50 dark:bg-slate-950/20 border border-slate-100/50 dark:border-slate-850/50">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                <span className="text-xs font-bold text-slate-700 dark:text-slate-350">Hizmet Alımı</span>
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-350">
+                  Hizmet Alımı
+                </span>
               </div>
               <span className="text-xs font-mono font-bold text-slate-850 dark:text-slate-105">
                 {formatCurrency(categoryData.Hizmet)} (%{hizmetPct})
@@ -992,7 +1275,9 @@ export default function DashboardScreen(): React.JSX.Element {
             <div className="flex justify-between items-center p-2 rounded-xl bg-slate-50/50 dark:bg-slate-950/20 border border-slate-100/50 dark:border-slate-850/50">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                <span className="text-xs font-bold text-slate-700 dark:text-slate-350">Yapım İşi</span>
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-350">
+                  Yapım İşi
+                </span>
               </div>
               <span className="text-xs font-mono font-bold text-slate-850 dark:text-slate-105">
                 {formatCurrency(categoryData.Yapım)} (%{yapimPct})
@@ -1006,11 +1291,19 @@ export default function DashboardScreen(): React.JSX.Element {
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">Aktif Temin Süreçleri ve Aşamaları</h3>
-            <p className="text-[11px] text-slate-450 mt-0.5">Sistemde devam eden doğrudan temin dosyalarının işlem adımları</p>
+            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
+              Aktif Temin Süreçleri ve Aşamaları
+            </h3>
+            <p className="text-[11px] text-slate-450 mt-0.5">
+              Sistemde devam eden doğrudan temin dosyalarının işlem adımları
+            </p>
           </div>
           <Link to="/dosyalar">
-            <Button variant="ghost" size="sm" className="text-xs font-bold text-blue-600 dark:text-blue-450 hover:bg-blue-50 dark:hover:bg-blue-950/20 flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs font-bold text-blue-600 dark:text-blue-450 hover:bg-blue-50 dark:hover:bg-blue-950/20 flex items-center gap-1"
+            >
               Tüm Dosyaları Gör
               <ChevronRight className="w-4 h-4" />
             </Button>
@@ -1032,7 +1325,10 @@ export default function DashboardScreen(): React.JSX.Element {
               {activeFiles.map((file) => {
                 const asamaInfo = getAsamaDetails(file.durum_asama_id || 1)
                 return (
-                  <tr key={file.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors group">
+                  <tr
+                    key={file.id}
+                    className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors group"
+                  >
                     <td className="py-3.5 px-4 max-w-xs">
                       <div className="flex flex-col gap-1">
                         <span className="font-mono font-bold text-[10px] text-blue-600 dark:text-blue-450 bg-blue-50 dark:bg-blue-950/40 px-2 py-0.5 rounded w-max border border-blue-500/10">
@@ -1063,7 +1359,9 @@ export default function DashboardScreen(): React.JSX.Element {
 
                     <td className="py-3.5 px-4">
                       <div className="flex flex-col gap-2">
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border w-max ${asamaInfo?.color}`}>
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full border w-max ${asamaInfo?.color}`}
+                        >
                           {asamaInfo?.name}
                         </span>
                         {/* Process Step Visual indicator */}
@@ -1071,12 +1369,13 @@ export default function DashboardScreen(): React.JSX.Element {
                           {[1, 2, 3, 4, 5].map((step) => (
                             <div
                               key={step}
-                              className={`h-1.5 rounded-full transition-all duration-300 ${step < (file.durum_asama_id || 1)
+                              className={`h-1.5 rounded-full transition-all duration-300 ${
+                                step < (file.durum_asama_id || 1)
                                   ? 'bg-emerald-500 w-4'
                                   : step === (file.durum_asama_id || 1)
                                     ? 'bg-blue-500 w-6 animate-pulse'
                                     : 'bg-slate-200 dark:bg-slate-850 w-2.5'
-                                }`}
+                              }`}
                             />
                           ))}
                         </div>
@@ -1086,7 +1385,11 @@ export default function DashboardScreen(): React.JSX.Element {
                     <td className="py-3.5 px-4 text-center">
                       <div className="flex justify-center items-center gap-2">
                         <Link to="/dosyalar">
-                          <Button variant="ghost" size="sm" className="h-8 px-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 px-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold flex items-center gap-1"
+                          >
                             Detay
                             <ChevronRight className="w-3.5 h-3.5" />
                           </Button>

@@ -19,12 +19,14 @@ export function MaliTab(): React.JSX.Element {
   const [limitType, setLimitType] = useState('diger')
 
   const [kurumsalCodes, setKurumsalCodes] = useState<CodeItem[]>([])
-  const [localBirimCodes, setLocalBirimCodes] = useState<{id: number, e_butce: string, say2000i: string}[]>([])
+  const [localBirimCodes, setLocalBirimCodes] = useState<
+    { id: number; e_butce: string; say2000i: string }[]
+  >([])
   const [fonksiyonelCodes, setFonksiyonelCodes] = useState<CodeItem[]>([])
   const [muhasebeBirimleri, setMuhasebeBirimleri] = useState<CodeItem[]>([])
   const [harcamaBirimleri, setHarcamaBirimleri] = useState<CodeItem[]>([])
   const [economicCodes, setEconomicCodes] = useState<CodeItem[]>([])
-  
+
   const [taxOffice, setTaxOffice] = useState('')
   const [taxNumber, setTaxNumber] = useState('')
 
@@ -56,12 +58,25 @@ export function MaliTab(): React.JSX.Element {
         return []
       }
 
-      window.electron.ipcRenderer.invoke('db:query', 'SELECT * FROM TANIM_KodSozlugu WHERE aktif_mi = 1')
-        .then(res => {
+      window.electron.ipcRenderer
+        .invoke('db:query', 'SELECT * FROM TANIM_KodSozlugu WHERE aktif_mi = 1')
+        .then((res) => {
           if (res.success && res.data) {
-            setFonksiyonelCodes(res.data.filter((d: any) => d.tur === 'fonksiyonel').map((d: any) => ({ code: d.kod, description: d.aciklama })))
-            setMuhasebeBirimleri(res.data.filter((d: any) => d.tur === 'muhasebe_birimi').map((d: any) => ({ code: d.kod, description: d.aciklama })))
-            setHarcamaBirimleri(res.data.filter((d: any) => d.tur === 'harcama_birimi').map((d: any) => ({ code: d.kod, description: d.aciklama })))
+            setFonksiyonelCodes(
+              res.data
+                .filter((d: any) => d.tur === 'fonksiyonel')
+                .map((d: any) => ({ code: d.kod, description: d.aciklama }))
+            )
+            setMuhasebeBirimleri(
+              res.data
+                .filter((d: any) => d.tur === 'muhasebe_birimi')
+                .map((d: any) => ({ code: d.kod, description: d.aciklama }))
+            )
+            setHarcamaBirimleri(
+              res.data
+                .filter((d: any) => d.tur === 'harcama_birimi')
+                .map((d: any) => ({ code: d.kod, description: d.aciklama }))
+            )
           }
         })
         .catch(console.error)
@@ -93,15 +108,19 @@ export function MaliTab(): React.JSX.Element {
   useEffect(() => {
     queueMicrotask(() => {
       if (birimler && birimler.length > 0) {
-        setLocalBirimCodes(birimler.map(b => ({
-          id: b.id,
-          e_butce: b.e_butce || '',
-          say2000i: b.say2000i || ''
-        })))
-        setKurumsalCodes(birimler.map(b => ({
-          code: b.e_butce || '',
-          description: b.birim_adi
-        })))
+        setLocalBirimCodes(
+          birimler.map((b) => ({
+            id: b.id,
+            e_butce: b.e_butce || '',
+            say2000i: b.say2000i || ''
+          }))
+        )
+        setKurumsalCodes(
+          birimler.map((b) => ({
+            code: b.e_butce || '',
+            description: b.birim_adi
+          }))
+        )
       } else {
         setLocalBirimCodes([])
         setKurumsalCodes([])
@@ -144,24 +163,39 @@ export function MaliTab(): React.JSX.Element {
       }
 
       await window.electron.ipcRenderer.invoke('db:run', 'DELETE FROM TANIM_KodSozlugu')
-      
+
       const insertQueries = [
-        ...kurumsalCodes.map(c => ({ sql: 'INSERT INTO TANIM_KodSozlugu (tur, kod, aciklama) VALUES (?, ?, ?)', params: ['kurumsal', c.code, c.description] })),
-        ...fonksiyonelCodes.map(c => ({ sql: 'INSERT INTO TANIM_KodSozlugu (tur, kod, aciklama) VALUES (?, ?, ?)', params: ['fonksiyonel', c.code, c.description] })),
-        ...muhasebeBirimleri.map(c => ({ sql: 'INSERT INTO TANIM_KodSozlugu (tur, kod, aciklama) VALUES (?, ?, ?)', params: ['muhasebe_birimi', c.code, c.description] })),
-        ...harcamaBirimleri.map(c => ({ sql: 'INSERT INTO TANIM_KodSozlugu (tur, kod, aciklama) VALUES (?, ?, ?)', params: ['harcama_birimi', c.code, c.description] }))
+        ...kurumsalCodes.map((c) => ({
+          sql: 'INSERT INTO TANIM_KodSozlugu (tur, kod, aciklama) VALUES (?, ?, ?)',
+          params: ['kurumsal', c.code, c.description]
+        })),
+        ...fonksiyonelCodes.map((c) => ({
+          sql: 'INSERT INTO TANIM_KodSozlugu (tur, kod, aciklama) VALUES (?, ?, ?)',
+          params: ['fonksiyonel', c.code, c.description]
+        })),
+        ...muhasebeBirimleri.map((c) => ({
+          sql: 'INSERT INTO TANIM_KodSozlugu (tur, kod, aciklama) VALUES (?, ?, ?)',
+          params: ['muhasebe_birimi', c.code, c.description]
+        })),
+        ...harcamaBirimleri.map((c) => ({
+          sql: 'INSERT INTO TANIM_KodSozlugu (tur, kod, aciklama) VALUES (?, ?, ?)',
+          params: ['harcama_birimi', c.code, c.description]
+        }))
       ]
-      
+
       const updateBirimQueries = [
         { sql: 'UPDATE TANIM_Birim SET e_butce = NULL, say2000i = NULL', params: [] },
-        ...localBirimCodes.map(lb => ({
+        ...localBirimCodes.map((lb) => ({
           sql: 'UPDATE TANIM_Birim SET e_butce = ?, say2000i = ? WHERE id = ?',
           params: [lb.e_butce, lb.say2000i, lb.id]
         }))
       ]
-      
+
       if (insertQueries.length > 0 || updateBirimQueries.length > 0) {
-        await window.electron.ipcRenderer.invoke('db:transaction', [...insertQueries, ...updateBirimQueries])
+        await window.electron.ipcRenderer.invoke('db:transaction', [
+          ...insertQueries,
+          ...updateBirimQueries
+        ])
       }
 
       await saveSettings(dataToSave)
@@ -177,7 +211,9 @@ export function MaliTab(): React.JSX.Element {
   return (
     <div className="flex flex-col h-full relative">
       <div className="sticky top-0 z-10 flex items-center justify-between gap-4 px-6 py-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800 rounded-t-2xl">
-        <span className="text-xs text-slate-500 dark:text-slate-400">Mali ve kurumsal kodları kaydedin.</span>
+        <span className="text-xs text-slate-500 dark:text-slate-400">
+          Mali ve kurumsal kodları kaydedin.
+        </span>
         <button
           onClick={handleSaveMali}
           disabled={savingMali}
@@ -194,8 +230,8 @@ export function MaliTab(): React.JSX.Element {
             Mali ve Kurumsal Kod Yönetimi
           </h2>
           <p className="text-xs text-slate-500">
-            Maliye ve muhasebe süreçlerinde kullanılan kod listelerini yönetin. Kod
-            ekleyerek listeleri genişletebilirsiniz.
+            Maliye ve muhasebe süreçlerinde kullanılan kod listelerini yönetin. Kod ekleyerek
+            listeleri genişletebilirsiniz.
           </p>
         </div>
 
@@ -217,29 +253,55 @@ export function MaliTab(): React.JSX.Element {
                   className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs rounded-xl py-2 px-3 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 >
                   <option value="belediye">Belediye / Mahalli İdare (Finansman Kaynağı: 5)</option>
-                  <option value="genel_butce">Bakanlık / İl-İlçe Müdürlüğü / Genel Bütçe (Finansman Kaynağı: 1)</option>
-                  <option value="ozel_butce">Üniversite / Özel Bütçeli İdare (Finansman Kaynağı: 2)</option>
-                  <option value="duzenleyici">Düzenleyici ve Denetleyici Kurum (Finansman Kaynağı: 3)</option>
-                  <option value="sosyal_guvenlik">SGK / Sosyal Güvenlik Kurumu (Finansman Kaynağı: 4)</option>
-                  <option value="diger">Diğer İdareler / Kamu İktisadi Teşebbüsü (Finansman Kaynağı: Kuruma Göre Değişir)</option>
+                  <option value="genel_butce">
+                    Bakanlık / İl-İlçe Müdürlüğü / Genel Bütçe (Finansman Kaynağı: 1)
+                  </option>
+                  <option value="ozel_butce">
+                    Üniversite / Özel Bütçeli İdare (Finansman Kaynağı: 2)
+                  </option>
+                  <option value="duzenleyici">
+                    Düzenleyici ve Denetleyici Kurum (Finansman Kaynağı: 3)
+                  </option>
+                  <option value="sosyal_guvenlik">
+                    SGK / Sosyal Güvenlik Kurumu (Finansman Kaynağı: 4)
+                  </option>
+                  <option value="diger">
+                    Diğer İdareler / Kamu İktisadi Teşebbüsü (Finansman Kaynağı: Kuruma Göre
+                    Değişir)
+                  </option>
                 </select>
 
                 {institutionType === 'belediye' && (
                   <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed font-medium">
-                    💡 Mahalli İdare şablonu aktif. 5018 sayılı kanun gereği kurumsal kod prefixi <strong>"46"</strong> (Mahalli İdareler) ve finansal kod <strong>"5"</strong> olmalıdır.
-                    <br />Örnek Kurumsal Kod Yapısı: <strong>46 . [İl Kodu] . [Belediye Kodu] . [Müdürlük/Birim Kodu]</strong>
+                    💡 Mahalli İdare şablonu aktif. 5018 sayılı kanun gereği kurumsal kod prefixi{' '}
+                    <strong>"46"</strong> (Mahalli İdareler) ve finansal kod <strong>"5"</strong>{' '}
+                    olmalıdır.
+                    <br />
+                    Örnek Kurumsal Kod Yapısı:{' '}
+                    <strong>46 . [İl Kodu] . [Belediye Kodu] . [Müdürlük/Birim Kodu]</strong>
                   </div>
                 )}
                 {institutionType === 'genel_butce' && (
                   <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed font-medium">
-                    💡 Genel Bütçe şablonu aktif. Finansal kod <strong>"1"</strong> (Genel Bütçe) olmalıdır. Kurumsal Kod1 alanına ilgili Bakanlık / İdare kodu yazılmalıdır.
-                    <br />Örnek Kurumsal Kod Yapısı: <strong>[Bakanlık Kodu] . [Genel Müdürlük] . [İl Kodu] . [İlçe/Birim]</strong> (Örn: 18.01.06.00 - Sağlık Bakanlığı)
+                    💡 Genel Bütçe şablonu aktif. Finansal kod <strong>"1"</strong> (Genel Bütçe)
+                    olmalıdır. Kurumsal Kod1 alanına ilgili Bakanlık / İdare kodu yazılmalıdır.
+                    <br />
+                    Örnek Kurumsal Kod Yapısı:{' '}
+                    <strong>
+                      [Bakanlık Kodu] . [Genel Müdürlük] . [İl Kodu] . [İlçe/Birim]
+                    </strong>{' '}
+                    (Örn: 18.01.06.00 - Sağlık Bakanlığı)
                   </div>
                 )}
                 {institutionType === 'ozel_butce' && (
                   <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed font-medium">
-                    💡 Özel Bütçe şablonu aktif. Özel Bütçeli İdareler (Örn: Üniversiteler) için finansal kod <strong>"2"</strong> olmalıdır. Üniversiteler için kurumsal kod prefixi <strong>"38"</strong> ile başlar.
-                    <br />Örnek Kurumsal Kod Yapısı: <strong>38 . [Üniversite Kodu] . [Fakülte/Bölüm] . [Birim]</strong> (Örn: 38.08.01.00)
+                    💡 Özel Bütçe şablonu aktif. Özel Bütçeli İdareler (Örn: Üniversiteler) için
+                    finansal kod <strong>"2"</strong> olmalıdır. Üniversiteler için kurumsal kod
+                    prefixi <strong>"38"</strong> ile başlar.
+                    <br />
+                    Örnek Kurumsal Kod Yapısı:{' '}
+                    <strong>38 . [Üniversite Kodu] . [Fakülte/Bölüm] . [Birim]</strong> (Örn:
+                    38.08.01.00)
                   </div>
                 )}
               </div>
@@ -257,20 +319,24 @@ export function MaliTab(): React.JSX.Element {
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     {birimler.length === 0 ? (
                       <div className="text-center py-6 text-xs text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-950 rounded-lg border border-dashed border-slate-200 dark:border-slate-800">
-                        Tanımlı birim bulunamadı. Lütfen önce "Birim Yönetimi" sayfasından birimlerinizi ekleyin.
+                        Tanımlı birim bulunamadı. Lütfen önce "Birim Yönetimi" sayfasından
+                        birimlerinizi ekleyin.
                       </div>
                     ) : (
                       birimler.map((birim, index) => {
-                        const lbCode = localBirimCodes.find(lb => lb.id === birim.id)
-                        const currentKurumsal = lbCode ? lbCode.e_butce : (birim.e_butce || '')
-                        const currentEski = lbCode ? lbCode.say2000i : (birim.say2000i || '')
-                        
+                        const lbCode = localBirimCodes.find((lb) => lb.id === birim.id)
+                        const currentKurumsal = lbCode ? lbCode.e_butce : birim.e_butce || ''
+                        const currentEski = lbCode ? lbCode.say2000i : birim.say2000i || ''
+
                         return (
-                          <div key={birim.id || index} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3 bg-white dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
+                          <div
+                            key={birim.id || index}
+                            className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3 bg-white dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800"
+                          >
                             <div className="flex-1 w-full">
                               <div className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                                 {birim.birim_adi}
@@ -278,24 +344,36 @@ export function MaliTab(): React.JSX.Element {
                             </div>
                             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto shrink-0">
                               <div className="w-full sm:w-48">
-                                <label className="text-[10px] text-slate-500 font-semibold mb-1 block">e-Bütçe Kodu</label>
+                                <label className="text-[10px] text-slate-500 font-semibold mb-1 block">
+                                  e-Bütçe Kodu
+                                </label>
                                 <Input
                                   value={currentKurumsal}
                                   onChange={(e) => {
                                     const newCode = e.target.value
-                                    setLocalBirimCodes(prev => prev.map(p => p.id === birim.id ? { ...p, e_butce: newCode } : p))
+                                    setLocalBirimCodes((prev) =>
+                                      prev.map((p) =>
+                                        p.id === birim.id ? { ...p, e_butce: newCode } : p
+                                      )
+                                    )
                                   }}
                                   placeholder="Örn: xx.yy.zz.03"
                                   className="h-8 text-xs bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 w-full"
                                 />
                               </div>
                               <div className="w-full sm:w-48">
-                                <label className="text-[10px] text-slate-500 font-semibold mb-1 block">Say2000i Kodu</label>
+                                <label className="text-[10px] text-slate-500 font-semibold mb-1 block">
+                                  Say2000i Kodu
+                                </label>
                                 <Input
                                   value={currentEski}
                                   onChange={(e) => {
                                     const newCode = e.target.value
-                                    setLocalBirimCodes(prev => prev.map(p => p.id === birim.id ? { ...p, say2000i: newCode } : p))
+                                    setLocalBirimCodes((prev) =>
+                                      prev.map((p) =>
+                                        p.id === birim.id ? { ...p, say2000i: newCode } : p
+                                      )
+                                    )
                                   }}
                                   placeholder="Örn: XXYY"
                                   className="h-8 text-xs bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 w-full"
@@ -318,7 +396,7 @@ export function MaliTab(): React.JSX.Element {
                   onChange={setFonksiyonelCodes}
                   placeholderCode="Örn: 01.1.2.00"
                   placeholderDesc="Fonksiyon Açıklaması..."
-                  presets={FONKSIYONEL_KODLAR.map(k => ({ kod: k.kod, aciklama: k.aciklama }))}
+                  presets={FONKSIYONEL_KODLAR.map((k) => ({ kod: k.kod, aciklama: k.aciklama }))}
                 />
               </div>
 

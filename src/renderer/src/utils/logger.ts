@@ -8,7 +8,11 @@ export type LogType = 'info' | 'success' | 'warning' | 'error'
  * @param message Detailed message describing the event
  * @param type Severity of the log ('info', 'success', 'warning', 'error')
  */
-export async function logActivity(title: string, message: string, type: LogType = 'info'): Promise<void> {
+export async function logActivity(
+  title: string,
+  message: string,
+  type: LogType = 'info'
+): Promise<void> {
   try {
     const q = 'INSERT INTO LOG_SystemLog (title, message, type) VALUES (?, ?, ?)'
     await window.electron.ipcRenderer.invoke('db:query', q, [title, message, type])

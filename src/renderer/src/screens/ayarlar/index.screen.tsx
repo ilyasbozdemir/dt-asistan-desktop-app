@@ -3,24 +3,13 @@ import { useAyarlarHooks } from './ayarlar.hooks'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { useSettingsStore } from '../../store/settingsStore'
-import {
-  Save,
-  Mail,
-  Upload,
-  Download,
-  Settings,
-  Palette,
-  Code,
-  Eye,
-  EyeOff
-} from 'lucide-react'
+import { Save, Mail, Upload, Download, Settings, Palette, Code, Eye, EyeOff } from 'lucide-react'
 import { InnerMenu, InnerMenuItem } from '../../components/ui/InnerMenu'
 import TemaScreen from './TemaScreen'
 import { useLocation } from '@tanstack/react-router'
 import { Bot, Archive } from 'lucide-react'
 
 type TabType = 'smtp' | 'tema' | 'developer' | 'ai' | 'archive'
-
 
 export default function AyarlarScreen(): React.ReactNode {
   const { settings, isLoadingSettings, saveSettings, importSmtp, exportSmtp } = useAyarlarHooks()
@@ -30,7 +19,13 @@ export default function AyarlarScreen(): React.ReactNode {
   const [activeTab, setActiveTab] = useState<TabType>(() => {
     const params = new URLSearchParams(location.search)
     const tabParam = params.get('tab') as TabType
-    if (tabParam === 'smtp' || tabParam === 'tema' || tabParam === 'developer' || tabParam === 'ai' || tabParam === 'archive') {
+    if (
+      tabParam === 'smtp' ||
+      tabParam === 'tema' ||
+      tabParam === 'developer' ||
+      tabParam === 'ai' ||
+      tabParam === 'archive'
+    ) {
       return tabParam
     }
     return 'smtp'
@@ -39,7 +34,13 @@ export default function AyarlarScreen(): React.ReactNode {
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     const tabParam = params.get('tab') as TabType
-    if (tabParam === 'smtp' || tabParam === 'tema' || tabParam === 'developer' || tabParam === 'ai' || tabParam === 'archive') {
+    if (
+      tabParam === 'smtp' ||
+      tabParam === 'tema' ||
+      tabParam === 'developer' ||
+      tabParam === 'ai' ||
+      tabParam === 'archive'
+    ) {
       setActiveTab(tabParam)
     }
   }, [location.search])
@@ -74,9 +75,12 @@ export default function AyarlarScreen(): React.ReactNode {
   const [isArchiving, setIsArchiving] = useState(false)
 
   useEffect(() => {
-    window.electron.ipcRenderer.invoke('app:isPackaged').then((packaged: boolean) => {
-      setIsPackaged(packaged)
-    }).catch(console.error)
+    window.electron.ipcRenderer
+      .invoke('app:isPackaged')
+      .then((packaged: boolean) => {
+        setIsPackaged(packaged)
+      })
+      .catch(console.error)
   }, [])
 
   useEffect(() => {
@@ -87,7 +91,7 @@ export default function AyarlarScreen(): React.ReactNode {
         setSmtpUser(settings.smtp_user || '')
         setSmtpPass(settings.smtp_pass || '')
         setSmtpSecure(settings.smtp_secure === 'true')
-        
+
         const mode = settings.devUpdateTestMode === 'true'
         const ver = settings.devUpdateVersion || ''
         setDevUpdateTestMode(mode)
@@ -109,8 +113,8 @@ export default function AyarlarScreen(): React.ReactNode {
   useEffect(() => {
     if (activeTab === 'developer') {
       fetch('https://api.github.com/repos/ilyasbozdemir/dt-asistan-desktop-app/releases')
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           if (Array.isArray(data)) {
             const versions = data.map((r: any) => r.tag_name.replace(/^v/, ''))
             setGithubReleases(versions)
@@ -157,7 +161,7 @@ export default function AyarlarScreen(): React.ReactNode {
     setSaving(true)
     try {
       const dataToSave: Record<string, string> = {}
-      
+
       if (tab === 'smtp') {
         dataToSave.smtp_host = smtpHost
         dataToSave.smtp_port = smtpPort
@@ -221,7 +225,15 @@ export default function AyarlarScreen(): React.ReactNode {
     { id: 'ai', label: 'Yapay Zeka', icon: <Bot className="w-4 h-4 shrink-0" /> },
     { id: 'div3', label: '', icon: null, isDivider: true },
     { id: 'archive', label: 'Veri & Arşiv', icon: <Archive className="w-4 h-4 shrink-0" /> },
-    ...(import.meta.env.DEV ? [{ id: 'developer', label: 'Geliştirici & Test', icon: <Code className="w-4 h-4 shrink-0" /> }] : [])
+    ...(import.meta.env.DEV
+      ? [
+          {
+            id: 'developer',
+            label: 'Geliştirici & Test',
+            icon: <Code className="w-4 h-4 shrink-0" />
+          }
+        ]
+      : [])
   ] as InnerMenuItem[]
 
   return (
@@ -340,7 +352,11 @@ export default function AyarlarScreen(): React.ReactNode {
                             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 focus:outline-none"
                             title={showSmtpPass ? 'Şifreyi Gizle' : 'Şifreyi Göster'}
                           >
-                            {showSmtpPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            {showSmtpPass ? (
+                              <EyeOff className="w-4 h-4" />
+                            ) : (
+                              <Eye className="w-4 h-4" />
+                            )}
                           </button>
                         </div>
                       </div>
@@ -368,7 +384,8 @@ export default function AyarlarScreen(): React.ReactNode {
                   <div className="space-y-4">
                     {isPackaged ? (
                       <div className="bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 p-4 rounded-xl text-sm font-medium">
-                        Bu ayarlar yalnızca geliştirici modunda (uygulama paketlenmemişken) kullanılabilir.
+                        Bu ayarlar yalnızca geliştirici modunda (uygulama paketlenmemişken)
+                        kullanılabilir.
                       </div>
                     ) : (
                       <>
@@ -441,7 +458,6 @@ export default function AyarlarScreen(): React.ReactNode {
                   </div>
                 )}
 
-
                 {/* TAB 7: YAPAY ZEKA AYARLARI */}
                 {activeTab === 'ai' && (
                   <div className="space-y-4">
@@ -464,7 +480,11 @@ export default function AyarlarScreen(): React.ReactNode {
                         </label>
                         <select
                           value={aiProvider}
-                          onChange={(e) => { setAiProvider(e.target.value); setAiTestStatus('idle'); setAiTestMsg('') }}
+                          onChange={(e) => {
+                            setAiProvider(e.target.value)
+                            setAiTestStatus('idle')
+                            setAiTestMsg('')
+                          }}
                           className="w-full text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-55 dark:bg-slate-950 text-slate-800 dark:text-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                         >
                           <option value="gemini">Google Gemini (Önerilen)</option>
@@ -493,11 +513,17 @@ export default function AyarlarScreen(): React.ReactNode {
                               target="_blank"
                               rel="noreferrer noopener"
                               className="text-primary hover:underline font-medium"
-                              onClick={(e) => { e.preventDefault(); window.electron.shell.openExternal('https://aistudio.google.com/app/apikey') }}
+                              onClick={(e) => {
+                                e.preventDefault()
+                                window.electron.shell.openExternal(
+                                  'https://aistudio.google.com/app/apikey'
+                                )
+                              }}
                             >
                               Google AI Studio
-                            </a>
-                            {' '}üzerinden ücretsiz edinebilirsiniz. Anahtar yalnızca bu cihazda saklanır.
+                            </a>{' '}
+                            üzerinden ücretsiz edinebilirsiniz. Anahtar yalnızca bu cihazda
+                            saklanır.
                           </p>
                         </div>
                       )}
@@ -522,11 +548,16 @@ export default function AyarlarScreen(): React.ReactNode {
                               target="_blank"
                               rel="noreferrer noopener"
                               className="text-primary hover:underline font-medium"
-                              onClick={(e) => { e.preventDefault(); window.electron.shell.openExternal('https://platform.openai.com/api-keys') }}
+                              onClick={(e) => {
+                                e.preventDefault()
+                                window.electron.shell.openExternal(
+                                  'https://platform.openai.com/api-keys'
+                                )
+                              }}
                             >
                               OpenAI API Keys
-                            </a>
-                            {' '}üzerinden edinebilirsiniz. Anahtar yalnızca bu cihazda saklanır.
+                            </a>{' '}
+                            üzerinden edinebilirsiniz. Anahtar yalnızca bu cihazda saklanır.
                           </p>
                         </div>
                       )}
@@ -551,11 +582,16 @@ export default function AyarlarScreen(): React.ReactNode {
                               target="_blank"
                               rel="noreferrer noopener"
                               className="text-primary hover:underline font-medium"
-                              onClick={(e) => { e.preventDefault(); window.electron.shell.openExternal('https://console.anthropic.com/settings/keys') }}
+                              onClick={(e) => {
+                                e.preventDefault()
+                                window.electron.shell.openExternal(
+                                  'https://console.anthropic.com/settings/keys'
+                                )
+                              }}
                             >
                               Anthropic Console
-                            </a>
-                            {' '}üzerinden edinebilirsiniz. Anahtar yalnızca bu cihazda saklanır.
+                            </a>{' '}
+                            üzerinden edinebilirsiniz. Anahtar yalnızca bu cihazda saklanır.
                           </p>
                         </div>
                       )}
@@ -567,13 +603,19 @@ export default function AyarlarScreen(): React.ReactNode {
                           disabled={aiTestStatus === 'loading'}
                           className="text-xs py-1.5 px-4 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 gap-1.5"
                         >
-                          {aiTestStatus === 'loading' ? '⏳ Test Ediliyor...' : '⚡ Bağlantıyı Test Et'}
+                          {aiTestStatus === 'loading'
+                            ? '⏳ Test Ediliyor...'
+                            : '⚡ Bağlantıyı Test Et'}
                         </Button>
                         {aiTestStatus === 'ok' && (
-                          <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">{aiTestMsg}</span>
+                          <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                            {aiTestMsg}
+                          </span>
                         )}
                         {aiTestStatus === 'error' && (
-                          <span className="text-xs font-semibold text-red-500 dark:text-red-400">{aiTestMsg}</span>
+                          <span className="text-xs font-semibold text-red-500 dark:text-red-400">
+                            {aiTestMsg}
+                          </span>
                         )}
                       </div>
                     </div>
@@ -589,7 +631,9 @@ export default function AyarlarScreen(): React.ReactNode {
                           Eski Yılları Arşivle
                         </h2>
                         <p className="text-xs text-slate-500">
-                          Belirlediğiniz yıldan daha eski olan doğrudan temin dosyalarını ana veritabanından çıkartıp, sıkıştırılmış arşiv dosyasına (.dtz) aktarır. Böylece sisteminiz daha hızlı çalışır ve dosya boyutu küçülür.
+                          Belirlediğiniz yıldan daha eski olan doğrudan temin dosyalarını ana
+                          veritabanından çıkartıp, sıkıştırılmış arşiv dosyasına (.dtz) aktarır.
+                          Böylece sisteminiz daha hızlı çalışır ve dosya boyutu küçülür.
                         </p>
                       </div>
                     </div>
@@ -610,12 +654,21 @@ export default function AyarlarScreen(): React.ReactNode {
                           />
                           <Button
                             onClick={async () => {
-                              if (window.confirm(`${archiveYear} ve öncesindeki tüm dosyalar sistemden silinip arşiv dosyasına taşınacak. Onaylıyor musunuz?`)) {
+                              if (
+                                window.confirm(
+                                  `${archiveYear} ve öncesindeki tüm dosyalar sistemden silinip arşiv dosyasına taşınacak. Onaylıyor musunuz?`
+                                )
+                              ) {
                                 setIsArchiving(true)
                                 try {
-                                  const res = await window.electron.ipcRenderer.invoke('db:archive-old-records', archiveYear)
+                                  const res = await window.electron.ipcRenderer.invoke(
+                                    'db:archive-old-records',
+                                    archiveYear
+                                  )
                                   if (res.success) {
-                                    alert(`Başarılı! ${res.count} adet dosya arşivlendi.\nKaydedilen Yer: ${res.filePath}`)
+                                    alert(
+                                      `Başarılı! ${res.count} adet dosya arşivlendi.\nKaydedilen Yer: ${res.filePath}`
+                                    )
                                     window.location.reload()
                                   } else {
                                     alert('Hata: ' + res.message)
@@ -634,7 +687,9 @@ export default function AyarlarScreen(): React.ReactNode {
                           </Button>
                         </div>
                         <p className="text-xs text-slate-500 mt-3">
-                          Not: Firma, personel ve birim tanımlarınız silinmez. Yalnızca eski temin dosyaları arşivlenir. Oluşan <b>.dtz</b> dosyasını daha sonra uygulamadan tekrar açıp inceleyebilirsiniz.
+                          Not: Firma, personel ve birim tanımlarınız silinmez. Yalnızca eski temin
+                          dosyaları arşivlenir. Oluşan <b>.dtz</b> dosyasını daha sonra uygulamadan
+                          tekrar açıp inceleyebilirsiniz.
                         </p>
                       </div>
                     </div>

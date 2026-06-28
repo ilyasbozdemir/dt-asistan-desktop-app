@@ -4,12 +4,22 @@ export const TANIM_OkasKod = {
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
     { name: 'kod', type: 'TEXT', unique: true, notNull: true, description: 'Kod' }, // 8 haneli OKAS kodu, örn: 30192700
-    { name: 'bolum', type: 'TEXT', description: 'Bolum' },   // İlk 2 hane: Bölüm
-    { name: 'grup', type: 'TEXT', description: 'Grup' },    // İlk 3 hane: Grup
-    { name: 'sinif', type: 'TEXT', description: 'Sinif' },   // İlk 4 hane: Sınıf
+    { name: 'bolum', type: 'TEXT', description: 'Bolum' }, // İlk 2 hane: Bölüm
+    { name: 'grup', type: 'TEXT', description: 'Grup' }, // İlk 3 hane: Grup
+    { name: 'sinif', type: 'TEXT', description: 'Sinif' }, // İlk 4 hane: Sınıf
     { name: 'aciklama', type: 'TEXT', notNull: true, description: 'Aciklama' },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
+    {
+      name: 'created_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Created At'
+    },
+    {
+      name: 'updated_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Updated At'
+    }
   ],
   initialData: []
 }

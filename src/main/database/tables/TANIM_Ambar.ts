@@ -17,7 +17,12 @@ export const TANIM_Ambar = {
     { name: 'tasinir_kodu', type: 'TEXT', description: 'Tasinir Kodu' },
     { name: 'tasinir_adi', type: 'TEXT', description: 'Tasinir Adi' },
     { name: 'aktif_mi', type: 'INTEGER', notNull: true, default: 1, description: 'Aktif mı?' },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' }
+    {
+      name: 'created_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Created At'
+    }
   ],
   initialData: []
 }

@@ -106,8 +106,8 @@ export default function KomisyonGorevleriScreen(): React.JSX.Element {
             Komisyonlarda personellere atanabilecek unvan ve görevleri yönetin.
           </p>
         </div>
-        <Button 
-          onClick={handleAdd} 
+        <Button
+          onClick={handleAdd}
           className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm shadow-indigo-500/20 rounded-xl px-4 py-2 text-sm font-semibold transition-all"
         >
           <Plus className="w-4 h-4" /> Yeni Görev Ekle
@@ -115,112 +115,122 @@ export default function KomisyonGorevleriScreen(): React.JSX.Element {
       </div>
 
       <div className="grid grid-cols-1 gap-8 items-start flex-1 min-h-0">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm min-h-[450px] flex flex-col overflow-hidden relative">
-            <div className="p-6 h-full flex flex-col min-h-0">
-              <div className="relative mb-6 max-w-md">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                <Input
-                  type="text"
-                  placeholder="Görev adı veya açıklama ara..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-9 pr-4 py-2 w-full bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-xl text-sm"
-                />
-              </div>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm min-h-[450px] flex flex-col overflow-hidden relative">
+          <div className="p-6 h-full flex flex-col min-h-0">
+            <div className="relative mb-6 max-w-md">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Input
+                type="text"
+                placeholder="Görev adı veya açıklama ara..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9 pr-4 py-2 w-full bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 rounded-xl text-sm"
+              />
+            </div>
 
-              <div className="flex-1 overflow-y-auto custom-scrollbar pr-2">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {isLoading ? (
-                    <div className="col-span-full py-12 text-center text-slate-500">Yükleniyor...</div>
-                  ) : filteredGorevler.length === 0 ? (
-                    <div className="col-span-full py-12 text-center text-slate-500 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
-                      Görev bulunamadı.
-                    </div>
-                  ) : (
-                    filteredGorevler.map((gorev: any) => (
-                      <div
-                        key={gorev.id}
-                        className="group p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-shadow flex flex-col"
-                      >
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg shrink-0">
-                            {gorev.ad.charAt(0)}
-                          </div>
-                          <h3 className="font-bold text-slate-800 dark:text-slate-200 text-base line-clamp-2">
-                            {gorev.ad}
-                          </h3>
+            <div className="flex-1 overflow-y-auto custom-scrollbar pr-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {isLoading ? (
+                  <div className="col-span-full py-12 text-center text-slate-500">
+                    Yükleniyor...
+                  </div>
+                ) : filteredGorevler.length === 0 ? (
+                  <div className="col-span-full py-12 text-center text-slate-500 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
+                    Görev bulunamadı.
+                  </div>
+                ) : (
+                  filteredGorevler.map((gorev: any) => (
+                    <div
+                      key={gorev.id}
+                      className="group p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-shadow flex flex-col"
+                    >
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg shrink-0">
+                          {gorev.ad.charAt(0)}
                         </div>
-                        
-                        <div className="flex-1">
-                          {gorev.aciklama ? (
-                            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">
-                              {gorev.aciklama}
-                            </p>
-                          ) : (
-                            <p className="text-sm text-slate-400 dark:text-slate-500 italic">
-                              Açıklama girilmemiş
-                            </p>
-                          )}
-                        </div>
+                        <h3 className="font-bold text-slate-800 dark:text-slate-200 text-base line-clamp-2">
+                          {gorev.ad}
+                        </h3>
+                      </div>
 
-                        <div className="mt-4 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
-                          <div>
-                            {gorev.kullanim_sayisi > 0 ? (
-                              <div className="group/tooltip relative flex items-center">
-                                <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10 dark:bg-blue-900/20 dark:text-blue-400 cursor-help">
-                                  Aktif kullanım: {gorev.kullanim_sayisi}
-                                </span>
-                                {gorev.kullanilan_komisyonlar && (
-                                  <div className="absolute bottom-full left-0 mb-2 hidden w-max max-w-[250px] flex-col gap-1 rounded-lg bg-slate-800 dark:bg-slate-700 p-2.5 text-xs text-white shadow-xl group-hover/tooltip:flex z-50">
-                                    <span className="font-semibold text-slate-300 border-b border-slate-600 pb-1.5 mb-1">Bulunduğu Komisyonlar</span>
-                                    {gorev.kullanilan_komisyonlar.split(',').map((k: string, i: number) => (
+                      <div className="flex-1">
+                        {gorev.aciklama ? (
+                          <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">
+                            {gorev.aciklama}
+                          </p>
+                        ) : (
+                          <p className="text-sm text-slate-400 dark:text-slate-500 italic">
+                            Açıklama girilmemiş
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="mt-4 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
+                        <div>
+                          {gorev.kullanim_sayisi > 0 ? (
+                            <div className="group/tooltip relative flex items-center">
+                              <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10 dark:bg-blue-900/20 dark:text-blue-400 cursor-help">
+                                Aktif kullanım: {gorev.kullanim_sayisi}
+                              </span>
+                              {gorev.kullanilan_komisyonlar && (
+                                <div className="absolute bottom-full left-0 mb-2 hidden w-max max-w-[250px] flex-col gap-1 rounded-lg bg-slate-800 dark:bg-slate-700 p-2.5 text-xs text-white shadow-xl group-hover/tooltip:flex z-50">
+                                  <span className="font-semibold text-slate-300 border-b border-slate-600 pb-1.5 mb-1">
+                                    Bulunduğu Komisyonlar
+                                  </span>
+                                  {gorev.kullanilan_komisyonlar
+                                    .split(',')
+                                    .map((k: string, i: number) => (
                                       <span key={i} className="flex items-center gap-2">
                                         <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0"></span>
-                                        <span className="truncate" title={k.trim()}>{k.trim()}</span>
+                                        <span className="truncate" title={k.trim()}>
+                                          {k.trim()}
+                                        </span>
                                       </span>
                                     ))}
-                                  </div>
-                                )}
-                              </div>
-                            ) : (
-                              <span className="inline-flex items-center rounded-md bg-slate-50 px-2 py-1 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-500/10 dark:bg-slate-800/50 dark:text-slate-400">
-                                Kullanılmıyor
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex gap-2">
-                            <Button 
-                              variant="outline" 
-                              className="text-xs py-1.5 h-auto rounded-lg"
-                              onClick={() => handleEdit(gorev)}
-                            >
-                              Düzenle
-                            </Button>
-                            <Button 
-                              variant="outline" 
-                              className="text-xs py-1.5 h-auto rounded-lg text-red-500 hover:text-red-600 hover:bg-red-50"
-                              onClick={() => {
-                                if (gorev.kullanim_sayisi > 0) {
-                                  alert(`Bu görev aktif olarak ${gorev.kullanim_sayisi} komisyon üyesine atanmış durumda. Silmek için önce o komisyonlardan bu görevi kaldırmalısınız.`)
-                                  return
-                                }
-                                if (confirm('Bu görevi silmek istediğinize emin misiniz?')) {
-                                  deleteMutation.mutate(gorev.id)
-                                }
-                              }}
-                            >
-                              Sil
-                            </Button>
-                          </div>
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="inline-flex items-center rounded-md bg-slate-50 px-2 py-1 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-500/10 dark:bg-slate-800/50 dark:text-slate-400">
+                              Kullanılmıyor
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            className="text-xs py-1.5 h-auto rounded-lg"
+                            onClick={() => handleEdit(gorev)}
+                          >
+                            Düzenle
+                          </Button>
+                          <Button
+                            variant="outline"
+                            className="text-xs py-1.5 h-auto rounded-lg text-red-500 hover:text-red-600 hover:bg-red-50"
+                            onClick={() => {
+                              if (gorev.kullanim_sayisi > 0) {
+                                alert(
+                                  `Bu görev aktif olarak ${gorev.kullanim_sayisi} komisyon üyesine atanmış durumda. Silmek için önce o komisyonlardan bu görevi kaldırmalısınız.`
+                                )
+                                return
+                              }
+                              if (confirm('Bu görevi silmek istediğinize emin misiniz?')) {
+                                deleteMutation.mutate(gorev.id)
+                              }
+                            }}
+                          >
+                            Sil
+                          </Button>
                         </div>
                       </div>
-                    ))
-                  )}
-                </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
         </div>
+      </div>
 
       <Modal
         isOpen={isModalOpen}
@@ -266,8 +276,8 @@ export default function KomisyonGorevleriScreen(): React.JSX.Element {
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800 mt-6">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => {
                 setIsModalOpen(false)
                 setEditingId(null)

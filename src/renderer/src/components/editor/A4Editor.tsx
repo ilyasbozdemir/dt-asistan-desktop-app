@@ -7,8 +7,18 @@ import { TableCell } from '@tiptap/extension-table-cell'
 import { TableHeader } from '@tiptap/extension-table-header'
 import { TextAlign } from '@tiptap/extension-text-align'
 import {
-  Bold, Italic, List, ListOrdered, AlignLeft, AlignCenter, AlignRight,
-  Table as TableIcon, Heading1, Heading2, Heading3, Code
+  Bold,
+  Italic,
+  List,
+  ListOrdered,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Table as TableIcon,
+  Heading1,
+  Heading2,
+  Heading3,
+  Code
 } from 'lucide-react'
 
 interface A4EditorProps {
@@ -17,9 +27,13 @@ interface A4EditorProps {
   readOnly?: boolean
 }
 
-export function A4Editor({ content, onChange, readOnly = false }: A4EditorProps): React.JSX.Element {
+export function A4Editor({
+  content,
+  onChange,
+  readOnly = false
+}: A4EditorProps): React.JSX.Element {
   const [isRawMode, setIsRawMode] = useState(false)
-  
+
   const getInnerAndShell = (html: string) => {
     const bodyMatch = html.match(/(<body[^>]*>)([\s\S]*?)(<\/body>)/i)
     if (bodyMatch) {
@@ -43,14 +57,14 @@ export function A4Editor({ content, onChange, readOnly = false }: A4EditorProps)
     extensions: [
       StarterKit,
       TextAlign.configure({
-        types: ['heading', 'paragraph'],
+        types: ['heading', 'paragraph']
       }),
       Table.configure({
-        resizable: true,
+        resizable: true
       }),
       TableRow,
       TableHeader,
-      TableCell,
+      TableCell
     ],
     content: getInnerAndShell(content).inner,
     editable: !readOnly,
@@ -61,7 +75,7 @@ export function A4Editor({ content, onChange, readOnly = false }: A4EditorProps)
       } else {
         onChange(newHtml)
       }
-    },
+    }
   })
 
   // Update content if changed externally (e.g., initial load or mode switch)
@@ -109,9 +123,9 @@ export function A4Editor({ content, onChange, readOnly = false }: A4EditorProps)
               >
                 <Italic className="w-4 h-4" />
               </button>
-              
+
               <div className="w-px h-6 bg-slate-300 dark:bg-slate-700 mx-1 self-center" />
-              
+
               <button
                 onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
                 className={`p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 ${editor.isActive('heading', { level: 1 }) ? 'bg-slate-200 dark:bg-slate-700 text-blue-600' : 'text-slate-600 dark:text-slate-300'}`}
@@ -178,7 +192,13 @@ export function A4Editor({ content, onChange, readOnly = false }: A4EditorProps)
               <div className="w-px h-6 bg-slate-300 dark:bg-slate-700 mx-1 self-center" />
 
               <button
-                onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+                onClick={() =>
+                  editor
+                    .chain()
+                    .focus()
+                    .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+                    .run()
+                }
                 className={`p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300`}
                 title="Tablo Ekle"
               >
@@ -190,7 +210,9 @@ export function A4Editor({ content, onChange, readOnly = false }: A4EditorProps)
       )}
 
       {/* EDITOR CANVAS */}
-      <div className={`flex-1 overflow-y-auto p-4 md:p-8 bg-slate-200 dark:bg-slate-800 custom-scrollbar flex justify-center w-full relative z-10 ${isRawMode ? 'p-0 md:p-0 bg-transparent dark:bg-transparent' : ''}`}>
+      <div
+        className={`flex-1 overflow-y-auto p-4 md:p-8 bg-slate-200 dark:bg-slate-800 custom-scrollbar flex justify-center w-full relative z-10 ${isRawMode ? 'p-0 md:p-0 bg-transparent dark:bg-transparent' : ''}`}
+      >
         {isRawMode ? (
           <textarea
             className="w-full h-full min-h-[500px] p-4 bg-slate-900 text-slate-300 font-mono text-sm resize-none outline-none border-none"
@@ -203,7 +225,9 @@ export function A4Editor({ content, onChange, readOnly = false }: A4EditorProps)
           />
         ) : (
           <div className="w-[210mm] min-h-[297mm] max-w-full bg-white text-black p-[20mm] shadow-lg border border-slate-300 dark:border-slate-700 print:shadow-none print:border-none editor-content">
-            <style dangerouslySetInnerHTML={{__html:`
+            <style
+              dangerouslySetInnerHTML={{
+                __html: `
               .editor-content .ProseMirror { min-height: 100%; outline: none; font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.5; }
               .editor-content .ProseMirror p { margin-bottom: 1em; }
               .editor-content .ProseMirror h1 { font-size: 16pt; font-weight: bold; margin-bottom: 0.5em; }
@@ -216,7 +240,9 @@ export function A4Editor({ content, onChange, readOnly = false }: A4EditorProps)
               .editor-content .ProseMirror th { font-weight: bold; background-color: #f1f5f9; text-align: left; }
               .editor-content .ProseMirror .selectedCell:after { z-index: 2; position: absolute; content: ""; left: 0; right: 0; top: 0; bottom: 0; background: rgba(200, 200, 255, 0.4); pointer-events: none; }
               .editor-content .ProseMirror .column-resize-handle { position: absolute; right: -2px; top: 0; bottom: -2px; width: 4px; background-color: #adf; pointer-events: none; }
-            `}} />
+            `
+              }}
+            />
             <EditorContent editor={editor} className="h-full w-full outline-none" />
           </div>
         )}

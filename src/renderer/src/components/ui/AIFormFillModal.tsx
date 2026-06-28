@@ -31,8 +31,8 @@ export interface AIFormContext {
   mevcutDegerler?: Record<string, string | number | null | undefined>
   /** Doldurulması istenen alanlar */
   doldurulacakAlanlar: Array<{
-    alan: string         // "konu", "isin_aciklamasi" vb.
-    etiket: string       // "İhale Konusu", "İşin Açıklaması" vb.
+    alan: string // "konu", "isin_aciklamasi" vb.
+    etiket: string // "İhale Konusu", "İşin Açıklaması" vb.
     tip?: 'text' | 'textarea' | 'date' | 'select' | 'number'
     zorunlu?: boolean
     ornekDeger?: string
@@ -80,7 +80,10 @@ Kurum/Birim Bilgileri:
     : ''
 
   const alanlarStr = doldurulacakAlanlar
-    .map(a => `- ${a.alan} (${a.etiket})${a.zorunlu ? ' [ZORUNLU]' : ''}${a.ornekDeger ? ` [Örnek: ${a.ornekDeger}]` : ''}`)
+    .map(
+      (a) =>
+        `- ${a.alan} (${a.etiket})${a.zorunlu ? ' [ZORUNLU]' : ''}${a.ornekDeger ? ` [Örnek: ${a.ornekDeger}]` : ''}`
+    )
     .join('\n')
 
   return `Sen bir Türk kamu ihale uzmanısın. Aşağıdaki form için uygun değerleri üret.
@@ -122,7 +125,7 @@ function buildChatSystemPrompt(context: AIFormContext): string {
         .join('\n')
     : 'Henüz dolu alan yok.'
 
-  const alanlarStr = doldurulacakAlanlar.map(a => `- ${a.etiket}`).join('\n')
+  const alanlarStr = doldurulacakAlanlar.map((a) => `- ${a.etiket}`).join('\n')
 
   return `Sen DT (Doğrudan Temin) uygulamasında çalışan bir Türk kamu ihale asistanısın.
 Görevin: "${formTitle}" formunu kullanıcıyla sohbet ederek doldurmaya yardım etmek.
@@ -191,17 +194,24 @@ function PreviewPanel({
       <div className="mt-2 mb-1 p-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200/50 dark:border-amber-800/50 text-amber-700 dark:text-amber-400 rounded-lg text-[10px] font-semibold flex items-start gap-1.5 leading-relaxed">
         <span className="text-xs mt-0.5">⚠️</span>
         <span>
-          Yapay zekanın tahmin ettiği ekonomik kodlar, tarihler ve bütçe hesaplamaları hata içerebilir. Lütfen doğruluğunu <b>teyit edip</b> uygulayınız.
+          Yapay zekanın tahmin ettiği ekonomik kodlar, tarihler ve bütçe hesaplamaları hata
+          içerebilir. Lütfen doğruluğunu <b>teyit edip</b> uygulayınız.
         </span>
       </div>
 
       <div className="space-y-1 max-h-48 overflow-y-auto custom-scrollbar">
-        {context.doldurulacakAlanlar.filter(a => values[a.alan] !== undefined).map(a => (
-          <div key={a.alan} className="flex gap-2 text-xs">
-            <span className="text-slate-500 dark:text-slate-400 min-w-[120px] truncate">{a.etiket}:</span>
-            <span className="text-slate-800 dark:text-slate-200 font-medium truncate">{String(values[a.alan])}</span>
-          </div>
-        ))}
+        {context.doldurulacakAlanlar
+          .filter((a) => values[a.alan] !== undefined)
+          .map((a) => (
+            <div key={a.alan} className="flex gap-2 text-xs">
+              <span className="text-slate-500 dark:text-slate-400 min-w-[120px] truncate">
+                {a.etiket}:
+              </span>
+              <span className="text-slate-800 dark:text-slate-200 font-medium truncate">
+                {String(values[a.alan])}
+              </span>
+            </div>
+          ))}
       </div>
     </div>
   )
@@ -256,7 +266,9 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
           setQuickError('AI geçerli bir JSON döndürmedi. Tekrar deneyin.')
         }
       } else {
-        setQuickError(res.error || 'AI hatası. Ayarlar > Yapay Zeka bölümünden API anahtarınızı kontrol edin.')
+        setQuickError(
+          res.error || 'AI hatası. Ayarlar > Yapay Zeka bölümünden API anahtarınızı kontrol edin.'
+        )
       }
     } catch {
       setQuickError('Beklenmeyen hata oluştu.')
@@ -282,7 +294,7 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
     if (!text || chatLoading) return
 
     const userMsg: ChatMessage = { role: 'user', content: text, timestamp: new Date() }
-    setChatMessages(prev => [...prev, userMsg])
+    setChatMessages((prev) => [...prev, userMsg])
     setChatInput('')
     setChatLoading(true)
 
@@ -290,7 +302,7 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
       const systemPrompt = buildChatSystemPrompt(context)
       const history = [...chatMessages, userMsg]
       const conversationText = history
-        .map(m => `${m.role === 'user' ? 'Kullanıcı' : 'Asistan'}: ${m.content}`)
+        .map((m) => `${m.role === 'user' ? 'Kullanıcı' : 'Asistan'}: ${m.content}`)
         .join('\n\n')
 
       const prompt = `${systemPrompt}\n\n--- SOHBET GEÇMİŞİ ---\n${conversationText}\n\nAsistan:`
@@ -306,7 +318,7 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
           content: cleanText || 'Form değerleri hazır! Aşağıdan uygulayabilirsin.',
           timestamp: new Date()
         }
-        setChatMessages(prev => [...prev, assistantMsg])
+        setChatMessages((prev) => [...prev, assistantMsg])
 
         if (applyValues) {
           setChatPendingApply(applyValues)
@@ -317,7 +329,7 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
           content: `⚠️ Hata: ${res.error || 'AI yanıt vermedi.'}`,
           timestamp: new Date()
         }
-        setChatMessages(prev => [...prev, errMsg])
+        setChatMessages((prev) => [...prev, errMsg])
       }
     } catch {
       const errMsg: ChatMessage = {
@@ -325,7 +337,7 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
         content: '⚠️ Beklenmeyen hata oluştu.',
         timestamp: new Date()
       }
-      setChatMessages(prev => [...prev, errMsg])
+      setChatMessages((prev) => [...prev, errMsg])
     } finally {
       setChatLoading(false)
     }
@@ -347,11 +359,13 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
       />
 
       {/* Panel */}
-      <div className={cn(
-        'relative w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden',
-        'animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-300',
-        mode === 'chat' ? 'max-w-2xl h-[85vh]' : 'max-w-xl'
-      )}>
+      <div
+        className={cn(
+          'relative w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden',
+          'animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-300',
+          mode === 'chat' ? 'max-w-2xl h-[85vh]' : 'max-w-xl'
+        )}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20">
           <div className="flex items-center gap-2.5">
@@ -359,7 +373,9 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100">AI ile Forma Yardım</h2>
+              <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                AI ile Forma Yardım
+              </h2>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">{context.formTitle}</p>
             </div>
           </div>
@@ -380,7 +396,10 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
 
             {/* Quick Fill */}
             <button
-              onClick={() => { setMode('quick'); handleQuickFill() }}
+              onClick={() => {
+                setMode('quick')
+                handleQuickFill()
+              }}
               className="w-full flex items-center gap-4 p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 border border-amber-200 dark:border-amber-800 rounded-xl hover:border-amber-400 dark:hover:border-amber-600 transition-all group text-left"
             >
               <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/40 rounded-lg flex items-center justify-center flex-none group-hover:scale-110 transition-transform">
@@ -388,8 +407,12 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-slate-800 dark:text-slate-100">Hızlı Doldur</span>
-                  <span className="text-[10px] bg-amber-500 text-white rounded-full px-2 py-0.5 font-bold">ÖNERİLEN</span>
+                  <span className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                    Hızlı Doldur
+                  </span>
+                  <span className="text-[10px] bg-amber-500 text-white rounded-full px-2 py-0.5 font-bold">
+                    ÖNERİLEN
+                  </span>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   Kurum bilgilerini bilerek formu tek hamlede doldurur. Onaylamanız yeterli.
@@ -407,7 +430,9 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
                 <MessageSquare className="w-5 h-5 text-purple-600 dark:text-purple-400" />
               </div>
               <div className="flex-1 min-w-0">
-                <span className="text-sm font-bold text-slate-800 dark:text-slate-100">Sohbet Modu</span>
+                <span className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                  Sohbet Modu
+                </span>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   Asistana ne almak istediğinizi anlatın, o formu adım adım doldursun.
                 </p>
@@ -419,9 +444,12 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
             {context.kurumBilgisi?.birimAdi && (
               <div className="flex items-start gap-2 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-lg p-3">
                 <div className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                  <span className="font-bold text-slate-700 dark:text-slate-300">Kullanılacak Bağlam:</span>
-                  {' '}{context.kurumBilgisi.birimAdi}
-                  {context.kurumBilgisi.sunulacakMakam && ` · ${context.kurumBilgisi.sunulacakMakam}`}
+                  <span className="font-bold text-slate-700 dark:text-slate-300">
+                    Kullanılacak Bağlam:
+                  </span>{' '}
+                  {context.kurumBilgisi.birimAdi}
+                  {context.kurumBilgisi.sunulacakMakam &&
+                    ` · ${context.kurumBilgisi.sunulacakMakam}`}
                 </div>
               </div>
             )}
@@ -436,7 +464,9 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
                 <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center animate-pulse">
                   <Sparkles className="w-6 h-6 text-white" />
                 </div>
-                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">AI formu doldururken...</p>
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  AI formu doldururken...
+                </p>
                 <p className="text-xs text-slate-400">Kurum bilgileri analiz ediliyor</p>
               </div>
             )}
@@ -454,13 +484,20 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
                 </div>
 
                 <div className="space-y-1.5 max-h-64 overflow-y-auto custom-scrollbar pr-1">
-                  {context.doldurulacakAlanlar.map(a => {
+                  {context.doldurulacakAlanlar.map((a) => {
                     const val = quickResult[a.alan]
                     if (val === undefined) return null
                     return (
-                      <div key={a.alan} className="flex gap-2 p-2 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-100 dark:border-slate-800 text-xs">
-                        <span className="text-slate-500 dark:text-slate-400 w-32 flex-none font-medium truncate">{a.etiket}</span>
-                        <span className="text-slate-800 dark:text-slate-200 flex-1 min-w-0">{String(val)}</span>
+                      <div
+                        key={a.alan}
+                        className="flex gap-2 p-2 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-100 dark:border-slate-800 text-xs"
+                      >
+                        <span className="text-slate-500 dark:text-slate-400 w-32 flex-none font-medium truncate">
+                          {a.etiket}
+                        </span>
+                        <span className="text-slate-800 dark:text-slate-200 flex-1 min-w-0">
+                          {String(val)}
+                        </span>
                       </div>
                     )
                   })}
@@ -489,7 +526,11 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
             )}
 
             <button
-              onClick={() => { setMode('select'); setQuickResult(null); setQuickError('') }}
+              onClick={() => {
+                setMode('select')
+                setQuickResult(null)
+                setQuickError('')
+              }}
               className="w-full text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
             >
               ← Geri
@@ -503,23 +544,35 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
               {chatMessages.map((msg, i) => (
-                <div key={i} className={cn('flex gap-2.5', msg.role === 'user' ? 'flex-row-reverse' : 'flex-row')}>
-                  <div className={cn(
-                    'w-7 h-7 rounded-full flex items-center justify-center flex-none',
-                    msg.role === 'assistant'
-                      ? 'bg-gradient-to-br from-purple-500 to-indigo-600'
-                      : 'bg-slate-200 dark:bg-slate-700'
-                  )}>
-                    {msg.role === 'assistant'
-                      ? <Bot className="w-3.5 h-3.5 text-white" />
-                      : <User2 className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" />}
+                <div
+                  key={i}
+                  className={cn(
+                    'flex gap-2.5',
+                    msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'
+                  )}
+                >
+                  <div
+                    className={cn(
+                      'w-7 h-7 rounded-full flex items-center justify-center flex-none',
+                      msg.role === 'assistant'
+                        ? 'bg-gradient-to-br from-purple-500 to-indigo-600'
+                        : 'bg-slate-200 dark:bg-slate-700'
+                    )}
+                  >
+                    {msg.role === 'assistant' ? (
+                      <Bot className="w-3.5 h-3.5 text-white" />
+                    ) : (
+                      <User2 className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" />
+                    )}
                   </div>
-                  <div className={cn(
-                    'max-w-[80%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed',
-                    msg.role === 'assistant'
-                      ? 'bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-tl-sm'
-                      : 'bg-gradient-to-br from-purple-500 to-indigo-600 text-white rounded-tr-sm'
-                  )}>
+                  <div
+                    className={cn(
+                      'max-w-[80%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed',
+                      msg.role === 'assistant'
+                        ? 'bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-tl-sm'
+                        : 'bg-gradient-to-br from-purple-500 to-indigo-600 text-white rounded-tr-sm'
+                    )}
+                  >
                     {msg.content.split('\n').map((line, li) => (
                       <p key={li}>{line || <br />}</p>
                     ))}
@@ -540,7 +593,11 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
 
               {chatPendingApply && (
                 <div className="mx-2">
-                  <PreviewPanel values={chatPendingApply} context={context} onApply={handleApplyAndClose} />
+                  <PreviewPanel
+                    values={chatPendingApply}
+                    context={context}
+                    onApply={handleApplyAndClose}
+                  />
                 </div>
               )}
 
@@ -554,11 +611,11 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
                   ref={inputRef as any}
                   rows={2}
                   value={chatInput}
-                  onChange={e => setChatInput(e.target.value)}
-                  onKeyDown={e => {
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSendMessage();
+                      e.preventDefault()
+                      handleSendMessage()
                     }
                   }}
                   placeholder="Mesaj yazın... (örn: Fen İşleri kırtasiye alımı için doldur)"
@@ -570,7 +627,11 @@ export function AIFormFillModal({ isOpen, onClose, context, onApply }: AIFormFil
                   disabled={!chatInput.trim() || chatLoading}
                   className="px-3.5 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
                 >
-                  {chatLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                  {chatLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Send className="w-4 h-4" />
+                  )}
                 </button>
               </div>
               <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1.5 text-center">

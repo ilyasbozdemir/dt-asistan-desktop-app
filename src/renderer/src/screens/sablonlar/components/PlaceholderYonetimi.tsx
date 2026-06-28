@@ -1,10 +1,30 @@
 import React, { useState, useEffect } from 'react'
-import { Key, LayoutTemplate, Save, RefreshCw, ArrowLeft, Plus, Pencil, ChevronRight, CheckCircle2 } from 'lucide-react'
+import {
+  Key,
+  LayoutTemplate,
+  Save,
+  RefreshCw,
+  ArrowLeft,
+  Plus,
+  Pencil,
+  ChevronRight,
+  CheckCircle2
+} from 'lucide-react'
 import { Button } from '../../../components/ui/Button'
 import { cn } from '../../../utils/cn'
-import { useSablonlar, Sablon, useDbTables, useDbColumns, useDbDictionary } from '../sablonlar.hooks'
+import {
+  useSablonlar,
+  Sablon,
+  useDbTables,
+  useDbColumns,
+  useDbDictionary
+} from '../sablonlar.hooks'
 import { subPagesMapping } from '../../../constants/surecler'
-import { getDefaultMappingForProcess, ProcessMapping, TableColumnMapping } from '../../../constants/mappings'
+import {
+  getDefaultMappingForProcess,
+  ProcessMapping,
+  TableColumnMapping
+} from '../../../constants/mappings'
 
 function VariableRow({
   variableKey,
@@ -30,13 +50,23 @@ function VariableRow({
         <select
           value={mapping?.tablo || ''}
           title={`Tablo Seçimi - ${variableKey}`}
-          onChange={e => onChange(variableKey, { ...mapping, tablo: e.target.value, sutun: '' } as TableColumnMapping)}
+          onChange={(e) =>
+            onChange(variableKey, {
+              ...mapping,
+              tablo: e.target.value,
+              sutun: ''
+            } as TableColumnMapping)
+          }
           className="w-full px-2 py-1.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
         >
           <option value="">-- Tablo Seçin --</option>
-          {dbTables.map(t => {
+          {dbTables.map((t) => {
             const tableLabel = dbDictionary[t]?.label ? `${t} (${dbDictionary[t].label})` : t
-            return <option key={t} value={t}>{tableLabel}</option>
+            return (
+              <option key={t} value={t}>
+                {tableLabel}
+              </option>
+            )
           })}
         </select>
       </td>
@@ -45,18 +75,29 @@ function VariableRow({
           value={mapping?.sutun || ''}
           title={`Sütun Seçimi - ${variableKey}`}
           disabled={!mapping?.tablo}
-          onChange={e => onChange(variableKey, { ...mapping, sutun: e.target.value } as TableColumnMapping)}
+          onChange={(e) =>
+            onChange(variableKey, { ...mapping, sutun: e.target.value } as TableColumnMapping)
+          }
           className="w-full px-2 py-1.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50"
         >
           <option value="">-- Sütun Seçin --</option>
-          {dbColumns.map(c => {
+          {dbColumns.map((c) => {
             const t = mapping?.tablo || ''
-            const colLabel = dbDictionary[t]?.columns?.[c] ? `${c} (${dbDictionary[t].columns[c]})` : c
-            return <option key={c} value={c}>{colLabel}</option>
+            const colLabel = dbDictionary[t]?.columns?.[c]
+              ? `${c} (${dbDictionary[t].columns[c]})`
+              : c
+            return (
+              <option key={c} value={c}>
+                {colLabel}
+              </option>
+            )
           })}
         </select>
       </td>
-      <td className="px-4 py-3 border-b border-slate-100 dark:border-slate-800 text-xs text-slate-500 truncate max-w-[200px]" title={mapping?.aciklama}>
+      <td
+        className="px-4 py-3 border-b border-slate-100 dark:border-slate-800 text-xs text-slate-500 truncate max-w-[200px]"
+        title={mapping?.aciklama}
+      >
         {mapping?.aciklama || '-'}
       </td>
     </tr>
@@ -83,7 +124,7 @@ function InlineSablonBaglayici({
   const [boundSablonId, setBoundSablonId] = useState<string>('')
   const [localOverrides, setLocalOverrides] = useState<ProcessMapping>({})
 
-  const selectedSablon = sablonlar.find(s => s.id.toString() === boundSablonId) || null
+  const selectedSablon = sablonlar.find((s) => s.id.toString() === boundSablonId) || null
 
   const templatePlaceholders = React.useMemo(() => {
     if (!selectedSablon) return []
@@ -151,7 +192,7 @@ function InlineSablonBaglayici({
   }
 
   const handleMappingChange = (key: string, newMapping: TableColumnMapping) => {
-    setLocalOverrides(prev => ({ ...prev, [key]: newMapping }))
+    setLocalOverrides((prev) => ({ ...prev, [key]: newMapping }))
   }
 
   const handleSaveMappings = async () => {
@@ -174,7 +215,10 @@ function InlineSablonBaglayici({
   }
 
   const handleResetMappings = async () => {
-    if (!confirm('Tüm özelleştirmeler silinip varsayılan eşleşmelere dönülecek. Onaylıyor musunuz?')) return
+    if (
+      !confirm('Tüm özelleştirmeler silinip varsayılan eşleşmelere dönülecek. Onaylıyor musunuz?')
+    )
+      return
     try {
       setSavingMapping(true)
       const current = await (window as any).electron.ipcRenderer.invoke('db:get-settings')
@@ -207,19 +251,25 @@ function InlineSablonBaglayici({
         </button>
         <div>
           <h2 className="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-            <span>Aşama {stageNo} - {processName}</span>
+            <span>
+              Aşama {stageNo} - {processName}
+            </span>
           </h2>
           <p className="text-[10px] text-slate-400 font-mono mt-0.5">{processPath}</p>
         </div>
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center h-48 text-slate-500 text-sm">Yükleniyor...</div>
+        <div className="flex items-center justify-center h-48 text-slate-500 text-sm">
+          Yükleniyor...
+        </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
           {/* SABLON SEÇİM PANELİ (LEFT SIDE) */}
           <div className="lg:col-span-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-4 flex flex-col gap-4">
-            <h3 className="font-bold text-slate-700 dark:text-slate-300 text-sm">Bağlanacak Şablon</h3>
+            <h3 className="font-bold text-slate-700 dark:text-slate-300 text-sm">
+              Bağlanacak Şablon
+            </h3>
             <div className="flex flex-col gap-2 max-h-[450px] overflow-y-auto pr-1">
               <button
                 onClick={() => setBoundSablonId('')}
@@ -236,7 +286,7 @@ function InlineSablonBaglayici({
                 <span className="italic">Bağlı Değil</span>
               </button>
 
-              {sablonlar.map(s => (
+              {sablonlar.map((s) => (
                 <button
                   key={s.id}
                   onClick={() => setBoundSablonId(s.id.toString())}
@@ -248,7 +298,9 @@ function InlineSablonBaglayici({
                   )}
                 >
                   <span className="w-4 h-4 shrink-0 rounded-full border-2 border-indigo-400 flex items-center justify-center">
-                    {boundSablonId === s.id.toString() && <span className="w-2 h-2 rounded-full bg-indigo-500" />}
+                    {boundSablonId === s.id.toString() && (
+                      <span className="w-2 h-2 rounded-full bg-indigo-500" />
+                    )}
                   </span>
                   <LayoutTemplate className="w-3.5 h-3.5 shrink-0 text-slate-400" />
                   <span className="truncate flex-1">{s.ad}</span>
@@ -274,8 +326,12 @@ function InlineSablonBaglayici({
               <div className="flex flex-col">
                 <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 flex items-center justify-between">
                   <div>
-                    <h3 className="font-bold text-slate-700 dark:text-slate-300 text-sm">Şablon Değişken Eşleştirmeleri</h3>
-                    <p className="text-[10px] text-slate-500 mt-0.5">Şablondaki değişkenlerin veritabanı sütun eşleşmeleri</p>
+                    <h3 className="font-bold text-slate-700 dark:text-slate-300 text-sm">
+                      Şablon Değişken Eşleştirmeleri
+                    </h3>
+                    <p className="text-[10px] text-slate-500 mt-0.5">
+                      Şablondaki değişkenlerin veritabanı sütun eşleşmeleri
+                    </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
@@ -306,7 +362,7 @@ function InlineSablonBaglayici({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium">
-                      {templatePlaceholders.map(key => {
+                      {templatePlaceholders.map((key) => {
                         const defaultMap = defaultMappingForProcess[key]
                         const overriddenMap = localOverrides[key]
                         const activeMap = overriddenMap || defaultMap || { tablo: '', sutun: '' }
@@ -341,7 +397,7 @@ function SurecSatiri({
   boundSablonAd,
   onEdit
 }: {
-  process: typeof subPagesMapping[0]
+  process: (typeof subPagesMapping)[0]
   boundSablonAd?: string
   onEdit: () => void
 }) {
@@ -349,16 +405,23 @@ function SurecSatiri({
     1: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
     2: 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300',
     3: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
-    4: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+    4: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
   }
 
   return (
     <div className="flex items-center gap-3 px-4 py-3.5 border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors">
-      <span className={cn('text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0', stageColors[process.stage] || 'bg-slate-100 text-slate-600')}>
+      <span
+        className={cn(
+          'text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0',
+          stageColors[process.stage] || 'bg-slate-100 text-slate-600'
+        )}
+      >
         Aşama {process.stage}
       </span>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">{process.name}</p>
+        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">
+          {process.name}
+        </p>
         <p className="text-[10px] text-slate-400 font-mono truncate">{process.path}</p>
       </div>
 
@@ -368,14 +431,24 @@ function SurecSatiri({
           <span className="font-semibold truncate max-w-40">{boundSablonAd}</span>
         </div>
       ) : (
-        <span className="text-[10px] text-slate-450 italic shrink-0 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-full">Bağlı değil</span>
+        <span className="text-[10px] text-slate-450 italic shrink-0 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-full">
+          Bağlı değil
+        </span>
       )}
 
       <button
         onClick={onEdit}
         className="ml-2 flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all shrink-0 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 dark:text-indigo-300"
       >
-        {boundSablonAd ? <><Pencil className="w-3 h-3" /> Düzenle</> : <><Plus className="w-3 h-3" /> Bağla</>}
+        {boundSablonAd ? (
+          <>
+            <Pencil className="w-3 h-3" /> Düzenle
+          </>
+        ) : (
+          <>
+            <Plus className="w-3 h-3" /> Bağla
+          </>
+        )}
         <ChevronRight className="w-3 h-3 ml-0.5" />
       </button>
     </div>
@@ -385,7 +458,7 @@ function SurecSatiri({
 export function PlaceholderYonetimi(): React.JSX.Element {
   const { data: sablonlar = [] } = useSablonlar()
   const [allSettings, setAllSettings] = useState<Record<string, string>>({})
-  const [editingProcess, setEditingProcess] = useState<typeof subPagesMapping[0] | null>(null)
+  const [editingProcess, setEditingProcess] = useState<(typeof subPagesMapping)[0] | null>(null)
 
   const loadAllSettings = async () => {
     try {
@@ -403,7 +476,7 @@ export function PlaceholderYonetimi(): React.JSX.Element {
   const getBoundSablonAd = (processPath: string): string | undefined => {
     const sablonId = allSettings[`MAPPING_${processPath}_SABLON_ID`]
     if (!sablonId) return undefined
-    return sablonlar.find(s => s.id.toString() === sablonId)?.ad
+    return sablonlar.find((s) => s.id.toString() === sablonId)?.ad
   }
 
   const stageGroups = React.useMemo(() => {
@@ -419,7 +492,7 @@ export function PlaceholderYonetimi(): React.JSX.Element {
     1: 'İhtiyaç Tespiti ve Başlangıç',
     2: 'Fiyat Araştırma ve Maliyet',
     3: 'Onay ve İhale Süreci',
-    4: 'Teslim ve Harcama',
+    4: 'Teslim ve Harcama'
   }
 
   if (editingProcess) {
@@ -446,7 +519,8 @@ export function PlaceholderYonetimi(): React.JSX.Element {
             Şablon Süreç Yönetimi
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Her süreç adımı için hangi şablonun kullanılacağını ve değişken eşleşmelerini belirleyin.
+            Her süreç adımı için hangi şablonun kullanılacağını ve değişken eşleşmelerini
+            belirleyin.
           </p>
         </div>
       </div>
@@ -454,14 +528,19 @@ export function PlaceholderYonetimi(): React.JSX.Element {
       {/* SÜREÇ LİSTESİ */}
       <div className="flex-1 overflow-y-auto flex flex-col gap-4">
         {Object.entries(stageGroups).map(([stage, processes]) => (
-          <div key={stage} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+          <div
+            key={stage}
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden"
+          >
             <div className="px-4 py-3 bg-slate-50/80 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800">
               <h3 className="font-bold text-slate-700 dark:text-slate-300 text-sm flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0">{stage}</span>
+                <span className="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0">
+                  {stage}
+                </span>
                 {stageLabels[Number(stage)] || `Aşama ${stage}`}
               </h3>
             </div>
-            {processes.map(p => (
+            {processes.map((p) => (
               <SurecSatiri
                 key={p.path}
                 process={p}

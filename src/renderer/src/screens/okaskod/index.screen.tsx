@@ -1,5 +1,15 @@
 import React, { useState, useMemo } from 'react'
-import { Tag, Plus, Trash2, Search, Hash, AlertCircle, ExternalLink, FileUp, Download } from 'lucide-react'
+import {
+  Tag,
+  Plus,
+  Trash2,
+  Search,
+  Hash,
+  AlertCircle,
+  ExternalLink,
+  FileUp,
+  Download
+} from 'lucide-react'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { Modal } from '../../components/ui/Modal'
@@ -8,7 +18,11 @@ import { cn } from '../../utils/cn'
 
 // OKAS kod yapısı: 8 haneli sayısal
 // İlk 2 hane: Bölüm, ilk 3 hane: Grup, ilk 4 hane: Sınıf, 8 hane: Ürün
-function parseOkasKod(kod: string): { bolum: string | null; grup: string | null; sinif: string | null } {
+function parseOkasKod(kod: string): {
+  bolum: string | null
+  grup: string | null
+  sinif: string | null
+} {
   const clean = kod.replace(/\D/g, '')
   if (clean.length < 2) return { bolum: null, grup: null, sinif: null }
   return {
@@ -32,26 +46,51 @@ function OkasDuzeyOnizleme({ kod }: { kod: string }) {
   const parcalar: { label: string; value: string; color: string; bg: string }[] = []
 
   if (clean.length >= 2) {
-    parcalar.push({ label: 'Bölüm (2 hane)', value: clean.slice(0, 2), color: 'text-blue-700 dark:text-blue-300', bg: 'bg-blue-100 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700' })
+    parcalar.push({
+      label: 'Bölüm (2 hane)',
+      value: clean.slice(0, 2),
+      color: 'text-blue-700 dark:text-blue-300',
+      bg: 'bg-blue-100 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700'
+    })
   }
   if (clean.length >= 3) {
-    parcalar.push({ label: 'Grup (3 hane)', value: clean.slice(0, 3), color: 'text-emerald-700 dark:text-emerald-300', bg: 'bg-emerald-100 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-700' })
+    parcalar.push({
+      label: 'Grup (3 hane)',
+      value: clean.slice(0, 3),
+      color: 'text-emerald-700 dark:text-emerald-300',
+      bg: 'bg-emerald-100 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-700'
+    })
   }
   if (clean.length >= 4) {
-    parcalar.push({ label: 'Sınıf (4 hane)', value: clean.slice(0, 4), color: 'text-orange-700 dark:text-orange-300', bg: 'bg-orange-100 dark:bg-orange-900/30 border-orange-200 dark:border-orange-700' })
+    parcalar.push({
+      label: 'Sınıf (4 hane)',
+      value: clean.slice(0, 4),
+      color: 'text-orange-700 dark:text-orange-300',
+      bg: 'bg-orange-100 dark:bg-orange-900/30 border-orange-200 dark:border-orange-700'
+    })
   }
   if (clean.length >= 8) {
-    parcalar.push({ label: 'Ürün/Hizmet Kodu (8 hane)', value: clean.slice(0, 8), color: 'text-purple-700 dark:text-purple-300', bg: 'bg-purple-100 dark:bg-purple-900/30 border-purple-200 dark:border-purple-700' })
+    parcalar.push({
+      label: 'Ürün/Hizmet Kodu (8 hane)',
+      value: clean.slice(0, 8),
+      color: 'text-purple-700 dark:text-purple-300',
+      bg: 'bg-purple-100 dark:bg-purple-900/30 border-purple-200 dark:border-purple-700'
+    })
   }
 
   return (
     <div className="space-y-1.5">
-      <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-bold">Kod Kırılımı</div>
+      <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-bold">
+        Kod Kırılımı
+      </div>
       <div className="flex flex-wrap gap-1.5">
         {parcalar.map((p) => (
           <div
             key={p.label}
-            className={cn('flex flex-col items-center px-3 py-1.5 rounded-lg border text-center', p.bg)}
+            className={cn(
+              'flex flex-col items-center px-3 py-1.5 rounded-lg border text-center',
+              p.bg
+            )}
           >
             <span className={cn('text-base font-bold font-mono', p.color)}>{p.value}</span>
             <span className="text-[9px] text-slate-500 dark:text-slate-400 mt-0.5">{p.label}</span>
@@ -151,14 +190,22 @@ export default function OkasKodScreen(): React.JSX.Element {
               <Tag className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             </div>
             <div>
-              <h1 className="text-base font-bold text-slate-800 dark:text-slate-100">OKAS Kodu Yönetimi</h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Ortak Kamu Alımları Sözlüğü Kodları</p>
+              <h1 className="text-base font-bold text-slate-800 dark:text-slate-100">
+                OKAS Kodu Yönetimi
+              </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Ortak Kamu Alımları Sözlüğü Kodları
+              </p>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 w-full md:w-auto">
             <div className="text-left sm:text-right sm:border-r border-slate-200 dark:border-slate-700 sm:pr-6">
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{okasKodList.length}</div>
-              <div className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Kayıtlı Kod</div>
+              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+                {okasKodList.length}
+              </div>
+              <div className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">
+                Kayıtlı Kod
+              </div>
             </div>
             <div className="flex flex-wrap gap-2">
               <Button
@@ -174,7 +221,8 @@ export default function OkasKodScreen(): React.JSX.Element {
                 disabled={isImporting}
                 className="gap-2 bg-indigo-600 hover:bg-indigo-700 shadow-md flex items-center px-3 py-1.5 sm:px-4 sm:py-2 text-sm flex-1 sm:flex-initial justify-center"
               >
-                <FileUp className="w-4 h-4" /> {isImporting ? 'Aktarılıyor...' : "Excel'den İçe Aktar"}
+                <FileUp className="w-4 h-4" />{' '}
+                {isImporting ? 'Aktarılıyor...' : "Excel'den İçe Aktar"}
               </Button>
               <Button
                 onClick={handleOpenModal}
@@ -192,8 +240,9 @@ export default function OkasKodScreen(): React.JSX.Element {
           <div className="leading-relaxed">
             <p className="font-bold mb-1">OKAS Kodları Hakkında</p>
             <p>
-              <strong>OKAS (Ortak Kamu Alımları Sözlüğü)</strong>, kamu alımlarında mal, hizmet ve yapım işlerini standart hale getirmek için kullanılan 8 haneli sayısal kodlama sistemidir (AB CPV uyarlaması).
-              Resmi liste için{' '}
+              <strong>OKAS (Ortak Kamu Alımları Sözlüğü)</strong>, kamu alımlarında mal, hizmet ve
+              yapım işlerini standart hale getirmek için kullanılan 8 haneli sayısal kodlama
+              sistemidir (AB CPV uyarlaması). Resmi liste için{' '}
               <a
                 href="https://ekap.kik.gov.tr"
                 target="_blank"
@@ -201,8 +250,8 @@ export default function OkasKodScreen(): React.JSX.Element {
                 className="underline font-semibold hover:text-amber-600 dark:hover:text-amber-200 inline-flex items-center gap-1 mx-1"
               >
                 EKAP <ExternalLink className="w-3 h-3" />
-              </a>
-              {' '}veya{' '}
+              </a>{' '}
+              veya{' '}
               <a
                 href="https://www.kik.gov.tr"
                 target="_blank"
@@ -211,8 +260,8 @@ export default function OkasKodScreen(): React.JSX.Element {
               >
                 KİK <ExternalLink className="w-3 h-3" />
               </a>
-              adreslerini ziyaret edin.
-              Eklediğiniz özel kodlar yalnızca <strong>aktif .dtal (kurum) dosyanıza</strong> kaydedilir.
+              adreslerini ziyaret edin. Eklediğiniz özel kodlar yalnızca{' '}
+              <strong>aktif .dtal (kurum) dosyanıza</strong> kaydedilir.
             </p>
           </div>
         </div>
@@ -234,14 +283,18 @@ export default function OkasKodScreen(): React.JSX.Element {
 
         <div className="flex-1 overflow-auto rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
           {isLoading ? (
-            <div className="flex items-center justify-center h-32 text-slate-400">Yükleniyor...</div>
+            <div className="flex items-center justify-center h-32 text-slate-400">
+              Yükleniyor...
+            </div>
           ) : filteredList.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-48 gap-3 text-slate-400 dark:text-slate-600">
               <Hash className="w-10 h-10" />
               <div className="text-sm text-center">
                 {search ? 'Aramanızla eşleşen kod bulunamadı.' : 'Henüz OKAS kodu eklenmemiş.'}
                 <br />
-                <span className="text-xs">"Yeni Kod Ekle" veya "Excel'den İçe Aktar" ile başlayın.</span>
+                <span className="text-xs">
+                  "Yeni Kod Ekle" veya "Excel'den İçe Aktar" ile başlayın.
+                </span>
               </div>
             </div>
           ) : (
@@ -275,23 +328,31 @@ export default function OkasKodScreen(): React.JSX.Element {
                         <span className="font-mono text-xs text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 rounded">
                           {item.bolum}
                         </span>
-                      ) : '—'}
+                      ) : (
+                        '—'
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       {item.grup ? (
                         <span className="font-mono text-xs text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded">
                           {item.grup}
                         </span>
-                      ) : '—'}
+                      ) : (
+                        '—'
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       {item.sinif ? (
                         <span className="font-mono text-xs text-orange-700 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 px-1.5 py-0.5 rounded">
                           {item.sinif}
                         </span>
-                      ) : '—'}
+                      ) : (
+                        '—'
+                      )}
                     </td>
-                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300">{item.aciklama}</td>
+                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300">
+                      {item.aciklama}
+                    </td>
                     <td className="px-4 py-3 text-center">
                       <button
                         onClick={() => deleteOkasKod(item.id)}
@@ -323,7 +384,9 @@ export default function OkasKodScreen(): React.JSX.Element {
               maxLength={8}
               className="font-mono"
             />
-            <div className="text-[10px] text-slate-400">8 haneli sayısal kod (2–8 hane arası girilebilir)</div>
+            <div className="text-[10px] text-slate-400">
+              8 haneli sayısal kod (2–8 hane arası girilebilir)
+            </div>
           </div>
 
           {/* Düzey Kırılımı Önizleme */}
@@ -351,10 +414,7 @@ export default function OkasKodScreen(): React.JSX.Element {
             >
               İptal
             </Button>
-            <Button
-              onClick={handleKaydet}
-              className="bg-indigo-600 hover:bg-indigo-700"
-            >
+            <Button onClick={handleKaydet} className="bg-indigo-600 hover:bg-indigo-700">
               Kaydet
             </Button>
           </div>

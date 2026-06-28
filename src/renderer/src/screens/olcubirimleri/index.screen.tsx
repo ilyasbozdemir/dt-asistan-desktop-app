@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
 import { Plus, Trash2, Edit2, Search } from 'lucide-react'
-import { useOlcuBirimleri, useSaveOlcuBirimi, useDeleteOlcuBirimi, OlcuBirimi } from './olcubirimleri.hooks'
+import {
+  useOlcuBirimleri,
+  useSaveOlcuBirimi,
+  useDeleteOlcuBirimi,
+  OlcuBirimi
+} from './olcubirimleri.hooks'
 
 export default function OlcuBirimleriScreen(): React.JSX.Element {
   const { data: birimler = [], isLoading } = useOlcuBirimleri()
@@ -11,7 +16,7 @@ export default function OlcuBirimleriScreen(): React.JSX.Element {
   const [editingBirim, setEditingBirim] = useState<Partial<OlcuBirimi> | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const filteredBirimler = birimler.filter(b => 
+  const filteredBirimler = birimler.filter((b) =>
     b.ad.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
@@ -54,7 +59,8 @@ export default function OlcuBirimleriScreen(): React.JSX.Element {
             Ölçü Birimleri
           </h1>
           <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">
-            Malzeme ve hizmetler için sistemde kayıtlı ölçü birimleri. Toplam {birimler.length} kayıt.
+            Malzeme ve hizmetler için sistemde kayıtlı ölçü birimleri. Toplam {birimler.length}{' '}
+            kayıt.
           </p>
         </div>
         <button
@@ -90,34 +96,55 @@ export default function OlcuBirimleriScreen(): React.JSX.Element {
             <table className="w-full text-left border-collapse min-w-[600px]">
               <thead className="bg-slate-50 dark:bg-slate-800/50 sticky top-0 z-10 backdrop-blur-sm">
                 <tr>
-                  <th className="py-3 px-4 font-semibold text-sm text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 w-16">ID</th>
-                  <th className="py-3 px-4 font-semibold text-sm text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700">Ölçü Birimi</th>
-                  <th className="py-3 px-4 font-semibold text-sm text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 w-32 text-center">Durum</th>
-                  <th className="py-3 px-4 font-semibold text-sm text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 w-24 text-right">İşlemler</th>
+                  <th className="py-3 px-4 font-semibold text-sm text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 w-16">
+                    ID
+                  </th>
+                  <th className="py-3 px-4 font-semibold text-sm text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700">
+                    Ölçü Birimi
+                  </th>
+                  <th className="py-3 px-4 font-semibold text-sm text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 w-32 text-center">
+                    Durum
+                  </th>
+                  <th className="py-3 px-4 font-semibold text-sm text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 w-24 text-right">
+                    İşlemler
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={4} className="py-8 text-center text-slate-500">Yükleniyor...</td>
+                    <td colSpan={4} className="py-8 text-center text-slate-500">
+                      Yükleniyor...
+                    </td>
                   </tr>
                 ) : filteredBirimler.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="py-8 text-center text-slate-500">
-                      {searchQuery ? 'Aramanızla eşleşen sonuç bulunamadı.' : 'Henüz ölçü birimi eklenmemiş.'}
+                      {searchQuery
+                        ? 'Aramanızla eşleşen sonuç bulunamadı.'
+                        : 'Henüz ölçü birimi eklenmemiş.'}
                     </td>
                   </tr>
                 ) : (
                   filteredBirimler.map((birim) => (
-                    <tr key={birim.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                      <td className="py-3 px-4 text-sm text-slate-500 dark:text-slate-400">#{birim.id}</td>
-                      <td className="py-3 px-4 text-sm text-slate-900 dark:text-white font-medium">{birim.ad}</td>
+                    <tr
+                      key={birim.id}
+                      className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                    >
+                      <td className="py-3 px-4 text-sm text-slate-500 dark:text-slate-400">
+                        #{birim.id}
+                      </td>
+                      <td className="py-3 px-4 text-sm text-slate-900 dark:text-white font-medium">
+                        {birim.ad}
+                      </td>
                       <td className="py-3 px-4 text-center">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          birim.aktif_mi 
-                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
-                            : 'bg-slate-100 text-slate-700 dark:bg-slate-500/10 dark:text-slate-400'
-                        }`}>
+                        <span
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            birim.aktif_mi
+                              ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
+                              : 'bg-slate-100 text-slate-700 dark:bg-slate-500/10 dark:text-slate-400'
+                          }`}
+                        >
                           {birim.aktif_mi ? 'Aktif' : 'Pasif'}
                         </span>
                       </td>
@@ -156,7 +183,7 @@ export default function OlcuBirimleriScreen(): React.JSX.Element {
               <h2 className="text-xl font-bold text-slate-800 dark:text-white">
                 {editingBirim.id ? 'Ölçü Birimi Düzenle' : 'Yeni Ölçü Birimi'}
               </h2>
-              <button 
+              <button
                 onClick={() => {
                   setIsModalOpen(false)
                   setEditingBirim(null)
@@ -166,7 +193,7 @@ export default function OlcuBirimleriScreen(): React.JSX.Element {
                 &times;
               </button>
             </div>
-            
+
             <div className="p-4 md:p-6 overflow-y-auto">
               <div className="space-y-4">
                 <div>
@@ -182,16 +209,21 @@ export default function OlcuBirimleriScreen(): React.JSX.Element {
                     autoFocus
                   />
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     id="aktif_mi"
                     checked={editingBirim.aktif_mi === 1}
-                    onChange={(e) => setEditingBirim({ ...editingBirim, aktif_mi: e.target.checked ? 1 : 0 })}
+                    onChange={(e) =>
+                      setEditingBirim({ ...editingBirim, aktif_mi: e.target.checked ? 1 : 0 })
+                    }
                     className="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-600"
                   />
-                  <label htmlFor="aktif_mi" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <label
+                    htmlFor="aktif_mi"
+                    className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                  >
                     Aktif (Sistemde Kullanılabilir)
                   </label>
                 </div>

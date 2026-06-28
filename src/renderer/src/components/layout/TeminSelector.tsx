@@ -50,18 +50,20 @@ export function TeminSelector(): React.JSX.Element {
     mal: 'Mal',
     hizmet: 'Hizmet',
     yapim_isi: 'Yapım',
-    danismanlik: 'Danış.',
+    danismanlik: 'Danış.'
   }
 
   const turColor: Record<string, string> = {
     mal: 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300',
     hizmet: 'bg-violet-100 text-violet-600 dark:bg-violet-900/40 dark:text-violet-300',
     yapim_isi: 'bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300',
-    danismanlik: 'bg-pink-100 text-pink-600 dark:bg-pink-900/40 dark:text-pink-300',
+    danismanlik: 'bg-pink-100 text-pink-600 dark:bg-pink-900/40 dark:text-pink-300'
   }
 
   const formatMoney = (val: number) =>
-    val ? val.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0,00'
+    val
+      ? val.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      : '0,00'
 
   return (
     <div className="relative" ref={containerRef}>
@@ -79,7 +81,9 @@ export function TeminSelector(): React.JSX.Element {
                 {selectedDosya.temin_no || 'NO BEKLİYOR'}
               </span>
               {selectedDosya.tur && (
-                <span className={`text-[9px] px-1.5 py-0.5 rounded-md font-bold uppercase tracking-wide ${turColor[selectedDosya.tur] ?? 'bg-slate-100 text-slate-500'}`}>
+                <span
+                  className={`text-[9px] px-1.5 py-0.5 rounded-md font-bold uppercase tracking-wide ${turColor[selectedDosya.tur] ?? 'bg-slate-100 text-slate-500'}`}
+                >
                   {turLabel[selectedDosya.tur] ?? selectedDosya.tur}
                 </span>
               )}
@@ -98,7 +102,12 @@ export function TeminSelector(): React.JSX.Element {
             </div>
           ) : null}
 
-          <ChevronDown className={cn("w-4 h-4 text-slate-400 transition-transform duration-200 shrink-0 ml-2", isOpen && "rotate-180")} />
+          <ChevronDown
+            className={cn(
+              'w-4 h-4 text-slate-400 transition-transform duration-200 shrink-0 ml-2',
+              isOpen && 'rotate-180'
+            )}
+          />
         </button>
       ) : (
         <button
@@ -108,7 +117,12 @@ export function TeminSelector(): React.JSX.Element {
         >
           <FileText className="w-4 h-4" />
           Çalışmak İstediğiniz Dosyayı Seçin...
-          <ChevronDown className={cn("w-4 h-4 text-slate-400 transition-transform duration-200 ml-2", isOpen && "rotate-180")} />
+          <ChevronDown
+            className={cn(
+              'w-4 h-4 text-slate-400 transition-transform duration-200 ml-2',
+              isOpen && 'rotate-180'
+            )}
+          />
         </button>
       )}
 
@@ -161,7 +175,9 @@ export function TeminSelector(): React.JSX.Element {
                   <FileText
                     className={cn(
                       'w-5 h-5 shrink-0',
-                      activeDosyaId === dosya.id ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'
+                      activeDosyaId === dosya.id
+                        ? 'text-blue-600 dark:text-blue-400'
+                        : 'text-slate-400'
                     )}
                   />
                   <div className="flex-1 min-w-0">
@@ -170,12 +186,21 @@ export function TeminSelector(): React.JSX.Element {
                         {dosya.temin_no || 'NO BEKLİYOR'}
                       </span>
                       {dosya.tur && (
-                        <span className={`text-[9px] px-1.5 py-0.5 rounded-md font-bold uppercase tracking-wide ${turColor[dosya.tur] ?? 'bg-slate-100 text-slate-500'}`}>
+                        <span
+                          className={`text-[9px] px-1.5 py-0.5 rounded-md font-bold uppercase tracking-wide ${turColor[dosya.tur] ?? 'bg-slate-100 text-slate-500'}`}
+                        >
                           {turLabel[dosya.tur] ?? dosya.tur}
                         </span>
                       )}
                     </div>
-                    <div className={cn("text-sm font-bold truncate", activeDosyaId === dosya.id ? 'text-blue-700 dark:text-blue-300' : 'text-slate-700 dark:text-slate-200')}>
+                    <div
+                      className={cn(
+                        'text-sm font-bold truncate',
+                        activeDosyaId === dosya.id
+                          ? 'text-blue-700 dark:text-blue-300'
+                          : 'text-slate-700 dark:text-slate-200'
+                      )}
+                    >
                       {dosya.konu}
                     </div>
                   </div>

@@ -5,7 +5,7 @@ export function useDocumentLogger() {
 
   const logDocument = async (belgeAdi: string, dosyaYolu: string = '') => {
     if (!activeDosyaId) return
-    
+
     try {
       // Önce bu dosya ve bu belge adı için kayıt var mı bakalım
       const existRes = await window.electron.ipcRenderer.invoke(
@@ -13,7 +13,7 @@ export function useDocumentLogger() {
         'SELECT id FROM DATA_TeminBelge WHERE temin_dosya_id = ? AND belge_adi = ?',
         [activeDosyaId, belgeAdi]
       )
-      
+
       if (existRes.success && existRes.data.length > 0) {
         // Varsa güncelleyelim (yeni dosya yolu, tarih vs.)
         await window.electron.ipcRenderer.invoke(

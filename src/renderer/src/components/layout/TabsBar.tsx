@@ -117,8 +117,13 @@ export function TabsBar(): React.JSX.Element {
               <span className="absolute top-0 left-0 right-0 h-[3px] bg-blue-600 rounded-t-full" />
             )}
 
-            <Icon className={cn('w-3.5 h-3.5 shrink-0', isActive ? 'text-blue-500' : 'text-slate-400 group-hover:text-slate-500')} />
-            
+            <Icon
+              className={cn(
+                'w-3.5 h-3.5 shrink-0',
+                isActive ? 'text-blue-500' : 'text-slate-400 group-hover:text-slate-500'
+              )}
+            />
+
             <span className={cn('truncate', tab.path !== '/' ? 'pr-10' : '')}>{tab.label}</span>
 
             {/* Open in Window button */}
@@ -158,8 +163,8 @@ export function TabsBar(): React.JSX.Element {
                 }}
                 className={cn(
                   'absolute right-2 p-0.5 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-red-500 dark:hover:text-red-400 transition-all flex items-center justify-center cursor-pointer',
-                  isActive 
-                    ? 'opacity-80 hover:opacity-100' 
+                  isActive
+                    ? 'opacity-80 hover:opacity-100'
                     : 'opacity-0 group-hover:opacity-60 hover:opacity-100'
                 )}
               >
@@ -172,4 +177,3 @@ export function TabsBar(): React.JSX.Element {
     </div>
   )
 }
-

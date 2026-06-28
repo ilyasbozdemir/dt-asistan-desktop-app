@@ -38,7 +38,8 @@ const themeVariablesMeta: VariableMeta[] = [
     key: '--primary-100',
     name: 'Birincil Açık/Soft',
     category: 'primary',
-    description: 'Birincil soft renk. Seçili elemanların arka planı, rozet ve aktif kart arka planlarında kullanılır.',
+    description:
+      'Birincil soft renk. Seçili elemanların arka planı, rozet ve aktif kart arka planlarında kullanılır.',
     defaultLight: '#e4e4e7',
     defaultDark: '#27272a'
   },
@@ -46,7 +47,8 @@ const themeVariablesMeta: VariableMeta[] = [
     key: '--primary-200',
     name: 'Birincil Orta/Odak',
     category: 'primary',
-    description: 'Birincil orta ton. Hover/odaklanma kenarlıkları ve aktif buton gölgelerinde tercih edilir.',
+    description:
+      'Birincil orta ton. Hover/odaklanma kenarlıkları ve aktif buton gölgelerinde tercih edilir.',
     defaultLight: '#d4d4d8',
     defaultDark: '#3f3f46'
   },
@@ -54,7 +56,8 @@ const themeVariablesMeta: VariableMeta[] = [
     key: '--primary-300',
     name: 'Birincil Koyu/Kontrast',
     category: 'primary',
-    description: 'Birincil koyu/yüksek kontrast ton. Başlıklar, vurgulanması gereken koyu etiket metinleri için.',
+    description:
+      'Birincil koyu/yüksek kontrast ton. Başlıklar, vurgulanması gereken koyu etiket metinleri için.',
     defaultLight: '#09090b',
     defaultDark: '#f4f4f5'
   },
@@ -62,7 +65,8 @@ const themeVariablesMeta: VariableMeta[] = [
     key: '--accent-100',
     name: 'Vurgu Soft/İkincil',
     category: 'primary',
-    description: 'Vurgu/İkincil soft renk. Alternatif butonlar, etiketler veya ikincil aktif durumlar için.',
+    description:
+      'Vurgu/İkincil soft renk. Alternatif butonlar, etiketler veya ikincil aktif durumlar için.',
     defaultLight: '#27272a',
     defaultDark: '#fafafa'
   },
@@ -70,7 +74,8 @@ const themeVariablesMeta: VariableMeta[] = [
     key: '--accent-200',
     name: 'Birincil Eylem Rengi',
     category: 'primary',
-    description: 'Birincil eylem rengi. Kaydet butonları, linkler ve ana eylemlerin arka plan rengi.',
+    description:
+      'Birincil eylem rengi. Kaydet butonları, linkler ve ana eylemlerin arka plan rengi.',
     defaultLight: '#18181b',
     defaultDark: '#f4f4f5'
   },
@@ -205,7 +210,10 @@ const stringifyCssVariables = (vars: Record<string, string>): string => {
     .join('\n')
 }
 
-const getInitialPlaygroundVars = (cssText: string, mode: 'light' | 'dark'): Record<string, string> => {
+const getInitialPlaygroundVars = (
+  cssText: string,
+  mode: 'light' | 'dark'
+): Record<string, string> => {
   const parsed = parseCssVariables(cssText)
   const result: Record<string, string> = {}
   themeVariablesMeta.forEach((v) => {
@@ -238,7 +246,11 @@ const toRgbaStr = (hex: string, opacity: number): string => {
   return `rgba(${r}, ${g}, ${b}, ${opacity})`
 }
 
-export default function TemaScreen({ isEmbedded = false }: { isEmbedded?: boolean }): React.JSX.Element {
+export default function TemaScreen({
+  isEmbedded = false
+}: {
+  isEmbedded?: boolean
+}): React.JSX.Element {
   const { themeLightVars, themeDarkVars, setThemeLightVars, setThemeDarkVars, loadSettings } =
     useSettingsStore()
 
@@ -256,7 +268,9 @@ export default function TemaScreen({ isEmbedded = false }: { isEmbedded?: boolea
   const [activeTab, setActiveTab] = useState<'presets' | 'designer'>('presets')
   const [designerMode, setDesignerMode] = useState<'light' | 'dark'>('light')
   const [playgroundVars, setPlaygroundVars] = useState<Record<string, string>>({})
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'primary' | 'text-bg' | 'sidebar'>('all')
+  const [selectedCategory, setSelectedCategory] = useState<
+    'all' | 'primary' | 'text-bg' | 'sidebar'
+  >('all')
   const [showAiModal, setShowAiModal] = useState(false)
   const [aiThemeDesc, setAiThemeDesc] = useState('')
   const [generatedPrompt, setGeneratedPrompt] = useState('')
@@ -329,12 +343,12 @@ export default function TemaScreen({ isEmbedded = false }: { isEmbedded?: boolea
         themeLightVars: nextLight,
         themeDarkVars: nextDark
       })
-      
+
       setThemeLightVars(nextLight)
       setThemeDarkVars(nextDark)
       applyThemeVars(nextLight)
       applyThemeVars(nextDark)
-      
+
       showStatus('Tema başarıyla kaydedildi ve uygulandı!')
     } catch (error) {
       console.error(error)
@@ -347,7 +361,10 @@ export default function TemaScreen({ isEmbedded = false }: { isEmbedded?: boolea
   const generateAiPrompt = (): void => {
     const styleDescription = aiThemeDesc.trim() || 'Modern Minimalist Mavi'
     const variablesExplanation = themeVariablesMeta
-      .map((v) => `- ${v.key}: ${v.description} (Örnek: ${designerMode === 'light' ? v.defaultLight : v.defaultDark})`)
+      .map(
+        (v) =>
+          `- ${v.key}: ${v.description} (Örnek: ${designerMode === 'light' ? v.defaultLight : v.defaultDark})`
+      )
       .join('\n')
 
     const promptText = `Evraktron adlı Electron/React uygulamamız için ${designerMode === 'light' ? 'Açık (Light)' : 'Karanlık (Dark)'} tema rengi tasarlamanı istiyorum.
@@ -645,7 +662,10 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
         <Info className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
         <div className="text-sm text-amber-800 dark:text-amber-300 leading-relaxed">
           <strong className="font-semibold block mb-0.5">⚠️ Yeniden Başlatma Gerekebilir</strong>
-          Tema değişikliği sonrasında arayüzün bazı bölümlerinde (özellikle butonlar ve sol menüde) renk kaymaları görebilirsiniz. Yeni temanın her yere kusursuz yansıması için uygulamayı kapatıp <strong>tekrar açmanız (veya Ctrl+R ile sayfayı yenilemeniz)</strong> önerilir. Tekrar açtığınızda düzelecektir.
+          Tema değişikliği sonrasında arayüzün bazı bölümlerinde (özellikle butonlar ve sol menüde)
+          renk kaymaları görebilirsiniz. Yeni temanın her yere kusursuz yansıması için uygulamayı
+          kapatıp <strong>tekrar açmanız (veya Ctrl+R ile sayfayı yenilemeniz)</strong> önerilir.
+          Tekrar açtığınızda düzelecektir.
         </div>
       </div>
 
@@ -727,76 +747,117 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
             }
           >
             <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              <Info className="w-4 h-4 text-cyan-500" /> CSS Değişken Rehberi (Renk Anahtarları Ne İşe Yarar?)
+              <Info className="w-4 h-4 text-cyan-500" /> CSS Değişken Rehberi (Renk Anahtarları Ne
+              İşe Yarar?)
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-xs leading-normal">
               <div className="space-y-2">
                 <div className="flex flex-col gap-0.5">
-                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">--primary-100</span>
+                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                    --primary-100
+                  </span>
                   <span className="text-slate-600 dark:text-slate-400">
-                    Birincil soft renk. Seçili elemanların arka planı, rozet ve aktif kart arka planlarında kullanılır.
+                    Birincil soft renk. Seçili elemanların arka planı, rozet ve aktif kart arka
+                    planlarında kullanılır.
                   </span>
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">--primary-200</span>
+                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                    --primary-200
+                  </span>
                   <span className="text-slate-600 dark:text-slate-400">
-                    Birincil orta ton. Hover/odaklanma kenarlıkları ve aktif buton gölgelerinde tercih edilir.
+                    Birincil orta ton. Hover/odaklanma kenarlıkları ve aktif buton gölgelerinde
+                    tercih edilir.
                   </span>
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">--primary-300</span>
+                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                    --primary-300
+                  </span>
                   <span className="text-slate-600 dark:text-slate-400">
-                    Birincil koyu/yüksek kontrast ton. Başlıklar, vurgulanması gereken koyu etiket metinleri için.
+                    Birincil koyu/yüksek kontrast ton. Başlıklar, vurgulanması gereken koyu etiket
+                    metinleri için.
                   </span>
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">--accent-100</span>
+                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                    --accent-100
+                  </span>
                   <span className="text-slate-600 dark:text-slate-400">
-                    Vurgu/İkincil soft renk. Alternatif butonlar, etiketler veya ikincil aktif durumlar için.
+                    Vurgu/İkincil soft renk. Alternatif butonlar, etiketler veya ikincil aktif
+                    durumlar için.
                   </span>
                 </div>
                 <div className="flex flex-col gap-0.5 pt-1 border-t border-slate-100 dark:border-slate-800">
-                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">--sidebar-bg & --sidebar-text</span>
-                  <span className="text-slate-600 dark:text-slate-400">Sol menü (Sidebar) arka plan rengi ve genel yazı rengi.</span>
+                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                    --sidebar-bg & --sidebar-text
+                  </span>
+                  <span className="text-slate-600 dark:text-slate-400">
+                    Sol menü (Sidebar) arka plan rengi ve genel yazı rengi.
+                  </span>
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">--sidebar-border</span>
-                  <span className="text-slate-600 dark:text-slate-400">Sol menü sağ sınır çizgisi ve ayraç çizgilerinin rengi.</span>
+                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                    --sidebar-border
+                  </span>
+                  <span className="text-slate-600 dark:text-slate-400">
+                    Sol menü sağ sınır çizgisi ve ayraç çizgilerinin rengi.
+                  </span>
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="flex flex-col gap-0.5">
-                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">--accent-200</span>
+                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                    --accent-200
+                  </span>
                   <span className="text-slate-600 dark:text-slate-400">
-                    Birincil eylem rengi. Kaydet butonları, linkler ve ana eylemlerin arka plan rengi.
+                    Birincil eylem rengi. Kaydet butonları, linkler ve ana eylemlerin arka plan
+                    rengi.
                   </span>
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">--text-100 & --text-200</span>
+                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                    --text-100 & --text-200
+                  </span>
                   <span className="text-slate-600 dark:text-slate-400">
-                    Metin renkleri. 100 ana okuma metni (koyu/açık), 200 ise açıklama ve alt başlıklar içindir.
+                    Metin renkleri. 100 ana okuma metni (koyu/açık), 200 ise açıklama ve alt
+                    başlıklar içindir.
                   </span>
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">--bg-100 & --bg-200 & --bg-300</span>
+                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                    --bg-100 & --bg-200 & --bg-300
+                  </span>
                   <span className="text-slate-600 dark:text-slate-400">
-                    Sırasıyla ana sayfa arka planı (100), kart/sidebar kutu arka planı (200) ve kenarlık/input arka planları (300).
+                    Sırasıyla ana sayfa arka planı (100), kart/sidebar kutu arka planı (200) ve
+                    kenarlık/input arka planları (300).
                   </span>
                 </div>
                 <div className="flex flex-col gap-0.5 pt-1 border-t border-slate-100 dark:border-slate-800">
-                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">--sidebar-hover-bg & --sidebar-hover-text</span>
-                  <span className="text-slate-600 dark:text-slate-400">Sol menüde elemanların hover durumundaki arka plan ve yazı rengi.</span>
+                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                    --sidebar-hover-bg & --sidebar-hover-text
+                  </span>
+                  <span className="text-slate-600 dark:text-slate-400">
+                    Sol menüde elemanların hover durumundaki arka plan ve yazı rengi.
+                  </span>
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">--sidebar-active-bg & --sidebar-active-text</span>
-                  <span className="text-slate-600 dark:text-slate-400">Sol menüde seçili olan elemanın arka plan ve yazı rengi.</span>
+                  <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                    --sidebar-active-bg & --sidebar-active-text
+                  </span>
+                  <span className="text-slate-600 dark:text-slate-400">
+                    Sol menüde seçili olan elemanın arka plan ve yazı rengi.
+                  </span>
                 </div>
               </div>
             </div>
 
             <div className="p-3 bg-blue-50/40 dark:bg-blue-950/20 border border-blue-100/60 dark:border-blue-900/30 rounded-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
               <div className="leading-relaxed text-slate-600 dark:text-slate-400">
-                <span className="font-bold text-blue-600 dark:text-blue-400">Öneri:</span> Kendi özel renk paletinizi yapay zekayı (ChatGPT, Claude vb.) kullanarak saniyeler içinde tasarlamak için <strong>AI Prompt Yardımcısı</strong> modülümüzü kullanabilirsiniz. Ya da harici <strong>BairesDev AI Colors</strong> aracını kullanabilirsiniz.
+                <span className="font-bold text-blue-600 dark:text-blue-400">Öneri:</span> Kendi
+                özel renk paletinizi yapay zekayı (ChatGPT, Claude vb.) kullanarak saniyeler içinde
+                tasarlamak için <strong>AI Prompt Yardımcısı</strong> modülümüzü kullanabilirsiniz.
+                Ya da harici <strong>BairesDev AI Colors</strong> aracını kullanabilirsiniz.
               </div>
               <div className="flex gap-2 shrink-0">
                 <Button
@@ -815,7 +876,11 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
                   onClick={() => {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const electron = window.electron as any
-                    if (electron && electron.shell && typeof electron.shell.openExternal === 'function') {
+                    if (
+                      electron &&
+                      electron.shell &&
+                      typeof electron.shell.openExternal === 'function'
+                    ) {
                       electron.shell.openExternal('https://www.bairesdev.com/tools/ai-colors')
                     } else {
                       window.open('https://www.bairesdev.com/tools/ai-colors', '_blank')
@@ -823,7 +888,7 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
                   }}
                   className="text-[10px] py-1 h-7 px-3 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-semibold"
                 >
-                  {"BairesDev AI Colors"}
+                  {'BairesDev AI Colors'}
                 </Button>
               </div>
             </div>
@@ -885,8 +950,12 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-5">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
               <div className="space-y-1">
-                <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">Tasarım Modu</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Düzenlemek istediğiniz tema modunu seçin</p>
+                <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  Tasarım Modu
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Düzenlemek istediğiniz tema modunu seçin
+                </p>
               </div>
               <div className="flex bg-slate-100 dark:bg-slate-950 p-1.5 rounded-xl border border-slate-200/50 dark:border-slate-800/50">
                 <button
@@ -949,7 +1018,9 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
 
           {/* Kategori Filtreleri */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-600 dark:text-slate-400 mr-2">Filtre:</span>
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-400 mr-2">
+              Filtre:
+            </span>
             {(['all', 'primary', 'text-bg', 'sidebar'] as const).map((cat) => (
               <button
                 key={cat}
@@ -987,7 +1058,9 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
                         <div className="flex items-start gap-3">
                           <div
                             className="w-10 h-10 rounded-xl border-2 border-white dark:border-slate-800 shadow-md shrink-0 mt-0.5"
-                            style={{ backgroundColor: val.startsWith('rgba') ? val : (val || '#cccccc') }}
+                            style={{
+                              backgroundColor: val.startsWith('rgba') ? val : val || '#cccccc'
+                            }}
                           />
                           <div className="min-w-0 flex-1">
                             <div className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
@@ -1032,7 +1105,10 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
                 className="w-full border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col h-[520px] text-[11px] leading-relaxed transition-all"
               >
                 {/* Mock Application Layout */}
-                <div className="flex flex-1 overflow-hidden" style={{ backgroundColor: 'var(--bg-100)', color: 'var(--text-100)' }}>
+                <div
+                  className="flex flex-1 overflow-hidden"
+                  style={{ backgroundColor: 'var(--bg-100)', color: 'var(--text-100)' }}
+                >
                   {/* Mock Sidebar */}
                   <div
                     className="w-[35%] border-r flex flex-col p-3 justify-between select-none"
@@ -1044,8 +1120,14 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
                   >
                     <div className="space-y-5">
                       {/* Sidebar Logo */}
-                      <div className="font-bold flex items-center gap-2 px-2 py-1.5" style={{ color: 'var(--sidebar-active-text)' }}>
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--sidebar-active-text)' }} />
+                      <div
+                        className="font-bold flex items-center gap-2 px-2 py-1.5"
+                        style={{ color: 'var(--sidebar-active-text)' }}
+                      >
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: 'var(--sidebar-active-text)' }}
+                        />
                         <span className="text-xs">Evraktron</span>
                       </div>
 
@@ -1053,7 +1135,10 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
                       <div className="space-y-1.5">
                         {/* Normal Item */}
                         <div className="px-2.5 py-2 rounded-lg cursor-default flex items-center gap-2.5 transition-all">
-                          <div className="w-2 h-2 rounded-full opacity-45" style={{ backgroundColor: 'var(--sidebar-text)' }} />
+                          <div
+                            className="w-2 h-2 rounded-full opacity-45"
+                            style={{ backgroundColor: 'var(--sidebar-text)' }}
+                          />
                           Gelen Evraklar
                         </div>
 
@@ -1065,7 +1150,10 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
                             color: 'var(--sidebar-hover-text)'
                           }}
                         >
-                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--sidebar-hover-text)' }} />
+                          <div
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: 'var(--sidebar-hover-text)' }}
+                          />
                           Giden Evraklar
                         </div>
 
@@ -1078,22 +1166,26 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
                             borderLeftColor: 'var(--sidebar-active-border)'
                           }}
                         >
-                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--sidebar-active-text)' }} />
+                          <div
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: 'var(--sidebar-active-text)' }}
+                          />
                           Tema Ayarları
                         </div>
                       </div>
                     </div>
 
-                    <div className="text-[9px] opacity-50 px-2 py-1">
-                      v1.0.0-alpha.3
-                    </div>
+                    <div className="text-[9px] opacity-50 px-2 py-1">v1.0.0-alpha.3</div>
                   </div>
 
                   {/* Mock Main Area */}
                   <div className="w-[65%] flex flex-col p-4 overflow-y-auto gap-4 custom-scrollbar">
                     {/* Header */}
                     <div className="space-y-1">
-                      <h4 className="font-bold text-sm tracking-tight" style={{ color: 'var(--primary-300)' }}>
+                      <h4
+                        className="font-bold text-sm tracking-tight"
+                        style={{ color: 'var(--primary-300)' }}
+                      >
                         Tasarım Stüdyosu
                       </h4>
                       <p style={{ color: 'var(--text-200)' }} className="text-[10px] leading-tight">
@@ -1111,13 +1203,22 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
                           borderColor: 'var(--bg-300)'
                         }}
                       >
-                        <div style={{ color: 'var(--text-200)' }} className="text-[9px] uppercase font-bold tracking-wider">
+                        <div
+                          style={{ color: 'var(--text-200)' }}
+                          className="text-[9px] uppercase font-bold tracking-wider"
+                        >
                           Evrak Sayısı
                         </div>
                         <div className="text-base font-black" style={{ color: 'var(--text-100)' }}>
                           1,482
                         </div>
-                        <div className="px-1.5 py-0.5 rounded text-[9px] font-bold w-fit" style={{ backgroundColor: 'var(--primary-100)', color: 'var(--primary-300)' }}>
+                        <div
+                          className="px-1.5 py-0.5 rounded text-[9px] font-bold w-fit"
+                          style={{
+                            backgroundColor: 'var(--primary-100)',
+                            color: 'var(--primary-300)'
+                          }}
+                        >
                           +12% Bugün
                         </div>
                       </div>
@@ -1130,7 +1231,10 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
                           borderColor: 'var(--bg-300)'
                         }}
                       >
-                        <div style={{ color: 'var(--text-200)' }} className="text-[9px] uppercase font-bold tracking-wider">
+                        <div
+                          style={{ color: 'var(--text-200)' }}
+                          className="text-[9px] uppercase font-bold tracking-wider"
+                        >
                           Eylemler
                         </div>
                         <button
@@ -1152,24 +1256,46 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
                       }}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-[10px]" style={{ color: 'var(--text-100)' }}>
+                        <span
+                          className="font-bold text-[10px]"
+                          style={{ color: 'var(--text-100)' }}
+                        >
                           Son Evraklar
                         </span>
-                        <span className="px-2 py-0.5 rounded text-[8px] font-semibold" style={{ backgroundColor: 'var(--accent-100)', color: 'var(--primary-300)' }}>
+                        <span
+                          className="px-2 py-0.5 rounded text-[8px] font-semibold"
+                          style={{
+                            backgroundColor: 'var(--accent-100)',
+                            color: 'var(--primary-300)'
+                          }}
+                        >
                           Bakanlık
                         </span>
                       </div>
 
                       {/* Mock Table */}
-                      <div className="space-y-1.5 border-t pt-2" style={{ borderColor: 'var(--bg-300)' }}>
-                        <div className="flex justify-between font-bold text-[9px] opacity-75" style={{ color: 'var(--text-200)' }}>
+                      <div
+                        className="space-y-1.5 border-t pt-2"
+                        style={{ borderColor: 'var(--bg-300)' }}
+                      >
+                        <div
+                          className="flex justify-between font-bold text-[9px] opacity-75"
+                          style={{ color: 'var(--text-200)' }}
+                        >
                           <span>Evrak Adı</span>
                           <span>Durum</span>
                         </div>
                         {/* Selected Row */}
-                        <div className="flex justify-between p-1.5 rounded-lg" style={{ backgroundColor: 'var(--primary-100)' }}>
-                          <span style={{ color: 'var(--primary-300)' }} className="font-bold">#2026/05 Onay</span>
-                          <span style={{ color: 'var(--primary-300)' }} className="font-semibold">İmzalı</span>
+                        <div
+                          className="flex justify-between p-1.5 rounded-lg"
+                          style={{ backgroundColor: 'var(--primary-100)' }}
+                        >
+                          <span style={{ color: 'var(--primary-300)' }} className="font-bold">
+                            #2026/05 Onay
+                          </span>
+                          <span style={{ color: 'var(--primary-300)' }} className="font-semibold">
+                            İmzalı
+                          </span>
                         </div>
                         <div className="flex justify-between p-1.5">
                           <span style={{ color: 'var(--text-100)' }}>#2026/04 Dilekçe</span>
@@ -1180,7 +1306,10 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
 
                     {/* Input field mock */}
                     <div className="space-y-1.5">
-                      <div style={{ color: 'var(--text-200)' }} className="text-[9px] font-semibold">
+                      <div
+                        style={{ color: 'var(--text-200)' }}
+                        className="text-[9px] font-semibold"
+                      >
                         Hızlı Arama
                       </div>
                       <input
@@ -1221,7 +1350,8 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
 
             <div className="space-y-2">
               <label className="block text-xs font-bold text-slate-600 dark:text-slate-400">
-                Nasıl bir tema istersiniz? (Örn: Pastel Orman Yeşili, Retro Turuncu, Modern Gece Mavisi...)
+                Nasıl bir tema istersiniz? (Örn: Pastel Orman Yeşili, Retro Turuncu, Modern Gece
+                Mavisi...)
               </label>
               <div className="flex gap-2">
                 <input
@@ -1243,7 +1373,9 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
             {generatedPrompt && (
               <div className="space-y-2 animate-in slide-in-from-bottom-2 duration-200">
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-bold text-slate-500">Hazırlanan Yapay Zeka Promptu:</span>
+                  <span className="text-[10px] font-bold text-slate-500">
+                    Hazırlanan Yapay Zeka Promptu:
+                  </span>
                   <button
                     type="button"
                     onClick={copyPromptToClipboard}
@@ -1269,7 +1401,9 @@ Not: --sidebar-active-bg için rgba(r, g, b, opaklık) formatında (örn: rgba(0
                 />
                 <div className="flex items-center justify-between text-[10px] text-slate-500 bg-slate-50 dark:bg-slate-950/50 p-2.5 rounded-xl border border-slate-200/50 dark:border-slate-800/50 leading-relaxed">
                   <div>
-                    💡 Promptu kopyalayıp aşağıdaki yapay zeka araçlarından birine yapıştırın. Çıkan JSON kodunu kopyalayıp <strong>Temayı İçe Aktar (JSON)</strong> butonuyla buraya aktarabilirsiniz!
+                    💡 Promptu kopyalayıp aşağıdaki yapay zeka araçlarından birine yapıştırın. Çıkan
+                    JSON kodunu kopyalayıp <strong>Temayı İçe Aktar (JSON)</strong> butonuyla buraya
+                    aktarabilirsiniz!
                   </div>
                 </div>
                 <div className="flex gap-2">

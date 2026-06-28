@@ -9,27 +9,37 @@ export const TANIM_SurecTaslak = {
     { name: 'starred_docs', type: 'TEXT', description: 'Starred Docs' }, // JSON array of strings
     { name: 'skipped_docs', type: 'TEXT', description: 'Skipped Docs' }, // JSON array of strings
     { name: 'aktif_mi', type: 'INTEGER', default: 1, description: 'Aktif mı?' },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
+    {
+      name: 'created_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Created At'
+    },
+    {
+      name: 'updated_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Updated At'
+    }
   ],
   initialData: [
     {
       taslak_adi: 'Mal Alımı Süreç Belgeleri',
       tur: 'Mal Alımı',
       ordered_docs: JSON.stringify([
-        "İhtiyaç Listesi",
-        "Lüzum Müzekkeresi Belgesi",
-        "Lüzum Onay Eki",
-        "İstekli Tedarikçi Firmalar",
-        "Yaklaşık Maliyet Hesap Cetveli",
-        "Fiyat Araştırma Komisyonu Atama",
-        "Piyasa Fiyat Araştırma Tutanağı",
-        "Doğrudan Temin Onay Belgesi",
-        "Muayene Kabul Komisyonu Atama",
-        "Teslim Tesellüm Belgesi",
-        "Bütçe Sorgusu",
-        "Harcama Talimatı",
-        "Harcama Pusulası"
+        'İhtiyaç Listesi',
+        'Lüzum Müzekkeresi Belgesi',
+        'Lüzum Onay Eki',
+        'İstekli Tedarikçi Firmalar',
+        'Yaklaşık Maliyet Hesap Cetveli',
+        'Fiyat Araştırma Komisyonu Atama',
+        'Piyasa Fiyat Araştırma Tutanağı',
+        'Doğrudan Temin Onay Belgesi',
+        'Muayene Kabul Komisyonu Atama',
+        'Teslim Tesellüm Belgesi',
+        'Bütçe Sorgusu',
+        'Harcama Talimatı',
+        'Harcama Pusulası'
       ]),
       starred_docs: JSON.stringify([]),
       skipped_docs: JSON.stringify([])

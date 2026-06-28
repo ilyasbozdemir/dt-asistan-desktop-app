@@ -8,12 +8,20 @@ export const TANIM_Asama = {
     { name: 'aciklama', type: 'TEXT', description: 'Aciklama' },
     { name: 'rozet_rengi', type: 'TEXT', default: "'blue'", description: 'Rozet Rengi' },
     { name: 'aktif_mi', type: 'INTEGER', notNull: true, default: 1, description: 'Aktif mı?' },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
+    {
+      name: 'created_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Created At'
+    },
+    {
+      name: 'updated_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Updated At'
+    }
   ],
-  constraints: [
-    'UNIQUE(asama_adi)'
-  ],
+  constraints: ['UNIQUE(asama_adi)'],
   initialData: [
     {
       asama_sira: 1,

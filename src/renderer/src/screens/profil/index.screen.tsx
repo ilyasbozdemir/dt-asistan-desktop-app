@@ -102,7 +102,11 @@ export default function ProfilScreen(): React.JSX.Element {
           <div className="flex flex-col items-center w-full">
             <div className="w-24 h-24 rounded-full bg-white dark:bg-slate-900 flex items-center justify-center text-slate-700 dark:text-slate-200 text-3xl font-bold shadow-md mb-4 overflow-hidden border-2 border-slate-200 dark:border-slate-700">
               {institutionLogo ? (
-                <img src={institutionLogo} alt="Logo" className="w-full h-full object-contain p-1" />
+                <img
+                  src={institutionLogo}
+                  alt="Logo"
+                  className="w-full h-full object-contain p-1"
+                />
               ) : (
                 getInitials(adminName)
               )}
@@ -202,8 +206,7 @@ export default function ProfilScreen(): React.JSX.Element {
 
           {/* EKAP Bilgileri Paneli */}
 
-{
-  /*
+          {/*
   <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
             <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 border-b border-slate-100 dark:border-slate-850 pb-2">
               <Lock className="w-4 h-4 text-blue-605" /> EKAP Entegrasyon Bilgileri
@@ -252,11 +255,7 @@ export default function ProfilScreen(): React.JSX.Element {
               </div>
             </div>
           </div>
-  */
-}
-
-          
-
+  */}
         </div>
       </div>
 

@@ -21,7 +21,7 @@ export function EskiDosyaKopyalaModal({
   if (!isOpen) return null
 
   // Filtreleme: Arama metni ve isim boş olmayanları getir
-  const filteredDosyalar = dosyalar.filter(d => {
+  const filteredDosyalar = dosyalar.filter((d) => {
     const q = searchQuery.toLowerCase()
     return (
       (d.konu && d.konu.toLowerCase().includes(q)) ||
@@ -33,7 +33,6 @@ export function EskiDosyaKopyalaModal({
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
-        
         {/* HEADER */}
         <div className="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
           <div>
@@ -75,7 +74,9 @@ export function EskiDosyaKopyalaModal({
               <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
                 <FileText className="text-slate-400" size={24} />
               </div>
-              <p className="text-sm font-bold text-slate-700 dark:text-slate-300">Dosya Bulunamadı</p>
+              <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                Dosya Bulunamadı
+              </p>
               <p className="text-xs text-slate-500 mt-1 max-w-xs">
                 Arama kriterinize uygun geçmiş alım dosyası yok.
               </p>
@@ -93,13 +94,23 @@ export function EskiDosyaKopyalaModal({
                       <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">
                         {dosya.temin_no || 'NO BELİRSİZ'}
                       </span>
-                      <span className={cn(
-                        "text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded",
-                        dosya.tur === 'mal' ? "bg-blue-100 text-blue-700" :
-                        dosya.tur === 'hizmet' ? "bg-violet-100 text-violet-700" :
-                        "bg-amber-100 text-amber-700"
-                      )}>
-                        {dosya.tur === 'mal' ? 'MAL' : dosya.tur === 'hizmet' ? 'HİZMET' : dosya.tur === 'yapim_isi' ? 'YAPIM' : 'DANIŞMANLIK'}
+                      <span
+                        className={cn(
+                          'text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded',
+                          dosya.tur === 'mal'
+                            ? 'bg-blue-100 text-blue-700'
+                            : dosya.tur === 'hizmet'
+                              ? 'bg-violet-100 text-violet-700'
+                              : 'bg-amber-100 text-amber-700'
+                        )}
+                      >
+                        {dosya.tur === 'mal'
+                          ? 'MAL'
+                          : dosya.tur === 'hizmet'
+                            ? 'HİZMET'
+                            : dosya.tur === 'yapim_isi'
+                              ? 'YAPIM'
+                              : 'DANIŞMANLIK'}
                       </span>
                     </div>
                     <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
@@ -111,10 +122,15 @@ export function EskiDosyaKopyalaModal({
                       </span>
                       <span className="flex items-center gap-1">
                         <Calendar size={10} />
-                        {dosya.dosya_acilis_tarihi ? new Date(dosya.dosya_acilis_tarihi).toLocaleDateString('tr-TR') : '-'}
+                        {dosya.dosya_acilis_tarihi
+                          ? new Date(dosya.dosya_acilis_tarihi).toLocaleDateString('tr-TR')
+                          : '-'}
                       </span>
                       <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold">
-                        ₺ {dosya.yaklasik_maliyet ? dosya.yaklasik_maliyet.toLocaleString('tr-TR') : '0'}
+                        ₺{' '}
+                        {dosya.yaklasik_maliyet
+                          ? dosya.yaklasik_maliyet.toLocaleString('tr-TR')
+                          : '0'}
                       </span>
                     </div>
                   </div>

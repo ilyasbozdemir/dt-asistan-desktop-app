@@ -24,14 +24,17 @@ export function ExcelViewer({ fileUrl }: ExcelViewerProps): React.JSX.Element {
         if (!res.ok) throw new Error('Dosya okunamadı.')
         const arrayBuffer = await res.arrayBuffer()
         const wb = XLSX.read(arrayBuffer, { type: 'array' })
-        
+
         if (!isMounted) return
         setWorkbook(wb)
         setSheetNames(wb.SheetNames)
-        
+
         if (wb.SheetNames.length > 0) {
           setActiveSheet(wb.SheetNames[0])
-          const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' })
+          const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {
+            header: 1,
+            defval: ''
+          })
           setData(rows)
         }
       } catch (e: any) {
@@ -41,7 +44,9 @@ export function ExcelViewer({ fileUrl }: ExcelViewerProps): React.JSX.Element {
       }
     }
     loadExcel()
-    return () => { isMounted = false }
+    return () => {
+      isMounted = false
+    }
   }, [fileUrl])
 
   const handleSheetChange = (name: string) => {
@@ -101,7 +106,10 @@ export function ExcelViewer({ fileUrl }: ExcelViewerProps): React.JSX.Element {
           <table className="w-full text-left border-collapse min-w-max">
             <tbody>
               {data.map((row, rIndex) => (
-                <tr key={rIndex} className="hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors">
+                <tr
+                  key={rIndex}
+                  className="hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
+                >
                   {row.map((cell: any, cIndex: number) => (
                     <td
                       key={cIndex}

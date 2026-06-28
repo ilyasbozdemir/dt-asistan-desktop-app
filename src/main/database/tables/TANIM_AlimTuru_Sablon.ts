@@ -10,9 +10,9 @@ export const TANIM_AlimTuru_Sablon = {
     { name: 'zorunlu', type: 'INTEGER', notNull: true, default: 1, description: 'Zorunlu' }
   ],
   constraints: [
-    "FOREIGN KEY(alim_turu_id) REFERENCES TANIM_AlimTuru(id) ON DELETE CASCADE",
-    "FOREIGN KEY(sablon_id) REFERENCES TANIM_Sablon(id) ON DELETE RESTRICT",
-    "UNIQUE(alim_turu_id, belge_adi)"
+    'FOREIGN KEY(alim_turu_id) REFERENCES TANIM_AlimTuru(id) ON DELETE CASCADE',
+    'FOREIGN KEY(sablon_id) REFERENCES TANIM_Sablon(id) ON DELETE RESTRICT',
+    'UNIQUE(alim_turu_id, belge_adi)'
   ],
   initialData: []
 }

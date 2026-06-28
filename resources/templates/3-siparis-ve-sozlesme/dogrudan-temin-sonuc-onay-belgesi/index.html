@@ -1,275 +1,288 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <title>Doğrudan Temin Sonuç Onay Belgesi</title>
-  <style>
-    @page {
-      size: A4;
-      margin: 1.5cm 1.2cm;
-    }
-    body {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 11pt;
-      color: #000;
-      line-height: 1.4;
-      margin: 0;
-      padding: 0;
-      background-color: #f5f5f5;
-    }
-    .page-container {
-      max-width: 21cm;
-      min-height: 29.7cm;
-      margin: 20px auto;
-      padding: 1.5cm 1.2cm;
-      background: white;
-      box-sizing: border-box;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      position: relative;
-    }
-    @media print {
-      body {
-        background-color: white;
+  <head>
+    <meta charset="UTF-8" />
+    <title>Doğrudan Temin Sonuç Onay Belgesi</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 1.5cm 1.2cm;
       }
-      .page-container {
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 11pt;
+        color: #000;
+        line-height: 1.4;
         margin: 0;
         padding: 0;
-        box-shadow: none;
-        max-width: none;
-        min-height: 0;
+        background-color: #f5f5f5;
       }
-    }
-    .main-title {
-      text-align: center;
-      font-weight: bold;
-      font-size: 13pt;
-      margin-bottom: 15px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .section-title {
-      text-align: center;
-      font-weight: bold;
-      font-size: 11pt;
-      margin: 18px 0 8px 0;
-      text-transform: uppercase;
-    }
-    .info-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 10px;
-    }
-    .info-table th, .info-table td {
-      border: 1px solid #000;
-      padding: 6px 8px;
-      font-size: 10pt;
-      vertical-align: middle;
-    }
-    .info-table td.label {
-      width: 40%;
-      font-weight: bold;
-    }
-    .info-table td.value {
-      width: 60%;
-    }
-    .institution-box {
-      border: 1px solid #000;
-      text-align: center;
-      font-weight: bold;
-      padding: 6px;
-      margin: 10px 0;
-      text-transform: uppercase;
-      font-size: 10.5pt;
-    }
-    .description-box {
-      border: 1px solid #000;
-      min-height: 80px;
-      padding: 8px;
-      font-size: 10pt;
-      text-align: justify;
-      white-space: pre-wrap;
-      margin-bottom: 15px;
-    }
-    .nested-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 5px;
-      margin-bottom: 15px;
-    }
-    .nested-table th, .nested-table td {
-      border: 1px solid #000;
-      padding: 6px 8px;
-      font-size: 9.5pt;
-      text-align: center;
-      vertical-align: middle;
-    }
-    .nested-table th {
-      font-weight: bold;
-      background-color: #f2f2f2;
-    }
-    .nested-table td.left-align {
-      text-align: left;
-    }
-    .approval-section {
-      width: 100%;
-      margin-top: 15px;
-      border: 1px solid #000;
-      border-collapse: collapse;
-    }
-    .approval-section td {
-      border: 1px solid #000;
-      padding: 10px;
-      width: 50%;
-      vertical-align: top;
-      text-align: center;
-      font-size: 10.5pt;
-    }
-    .signature-area {
-      margin-top: 40px;
-      text-align: center;
-    }
-    .paged-keep-together { break-inside: avoid; }
-  </style>
-</head>
-<body>
-  <div class="page-container">
-    <!-- TITLE -->
-    <div class="main-title">DOĞRUDAN TEMİN SONUÇ ONAY BELGESİ</div>
+      .page-container {
+        max-width: 21cm;
+        min-height: 29.7cm;
+        margin: 20px auto;
+        padding: 1.5cm 1.2cm;
+        background: white;
+        box-sizing: border-box;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+      @media print {
+        body {
+          background-color: white;
+        }
+        .page-container {
+          margin: 0;
+          padding: 0;
+          box-shadow: none;
+          max-width: none;
+          min-height: 0;
+        }
+      }
+      .main-title {
+        text-align: center;
+        font-weight: bold;
+        font-size: 13pt;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .section-title {
+        text-align: center;
+        font-weight: bold;
+        font-size: 11pt;
+        margin: 18px 0 8px 0;
+        text-transform: uppercase;
+      }
+      .info-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 10px;
+      }
+      .info-table th,
+      .info-table td {
+        border: 1px solid #000;
+        padding: 6px 8px;
+        font-size: 10pt;
+        vertical-align: middle;
+      }
+      .info-table td.label {
+        width: 40%;
+        font-weight: bold;
+      }
+      .info-table td.value {
+        width: 60%;
+      }
+      .institution-box {
+        border: 1px solid #000;
+        text-align: center;
+        font-weight: bold;
+        padding: 6px;
+        margin: 10px 0;
+        text-transform: uppercase;
+        font-size: 10.5pt;
+      }
+      .description-box {
+        border: 1px solid #000;
+        min-height: 80px;
+        padding: 8px;
+        font-size: 10pt;
+        text-align: justify;
+        white-space: pre-wrap;
+        margin-bottom: 15px;
+      }
+      .nested-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 5px;
+        margin-bottom: 15px;
+      }
+      .nested-table th,
+      .nested-table td {
+        border: 1px solid #000;
+        padding: 6px 8px;
+        font-size: 9.5pt;
+        text-align: center;
+        vertical-align: middle;
+      }
+      .nested-table th {
+        font-weight: bold;
+        background-color: #f2f2f2;
+      }
+      .nested-table td.left-align {
+        text-align: left;
+      }
+      .approval-section {
+        width: 100%;
+        margin-top: 15px;
+        border: 1px solid #000;
+        border-collapse: collapse;
+      }
+      .approval-section td {
+        border: 1px solid #000;
+        padding: 10px;
+        width: 50%;
+        vertical-align: top;
+        text-align: center;
+        font-size: 10.5pt;
+      }
+      .signature-area {
+        margin-top: 40px;
+        text-align: center;
+      }
+      .paged-keep-together {
+        break-inside: avoid;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <!-- TITLE -->
+      <div class="main-title">DOĞRUDAN TEMİN SONUÇ ONAY BELGESİ</div>
 
-    <!-- FIRST TABLE (İdare Bilgileri) -->
-    <table class="info-table">
-      <tr>
-        <td class="label">ALIMI YAPAN İDARENİN ADI</td>
-        <td class="value">{{idareAdi}}</td>
-      </tr>
-      <tr>
-        <td class="label">BELGE TARİH VE SAYISI</td>
-        <td class="value">{{dosyaTarihi}} &nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp; {{evrakSayisi}}</td>
-      </tr>
-    </table>
+      <!-- FIRST TABLE (İdare Bilgileri) -->
+      <table class="info-table">
+        <tr>
+          <td class="label">ALIMI YAPAN İDARENİN ADI</td>
+          <td class="value">{{idareAdi}}</td>
+        </tr>
+        <tr>
+          <td class="label">BELGE TARİH VE SAYISI</td>
+          <td class="value">
+            {{dosyaTarihi}} &nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp; {{evrakSayisi}}
+          </td>
+        </tr>
+      </table>
 
-    <!-- CENTERED IDARE BOX -->
-    <div class="institution-box">
-      {{vmakamina}}
+      <!-- CENTERED IDARE BOX -->
+      <div class="institution-box">{{vmakamina}}</div>
+
+      <!-- SECOND SECTION: BILGILER -->
+      <div class="section-title">DOĞRUDAN TEMİN İLE İLGİLİ BİLGİLER</div>
+      <table class="info-table">
+        <tr>
+          <td class="label">İşin Adı</td>
+          <td class="value" style="font-weight: bold">{{isAdi}}</td>
+        </tr>
+        <tr>
+          <td class="label">Temin Şekli</td>
+          <td class="value">{{teminSekli}}</td>
+        </tr>
+        <tr>
+          <td class="label">İşin Türü</td>
+          <td class="value">{{alimTuru}}</td>
+        </tr>
+        <tr>
+          <td class="label">Yaklaşık Maliyet</td>
+          <td class="value">{{yaklasikMaliyet}} ₺</td>
+        </tr>
+      </table>
+
+      <!-- THIRD SECTION: DIĞER AÇIKLAMALAR -->
+      <div class="section-title">DOĞRUDAN TEMİN İLE İLGİLİ DİĞER AÇIKLAMALAR</div>
+      <div class="description-box">{{isinAciklamasi}}</div>
+
+      <!-- FOURTH SECTION: TEKLİF VEREN FİRMALAR -->
+      <div class="section-title">TEKLİF VEREN GERÇEK/TÜZEL KİŞİLER</div>
+      <table class="nested-table">
+        <thead>
+          <tr>
+            <th>Gerçek/Tüzel Kişinin Adı/Unvanı</th>
+            <th>Teklif Ettiği Fiyat (₺)</th>
+            <th>Fiyat Araştırmasında Dikkate Alındı mı</th>
+            <th>Açıklama</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#teklifler}}
+          <tr>
+            <td class="left-align">{{unvan}}</td>
+            <td>{{fiyat}}</td>
+            <td>{{uygunMu}}</td>
+            <td>{{aciklama}}</td>
+          </tr>
+          {{/teklifler}} {{^teklifler}}
+          <tr>
+            <td colspan="4">Teklif bilgisi bulunmamaktadır.</td>
+          </tr>
+          {{/teklifler}}
+        </tbody>
+      </table>
+
+      <!-- FIFTH SECTION: ALIM YAPILMASI UYGUN GÖRÜLEN FİRMALAR -->
+      <div class="section-title">ALIM YAPILMASI UYGUN GÖRÜLEN GERÇEK / TÜZEL KİŞİLER</div>
+      <table class="nested-table">
+        <thead>
+          <tr>
+            <th colspan="2">Gerçek/Tüzel Kişinin Adı</th>
+            <th>Gerçek/Tüzel Kişinin Adresi</th>
+            <th>Teklif Ettiği Fiyat (₺)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#uygunGorulenler}}
+          <tr>
+            <td colspan="2" class="left-align"><strong>{{unvan}}</strong></td>
+            <td class="left-align">{{adres}}</td>
+            <td><strong>{{fiyat}}</strong></td>
+          </tr>
+          {{/uygunGorulenler}} {{^uygunGorulenler}}
+          <tr>
+            <td colspan="4">Alım yapılması uygun görülen kişi bulunmamaktadır.</td>
+          </tr>
+          {{/uygunGorulenler}}
+        </tbody>
+      </table>
+
+      <!-- SIXTH SECTION: ONAY -->
+      <div class="section-title" style="margin-top: 25px">ONAY</div>
+
+      <table class="approval-section paged-keep-together">
+        <tr>
+          <!-- LEFT COLUMN (Arz Eden) -->
+          <td>
+            <div
+              style="
+                text-align: justify;
+                margin-bottom: 20px;
+                font-size: 10pt;
+                text-indent: 20px;
+                line-height: 1.4;
+              "
+            >
+              Belirtilen işin, yukarıda alım yapılması uygun görülen gerçek/tüzel kişilerden
+              doğrudan temin yoluyla satın alınması hususunda onaylarınızı arz ederim.
+            </div>
+            <div class="signature-area">
+              {{vonayasunustarihi}}<br /><br /><br />
+              <strong>{{hazirlayanPersonelAdi}}</strong><br />
+              {{hazirlayanPersonelUnvan}}
+            </div>
+          </td>
+
+          <!-- RIGHT COLUMN (Onaylayan) -->
+          <td>
+            <div style="font-weight: bold; margin-bottom: 20px">UYGUNDUR</div>
+            <div class="signature-area">
+              {{vonaytarihi}}<br /><br /><br />
+              <strong>{{onaylayanPersonelAdi}}</strong><br />
+              {{onaylayanPersonelUnvan}}<br />
+              Harcama Yetkilisi
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      {{#ekler.0}}
+      <div class="paged-keep-together" style="margin-top: 25px; font-size: 10pt; text-align: left">
+        <strong>EKLER:</strong>
+        <ol style="margin: 5px 0 0 20px; padding: 0; list-style-type: decimal; line-height: 1.5">
+          {{#ekler}}
+          <li>{{.}}</li>
+          {{/ekler}}
+        </ol>
+      </div>
+      {{/ekler.0}}
     </div>
-
-    <!-- SECOND SECTION: BILGILER -->
-    <div class="section-title">DOĞRUDAN TEMİN İLE İLGİLİ BİLGİLER</div>
-    <table class="info-table">
-      <tr>
-        <td class="label">İşin Adı</td>
-        <td class="value" style="font-weight: bold;">{{isAdi}}</td>
-      </tr>
-      <tr>
-        <td class="label">Temin Şekli</td>
-        <td class="value">{{teminSekli}}</td>
-      </tr>
-      <tr>
-        <td class="label">İşin Türü</td>
-        <td class="value">{{alimTuru}}</td>
-      </tr>
-      <tr>
-        <td class="label">Yaklaşık Maliyet</td>
-        <td class="value">{{yaklasikMaliyet}} ₺</td>
-      </tr>
-    </table>
-
-    <!-- THIRD SECTION: DIĞER AÇIKLAMALAR -->
-    <div class="section-title">DOĞRUDAN TEMİN İLE İLGİLİ DİĞER AÇIKLAMALAR</div>
-    <div class="description-box">{{isinAciklamasi}}</div>
-
-    <!-- FOURTH SECTION: TEKLİF VEREN FİRMALAR -->
-    <div class="section-title">TEKLİF VEREN GERÇEK/TÜZEL KİŞİLER</div>
-    <table class="nested-table">
-      <thead>
-        <tr>
-          <th>Gerçek/Tüzel Kişinin Adı/Unvanı</th>
-          <th>Teklif Ettiği Fiyat (₺)</th>
-          <th>Fiyat Araştırmasında Dikkate Alındı mı</th>
-          <th>Açıklama</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#teklifler}}
-        <tr>
-          <td class="left-align">{{unvan}}</td>
-          <td>{{fiyat}}</td>
-          <td>{{uygunMu}}</td>
-          <td>{{aciklama}}</td>
-        </tr>
-        {{/teklifler}}
-        {{^teklifler}}
-        <tr>
-          <td colspan="4">Teklif bilgisi bulunmamaktadır.</td>
-        </tr>
-        {{/teklifler}}
-      </tbody>
-    </table>
-
-    <!-- FIFTH SECTION: ALIM YAPILMASI UYGUN GÖRÜLEN FİRMALAR -->
-    <div class="section-title">ALIM YAPILMASI UYGUN GÖRÜLEN GERÇEK / TÜZEL KİŞİLER</div>
-    <table class="nested-table">
-      <thead>
-        <tr>
-          <th colspan="2">Gerçek/Tüzel Kişinin Adı</th>
-          <th>Gerçek/Tüzel Kişinin Adresi</th>
-          <th>Teklif Ettiği Fiyat (₺)</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#uygunGorulenler}}
-        <tr>
-          <td colspan="2" class="left-align"><strong>{{unvan}}</strong></td>
-          <td class="left-align">{{adres}}</td>
-          <td><strong>{{fiyat}}</strong></td>
-        </tr>
-        {{/uygunGorulenler}}
-        {{^uygunGorulenler}}
-        <tr>
-          <td colspan="4">Alım yapılması uygun görülen kişi bulunmamaktadır.</td>
-        </tr>
-        {{/uygunGorulenler}}
-      </tbody>
-    </table>
-
-    <!-- SIXTH SECTION: ONAY -->
-    <div class="section-title" style="margin-top: 25px;">ONAY</div>
-    
-    <table class="approval-section paged-keep-together">
-      <tr>
-        <!-- LEFT COLUMN (Arz Eden) -->
-        <td>
-          <div style="text-align: justify; margin-bottom: 20px; font-size: 10pt; text-indent: 20px; line-height: 1.4;">
-            Belirtilen işin, yukarıda alım yapılması uygun görülen gerçek/tüzel kişilerden doğrudan temin yoluyla satın alınması hususunda onaylarınızı arz ederim.
-          </div>
-          <div class="signature-area">
-            {{vonayasunustarihi}}<br><br><br>
-            <strong>{{hazirlayanPersonelAdi}}</strong><br>
-            {{hazirlayanPersonelUnvan}}
-          </div>
-        </td>
-        
-        <!-- RIGHT COLUMN (Onaylayan) -->
-        <td>
-          <div style="font-weight: bold; margin-bottom: 20px;">
-            UYGUNDUR
-          </div>
-          <div class="signature-area">
-            {{vonaytarihi}}<br><br><br>
-            <strong>{{onaylayanPersonelAdi}}</strong><br>
-            {{onaylayanPersonelUnvan}}<br>
-            Harcama Yetkilisi
-          </div>
-        </td>
-      </tr>
-    </table>
-
-    {{#ekler.0}}
-    <div class="paged-keep-together" style="margin-top: 25px; font-size: 10pt; text-align: left;">
-      <strong>EKLER:</strong>
-      <ol style="margin: 5px 0 0 20px; padding: 0; list-style-type: decimal; line-height: 1.5;">{{#ekler}}<li>{{.}}</li>{{/ekler}}</ol>
-    </div>
-    {{/ekler.0}}
-  </div>
-</body>
+  </body>
 </html>

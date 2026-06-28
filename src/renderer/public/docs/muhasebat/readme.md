@@ -11,6 +11,7 @@ Burada yer alan tüm resmi dosyalar ve referans listeler doğrudan Muhasebat Gen
 ## 🎯 Kullanım Amacı
 
 Bu dizindeki dosyalar;
+
 - Sisteme aktarılacak olan varsayılan Taşınır Kod hiyerarşisinin (150.01.01) analiz edilmesi,
 - Zaman içinde **ismi değişen başlıklar**, **detayı kaldırılan başlıklar** ve **yeni eklenen açıklamalar** gibi veritabanı güncellemelerinin tespit edilmesi,
 - `DT Desktop App` uygulamasındaki "Taşınır Kodları Yönetimi" ve "Malzeme Listesi" modüllerinin gerçeğe uygun şekilde tasarlanması ve test edilmesi

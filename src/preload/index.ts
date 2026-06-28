@@ -3,10 +3,15 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
 const api = {
-  aiGenerate: (options: { prompt: string; systemInstruction?: string; enableDatabaseAccess?: boolean }) => ipcRenderer.invoke('ai:generate', options),
+  aiGenerate: (options: {
+    prompt: string
+    systemInstruction?: string
+    enableDatabaseAccess?: boolean
+  }) => ipcRenderer.invoke('ai:generate', options),
   aiTest: (provider: string, apiKey: string) => ipcRenderer.invoke('ai:test', provider, apiKey),
   getAppVersion: () => ipcRenderer.invoke('app:get-version'),
-  setDevVersion: (mode: boolean, version: string) => ipcRenderer.invoke('updater:set-dev-version', mode, version)
+  setDevVersion: (mode: boolean, version: string) =>
+    ipcRenderer.invoke('updater:set-dev-version', mode, version)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

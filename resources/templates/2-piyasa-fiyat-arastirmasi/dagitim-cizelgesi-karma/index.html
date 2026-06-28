@@ -1,167 +1,179 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <title>Dağıtım Çizelgesi (Karma)</title>
-  <style>
-    @page { size: A4; margin: 1.5cm; }
-    body {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 11pt;
-      color: #000;
-      line-height: 1.5;
-      margin: 0;
-      padding: 0;
-      background-color: #f5f5f5;
-    }
-    .page-container {
-      max-width: 21cm;
-      min-height: 29.7cm;
-      margin: 20px auto;
-      padding: 1.5cm 1.5cm 4cm 1.5cm;
-      background: white;
-      box-sizing: border-box;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      position: relative;
-    }
-    .content-body {
-      width: 100%;
-    }
-    @media print {
-      body {
-        background-color: white;
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dağıtım Çizelgesi (Karma)</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 1.5cm;
       }
-      .page-container {
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 11pt;
+        color: #000;
+        line-height: 1.5;
         margin: 0;
         padding: 0;
-        box-shadow: none;
-        max-width: none;
-        min-height: 0;
-        position: static;
+        background-color: #f5f5f5;
       }
-    }
-    .paged-header {
-      display: block;
-      width: 100%;
-    }
-    .title {
-      text-align: center;
-      font-weight: bold;
-      text-decoration: underline;
-      margin: 20px 0;
-      font-size: 12pt;
-      text-transform: uppercase;
-    }
-    .info-block {
-      margin-bottom: 15px;
-      font-size: 11pt;
-    }
-    .content-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      margin-bottom: 25px;
-      font-size: 10pt;
-    }
-    .content-table th, .content-table td {
-      border: 1px solid #000;
-      padding: 6px;
-      text-align: center;
-      vertical-align: middle;
-    }
-    .content-table th {
-      font-weight: bold;
-      background-color: #f2f2f2;
-    }
-    .content-table tbody td {
-      height: 90px;
-    }
-    .content-table tbody td.sira-col {
-      height: auto;
-    }
-    .instruction-text {
-      text-indent: 40px;
-      text-align: justify;
-      margin-top: 20px;
-      margin-bottom: 10px;
-      line-height: 1.5;
-    }
-    .paged-keep-together { break-inside: avoid; }
-  </style>
-</head>
-<body>
-  <div class="page-container">
-    <!-- ANTET (HEADER) -->
-    <div class="paged-header" data-behavior="first-page-only" data-slot="top-center">
-      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; min-height: 80px;">
-        <tr>
-          <td style="width: 90px; text-align: left; vertical-align: middle;">
-            {{#solLogo}}
-            <img src="{{solLogo}}" alt="Sol Logo" style="max-width: 80px; max-height: 80px; object-fit: contain;" />
-            {{/solLogo}}
-          </td>
-          
-          <td style="text-align: center; vertical-align: middle; line-height: 1.3;">
-            {{#antetSatirlari}}
-            <div style="font-weight: bold; font-size: 12pt;">{{.}}</div>
-            {{/antetSatirlari}}
-            {{^antetSatirlari}}
-            <div style="font-weight: bold; font-size: 12pt;">{{kurumUst}}</div>
-            <div style="font-weight: bold; font-size: 12pt;">{{kurumAdi}}</div>
-            <div style="font-weight: bold; font-size: 12pt;">{{mudurluk}}</div>
-            {{/antetSatirlari}}
-          </td>
+      .page-container {
+        max-width: 21cm;
+        min-height: 29.7cm;
+        margin: 20px auto;
+        padding: 1.5cm 1.5cm 4cm 1.5cm;
+        background: white;
+        box-sizing: border-box;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+      .content-body {
+        width: 100%;
+      }
+      @media print {
+        body {
+          background-color: white;
+        }
+        .page-container {
+          margin: 0;
+          padding: 0;
+          box-shadow: none;
+          max-width: none;
+          min-height: 0;
+          position: static;
+        }
+      }
+      .paged-header {
+        display: block;
+        width: 100%;
+      }
+      .title {
+        text-align: center;
+        font-weight: bold;
+        text-decoration: underline;
+        margin: 20px 0;
+        font-size: 12pt;
+        text-transform: uppercase;
+      }
+      .info-block {
+        margin-bottom: 15px;
+        font-size: 11pt;
+      }
+      .content-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        margin-bottom: 25px;
+        font-size: 10pt;
+      }
+      .content-table th,
+      .content-table td {
+        border: 1px solid #000;
+        padding: 6px;
+        text-align: center;
+        vertical-align: middle;
+      }
+      .content-table th {
+        font-weight: bold;
+        background-color: #f2f2f2;
+      }
+      .content-table tbody td {
+        height: 90px;
+      }
+      .content-table tbody td.sira-col {
+        height: auto;
+      }
+      .instruction-text {
+        text-indent: 40px;
+        text-align: justify;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        line-height: 1.5;
+      }
+      .paged-keep-together {
+        break-inside: avoid;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <!-- ANTET (HEADER) -->
+      <div class="paged-header" data-behavior="first-page-only" data-slot="top-center">
+        <table
+          style="width: 100%; border-collapse: collapse; margin-bottom: 20px; min-height: 80px"
+        >
+          <tr>
+            <td style="width: 90px; text-align: left; vertical-align: middle">
+              {{#solLogo}}
+              <img
+                src="{{solLogo}}"
+                alt="Sol Logo"
+                style="max-width: 80px; max-height: 80px; object-fit: contain"
+              />
+              {{/solLogo}}
+            </td>
 
-          <td style="width: 90px; text-align: right; vertical-align: middle;">
-            {{#sagLogo}}
-            <img src="{{sagLogo}}" alt="Sağ Logo" style="max-width: 80px; max-height: 80px; object-fit: contain;" />
-            {{/sagLogo}}
-          </td>
-        </tr>
-      </table>
-    </div>
+            <td style="text-align: center; vertical-align: middle; line-height: 1.3">
+              {{#antetSatirlari}}
+              <div style="font-weight: bold; font-size: 12pt">{{.}}</div>
+              {{/antetSatirlari}} {{^antetSatirlari}}
+              <div style="font-weight: bold; font-size: 12pt">{{kurumUst}}</div>
+              <div style="font-weight: bold; font-size: 12pt">{{kurumAdi}}</div>
+              <div style="font-weight: bold; font-size: 12pt">{{mudurluk}}</div>
+              {{/antetSatirlari}}
+            </td>
 
-    <!-- CONTENT BODY -->
-    <div class="content-body">
-      <div class="title">{{belgeBasligi}}</div>
-      
-      <div class="info-block">
-        <strong>İŞİN ADI:</strong> {{isAdi}}
+            <td style="width: 90px; text-align: right; vertical-align: middle">
+              {{#sagLogo}}
+              <img
+                src="{{sagLogo}}"
+                alt="Sağ Logo"
+                style="max-width: 80px; max-height: 80px; object-fit: contain"
+              />
+              {{/sagLogo}}
+            </td>
+          </tr>
+        </table>
       </div>
 
-      <table class="content-table">
-        <thead>
-          <tr>
-            <th style="width: 8%;">SIRA</th>
-            <th style="width: 23%;">İMZA-KAŞE<br>PİYASA ARAŞTIRMA EVRAKI</th>
-            <th style="width: 23%;">EVRAK<br>VERİLİŞ TARİHİ</th>
-            <th style="width: 23%;">EVRAK<br>ALINIŞ TARİHİ</th>
-            <th style="width: 23%;">İMZA–KAŞE<br>TEKLİF MEKTUBU EVRAKI</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#satirlar}}
-          <tr>
-            <td class="sira-col">{{sira}}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          {{/satirlar}}
-          {{^satirlar}}
-          <tr>
-            <td colspan="5" style="height: 60px;">Satır bilgisi bulunmamaktadır.</td>
-          </tr>
-          {{/satirlar}}
-        </tbody>
-      </table>
+      <!-- CONTENT BODY -->
+      <div class="content-body">
+        <div class="title">{{belgeBasligi}}</div>
 
-      <div class="instruction-text">
-        Kurumumuzun ihtiyacı olan {{kalemSayisi}} ({{kalemSayisiYazi}}) kalem malzeme için piyasa araştırma ve/veya Teklif Mektubunu teslim aldım.
+        <div class="info-block"><strong>İŞİN ADI:</strong> {{isAdi}}</div>
+
+        <table class="content-table">
+          <thead>
+            <tr>
+              <th style="width: 8%">SIRA</th>
+              <th style="width: 23%">İMZA-KAŞE<br />PİYASA ARAŞTIRMA EVRAKI</th>
+              <th style="width: 23%">EVRAK<br />VERİLİŞ TARİHİ</th>
+              <th style="width: 23%">EVRAK<br />ALINIŞ TARİHİ</th>
+              <th style="width: 23%">İMZA–KAŞE<br />TEKLİF MEKTUBU EVRAKI</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#satirlar}}
+            <tr>
+              <td class="sira-col">{{sira}}</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            {{/satirlar}} {{^satirlar}}
+            <tr>
+              <td colspan="5" style="height: 60px">Satır bilgisi bulunmamaktadır.</td>
+            </tr>
+            {{/satirlar}}
+          </tbody>
+        </table>
+
+        <div class="instruction-text">
+          Kurumumuzun ihtiyacı olan {{kalemSayisi}} ({{kalemSayisiYazi}}) kalem malzeme için piyasa
+          araştırma ve/veya Teklif Mektubunu teslim aldım.
+        </div>
       </div>
-
     </div>
-  </div>
-</body>
+  </body>
 </html>

@@ -9,8 +9,18 @@ export const DATA_TeminKalemTeklif = {
     { name: 'birim_fiyat', type: 'REAL', notNull: true, default: 0, description: 'Birim Fiyat' },
     { name: 'kdv_tutari', type: 'REAL', default: 0, description: 'Kdv Tutari' },
     { name: 'teklif_verildi_mi', type: 'INTEGER', default: 1, description: 'Teklif Verildi mı?' },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
+    {
+      name: 'created_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Created At'
+    },
+    {
+      name: 'updated_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Updated At'
+    }
   ],
   constraints: [
     'FOREIGN KEY(temin_dosya_id) REFERENCES DATA_TeminDosyasi(id) ON DELETE CASCADE',

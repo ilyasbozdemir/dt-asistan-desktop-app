@@ -101,7 +101,8 @@ function DurumBadge({
 }
 
 export default function DosyalarScreen(): React.ReactNode {
-  const { dosyalar, isLoadingDosyalar, deleteDosya, hardDeleteDosya, updateDosya } = useDosyalarHooks()
+  const { dosyalar, isLoadingDosyalar, deleteDosya, hardDeleteDosya, updateDosya } =
+    useDosyalarHooks()
   const { activeDosyaId, setActiveDosyaId } = useWorkspaceStore()
   const { updateTabLabel } = useTabStore()
   const routerState = useRouterState()
@@ -157,7 +158,11 @@ export default function DosyalarScreen(): React.ReactNode {
       const dosya = dosyalar.find((d) => d.id === id)
       await deleteDosya(id)
       if (dosya) {
-        await logActivity('Dosya Arşivlendi', `${dosya.temin_no || 'NO BELİRSİZ'} numaralı dosya arşivlendi/silindi olarak işaretlendi.`, 'warning')
+        await logActivity(
+          'Dosya Arşivlendi',
+          `${dosya.temin_no || 'NO BELİRSİZ'} numaralı dosya arşivlendi/silindi olarak işaretlendi.`,
+          'warning'
+        )
       }
       if (activeDosyaId === id) setActiveDosyaId(null)
     }
@@ -174,15 +179,22 @@ export default function DosyalarScreen(): React.ReactNode {
     }
   }
 
-
   const handleUpdateStatus = async (id: number, status: string): Promise<void> => {
     await updateDosya({ id, status })
     const dosya = dosyalar.find((d) => d.id === id)
     if (dosya) {
       if (status === 'tamamlandi') {
-        await logActivity('Dosya Tamamlandı', `${dosya.temin_no || 'NO BELİRSİZ'} numaralı dosya tamamlandı olarak işaretlendi.`, 'success')
+        await logActivity(
+          'Dosya Tamamlandı',
+          `${dosya.temin_no || 'NO BELİRSİZ'} numaralı dosya tamamlandı olarak işaretlendi.`,
+          'success'
+        )
       } else if (status === 'devam_ediyor') {
-        await logActivity('Dosya Aktife Alındı', `${dosya.temin_no || 'NO BELİRSİZ'} numaralı dosya tekrar aktife alındı.`, 'info')
+        await logActivity(
+          'Dosya Aktife Alındı',
+          `${dosya.temin_no || 'NO BELİRSİZ'} numaralı dosya tekrar aktife alındı.`,
+          'info'
+        )
       }
     }
   }
@@ -193,17 +205,29 @@ export default function DosyalarScreen(): React.ReactNode {
       await updateDosya({ id, is_ekap_sent: 1, ekap_no: ekapNo.trim() })
       const dosya = dosyalar.find((d) => d.id === id)
       if (dosya) {
-        await logActivity('EKAP Kilit', `${dosya.temin_no || 'NO BELİRSİZ'} numaralı dosya kilitlendi (İKN: ${ekapNo.trim()}).`, 'success')
+        await logActivity(
+          'EKAP Kilit',
+          `${dosya.temin_no || 'NO BELİRSİZ'} numaralı dosya kilitlendi (İKN: ${ekapNo.trim()}).`,
+          'success'
+        )
       }
     }
   }
 
   const handleKilidiAc = async (id: number): Promise<void> => {
-    if (confirm('Kilidi açarsanız dosyanın EKAP bağlantısı/kilit durumu iptal edilecektir. Düzenlemeye devam edebilmek için emin misiniz?')) {
+    if (
+      confirm(
+        'Kilidi açarsanız dosyanın EKAP bağlantısı/kilit durumu iptal edilecektir. Düzenlemeye devam edebilmek için emin misiniz?'
+      )
+    ) {
       await updateDosya({ id, is_ekap_sent: 0, ekap_no: null })
       const dosya = dosyalar.find((d) => d.id === id)
       if (dosya) {
-        await logActivity('EKAP Kilit Açıldı', `${dosya.temin_no || 'NO BELİRSİZ'} numaralı dosyanın kilidi açıldı.`, 'warning')
+        await logActivity(
+          'EKAP Kilit Açıldı',
+          `${dosya.temin_no || 'NO BELİRSİZ'} numaralı dosyanın kilidi açıldı.`,
+          'warning'
+        )
       }
     }
   }
@@ -666,7 +690,7 @@ export default function DosyalarScreen(): React.ReactNode {
                         {selectedDosya.is_deleted === 1
                           ? 'SİLİNMİŞ DOSYA'
                           : selectedDosya.is_ekap_sent === 1
-                            ? 'EKAP\'A GÖNDERİLDİ'
+                            ? "EKAP'A GÖNDERİLDİ"
                             : selectedDosya.status === 'tamamlandi'
                               ? 'TAMAMLANMIŞ DOSYA'
                               : 'AKTİF İHALE DOSYASI'}
@@ -872,39 +896,52 @@ export default function DosyalarScreen(): React.ReactNode {
                         Kalıcı Sil (Dev Mode)
                       </button>
                     )}
-                    {selectedDosya.is_deleted !== 1 && selectedDosya.is_ekap_sent !== 1 && selectedDosya.status !== 'tamamlandi' && (
-                      <button
-                        onClick={() => handleUpdateStatus(selectedDosya.id, 'tamamlandi')}
-                        className="col-span-2 px-4 py-2.5 bg-primary-200 border border-primary-300 hover:bg-primary-300 text-bg-100 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                      >
-                        <CheckCircle2 size={14} />
-                        Tamamlandı İşaretle
-                      </button>
-                    )}
-                    {selectedDosya.is_deleted !== 1 && selectedDosya.is_ekap_sent !== 1 && selectedDosya.status === 'tamamlandi' && (
-                      <>
-                        <Button asChild desc={`${selectedDosya.temin_no || 'Dosya'} Aktife Alındı (Buton Tıklaması)`}>
-                          <button
-                            onClick={() => handleUpdateStatus(selectedDosya.id, 'devam_ediyor')}
-                            className="px-4 py-2.5 bg-primary-100 border border-primary-200 hover:bg-primary-200 text-primary-300 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    {selectedDosya.is_deleted !== 1 &&
+                      selectedDosya.is_ekap_sent !== 1 &&
+                      selectedDosya.status !== 'tamamlandi' && (
+                        <button
+                          onClick={() => handleUpdateStatus(selectedDosya.id, 'tamamlandi')}
+                          className="col-span-2 px-4 py-2.5 bg-primary-200 border border-primary-300 hover:bg-primary-300 text-bg-100 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                        >
+                          <CheckCircle2 size={14} />
+                          Tamamlandı İşaretle
+                        </button>
+                      )}
+                    {selectedDosya.is_deleted !== 1 &&
+                      selectedDosya.is_ekap_sent !== 1 &&
+                      selectedDosya.status === 'tamamlandi' && (
+                        <>
+                          <Button
+                            asChild
+                            desc={`${selectedDosya.temin_no || 'Dosya'} Aktife Alındı (Buton Tıklaması)`}
                           >
-                            <Clock size={14} />
-                            Aktife Al
-                          </button>
-                        </Button>
-                        <Button asChild desc={`${selectedDosya.temin_no || 'Dosya'} EKAP Kilitleme (Buton Tıklaması)`}>
-                          <button
-                            onClick={() => handleEkapGonder(selectedDosya.id)}
-                            className="px-4 py-2.5 bg-bg-200 border border-bg-300 hover:bg-bg-300 text-text-100 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                            <button
+                              onClick={() => handleUpdateStatus(selectedDosya.id, 'devam_ediyor')}
+                              className="px-4 py-2.5 bg-primary-100 border border-primary-200 hover:bg-primary-200 text-primary-300 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                            >
+                              <Clock size={14} />
+                              Aktife Al
+                            </button>
+                          </Button>
+                          <Button
+                            asChild
+                            desc={`${selectedDosya.temin_no || 'Dosya'} EKAP Kilitleme (Buton Tıklaması)`}
                           >
-                            <Lock size={14} />
-                            Kilitle (EKAP)
-                          </button>
-                        </Button>
-                      </>
-                    )}
+                            <button
+                              onClick={() => handleEkapGonder(selectedDosya.id)}
+                              className="px-4 py-2.5 bg-bg-200 border border-bg-300 hover:bg-bg-300 text-text-100 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                            >
+                              <Lock size={14} />
+                              Kilitle (EKAP)
+                            </button>
+                          </Button>
+                        </>
+                      )}
                     {selectedDosya.is_deleted !== 1 && selectedDosya.is_ekap_sent === 1 && (
-                      <Button asChild desc={`${selectedDosya.temin_no || 'Dosya'} EKAP Kilidi Açma (Buton Tıklaması)`}>
+                      <Button
+                        asChild
+                        desc={`${selectedDosya.temin_no || 'Dosya'} EKAP Kilidi Açma (Buton Tıklaması)`}
+                      >
                         <button
                           onClick={() => handleKilidiAc(selectedDosya.id)}
                           className="col-span-2 px-4 py-2.5 bg-bg-200 border border-bg-300 hover:bg-bg-300 text-text-100 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
@@ -915,12 +952,19 @@ export default function DosyalarScreen(): React.ReactNode {
                       </Button>
                     )}
                     {selectedDosya.is_deleted === 1 && (
-                      <Button asChild desc={`${selectedDosya.temin_no || 'Dosya'} Silinmişi Geri Al (Buton Tıklaması)`}>
+                      <Button
+                        asChild
+                        desc={`${selectedDosya.temin_no || 'Dosya'} Silinmişi Geri Al (Buton Tıklaması)`}
+                      >
                         <button
                           onClick={() =>
                             handleUpdateStatus(selectedDosya.id, 'devam_ediyor').then(() => {
                               updateDosya({ id: selectedDosya.id, is_deleted: 0 })
-                              logActivity('Dosya Geri Alındı', `${selectedDosya.temin_no || 'NO BELİRSİZ'} numaralı silinmiş dosya geri alındı.`, 'info')
+                              logActivity(
+                                'Dosya Geri Alındı',
+                                `${selectedDosya.temin_no || 'NO BELİRSİZ'} numaralı silinmiş dosya geri alındı.`,
+                                'info'
+                              )
                             })
                           }
                           className="col-span-2 px-4 py-2.5 bg-primary-100 border border-primary-200 hover:bg-primary-200 text-primary-300 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
@@ -933,7 +977,10 @@ export default function DosyalarScreen(): React.ReactNode {
                   </div>
 
                   {!isWindowMode && (
-                    <Button asChild desc={`${selectedDosya.temin_no || 'Dosya'} Yeni Pencerede Aç (Buton Tıklaması)`}>
+                    <Button
+                      asChild
+                      desc={`${selectedDosya.temin_no || 'Dosya'} Yeni Pencerede Aç (Buton Tıklaması)`}
+                    >
                       <button
                         onClick={handleOpenInNewWindow}
                         className="w-full px-4 py-2.5 bg-primary-100 border border-primary-200 hover:bg-primary-200 text-primary-300 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
@@ -945,7 +992,10 @@ export default function DosyalarScreen(): React.ReactNode {
                   )}
 
                   {/* YAPAY ZEKA ASİSTANI BUTONU */}
-                  <Button asChild desc={`${selectedDosya.temin_no || 'Dosya'} Yapay Zeka Asistanı (Buton Tıklaması)`}>
+                  <Button
+                    asChild
+                    desc={`${selectedDosya.temin_no || 'Dosya'} Yapay Zeka Asistanı (Buton Tıklaması)`}
+                  >
                     <button
                       onClick={() => handleOpenAI(selectedDosya)}
                       className="w-full px-4 py-2.5 bg-accent-100 hover:bg-accent-200 text-bg-100 rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer mt-2"
@@ -970,7 +1020,7 @@ export default function DosyalarScreen(): React.ReactNode {
           initialPrompt=""
           systemInstruction={
             selectedFileForAI.konu === 'Genel Mevzuat Danışmanlığı'
-              ? "Sen profesyonel bir kamu ihale ve doğrudan temin (4734 Sayılı Kanun) asistanısın. Kullanıcıya genel mevzuat veya idari işleyiş hakkında rehberlik edeceksin.\n\nÖNEMLİ GİZLİLİK KURALI: Gerçek kurum veya kişi isimlerini maskele."
+              ? 'Sen profesyonel bir kamu ihale ve doğrudan temin (4734 Sayılı Kanun) asistanısın. Kullanıcıya genel mevzuat veya idari işleyiş hakkında rehberlik edeceksin.\n\nÖNEMLİ GİZLİLİK KURALI: Gerçek kurum veya kişi isimlerini maskele.'
               : `Sen profesyonel bir kamu ihale ve doğrudan temin (4734 Sayılı Kanun) asistanısın. Kullanıcı sana sistemdeki bir dosyası hakkında danışacak.\n\nŞu anki Aktif Dosya Bilgileri:\n- Dosya No: ${selectedFileForAI.temin_no || 'Belirtilmemiş'}\n- Konu: ${selectedFileForAI.konu}\n- Maliyet: ${selectedFileForAI.yaklasik_maliyet || 0} TL\n- İhale Şekli (Madde): ${selectedFileForAI.ihale_sekli || 'Belirtilmemiş'}\n\nÖNEMLİ GİZLİLİK KURALI: Gerçek kurum, şahıs isimleri veya adresleri [Kurum Adı], [İlgili Kişi] şeklinde maskele.`
           }
           onClose={() => {

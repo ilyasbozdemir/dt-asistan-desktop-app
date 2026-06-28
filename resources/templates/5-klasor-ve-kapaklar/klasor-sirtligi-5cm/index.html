@@ -1,265 +1,278 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Klasör Sırtlığı (5 cm)</title>
-  <style>
-    @page {
-      size: A4;
-      margin: 0;
-    }
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #f5f5f5;
-      font-family: 'Times New Roman', Times, serif;
-    }
-    .page-container {
-      width: 21cm;
-      height: 29.7cm;
-      margin: 0 auto;
-      background: white;
-      position: relative;
-      box-sizing: border-box;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    @media print {
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Klasör Sırtlığı (5 cm)</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 0;
+      }
       body {
-        background-color: white;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f5;
+        font-family: 'Times New Roman', Times, serif;
       }
       .page-container {
-        box-shadow: none;
-        margin: 0;
-        height: 29.7cm;
         width: 21cm;
+        height: 29.7cm;
+        margin: 0 auto;
+        background: white;
+        position: relative;
+        box-sizing: border-box;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
-    }
-    /* Crop marks & spine boundary */
-    .spine-wrapper {
-      width: {{genislik}};
-      height: 28.5cm;
-      border: 1px dashed #999;
-      position: relative;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.5cm 0.2cm;
-      background-color: #ffffff;
-      overflow: hidden;
-    }
-    @media print {
+      @media print {
+        body {
+          background-color: white;
+        }
+        .page-container {
+          box-shadow: none;
+          margin: 0;
+          height: 29.7cm;
+          width: 21cm;
+        }
+      }
+      /* Crop marks & spine boundary */
       .spine-wrapper {
-        border: 1px dashed #bbb;
+        width: {{genislik}};
+        height: 28.5cm;
+        border: 1px dashed #999;
+        position: relative;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5cm 0.2cm;
+        background-color: #ffffff;
+        overflow: hidden;
       }
-    }
-    
-    /* Top accent color bar */
-    .accent-bar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 1cm;
-      background-color: {{renk}};
-    }
-    
-    /* Bottom accent color bar */
-    .bottom-accent-bar {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 0.5cm;
-      background-color: {{renk}};
-    }
+      @media print {
+        .spine-wrapper {
+          border: 1px dashed #bbb;
+        }
+      }
 
-    .tc-crest {
-      font-size: 14pt;
-      font-weight: bold;
-      text-align: center;
-      color: #000;
-      margin-top: 0.8cm;
-      margin-bottom: 0.5cm;
-    }
+      /* Top accent color bar */
+      .accent-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 1cm;
+        background-color: {{renk}};
+      }
 
-    .kurum-adi {
-      font-size: 10pt;
-      font-weight: bold;
-      text-align: center;
-      text-transform: uppercase;
-      line-height: 1.3;
-      margin-bottom: 1cm;
-      max-width: 90%;
-      word-wrap: break-word;
-      white-space: pre-wrap;
-    }
+      /* Bottom accent color bar */
+      .bottom-accent-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 0.5cm;
+        background-color: {{renk}};
+      }
 
-    /* Vertical text for Title and Subject */
-    .vertical-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      transform: rotate(180deg);
-      text-align: center;
-      width: 100%;
-    }
+      .tc-crest {
+        font-size: 14pt;
+        font-weight: bold;
+        text-align: center;
+        color: #000;
+        margin-top: 0.8cm;
+        margin-bottom: 0.5cm;
+      }
 
-    .title {
-      font-weight: bold;
-      letter-spacing: 1px;
-      margin: 0.5cm 0;
-      color: #000;
-      text-transform: uppercase;
-      word-wrap: break-word;
-      max-height: 15cm;
-    }
+      .kurum-adi {
+        font-size: 10pt;
+        font-weight: bold;
+        text-align: center;
+        text-transform: uppercase;
+        line-height: 1.3;
+        margin-bottom: 1cm;
+        max-width: 90%;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+      }
 
-    .konu {
-      color: #444;
-      margin: 0.3cm 0;
-      font-style: italic;
-      word-wrap: break-word;
-      max-height: 10cm;
-    }
+      /* Vertical text for Title and Subject */
+      .vertical-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        transform: rotate(180deg);
+        text-align: center;
+        width: 100%;
+      }
 
-    .footer-info {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      margin-top: 0.8cm;
-      margin-bottom: 0.3cm;
-    }
+      .title {
+        font-weight: bold;
+        letter-spacing: 1px;
+        margin: 0.5cm 0;
+        color: #000;
+        text-transform: uppercase;
+        word-wrap: break-word;
+        max-height: 15cm;
+      }
 
-    .yil {
-      font-size: 14pt;
-      font-weight: bold;
-      border: 2.5px solid #000;
-      padding: 3px 12px;
-      margin-bottom: 0.4cm;
-      text-align: center;
-    }
+      .konu {
+        color: #444;
+        margin: 0.3cm 0;
+        font-style: italic;
+        word-wrap: break-word;
+        max-height: 10cm;
+      }
 
-    .klasor-no {
-      font-size: 18pt;
-      font-weight: 900;
-      background-color: #000;
-      color: #fff;
-      width: 1.3cm;
-      height: 1.3cm;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      margin-bottom: 0.4cm;
-    }
+      .footer-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin-top: 0.8cm;
+        margin-bottom: 0.3cm;
+      }
 
-    .alt-bilgi {
-      font-size: 8.5pt;
-      text-align: center;
-      color: #666;
-      max-width: 95%;
-      white-space: pre-wrap;
-    }
+      .yil {
+        font-size: 14pt;
+        font-weight: bold;
+        border: 2.5px solid #000;
+        padding: 3px 12px;
+        margin-bottom: 0.4cm;
+        text-align: center;
+      }
 
-    /* Width specific styling */
-    .spine-wrapper[style*="width: 3cm"] .title,
-    .spine-wrapper[style*="width:3cm"] .title {
-      font-size: 12.5pt;
-    }
-    .spine-wrapper[style*="width: 3cm"] .konu,
-    .spine-wrapper[style*="width:3cm"] .konu {
-      font-size: 9.5pt;
-    }
-    .spine-wrapper[style*="width: 3cm"] .kurum-adi,
-    .spine-wrapper[style*="width:3cm"] .kurum-adi {
-      font-size: 8.5pt;
-    }
-    .spine-wrapper[style*="width: 3cm"] .klasor-no,
-    .spine-wrapper[style*="width:3cm"] .klasor-no {
-      width: 1.1cm;
-      height: 1.1cm;
-      font-size: 15pt;
-    }
+      .klasor-no {
+        font-size: 18pt;
+        font-weight: 900;
+        background-color: #000;
+        color: #fff;
+        width: 1.3cm;
+        height: 1.3cm;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin-bottom: 0.4cm;
+      }
 
-    .spine-wrapper[style*="width: 5cm"] .title,
-    .spine-wrapper[style*="width:5cm"] .title {
-      font-size: 16pt;
-    }
-    .spine-wrapper[style*="width: 5cm"] .konu,
-    .spine-wrapper[style*="width:5cm"] .konu {
-      font-size: 11pt;
-    }
-    .spine-wrapper[style*="width: 5cm"] .kurum-adi,
-    .spine-wrapper[style*="width:5cm"] .kurum-adi {
-      font-size: 10pt;
-    }
+      .alt-bilgi {
+        font-size: 8.5pt;
+        text-align: center;
+        color: #666;
+        max-width: 95%;
+        white-space: pre-wrap;
+      }
 
-    .spine-wrapper[style*="width: 7.5cm"] .title,
-    .spine-wrapper[style*="width:7.5cm"] .title {
-      font-size: 20pt;
-    }
-    .spine-wrapper[style*="width: 7.5cm"] .konu,
-    .spine-wrapper[style*="width:7.5cm"] .konu {
-      font-size: 13pt;
-    }
-    .spine-wrapper[style*="width: 7.5cm"] .kurum-adi,
-    .spine-wrapper[style*="width:7.5cm"] .kurum-adi {
-      font-size: 11pt;
-    }
-  </style>
-</head>
-<body>
-  <div class="page-container">
-    <div class="spine-wrapper" style="width: {{genislik}};">
-      <div class="accent-bar"></div>
-      
-      <!-- Top Section -->
-      <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-        <div class="tc-crest">
-          <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 0 auto 5px;">
-            <circle cx="50" cy="50" r="45" stroke="#000" stroke-width="4.5" fill="none"/>
-            <path d="M50 15C30.67 15 15 30.67 15 50C15 69.33 30.67 85 50 85C69.33 85 85 69.33 85 50" stroke="#000" stroke-width="4.5" stroke-linecap="round"/>
-            <path d="M50 35L53.5 43.5H62.5L55 48.5L58 57.5L50 52L42 57.5L45 48.5L37.5 43.5H46.5L50 35Z" fill="#000"/>
-          </svg>
-          T.C.
+      /* Width specific styling */
+      .spine-wrapper[style*="width: 3cm"] .title,
+      .spine-wrapper[style*="width:3cm"] .title {
+        font-size: 12.5pt;
+      }
+      .spine-wrapper[style*="width: 3cm"] .konu,
+      .spine-wrapper[style*="width:3cm"] .konu {
+        font-size: 9.5pt;
+      }
+      .spine-wrapper[style*="width: 3cm"] .kurum-adi,
+      .spine-wrapper[style*="width:3cm"] .kurum-adi {
+        font-size: 8.5pt;
+      }
+      .spine-wrapper[style*="width: 3cm"] .klasor-no,
+      .spine-wrapper[style*="width:3cm"] .klasor-no {
+        width: 1.1cm;
+        height: 1.1cm;
+        font-size: 15pt;
+      }
+
+      .spine-wrapper[style*="width: 5cm"] .title,
+      .spine-wrapper[style*="width:5cm"] .title {
+        font-size: 16pt;
+      }
+      .spine-wrapper[style*="width: 5cm"] .konu,
+      .spine-wrapper[style*="width:5cm"] .konu {
+        font-size: 11pt;
+      }
+      .spine-wrapper[style*="width: 5cm"] .kurum-adi,
+      .spine-wrapper[style*="width:5cm"] .kurum-adi {
+        font-size: 10pt;
+      }
+
+      .spine-wrapper[style*="width: 7.5cm"] .title,
+      .spine-wrapper[style*="width:7.5cm"] .title {
+        font-size: 20pt;
+      }
+      .spine-wrapper[style*="width: 7.5cm"] .konu,
+      .spine-wrapper[style*="width:7.5cm"] .konu {
+        font-size: 13pt;
+      }
+      .spine-wrapper[style*="width: 7.5cm"] .kurum-adi,
+      .spine-wrapper[style*="width:7.5cm"] .kurum-adi {
+        font-size: 11pt;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <div class="spine-wrapper" style="width: {{genislik}};">
+        <div class="accent-bar"></div>
+
+        <!-- Top Section -->
+        <div style="display: flex; flex-direction: column; align-items: center; width: 100%">
+          <div class="tc-crest">
+            <svg
+              width="40"
+              height="40"
+              viewBox="0 0 100 100"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              style="display: block; margin: 0 auto 5px"
+            >
+              <circle cx="50" cy="50" r="45" stroke="#000" stroke-width="4.5" fill="none" />
+              <path
+                d="M50 15C30.67 15 15 30.67 15 50C15 69.33 30.67 85 50 85C69.33 85 85 69.33 85 50"
+                stroke="#000"
+                stroke-width="4.5"
+                stroke-linecap="round"
+              />
+              <path
+                d="M50 35L53.5 43.5H62.5L55 48.5L58 57.5L50 52L42 57.5L45 48.5L37.5 43.5H46.5L50 35Z"
+                fill="#000"
+              />
+            </svg>
+            T.C.
+          </div>
+          <div class="kurum-adi">{{{kurumAdi}}}</div>
         </div>
-        <div class="kurum-adi">{{{kurumAdi}}}</div>
-      </div>
 
-      <!-- Middle Section (Vertical) -->
-      <div class="vertical-content">
-        <div class="title">{{klasorBasligi}}</div>
-        {{#konu}}
-        <div class="konu">{{konu}}</div>
-        {{/konu}}
-      </div>
+        <!-- Middle Section (Vertical) -->
+        <div class="vertical-content">
+          <div class="title">{{klasorBasligi}}</div>
+          {{#konu}}
+          <div class="konu">{{konu}}</div>
+          {{/konu}}
+        </div>
 
-      <!-- Bottom Section -->
-      <div class="footer-info">
-        {{#yil}}
-        <div class="yil">{{yil}}</div>
-        {{/yil}}
-        {{#klasorNo}}
-        <div class="klasor-no">{{klasorNo}}</div>
-        {{/klasorNo}}
-        {{#altBilgi}}
-        <div class="alt-bilgi">{{{altBilgi}}}</div>
-        {{/altBilgi}}
-      </div>
+        <!-- Bottom Section -->
+        <div class="footer-info">
+          {{#yil}}
+          <div class="yil">{{yil}}</div>
+          {{/yil}} {{#klasorNo}}
+          <div class="klasor-no">{{klasorNo}}</div>
+          {{/klasorNo}} {{#altBilgi}}
+          <div class="alt-bilgi">{{{altBilgi}}}</div>
+          {{/altBilgi}}
+        </div>
 
-      <div class="bottom-accent-bar"></div>
+        <div class="bottom-accent-bar"></div>
+      </div>
     </div>
-  </div>
-</body>
+  </body>
 </html>

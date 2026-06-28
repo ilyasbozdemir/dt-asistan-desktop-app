@@ -70,15 +70,33 @@ export function useFirmalarHooks() {
         const checkQuery = `SELECT unvan FROM TANIM_Firma WHERE ${conditions.join(' OR ')} LIMIT 1`
         const existing = await window.electron.ipcRenderer.invoke('db:query', checkQuery, params)
         if (existing.success && existing.data?.length > 0) {
-          throw new Error(`Bu bilgilere (Vergi No / TC No / Unvan) sahip firma zaten kayıtlı:\n\n${existing.data[0].unvan}`)
+          throw new Error(
+            `Bu bilgilere (Vergi No / TC No / Unvan) sahip firma zaten kayıtlı:\n\n${existing.data[0].unvan}`
+          )
         }
       }
 
       const cols = [
-        'firma_kodu', 'unvan', 'ilgili_adi', 'uyrugu', 'istigal_konusu',
-        'adres', 'ilce', 'posta_kodu', 'il', 'telefon', 'faks', 'email',
-        'web_adresi', 'banka_adi', 'sube_kodu_adi', 'hesap_no',
-        'tc_kimlik_no', 'dogum_tarihi', 'vergi_dairesi', 'vergi_no'
+        'firma_kodu',
+        'unvan',
+        'ilgili_adi',
+        'uyrugu',
+        'istigal_konusu',
+        'adres',
+        'ilce',
+        'posta_kodu',
+        'il',
+        'telefon',
+        'faks',
+        'email',
+        'web_adresi',
+        'banka_adi',
+        'sube_kodu_adi',
+        'hesap_no',
+        'tc_kimlik_no',
+        'dogum_tarihi',
+        'vergi_dairesi',
+        'vergi_no'
       ]
       const placeholders = cols.map(() => '?').join(', ')
       const values = cols.map((col) => (firma as any)[col] || '')
@@ -115,9 +133,14 @@ export function useFirmalarHooks() {
 
       if (conditions.length > 0) {
         const checkQuery = `SELECT unvan FROM TANIM_Firma WHERE id != ? AND (${conditions.join(' OR ')}) LIMIT 1`
-        const existing = await window.electron.ipcRenderer.invoke('db:query', checkQuery, [id, ...params])
+        const existing = await window.electron.ipcRenderer.invoke('db:query', checkQuery, [
+          id,
+          ...params
+        ])
         if (existing.success && existing.data?.length > 0) {
-          throw new Error(`Bu bilgilere (Vergi No / TC No / Unvan) sahip başka bir firma zaten kayıtlı:\n\n${existing.data[0].unvan}`)
+          throw new Error(
+            `Bu bilgilere (Vergi No / TC No / Unvan) sahip başka bir firma zaten kayıtlı:\n\n${existing.data[0].unvan}`
+          )
         }
       }
 

@@ -1,323 +1,449 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <title>Hakediş Raporu</title>
-  <style>
-    @page {
-      size: A4;
-      margin: 1.2cm 1.5cm;
-    }
-    body {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 9.5pt;
-      line-height: 1.35;
-      color: #000;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      background-color: #fff;
-    }
-    .page-container {
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .text-center { text-align: center; }
-    .text-right { text-align: right; }
-    .font-bold { font-weight: bold; }
-    .bg-light { background-color: #fafafa; }
-    .bg-pink { background-color: #fce4e4; }
-    
-    .table-container {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-      margin-bottom: 15px;
-      border: 1px solid #000;
-    }
-    .table-container td {
-      border: 1px solid #000;
-      padding: 5px 8px;
-      vertical-align: middle;
-    }
-    
-    .signature-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    .signature-table td {
-      border: none;
-      vertical-align: top;
-      padding: 5px;
-    }
-    
-    .olur-section {
-      text-align: center;
-      margin-top: 30px;
-      line-height: 1.4;
-      break-inside: avoid;
-    }
-  </style>
-</head>
-<body>
-  <div class="page-container">
-    
-    <!-- ANTET / LOGO HEADER -->
-    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; min-height: 80px;">
-      <tbody>
-        <tr>
-          <td style="width: 90px; text-align: left; vertical-align: middle; border: none; padding: 0;">
-            {{#solLogo}}
-            <img src="{{solLogo}}" alt="Sol Logo" style="max-width: 80px; max-height: 80px; object-fit: contain;" />
-            {{/solLogo}}
-          </td>
-          
-          <td style="text-align: center; vertical-align: middle; line-height: 1.3; font-weight: bold; border: none; padding: 0; text-transform: uppercase;">
-            {{#antetSatirlari}}
-            <div style="font-size: 11pt;">{{.}}</div>
-            {{/antetSatirlari}}
-            {{^antetSatir1}}
-            {{^antetSatirlari}}
-            <div style="font-size: 11pt;">T.C.</div>
-            <div style="font-size: 11pt;">{{kurumAdi}}{{^kurumAdi}}................ BELEDİYE BAŞKANLIĞI{{/kurumAdi}}</div>
-            {{/antetSatirlari}}
-            {{/antetSatir1}}
-            {{#antetSatir1}}
-            {{^antetSatirlari}}
-            <div style="font-size: 11pt;">T.C.</div>
-            <div style="font-size: 11pt;">{{antetSatir1}}</div>
-            {{/antetSatirlari}}
-            {{/antetSatir1}}
-          </td>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hakediş Raporu</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 1.2cm 1.5cm;
+      }
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 9.5pt;
+        line-height: 1.35;
+        color: #000;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background-color: #fff;
+      }
+      .page-container {
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .text-right {
+        text-align: right;
+      }
+      .font-bold {
+        font-weight: bold;
+      }
+      .bg-light {
+        background-color: #fafafa;
+      }
+      .bg-pink {
+        background-color: #fce4e4;
+      }
 
-          <td style="width: 90px; text-align: right; vertical-align: middle; border: none; padding: 0;">
-            {{#sagLogo}}
-            <img src="{{sagLogo}}" alt="Sağ Logo" style="max-width: 80px; max-height: 80px; object-fit: contain;" />
-            {{/sagLogo}}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      .table-container {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        border: 1px solid #000;
+      }
+      .table-container td {
+        border: 1px solid #000;
+        padding: 5px 8px;
+        vertical-align: middle;
+      }
 
-    <div class="text-center font-bold" style="font-size: 12pt; margin-bottom: 10px; letter-spacing: 0.5px;">
-      HAKEDİŞ RAPORU
+      .signature-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      .signature-table td {
+        border: none;
+        vertical-align: top;
+        padding: 5px;
+      }
+
+      .olur-section {
+        text-align: center;
+        margin-top: 30px;
+        line-height: 1.4;
+        break-inside: avoid;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <!-- ANTET / LOGO HEADER -->
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; min-height: 80px">
+        <tbody>
+          <tr>
+            <td
+              style="
+                width: 90px;
+                text-align: left;
+                vertical-align: middle;
+                border: none;
+                padding: 0;
+              "
+            >
+              {{#solLogo}}
+              <img
+                src="{{solLogo}}"
+                alt="Sol Logo"
+                style="max-width: 80px; max-height: 80px; object-fit: contain"
+              />
+              {{/solLogo}}
+            </td>
+
+            <td
+              style="
+                text-align: center;
+                vertical-align: middle;
+                line-height: 1.3;
+                font-weight: bold;
+                border: none;
+                padding: 0;
+                text-transform: uppercase;
+              "
+            >
+              {{#antetSatirlari}}
+              <div style="font-size: 11pt">{{.}}</div>
+              {{/antetSatirlari}} {{^antetSatir1}} {{^antetSatirlari}}
+              <div style="font-size: 11pt">T.C.</div>
+              <div style="font-size: 11pt">
+                {{kurumAdi}}{{^kurumAdi}}................ BELEDİYE BAŞKANLIĞI{{/kurumAdi}}
+              </div>
+              {{/antetSatirlari}} {{/antetSatir1}} {{#antetSatir1}} {{^antetSatirlari}}
+              <div style="font-size: 11pt">T.C.</div>
+              <div style="font-size: 11pt">{{antetSatir1}}</div>
+              {{/antetSatirlari}} {{/antetSatir1}}
+            </td>
+
+            <td
+              style="
+                width: 90px;
+                text-align: right;
+                vertical-align: middle;
+                border: none;
+                padding: 0;
+              "
+            >
+              {{#sagLogo}}
+              <img
+                src="{{sagLogo}}"
+                alt="Sağ Logo"
+                style="max-width: 80px; max-height: 80px; object-fit: contain"
+              />
+              {{/sagLogo}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div
+        class="text-center font-bold"
+        style="font-size: 12pt; margin-bottom: 10px; letter-spacing: 0.5px"
+      >
+        HAKEDİŞ RAPORU
+      </div>
+
+      <!-- HAKEDİŞ DETAY TABLOSU -->
+      <table class="table-container">
+        <tbody>
+          <tr>
+            <td colspan="3" class="font-bold bg-light" style="font-size: 10pt; line-height: 1.4">
+              {{isinAdi}}{{^isinAdi}}{{dosyaKonusu}}{{^dosyaKonusu}}................{{/dosyaKonusu}}{{/isinAdi}}
+              Hizmeti
+            </td>
+            <td width="22%" class="text-center bg-light">
+              <b>Hakediş No:</b> {{hakedisNo}}{{^hakedisNo}}................{{/hakedisNo}}
+            </td>
+          </tr>
+          <tr>
+            <td
+              colspan="4"
+              class="text-center font-bold"
+              style="padding: 10px 8px; line-height: 1.4"
+            >
+              {{hakedisTarihi}}{{^hakedisTarihi}}..../..../20....{{/hakedisTarihi}} TARİHİNE KADAR
+              YAPILAN HİZMETİN
+            </td>
+          </tr>
+
+          <!-- SATIR A -->
+          <tr>
+            <td width="5%" class="text-center font-bold">A</td>
+            <td colspan="2">Sözleşme Fiyatları ile Yapılan Hizmet Tutarı</td>
+            <td class="text-right font-bold" width="22%">
+              {{hizmetTutari}}{{^hizmetTutari}}0.00{{/hizmetTutari}} TL
+            </td>
+          </tr>
+
+          <!-- SATIR B -->
+          <tr>
+            <td class="text-center font-bold">B</td>
+            <td colspan="2">Fiyat Farkı Tutarı</td>
+            <td class="text-right font-bold">
+              {{fiyatFarkTutari}}{{^fiyatFarkTutari}}0.00{{/fiyatFarkTutari}} TL
+            </td>
+          </tr>
+
+          <!-- SATIR C -->
+          <tr class="bg-light font-bold">
+            <td class="text-center">C</td>
+            <td colspan="2">Toplam Tutar (A + B)</td>
+            <td class="text-right">{{toplamTutar}}{{^toplamTutar}}0.00{{/toplamTutar}} TL</td>
+          </tr>
+
+          <!-- İSKONTO -->
+          <tr>
+            <td class="text-center">&nbsp;</td>
+            <td colspan="2">İskonto Tutarı</td>
+            <td class="text-right font-bold">
+              {{iskontoTutari}}{{^iskontoTutari}}0.00{{/iskontoTutari}} TL
+            </td>
+          </tr>
+
+          <!-- SATIR D -->
+          <tr>
+            <td class="text-center font-bold">D</td>
+            <td colspan="2">Bir önceki Hakedişin Tutarı</td>
+            <td class="text-right font-bold">
+              {{oncekiHakedisTutari}}{{^oncekiHakedisTutari}}0.00{{/oncekiHakedisTutari}} TL
+            </td>
+          </tr>
+
+          <!-- SATIR E -->
+          <tr>
+            <td class="text-center font-bold">E</td>
+            <td colspan="2">Bu Hakedişin Tutarı (C - D)</td>
+            <td class="text-right font-bold">
+              {{buHakedisTutari}}{{^buHakedisTutari}}0.00{{/buHakedisTutari}} TL
+            </td>
+          </tr>
+
+          <!-- SATIR F -->
+          <tr>
+            <td class="text-center font-bold">F</td>
+            <td colspan="2">KDV (E x %{{kdvOrani}}{{^kdvOrani}}20{{/kdvOrani}})</td>
+            <td class="text-right font-bold">{{kdvTutari}}{{^kdvTutari}}0.00{{/kdvTutari}} TL</td>
+          </tr>
+
+          <!-- SATIR G -->
+          <tr class="bg-light font-bold">
+            <td class="text-center">G</td>
+            <td colspan="2">Tahakkuk Tutarı</td>
+            <td class="text-right">
+              {{tahakkukTutari}}{{^tahakkukTutari}}0.00{{/tahakkukTutari}} TL
+            </td>
+          </tr>
+
+          <!-- KESİNTİLER BAŞLANGIÇ -->
+          <tr class="bg-pink font-bold">
+            <td class="text-center" rowspan="11">&nbsp;</td>
+            <td
+              width="10%"
+              class="text-center"
+              rowspan="11"
+              style="border-right: none; vertical-align: middle"
+            >
+              KESİNTİLER<br />VE<br />MAHSUPLAR
+            </td>
+            <td style="border-left: none">
+              a) Gelir / Kurumlar Vergisi (E x
+              %{{gelirVergisiOrani}}{{^gelirVergisiOrani}}0{{/gelirVergisiOrani}})
+            </td>
+            <td class="text-right">
+              {{gelirVergisiTutari}}{{^gelirVergisiTutari}}0.00{{/gelirVergisiTutari}} TL
+            </td>
+          </tr>
+          <tr class="bg-pink">
+            <td style="border-left: none">
+              b) Damga Vergisi (E - g x
+              %{{damgaVergisiOrani}}{{^damgaVergisiOrani}}0.00948{{/damgaVergisiOrani}})
+            </td>
+            <td class="text-right font-bold">
+              {{damgaVergisiTutari}}{{^damgaVergisiTutari}}0.00{{/damgaVergisiTutari}} TL
+            </td>
+          </tr>
+          <tr class="bg-pink">
+            <td style="border-left: none">
+              c) KDV Tevkifatı (F x
+              {{kdvTevkifatiOrani}}{{^kdvTevkifatiOrani}}0/10{{/kdvTevkifatiOrani}})
+            </td>
+            <td class="text-right font-bold">
+              {{kdvTevkifatTutari}}{{^kdvTevkifatTutari}}0.00{{/kdvTevkifatTutari}} TL
+            </td>
+          </tr>
+          <tr class="bg-pink">
+            <td style="border-left: none">d) Sosyal Sigortalar Kurumu Kesintisi</td>
+            <td class="text-right font-bold">
+              {{sskKesintisi}}{{^sskKesintisi}}0.00{{/sskKesintisi}} TL
+            </td>
+          </tr>
+          <tr class="bg-pink">
+            <td style="border-left: none">e) İdare Makinesi Kiraları</td>
+            <td class="text-right font-bold">
+              {{idareMakineKiralari}}{{^idareMakineKiralari}}0.00{{/idareMakineKiralari}} TL
+            </td>
+          </tr>
+          <tr class="bg-pink">
+            <td style="border-left: none">f) Gecikme Cezası</td>
+            <td class="text-right font-bold">
+              {{gecikmeCezasi}}{{^gecikmeCezasi}}0.00{{/gecikmeCezasi}} TL
+            </td>
+          </tr>
+          <tr class="bg-pink">
+            <td style="border-left: none">g) Avans Mahsubu</td>
+            <td class="text-right font-bold">
+              {{avansMahsubu}}{{^avansMahsubu}}0.00{{/avansMahsubu}} TL
+            </td>
+          </tr>
+          <tr class="bg-pink">
+            <td style="border-left: none">h) Bu hakedişle ödenen Fiyat Farkı Teminat Kesintisi</td>
+            <td class="text-right font-bold">
+              {{fiyatFarkTeminatKesintisi}}{{^fiyatFarkTeminatKesintisi}}0.00{{/fiyatFarkTeminatKesintisi}}
+              TL
+            </td>
+          </tr>
+          <tr class="bg-pink">
+            <td style="border-left: none">i) Stopaj</td>
+            <td class="text-right font-bold">
+              {{stopajTutari}}{{^stopajTutari}}0.00{{/stopajTutari}} TL
+            </td>
+          </tr>
+          <tr class="bg-pink">
+            <td style="border-left: none">
+              {{digerKesinti1Adi}}{{^digerKesinti1Adi}}Diğer Kesinti 1{{/digerKesinti1Adi}}
+            </td>
+            <td class="text-right font-bold">
+              {{digerKesinti1Tutari}}{{^digerKesinti1Tutari}}0.00{{/digerKesinti1Tutari}} TL
+            </td>
+          </tr>
+          <tr class="bg-pink">
+            <td style="border-left: none">
+              {{digerKesinti2Adi}}{{^digerKesinti2Adi}}Diğer Kesinti 2{{/digerKesinti2Adi}}
+            </td>
+            <td class="text-right font-bold">
+              {{digerKesinti2Tutari}}{{^digerKesinti2Tutari}}0.00{{/digerKesinti2Tutari}} TL
+            </td>
+          </tr>
+
+          <!-- SATIR H -->
+          <tr class="bg-light font-bold">
+            <td class="text-center">H</td>
+            <td colspan="2">Kesintiler ve Mahsuplar Toplamı</td>
+            <td class="text-right">
+              {{kesintilerToplamTutari}}{{^kesintilerToplamTutari}}0.00{{/kesintilerToplamTutari}}
+              TL
+            </td>
+          </tr>
+
+          <!-- NET ODENECEK -->
+          <tr class="font-bold" style="font-size: 10.5pt; background-color: #eafaf1">
+            <td class="text-center">&nbsp;</td>
+            <td colspan="2">Yükleniciye Ödenecek Tutar (G - H)</td>
+            <td class="text-right" style="color: #27ae60">
+              {{odenecekTutar}}{{^odenecekTutar}}0.00{{/odenecekTutar}} TL
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- AÇIKLAMALAR -->
+      {{#notlar}}
+      <table
+        style="
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 10px;
+          margin-bottom: 15px;
+          border: 1px solid #000;
+        "
+      >
+        <tbody>
+          <tr>
+            <td
+              style="
+                padding: 6px 8px;
+                font-weight: bold;
+                border-bottom: 1px solid #000;
+                background-color: #fafafa;
+              "
+            >
+              Açıklamalar / Notlar
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; text-align: justify; line-height: 1.4; white-space: pre-wrap">
+              {{notlar}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      {{/notlar}}
+
+      <!-- İMZA BÖLÜMÜ -->
+      <table class="signature-table">
+        <tbody>
+          <tr>
+            <!-- YÜKLENİCİ -->
+            <td width="35%" class="text-center">
+              {{#yukleniciGoster}}
+              <br />
+              <span class="font-bold">YÜKLENİCİ</span><br /><br /><br /><br />
+              <span>{{yukleniciFirma}}{{^yukleniciFirma}}................{{/yukleniciFirma}}</span>
+              {{/yukleniciGoster}}
+            </td>
+
+            <!-- DÜZENLEYENLER -->
+            <td width="65%" class="text-center">
+              <br />
+              <span class="font-bold">DÜZENLEYENLER</span><br /><br />
+              <table style="width: 100%; border-collapse: collapse">
+                <tbody>
+                  <tr>
+                    <td width="33%" class="text-center" style="font-size: 8.5pt; line-height: 1.3">
+                      {{#duzenleyen1Adi}}
+                      <span class="font-bold">{{duzenleyen1Adi}}</span><br />
+                      <span>{{duzenleyen1Unvan}}</span>
+                      {{/duzenleyen1Adi}} {{^duzenleyen1Adi}} ................<br />................
+                      {{/duzenleyen1Adi}}
+                    </td>
+                    <td width="33%" class="text-center" style="font-size: 8.5pt; line-height: 1.3">
+                      {{#duzenleyen2Adi}}
+                      <span class="font-bold">{{duzenleyen2Adi}}</span><br />
+                      <span>{{duzenleyen2Unvan}}</span>
+                      {{/duzenleyen2Adi}} {{^duzenleyen2Adi}} ................<br />................
+                      {{/duzenleyen2Adi}}
+                    </td>
+                    <td width="33%" class="text-center" style="font-size: 8.5pt; line-height: 1.3">
+                      {{#duzenleyen3Adi}}
+                      <span class="font-bold">{{duzenleyen3Adi}}</span><br />
+                      <span>{{duzenleyen3Unvan}}</span>
+                      {{/duzenleyen3Adi}} {{^duzenleyen3Adi}} ................<br />................
+                      {{/duzenleyen3Adi}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- OLUR ONAY BÖLÜMÜ -->
+      <div class="olur-section">
+        <span class="font-bold" style="font-size: 10pt">OLUR</span><br />
+        <span>{{onayTarihi}}{{^onayTarihi}}..../..../20....{{/onayTarihi}}</span
+        ><br /><br /><br /><br />
+        <span class="font-bold"
+          >{{onaylayanPersonelAdi}}{{^onaylayanPersonelAdi}}................{{/onaylayanPersonelAdi}}</span
+        ><br />
+        <span
+          >{{onaylayanPersonelUnvan}}{{^onaylayanPersonelUnvan}}Belediye
+          Başkanı{{/onaylayanPersonelUnvan}}</span
+        >
+      </div>
     </div>
-
-    <!-- HAKEDİŞ DETAY TABLOSU -->
-    <table class="table-container">
-      <tbody>
-        <tr>
-          <td colspan="3" class="font-bold bg-light" style="font-size: 10pt; line-height: 1.4;">
-            {{isinAdi}}{{^isinAdi}}{{dosyaKonusu}}{{^dosyaKonusu}}................{{/dosyaKonusu}}{{/isinAdi}} Hizmeti
-          </td>
-          <td width="22%" class="text-center bg-light">
-            <b>Hakediş No:</b> {{hakedisNo}}{{^hakedisNo}}................{{/hakedisNo}}
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4" class="text-center font-bold" style="padding: 10px 8px; line-height: 1.4;">
-            {{hakedisTarihi}}{{^hakedisTarihi}}..../..../20....{{/hakedisTarihi}} TARİHİNE KADAR YAPILAN HİZMETİN
-          </td>
-        </tr>
-        
-        <!-- SATIR A -->
-        <tr>
-          <td width="5%" class="text-center font-bold">A</td>
-          <td colspan="2">Sözleşme Fiyatları ile Yapılan Hizmet Tutarı</td>
-          <td class="text-right font-bold" width="22%">{{hizmetTutari}}{{^hizmetTutari}}0.00{{/hizmetTutari}} TL</td>
-        </tr>
-        
-        <!-- SATIR B -->
-        <tr>
-          <td class="text-center font-bold">B</td>
-          <td colspan="2">Fiyat Farkı Tutarı</td>
-          <td class="text-right font-bold">{{fiyatFarkTutari}}{{^fiyatFarkTutari}}0.00{{/fiyatFarkTutari}} TL</td>
-        </tr>
-        
-        <!-- SATIR C -->
-        <tr class="bg-light font-bold">
-          <td class="text-center">C</td>
-          <td colspan="2">Toplam Tutar (A + B)</td>
-          <td class="text-right">{{toplamTutar}}{{^toplamTutar}}0.00{{/toplamTutar}} TL</td>
-        </tr>
-        
-        <!-- İSKONTO -->
-        <tr>
-          <td class="text-center">&nbsp;</td>
-          <td colspan="2">İskonto Tutarı</td>
-          <td class="text-right font-bold">{{iskontoTutari}}{{^iskontoTutari}}0.00{{/iskontoTutari}} TL</td>
-        </tr>
-        
-        <!-- SATIR D -->
-        <tr>
-          <td class="text-center font-bold">D</td>
-          <td colspan="2">Bir önceki Hakedişin Tutarı</td>
-          <td class="text-right font-bold">{{oncekiHakedisTutari}}{{^oncekiHakedisTutari}}0.00{{/oncekiHakedisTutari}} TL</td>
-        </tr>
-        
-        <!-- SATIR E -->
-        <tr>
-          <td class="text-center font-bold">E</td>
-          <td colspan="2">Bu Hakedişin Tutarı (C - D)</td>
-          <td class="text-right font-bold">{{buHakedisTutari}}{{^buHakedisTutari}}0.00{{/buHakedisTutari}} TL</td>
-        </tr>
-        
-        <!-- SATIR F -->
-        <tr>
-          <td class="text-center font-bold">F</td>
-          <td colspan="2">KDV (E x %{{kdvOrani}}{{^kdvOrani}}20{{/kdvOrani}})</td>
-          <td class="text-right font-bold">{{kdvTutari}}{{^kdvTutari}}0.00{{/kdvTutari}} TL</td>
-        </tr>
-        
-        <!-- SATIR G -->
-        <tr class="bg-light font-bold">
-          <td class="text-center">G</td>
-          <td colspan="2">Tahakkuk Tutarı</td>
-          <td class="text-right">{{tahakkukTutari}}{{^tahakkukTutari}}0.00{{/tahakkukTutari}} TL</td>
-        </tr>
-        
-        <!-- KESİNTİLER BAŞLANGIÇ -->
-        <tr class="bg-pink font-bold">
-          <td class="text-center" rowspan="11">&nbsp;</td>
-          <td width="10%" class="text-center" rowspan="11" style="border-right: none; vertical-align: middle;">KESİNTİLER<br>VE<br>MAHSUPLAR</td>
-          <td style="border-left: none;">a) Gelir / Kurumlar Vergisi (E x %{{gelirVergisiOrani}}{{^gelirVergisiOrani}}0{{/gelirVergisiOrani}})</td>
-          <td class="text-right">{{gelirVergisiTutari}}{{^gelirVergisiTutari}}0.00{{/gelirVergisiTutari}} TL</td>
-        </tr>
-        <tr class="bg-pink">
-          <td style="border-left: none;">b) Damga Vergisi (E - g x %{{damgaVergisiOrani}}{{^damgaVergisiOrani}}0.00948{{/damgaVergisiOrani}})</td>
-          <td class="text-right font-bold">{{damgaVergisiTutari}}{{^damgaVergisiTutari}}0.00{{/damgaVergisiTutari}} TL</td>
-        </tr>
-        <tr class="bg-pink">
-          <td style="border-left: none;">c) KDV Tevkifatı (F x {{kdvTevkifatiOrani}}{{^kdvTevkifatiOrani}}0/10{{/kdvTevkifatiOrani}})</td>
-          <td class="text-right font-bold">{{kdvTevkifatTutari}}{{^kdvTevkifatTutari}}0.00{{/kdvTevkifatTutari}} TL</td>
-        </tr>
-        <tr class="bg-pink">
-          <td style="border-left: none;">d) Sosyal Sigortalar Kurumu Kesintisi</td>
-          <td class="text-right font-bold">{{sskKesintisi}}{{^sskKesintisi}}0.00{{/sskKesintisi}} TL</td>
-        </tr>
-        <tr class="bg-pink">
-          <td style="border-left: none;">e) İdare Makinesi Kiraları</td>
-          <td class="text-right font-bold">{{idareMakineKiralari}}{{^idareMakineKiralari}}0.00{{/idareMakineKiralari}} TL</td>
-        </tr>
-        <tr class="bg-pink">
-          <td style="border-left: none;">f) Gecikme Cezası</td>
-          <td class="text-right font-bold">{{gecikmeCezasi}}{{^gecikmeCezasi}}0.00{{/gecikmeCezasi}} TL</td>
-        </tr>
-        <tr class="bg-pink">
-          <td style="border-left: none;">g) Avans Mahsubu</td>
-          <td class="text-right font-bold">{{avansMahsubu}}{{^avansMahsubu}}0.00{{/avansMahsubu}} TL</td>
-        </tr>
-        <tr class="bg-pink">
-          <td style="border-left: none;">h) Bu hakedişle ödenen Fiyat Farkı Teminat Kesintisi</td>
-          <td class="text-right font-bold">{{fiyatFarkTeminatKesintisi}}{{^fiyatFarkTeminatKesintisi}}0.00{{/fiyatFarkTeminatKesintisi}} TL</td>
-        </tr>
-        <tr class="bg-pink">
-          <td style="border-left: none;">i) Stopaj</td>
-          <td class="text-right font-bold">{{stopajTutari}}{{^stopajTutari}}0.00{{/stopajTutari}} TL</td>
-        </tr>
-        <tr class="bg-pink">
-          <td style="border-left: none;">{{digerKesinti1Adi}}{{^digerKesinti1Adi}}Diğer Kesinti 1{{/digerKesinti1Adi}}</td>
-          <td class="text-right font-bold">{{digerKesinti1Tutari}}{{^digerKesinti1Tutari}}0.00{{/digerKesinti1Tutari}} TL</td>
-        </tr>
-        <tr class="bg-pink">
-          <td style="border-left: none;">{{digerKesinti2Adi}}{{^digerKesinti2Adi}}Diğer Kesinti 2{{/digerKesinti2Adi}}</td>
-          <td class="text-right font-bold">{{digerKesinti2Tutari}}{{^digerKesinti2Tutari}}0.00{{/digerKesinti2Tutari}} TL</td>
-        </tr>
-        
-        <!-- SATIR H -->
-        <tr class="bg-light font-bold">
-          <td class="text-center">H</td>
-          <td colspan="2">Kesintiler ve Mahsuplar Toplamı</td>
-          <td class="text-right">{{kesintilerToplamTutari}}{{^kesintilerToplamTutari}}0.00{{/kesintilerToplamTutari}} TL</td>
-        </tr>
-        
-        <!-- NET ODENECEK -->
-        <tr class="font-bold" style="font-size: 10.5pt; background-color: #eafaf1;">
-          <td class="text-center">&nbsp;</td>
-          <td colspan="2">Yükleniciye Ödenecek Tutar (G - H)</td>
-          <td class="text-right" style="color: #27ae60;">{{odenecekTutar}}{{^odenecekTutar}}0.00{{/odenecekTutar}} TL</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- AÇIKLAMALAR -->
-    {{#notlar}}
-    <table style="width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 15px; border: 1px solid #000;">
-      <tbody>
-        <tr>
-          <td style="padding: 6px 8px; font-weight: bold; border-bottom: 1px solid #000; background-color: #fafafa;">Açıklamalar / Notlar</td>
-        </tr>
-        <tr>
-          <td style="padding: 8px; text-align: justify; line-height: 1.4; white-space: pre-wrap;">{{notlar}}</td>
-        </tr>
-      </tbody>
-    </table>
-    {{/notlar}}
-
-    <!-- İMZA BÖLÜMÜ -->
-    <table class="signature-table">
-      <tbody>
-        <tr>
-          <!-- YÜKLENİCİ -->
-          <td width="35%" class="text-center">
-            {{#yukleniciGoster}}
-            <br>
-            <span class="font-bold">YÜKLENİCİ</span><br><br><br><br>
-            <span>{{yukleniciFirma}}{{^yukleniciFirma}}................{{/yukleniciFirma}}</span>
-            {{/yukleniciGoster}}
-          </td>
-          
-          <!-- DÜZENLEYENLER -->
-          <td width="65%" class="text-center">
-            <br>
-            <span class="font-bold">DÜZENLEYENLER</span><br><br>
-            <table style="width: 100%; border-collapse: collapse;">
-              <tbody>
-                <tr>
-                  <td width="33%" class="text-center" style="font-size: 8.5pt; line-height: 1.3;">
-                    {{#duzenleyen1Adi}}
-                    <span class="font-bold">{{duzenleyen1Adi}}</span><br>
-                    <span>{{duzenleyen1Unvan}}</span>
-                    {{/duzenleyen1Adi}}
-                    {{^duzenleyen1Adi}}
-                    ................<br>................
-                    {{/duzenleyen1Adi}}
-                  </td>
-                  <td width="33%" class="text-center" style="font-size: 8.5pt; line-height: 1.3;">
-                    {{#duzenleyen2Adi}}
-                    <span class="font-bold">{{duzenleyen2Adi}}</span><br>
-                    <span>{{duzenleyen2Unvan}}</span>
-                    {{/duzenleyen2Adi}}
-                    {{^duzenleyen2Adi}}
-                    ................<br>................
-                    {{/duzenleyen2Adi}}
-                  </td>
-                  <td width="33%" class="text-center" style="font-size: 8.5pt; line-height: 1.3;">
-                    {{#duzenleyen3Adi}}
-                    <span class="font-bold">{{duzenleyen3Adi}}</span><br>
-                    <span>{{duzenleyen3Unvan}}</span>
-                    {{/duzenleyen3Adi}}
-                    {{^duzenleyen3Adi}}
-                    ................<br>................
-                    {{/duzenleyen3Adi}}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- OLUR ONAY BÖLÜMÜ -->
-    <div class="olur-section">
-      <span class="font-bold" style="font-size: 10pt;">OLUR</span><br>
-      <span>{{onayTarihi}}{{^onayTarihi}}..../..../20....{{/onayTarihi}}</span><br><br><br><br>
-      <span class="font-bold">{{onaylayanPersonelAdi}}{{^onaylayanPersonelAdi}}................{{/onaylayanPersonelAdi}}</span><br>
-      <span>{{onaylayanPersonelUnvan}}{{^onaylayanPersonelUnvan}}Belediye Başkanı{{/onaylayanPersonelUnvan}}</span>
-    </div>
-
-  </div>
-</body>
+  </body>
 </html>

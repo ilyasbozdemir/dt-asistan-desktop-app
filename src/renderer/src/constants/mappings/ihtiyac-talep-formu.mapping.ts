@@ -4,10 +4,10 @@ export const IhtiyacTalepFormuMapping: ProcessMapping = {
   antetSatirlari: {
     tablo: 'TANIM_Kurum',
     sutun: 'kurum_anteti',
-    aciklama: 'Dosyanın antet satırları',
+    aciklama: 'Dosyanın antet satırları'
   },
   dosyaKonusu: {
-    deger: 'İhtiyaç Talep Formu',
+    deger: 'İhtiyaç Talep Formu'
   },
   ihtiyacKalemleri: {
     tablo: 'DATA_TeminKalem',
@@ -19,8 +19,8 @@ export const IhtiyacTalepFormuMapping: ProcessMapping = {
       ozelligi: 'aciklama',
       birimi: 'birim',
       kdvOrani: 'kdv_orani',
-      miktar: 'miktar',
+      miktar: 'miktar'
     },
-    aciklama: 'İhtiyaç talep formu kalemleri',
-  },
+    aciklama: 'İhtiyaç talep formu kalemleri'
+  }
 }

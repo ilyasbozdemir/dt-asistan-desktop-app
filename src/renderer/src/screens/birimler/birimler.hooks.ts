@@ -83,10 +83,20 @@ export function useBirimlerHooks() {
   const addBirimMutation = useMutation({
     mutationFn: async (birim: BirimInput) => {
       const cols = [
-        'birim_adi', 'antet_ek_satir', 'ihtiyac_yeri_eki',
-        'sunum_makami', 'e_butce', 'say2000i', 'dtvt_kodu', 'detsis_kodu',
-        'muhasebe_kodu', 'muhasebe_adi', 'harcama_kodu', 'harcama_adi',
-        'ayrintili_bilgi_personel', 'ilgili_personel_id'
+        'birim_adi',
+        'antet_ek_satir',
+        'ihtiyac_yeri_eki',
+        'sunum_makami',
+        'e_butce',
+        'say2000i',
+        'dtvt_kodu',
+        'detsis_kodu',
+        'muhasebe_kodu',
+        'muhasebe_adi',
+        'harcama_kodu',
+        'harcama_adi',
+        'ayrintili_bilgi_personel',
+        'ilgili_personel_id'
       ]
       const placeholders = cols.map(() => '?').join(', ')
       const values = cols.map((col) => (birim as any)[col] ?? null)
@@ -120,15 +130,21 @@ export function useBirimlerHooks() {
 
   const deleteBirimMutation = useMutation({
     mutationFn: async (id: number) => {
-      const getRes = await window.electron.ipcRenderer.invoke('db:query', 'SELECT birim_adi FROM TANIM_Birim WHERE id = ?', [id])
+      const getRes = await window.electron.ipcRenderer.invoke(
+        'db:query',
+        'SELECT birim_adi FROM TANIM_Birim WHERE id = ?',
+        [id]
+      )
       if (getRes.data && getRes.data.length > 0) {
         const checkRes = await window.electron.ipcRenderer.invoke(
-          'db:query', 
-          'SELECT COUNT(*) as count FROM TANIM_Personel WHERE birim = ?', 
+          'db:query',
+          'SELECT COUNT(*) as count FROM TANIM_Personel WHERE birim = ?',
           [getRes.data[0].birim_adi]
         )
         if (checkRes.data && checkRes.data[0].count > 0) {
-          throw new Error(`Bu birime bağlı ${checkRes.data[0].count} personel var. Önce personellerin birimini değiştirin.`)
+          throw new Error(
+            `Bu birime bağlı ${checkRes.data[0].count} personel var. Önce personellerin birimini değiştirin.`
+          )
         }
       }
       const res = await window.electron.ipcRenderer.invoke(

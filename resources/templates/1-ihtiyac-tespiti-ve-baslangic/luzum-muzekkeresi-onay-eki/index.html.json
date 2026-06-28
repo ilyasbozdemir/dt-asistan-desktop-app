@@ -1,41 +1,41 @@
 {
-    "antetSatirlari": [
-        "T.C.",
-        "SAĞLIK BAKANLIĞI",
-        "Ankara İl Sağlık Müdürlüğü",
-        "Destek Hizmetleri Başkanlığı"
-    ],
-    "ekNo": "1",
-    "dosyaKonusu": "Lüzum Müzekkeresi",
-    "talepEdenPersonelAdi": "Ahmet Yılmaz",
-    "talepEdenPersonelUnvan": "Satınalma Memuru",
-    "solLogo": "https://raw.githubusercontent.com/ilyasbozdemir/dt-asistan-desktop-app/refs/heads/main/resources/icon.png",
-    "sagLogo": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Logo_of_100th_years_of_the_Republic_of_T%C3%BCrkiye.svg",
-    "ihtiyacKalemleri": [
-        {
-            "kodu": "LAB-001",
-            "malzemeAdi": "Eldiven",
-            "ozelligi": "Nitril",
-            "birimi": "Kutu",
-            "kdvOrani": "20",
-            "miktar": 50
-        },
-        {
-            "kodu": "LAB-002",
-            "malzemeAdi": "Maske",
-            "ozelligi": "N95",
-            "birimi": "Adet",
-            "kdvOrani": "10",
-            "miktar": 200
-        },
-        {
-            "kodu": "LAB-003",
-            "malzemeAdi": "Laboratuvar Önlüğü",
-            "ozelligi": "Tek Kullanımlık",
-            "birimi": "Adet",
-            "kdvOrani": "20",
-            "miktar": 100
-        }
-    ],
-    "dosyaTarihi": "14.06.2026"
+  "antetSatirlari": [
+    "T.C.",
+    "SAĞLIK BAKANLIĞI",
+    "Ankara İl Sağlık Müdürlüğü",
+    "Destek Hizmetleri Başkanlığı"
+  ],
+  "ekNo": "1",
+  "dosyaKonusu": "Lüzum Müzekkeresi",
+  "talepEdenPersonelAdi": "Ahmet Yılmaz",
+  "talepEdenPersonelUnvan": "Satınalma Memuru",
+  "solLogo": "https://raw.githubusercontent.com/ilyasbozdemir/dt-asistan-desktop-app/refs/heads/main/resources/icon.png",
+  "sagLogo": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Logo_of_100th_years_of_the_Republic_of_T%C3%BCrkiye.svg",
+  "ihtiyacKalemleri": [
+    {
+      "kodu": "LAB-001",
+      "malzemeAdi": "Eldiven",
+      "ozelligi": "Nitril",
+      "birimi": "Kutu",
+      "kdvOrani": "20",
+      "miktar": 50
+    },
+    {
+      "kodu": "LAB-002",
+      "malzemeAdi": "Maske",
+      "ozelligi": "N95",
+      "birimi": "Adet",
+      "kdvOrani": "10",
+      "miktar": 200
+    },
+    {
+      "kodu": "LAB-003",
+      "malzemeAdi": "Laboratuvar Önlüğü",
+      "ozelligi": "Tek Kullanımlık",
+      "birimi": "Adet",
+      "kdvOrani": "20",
+      "miktar": 100
+    }
+  ],
+  "dosyaTarihi": "14.06.2026"
 }

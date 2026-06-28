@@ -2,15 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import Mustache from 'mustache'
 import { SAYI_YAZI_MAP, sayiyiYaziyaCevir } from '../../../constants/sayiEslesmeleri'
-import {
-  FileText,
-  Download,
-  Save,
-  ArrowLeft,
-  LayoutTemplate,
-  Eye,
-  Sparkles
-} from 'lucide-react'
+import { FileText, Download, Save, ArrowLeft, LayoutTemplate, Eye, Sparkles } from 'lucide-react'
 import { Button } from '../../../components/ui/Button'
 import { Sablon, useSaveSablon } from '../sablonlar.hooks'
 import { useSettingsStore } from '../../../store/settingsStore'
@@ -21,7 +13,13 @@ import { A4Editor } from '../../../components/editor/A4Editor'
 import { PreviewTab } from './tabs/PreviewTab'
 import { PdfTab } from './tabs/PdfTab'
 
-export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () => void }): React.ReactElement {
+export function SablonEditor({
+  sablon,
+  onBack
+}: {
+  sablon?: Sablon
+  onBack: () => void
+}): React.ReactElement {
   const {
     subInstitutionType,
     customSubInstitutionLabel,
@@ -34,8 +32,13 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
   const [dosyaAdi, setDosyaAdi] = useState(sablon?.dosya_adi || '')
   const [aciklama, setAciklama] = useState(sablon?.aciklama || '')
   const [htmlCode, setHtmlCode] = useState(sablon?.icerik || `<p>Merhaba, {{firma_adi}}!</p>`)
-  const today = new Intl.DateTimeFormat('tr-TR', { timeZone: 'Europe/Istanbul', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date())
-  
+  const today = new Intl.DateTimeFormat('tr-TR', {
+    timeZone: 'Europe/Istanbul',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date())
+
   const defaultTestJson = `{
   "tarih": "${today}",
   "dosyaTarihi": "${today}",
@@ -62,23 +65,26 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
   const [isAiModalOpen, setIsAiModalOpen] = useState(false)
   const [isSystemTemplate, setIsSystemTemplate] = useState(false)
   const [originalDosyaAdi, setOriginalDosyaAdi] = useState('')
-  
+
   useEffect(() => {
     if (sablon?.dosya_adi && window.electron) {
-      const dosya = sablon.dosya_adi;
-      const jsonFile = dosya.endsWith('.html') ? dosya + '.json' : dosya + '/index.html.json';
-      
-      window.electron.ipcRenderer.invoke('template:read-system', jsonFile).then((res: any) => {
-        if (res && res.success) {
-          setTestJson(res.data)
-          setIsSystemTemplate(true)
-          setOriginalDosyaAdi(sablon.dosya_adi)
-        } else if (sablon.test_verisi) {
-          setTestJson(sablon.test_verisi)
-        }
-      }).catch(() => {
-        if (sablon.test_verisi) setTestJson(sablon.test_verisi)
-      })
+      const dosya = sablon.dosya_adi
+      const jsonFile = dosya.endsWith('.html') ? dosya + '.json' : dosya + '/index.html.json'
+
+      window.electron.ipcRenderer
+        .invoke('template:read-system', jsonFile)
+        .then((res: any) => {
+          if (res && res.success) {
+            setTestJson(res.data)
+            setIsSystemTemplate(true)
+            setOriginalDosyaAdi(sablon.dosya_adi)
+          } else if (sablon.test_verisi) {
+            setTestJson(sablon.test_verisi)
+          }
+        })
+        .catch(() => {
+          if (sablon.test_verisi) setTestJson(sablon.test_verisi)
+        })
     } else if (sablon?.test_verisi) {
       setTestJson(sablon.test_verisi)
     }
@@ -140,8 +146,6 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
     }
   })()
 
-
-
   const handleExportHtml = async () => {
     try {
       if (!window.electron) {
@@ -149,7 +153,12 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
         return
       }
       const rawHtml = Mustache.render(htmlCode, parsedData)
-      const res = await window.electron.ipcRenderer.invoke('export-html', rawHtml, { paperSize: 'A4' }, ad || dosyaAdi)
+      const res = await window.electron.ipcRenderer.invoke(
+        'export-html',
+        rawHtml,
+        { paperSize: 'A4' },
+        ad || dosyaAdi
+      )
       if (res.success) {
         alert('Şablon başarıyla HTML olarak dışa aktarıldı.')
       } else if (res.error !== 'İptal edildi') {
@@ -167,7 +176,12 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
         return
       }
       const rawHtml = Mustache.render(htmlCode, parsedData)
-      const res = await window.electron.ipcRenderer.invoke('export-pdf', rawHtml, null, ad || dosyaAdi)
+      const res = await window.electron.ipcRenderer.invoke(
+        'export-pdf',
+        rawHtml,
+        null,
+        ad || dosyaAdi
+      )
       if (res.success) {
         alert('Şablon başarıyla PDF olarak dışa aktarıldı.')
       } else if (res.error !== 'İptal edildi') {
@@ -198,7 +212,9 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
 
   const handleUpdatePdfPreview = async () => {
     if (!window.electron) {
-      alert('PDF önizleme özelliği yalnızca masaüstü uygulamasında (Electron) çalışır. Tarayıcıda desteklenmemektedir.')
+      alert(
+        'PDF önizleme özelliği yalnızca masaüstü uygulamasında (Electron) çalışır. Tarayıcıda desteklenmemektedir.'
+      )
       return
     }
     setIsPdfLoading(true)
@@ -230,7 +246,11 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
     }
 
     if (isSystemTemplate && dosyaAdi === originalDosyaAdi && !sablon) {
-      alert("Bu bir sistem şablonudur, değişikliklerinizi kaydetmek için lütfen dosya adını değiştirerek 'Farklı Kaydet' yapın (Örn: " + dosyaAdi + "_ozel).")
+      alert(
+        "Bu bir sistem şablonudur, değişikliklerinizi kaydetmek için lütfen dosya adını değiştirerek 'Farklı Kaydet' yapın (Örn: " +
+          dosyaAdi +
+          '_ozel).'
+      )
       return
     }
 
@@ -238,55 +258,75 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
     const isConfirmed = window.confirm(message)
     if (!isConfirmed) return
 
-    saveSablon.mutate({
-      ad,
-      dosya_adi: dosyaAdi,
-      dosya_turu: 'html',
-      icerik: htmlCode,
-      aciklama,
-      test_verisi: testJson,
-      oldSablon: sablon,
-      extractedPlaceholders: []
-    }, {
-      onSuccess: async () => {
-        // Sistem şablonuysa dosyaya da kaydetmeye çalış
-        if (isSystemTemplate && window.electron && dosyaAdi === originalDosyaAdi) {
-          try {
-             // html için
-             await window.electron.ipcRenderer.invoke('template:write-system', dosyaAdi + '.html', htmlCode);
-             // json için
-             await window.electron.ipcRenderer.invoke('template:write-system', dosyaAdi + '.html.json', testJson);
-          } catch (e) {
-             console.error('Dosyaya yazma hatası:', e);
-          }
-        }
-        alert('Şablon başarıyla kaydedildi!')
-        onBack()
+    saveSablon.mutate(
+      {
+        ad,
+        dosya_adi: dosyaAdi,
+        dosya_turu: 'html',
+        icerik: htmlCode,
+        aciklama,
+        test_verisi: testJson,
+        oldSablon: sablon,
+        extractedPlaceholders: []
       },
-      onError: (err: any) => {
-        alert('Kaydetme hatası: ' + err.message)
+      {
+        onSuccess: async () => {
+          // Sistem şablonuysa dosyaya da kaydetmeye çalış
+          if (isSystemTemplate && window.electron && dosyaAdi === originalDosyaAdi) {
+            try {
+              // html için
+              await window.electron.ipcRenderer.invoke(
+                'template:write-system',
+                dosyaAdi + '.html',
+                htmlCode
+              )
+              // json için
+              await window.electron.ipcRenderer.invoke(
+                'template:write-system',
+                dosyaAdi + '.html.json',
+                testJson
+              )
+            } catch (e) {
+              console.error('Dosyaya yazma hatası:', e)
+            }
+          }
+          alert('Şablon başarıyla kaydedildi!')
+          onBack()
+        },
+        onError: (err: any) => {
+          alert('Kaydetme hatası: ' + err.message)
+        }
       }
-    })
+    )
   }
-
 
   return (
     <div className="flex flex-col h-full space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
       <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" onClick={onBack} className="p-2 h-auto text-slate-500 hover:text-slate-800 dark:hover:text-white">
+          <Button
+            variant="ghost"
+            onClick={onBack}
+            className="p-2 h-auto text-slate-500 hover:text-slate-800 dark:hover:text-white"
+          >
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
             <h1 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
-              {sablon ? (sablon.ad + " (v" + sablon.versiyon + ") Düzenle") : 'Yeni Şablon Oluştur'}
+              {sablon ? sablon.ad + ' (v' + sablon.versiyon + ') Düzenle' : 'Yeni Şablon Oluştur'}
             </h1>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-              HTML Şablonunuzu yazın, test verisi girin ve anlık önizleme alın. Yer tutucular için {'{{degisken}}'} kullanın.
-              <br/>
+              HTML Şablonunuzu yazın, test verisi girin ve anlık önizleme alın. Yer tutucular için{' '}
+              {'{{degisken}}'} kullanın.
+              <br />
               <span className="inline-flex items-center gap-1 mt-1 text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded-md border border-blue-100 dark:border-blue-800">
-                💡 Geliştiriciler için web şablon test alanı: 
-                <a href="https://doc-templater.ilyasbozdemir.dev/" target="_blank" rel="noopener noreferrer" className="font-semibold underline hover:text-blue-800 dark:hover:text-blue-300">
+                💡 Geliştiriciler için web şablon test alanı:
+                <a
+                  href="https://doc-templater.ilyasbozdemir.dev/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold underline hover:text-blue-800 dark:hover:text-blue-300"
+                >
                   doc-templater.ilyasbozdemir.dev
                 </a>
                 (Orada test edip kodunuzu buraya aktarabilirsiniz)
@@ -294,58 +334,84 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
             </p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2 shrink-0">
-          <Button onClick={() => setIsAiModalOpen(true)} className="bg-indigo-600 hover:bg-indigo-700 text-xs font-semibold py-2 px-4 shadow-md flex items-center gap-2 text-white">
+          <Button
+            onClick={() => setIsAiModalOpen(true)}
+            className="bg-indigo-600 hover:bg-indigo-700 text-xs font-semibold py-2 px-4 shadow-md flex items-center gap-2 text-white"
+          >
             <Sparkles className="w-3.5 h-3.5" />
             AI Sihirbazı
           </Button>
 
-          <Button onClick={handleExportHtml} className="bg-blue-600 hover:bg-blue-700 text-xs font-semibold py-2 px-4 shadow-md flex items-center gap-2 text-white">
+          <Button
+            onClick={handleExportHtml}
+            className="bg-blue-600 hover:bg-blue-700 text-xs font-semibold py-2 px-4 shadow-md flex items-center gap-2 text-white"
+          >
             <Download className="w-3.5 h-3.5" />
             HTML İndir
           </Button>
-          <Button onClick={handleExportPdf} className="bg-red-600 hover:bg-red-700 text-xs font-semibold py-2 px-4 shadow-md flex items-center gap-2 text-white">
+          <Button
+            onClick={handleExportPdf}
+            className="bg-red-600 hover:bg-red-700 text-xs font-semibold py-2 px-4 shadow-md flex items-center gap-2 text-white"
+          >
             <Download className="w-3.5 h-3.5" />
             PDF İndir
           </Button>
-          <Button onClick={handleExportDocx} className="bg-sky-600 hover:bg-sky-700 text-xs font-semibold py-2 px-4 shadow-md flex items-center gap-2 text-white">
+          <Button
+            onClick={handleExportDocx}
+            className="bg-sky-600 hover:bg-sky-700 text-xs font-semibold py-2 px-4 shadow-md flex items-center gap-2 text-white"
+          >
             <Download className="w-3.5 h-3.5" />
             DOCX İndir
           </Button>
           <Button
-              variant="outline"
-              onClick={async () => {
-                if (confirm('Varsayılan şablona dönmek istediğinize emin misiniz? Yapılan tüm özelleştirmeler silinecektir.')) {
-                  try {
-                    if (!window.electron) {
-                      alert('Bu özellik yalnızca masaüstü uygulamasında (Electron) çalışır.')
-                      return
-                    }
-                    const content = await window.electron.ipcRenderer.invoke('template:read-system', dosyaAdi);
-                    const jsonContent = await window.electron.ipcRenderer.invoke('template:read-system', dosyaAdi.endsWith('.html') ? dosyaAdi + '.json' : dosyaAdi + '/index.html.json');
-                    
-                    if (content) {
-                      setHtmlCode(content);
-                      if (jsonContent) {
-                        setTestJson(jsonContent);
-                      }
-                      setIsSystemTemplate(true);
-                      setOriginalDosyaAdi(dosyaAdi);
-                      alert('Varsayılan şablon ve test verisi yüklendi.');
-                    } else {
-                      alert('Varsayılan şablon dosyası bulunamadı.');
-                    }
-                  } catch (e: any) {
-                    alert('Hata: ' + e.message);
+            variant="outline"
+            onClick={async () => {
+              if (
+                confirm(
+                  'Varsayılan şablona dönmek istediğinize emin misiniz? Yapılan tüm özelleştirmeler silinecektir.'
+                )
+              ) {
+                try {
+                  if (!window.electron) {
+                    alert('Bu özellik yalnızca masaüstü uygulamasında (Electron) çalışır.')
+                    return
                   }
+                  const content = await window.electron.ipcRenderer.invoke(
+                    'template:read-system',
+                    dosyaAdi
+                  )
+                  const jsonContent = await window.electron.ipcRenderer.invoke(
+                    'template:read-system',
+                    dosyaAdi.endsWith('.html') ? dosyaAdi + '.json' : dosyaAdi + '/index.html.json'
+                  )
+
+                  if (content) {
+                    setHtmlCode(content)
+                    if (jsonContent) {
+                      setTestJson(jsonContent)
+                    }
+                    setIsSystemTemplate(true)
+                    setOriginalDosyaAdi(dosyaAdi)
+                    alert('Varsayılan şablon ve test verisi yüklendi.')
+                  } else {
+                    alert('Varsayılan şablon dosyası bulunamadı.')
+                  }
+                } catch (e: any) {
+                  alert('Hata: ' + e.message)
                 }
-              }}
-              className="border-slate-200 hover:bg-slate-50 text-slate-600 dark:border-slate-700 dark:hover:bg-slate-800 text-xs font-semibold py-2 px-4 shadow-md flex items-center gap-2"
-            >
-              Varsayılana Dön
-            </Button>
-          <Button onClick={handleSave} disabled={saveSablon.isPending} className="bg-purple-600 hover:bg-purple-700 text-xs font-semibold py-2 px-4 shadow-md flex items-center gap-2 text-white ml-2">
+              }
+            }}
+            className="border-slate-200 hover:bg-slate-50 text-slate-600 dark:border-slate-700 dark:hover:bg-slate-800 text-xs font-semibold py-2 px-4 shadow-md flex items-center gap-2"
+          >
+            Varsayılana Dön
+          </Button>
+          <Button
+            onClick={handleSave}
+            disabled={saveSablon.isPending}
+            className="bg-purple-600 hover:bg-purple-700 text-xs font-semibold py-2 px-4 shadow-md flex items-center gap-2 text-white ml-2"
+          >
             <Save className="w-3.5 h-3.5" />
             {saveSablon.isPending ? 'Kaydediliyor...' : 'Kaydet'}
           </Button>
@@ -354,26 +420,26 @@ export function SablonEditor({ sablon, onBack }: { sablon?: Sablon, onBack: () =
 
       <div className="flex gap-4">
         <div className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 shadow-sm flex items-center gap-3">
-           <input 
-             value={ad} 
-             onChange={e => setAd(e.target.value)} 
-             placeholder="Şablon Adı (Örn: Komisyon Kararı)" 
-             className="flex-1 bg-transparent border-none outline-none text-sm font-semibold text-slate-800 dark:text-slate-200" 
-           />
-           <div className="w-px h-6 bg-slate-200 dark:bg-slate-700"></div>
-           <input 
-             value={dosyaAdi} 
-             onChange={e => setDosyaAdi(e.target.value)} 
-             placeholder="Dosya Adı (Örn: komisyon_karari)" 
-             className="flex-1 bg-transparent border-none outline-none text-sm text-slate-800 dark:text-slate-200" 
-           />
-           <div className="w-px h-6 bg-slate-200 dark:bg-slate-700"></div>
-           <input 
-             value={aciklama} 
-             onChange={e => setAciklama(e.target.value)} 
-             placeholder="Kısa Açıklama..." 
-             className="flex-1 bg-transparent border-none outline-none text-sm text-slate-800 dark:text-slate-200" 
-           />
+          <input
+            value={ad}
+            onChange={(e) => setAd(e.target.value)}
+            placeholder="Şablon Adı (Örn: Komisyon Kararı)"
+            className="flex-1 bg-transparent border-none outline-none text-sm font-semibold text-slate-800 dark:text-slate-200"
+          />
+          <div className="w-px h-6 bg-slate-200 dark:bg-slate-700"></div>
+          <input
+            value={dosyaAdi}
+            onChange={(e) => setDosyaAdi(e.target.value)}
+            placeholder="Dosya Adı (Örn: komisyon_karari)"
+            className="flex-1 bg-transparent border-none outline-none text-sm text-slate-800 dark:text-slate-200"
+          />
+          <div className="w-px h-6 bg-slate-200 dark:bg-slate-700"></div>
+          <input
+            value={aciklama}
+            onChange={(e) => setAciklama(e.target.value)}
+            placeholder="Kısa Açıklama..."
+            className="flex-1 bg-transparent border-none outline-none text-sm text-slate-800 dark:text-slate-200"
+          />
         </div>
       </div>
 

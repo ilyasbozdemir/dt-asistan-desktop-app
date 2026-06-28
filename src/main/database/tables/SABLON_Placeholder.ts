@@ -8,9 +8,9 @@ export const SABLON_Placeholder = {
     { name: 'zorunlu_mu', type: 'INTEGER', default: 1, description: 'Zorunlu Mu' }
   ],
   constraints: [
-    "FOREIGN KEY(sablon_id) REFERENCES TANIM_Sablon(id) ON DELETE CASCADE",
-    "FOREIGN KEY(placeholder_id) REFERENCES TANIM_Placeholder(id) ON DELETE CASCADE",
-    "UNIQUE(sablon_id, placeholder_id)"
+    'FOREIGN KEY(sablon_id) REFERENCES TANIM_Sablon(id) ON DELETE CASCADE',
+    'FOREIGN KEY(placeholder_id) REFERENCES TANIM_Placeholder(id) ON DELETE CASCADE',
+    'UNIQUE(sablon_id, placeholder_id)'
   ],
   initialData: []
 }

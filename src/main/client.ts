@@ -14,7 +14,7 @@ export function connectToServer(url: string): { success: boolean; error?: string
     }
 
     socket = io(url, {
-      reconnectionDelayMax: 10000,
+      reconnectionDelayMax: 10000
     })
 
     socket.on('connect', () => {

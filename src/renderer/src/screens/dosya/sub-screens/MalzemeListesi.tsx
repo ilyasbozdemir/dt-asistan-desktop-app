@@ -1,94 +1,80 @@
-import React, { useState } from "react";
-import { useWorkspaceStore } from "../../../store/workspaceStore";
-import { FileText, Package, Printer } from "lucide-react";
-import { SubScreen } from "../SubScreens.screen";
-import { useCiktiMerkeziData } from "../CiktiMerkezi.hooks";
+import React, { useState } from 'react'
+import { useWorkspaceStore } from '../../../store/workspaceStore'
+import { FileText, Package, Printer } from 'lucide-react'
+import { SubScreen } from '../SubScreens.screen'
+import { useCiktiMerkeziData } from '../CiktiMerkezi.hooks'
 
-import { useMalzemeListesi } from "./components/MalzemeListesi/useMalzemeListesi";
-import { MalzemeEkleModal } from "./components/MalzemeListesi/MalzemeEkleModal";
-import { MalzemeTablosu } from "./components/MalzemeListesi/MalzemeTablosu";
-import { DocumentPreviewModal } from "../components/DocumentPreviewModal";
+import { useMalzemeListesi } from './components/MalzemeListesi/useMalzemeListesi'
+import { MalzemeEkleModal } from './components/MalzemeListesi/MalzemeEkleModal'
+import { MalzemeTablosu } from './components/MalzemeListesi/MalzemeTablosu'
+import { DocumentPreviewModal } from '../components/DocumentPreviewModal'
 
 export function MalzemeListesi(): React.JSX.Element {
-  const { activeDosyaId } = useWorkspaceStore();
+  const { activeDosyaId } = useWorkspaceStore()
   const {
     sablons,
     loading: ciktiLoading,
     masterHtml,
     dosyaContext,
-    placeholders,
-  } = useCiktiMerkeziData(activeDosyaId);
-  const [previewModalOpen, setPreviewModalOpen] = useState(false);
-  const [previewData, setPreviewData] = useState<
-    {
-      title: string;
-      templateHtml: string;
-      processPath: string;
-      templateTestVerisi?: string;
-    } | null
-  >(null);
+    placeholders
+  } = useCiktiMerkeziData(activeDosyaId)
+  const [previewModalOpen, setPreviewModalOpen] = useState(false)
+  const [previewData, setPreviewData] = useState<{
+    title: string
+    templateHtml: string
+    processPath: string
+    templateTestVerisi?: string
+  } | null>(null)
 
-  const state = useMalzemeListesi(activeDosyaId);
+  const state = useMalzemeListesi(activeDosyaId)
 
   const handleOpenPreview = async (processPath: string, title: string) => {
     try {
-      const settingsRes = await (window as any).electron.ipcRenderer.invoke(
-        "db:get-settings",
-      );
-      const sablonIdStr = settingsRes
-        ? settingsRes[`MAPPING_${processPath}_SABLON_ID`]
-        : null;
+      const settingsRes = await (window as any).electron.ipcRenderer.invoke('db:get-settings')
+      const sablonIdStr = settingsRes ? settingsRes[`MAPPING_${processPath}_SABLON_ID`] : null
 
       if (!sablonIdStr) {
-        alert(
-          `Lütfen Şablon & Kategori Yönetimi bölümünden '${title}' için bir şablon bağlayınız.`,
-        );
-        return;
+        alert(`Lütfen Şablon & Kategori Yönetimi bölümünden '${title}' için bir şablon bağlayınız.`)
+        return
       }
 
-      const selectedSablon = sablons.find((s) =>
-        s.id.toString() === sablonIdStr
-      );
+      const selectedSablon = sablons.find((s) => s.id.toString() === sablonIdStr)
       if (!selectedSablon) {
         alert(
-          "Bağlı şablon bulunamadı veya silinmiş. Lütfen Şablon & Kategori Yönetimi bölümünden kontrol ediniz.",
-        );
-        return;
+          'Bağlı şablon bulunamadı veya silinmiş. Lütfen Şablon & Kategori Yönetimi bölümünden kontrol ediniz.'
+        )
+        return
       }
 
       if (!masterHtml) {
-        alert("Master şablon yüklenemedi, veriler bekleniyor.");
-        return;
+        alert('Master şablon yüklenemedi, veriler bekleniyor.')
+        return
       }
 
       setPreviewData({
         title,
         templateHtml: selectedSablon.icerik,
         processPath,
-        templateTestVerisi: selectedSablon.test_verisi || "",
-      });
-      setPreviewModalOpen(true);
+        templateTestVerisi: selectedSablon.test_verisi || ''
+      })
+      setPreviewModalOpen(true)
     } catch (error: any) {
-      alert("Önizleme yüklenirken bir hata oluştu: " + error.message);
+      alert('Önizleme yüklenirken bir hata oluştu: ' + error.message)
     }
-  };
+  }
 
   const executePrint = async (html: string) => {
-    await (window as any).electron.ipcRenderer.invoke(
-      "print-html",
-      html,
-      { silent: false },
-    );
-  };
+    await (window as any).electron.ipcRenderer.invoke('print-html', html, { silent: false })
+  }
 
   const executeExportPdf = async (html: string) => {
     await (window as any).electron.ipcRenderer.invoke(
-      "export-pdf",
+      'export-pdf',
       html,
       null,
-      previewData?.title || "Belge",
-    );
-  };
+      previewData?.title || 'Belge'
+    )
+  }
 
   if (previewData && previewModalOpen) {
     return (
@@ -97,7 +83,7 @@ export function MalzemeListesi(): React.JSX.Element {
         onClose={() => setPreviewModalOpen(false)}
         title={previewData.title}
         templateHtml={previewData.templateHtml}
-        masterHtml={masterHtml || ""}
+        masterHtml={masterHtml || ''}
         baseContext={dosyaContext}
         placeholders={placeholders}
         onPrint={executePrint}
@@ -105,7 +91,7 @@ export function MalzemeListesi(): React.JSX.Element {
         isInline={true}
         templateTestVerisi={previewData.templateTestVerisi}
       />
-    );
+    )
   }
 
   return (
@@ -120,11 +106,7 @@ export function MalzemeListesi(): React.JSX.Element {
         </span>
         <div className="flex items-center gap-2">
           <button
-            onClick={() =>
-              handleOpenPreview(
-                "/dosya/malzemeler/liste",
-                "Son Alım Fiyat Cetveli",
-              )}
+            onClick={() => handleOpenPreview('/dosya/malzemeler/liste', 'Son Alım Fiyat Cetveli')}
             disabled={ciktiLoading}
             className="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm disabled:opacity-50"
           >
@@ -132,11 +114,7 @@ export function MalzemeListesi(): React.JSX.Element {
             Son Alım Fiyat Cetveli
           </button>
           <button
-            onClick={() =>
-              handleOpenPreview(
-                "/dosya/luzum/talep-formu",
-                "İhtiyaç Talep Formu",
-              )}
+            onClick={() => handleOpenPreview('/dosya/luzum/talep-formu', 'İhtiyaç Talep Formu')}
             disabled={ciktiLoading}
             className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm disabled:opacity-50"
           >
@@ -144,8 +122,7 @@ export function MalzemeListesi(): React.JSX.Element {
             İhtiyaç Talep Formu
           </button>
           <button
-            onClick={() =>
-              handleOpenPreview("/dosya/malzemeler/liste", "İhtiyaç Listesi")}
+            onClick={() => handleOpenPreview('/dosya/malzemeler/liste', 'İhtiyaç Listesi')}
             disabled={ciktiLoading}
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm disabled:opacity-50"
           >
@@ -158,5 +135,5 @@ export function MalzemeListesi(): React.JSX.Element {
       <MalzemeEkleModal state={state} />
       <MalzemeTablosu state={state} />
     </SubScreen>
-  );
+  )
 }

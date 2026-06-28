@@ -16,7 +16,12 @@ interface InnerMenuProps {
   className?: string
 }
 
-export function InnerMenu({ items, activeId, onChange, className }: InnerMenuProps): React.JSX.Element {
+export function InnerMenu({
+  items,
+  activeId,
+  onChange,
+  className
+}: InnerMenuProps): React.JSX.Element {
   return (
     <div
       className={cn(
@@ -26,7 +31,12 @@ export function InnerMenu({ items, activeId, onChange, className }: InnerMenuPro
     >
       {items.map((item, idx) => {
         if (item.isDivider) {
-          return <div key={`div-${idx}`} className="hidden lg:block h-px bg-slate-100 dark:bg-slate-800 my-1" />
+          return (
+            <div
+              key={`div-${idx}`}
+              className="hidden lg:block h-px bg-slate-100 dark:bg-slate-800 my-1"
+            />
+          )
         }
 
         const isActive = activeId === item.id
@@ -41,11 +51,15 @@ export function InnerMenu({ items, activeId, onChange, className }: InnerMenuPro
                 : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
             )}
           >
-            <span className={cn('shrink-0', isActive ? 'text-primary-foreground' : 'text-slate-400')}>
+            <span
+              className={cn('shrink-0', isActive ? 'text-primary-foreground' : 'text-slate-400')}
+            >
               {item.icon}
             </span>
             <div className="flex flex-col">
-              <span className="text-xs font-bold leading-tight whitespace-nowrap">{item.label}</span>
+              <span className="text-xs font-bold leading-tight whitespace-nowrap">
+                {item.label}
+              </span>
               {item.description && (
                 <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 leading-tight">
                   {item.description}

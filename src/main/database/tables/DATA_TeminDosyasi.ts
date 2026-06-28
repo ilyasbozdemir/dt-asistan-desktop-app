@@ -2,7 +2,13 @@ export const DATA_TeminDosyasi = {
   name: 'DATA_TeminDosyasi',
   description: 'Doğrudan temin dosyalarının ana kayıtları',
   columns: [
-    { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true, description: 'Kayıt Numarası' },
+    {
+      name: 'id',
+      type: 'INTEGER',
+      primaryKey: true,
+      autoIncrement: true,
+      description: 'Kayıt Numarası'
+    },
     { name: 'temin_no', type: 'TEXT', description: 'Kurum İçi Dosya Numarası' }, // Kurum içi numara (Örn: 2026/DT-001)
     { name: 'dosya_acilis_tarihi', type: 'DATE', description: 'Dosya Açılış Tarihi' },
     { name: 'butce_yili', type: 'INTEGER', description: 'Butce Yili' },
@@ -36,18 +42,37 @@ export const DATA_TeminDosyasi = {
 
     // Teklif ve Sözleşme
     { name: 'teklif_sozlesme_turu', type: 'TEXT', description: 'Teklif Sozlesme Turu' }, // Birim Fiyat | Götürü Bedel
-    { name: 'alt_yuklenici_olacak_mi', type: 'INTEGER', default: 0, description: 'Alt Yuklenici Olacak mı?' },
-    { name: 'kismi_teklif_verilecek_mi', type: 'INTEGER', default: 0, description: 'Kismi Teklif Verilecek mı?' },
+    {
+      name: 'alt_yuklenici_olacak_mi',
+      type: 'INTEGER',
+      default: 0,
+      description: 'Alt Yuklenici Olacak mı?'
+    },
+    {
+      name: 'kismi_teklif_verilecek_mi',
+      type: 'INTEGER',
+      default: 0,
+      description: 'Kismi Teklif Verilecek mı?'
+    },
     { name: 'fiyat_farki_dayanagi', type: 'TEXT', description: 'Fiyat Farki Dayanagi' },
     { name: 'yatirim_proje_no', type: 'TEXT', description: 'Yatirim Proje Numarası' },
     { name: 'avans_verilecek_mi', type: 'INTEGER', default: 0, description: 'Avans Verilecek mı?' },
 
     // Hesaplama ve Maliyet
-    { name: 'yaklasik_maliyet_hesaplamasi', type: 'TEXT', description: 'Yaklasik Maliyet Hesaplamasi' },
+    {
+      name: 'yaklasik_maliyet_hesaplamasi',
+      type: 'TEXT',
+      description: 'Yaklasik Maliyet Hesaplamasi'
+    },
     { name: 'kdv', type: 'TEXT', description: 'Kdv' },
     { name: 'hesaplama_esasi', type: 'TEXT', description: 'Hesaplama Esasi' },
     { name: 'komisyon_takdiri', type: 'TEXT', description: 'Komisyon Takdiri' },
-    { name: 'tibbi_cihaz_alimi_mi', type: 'INTEGER', default: 0, description: 'Tibbi Cihaz Alimi mı?' },
+    {
+      name: 'tibbi_cihaz_alimi_mi',
+      type: 'INTEGER',
+      default: 0,
+      description: 'Tibbi Cihaz Alimi mı?'
+    },
 
     // Süreç / Tarihler / Kişiler
     { name: 'irtibat_yetkilisi_id', type: 'INTEGER', description: 'Irtibat Yetkilisi ID' }, // Personel referans
@@ -74,8 +99,18 @@ export const DATA_TeminDosyasi = {
     { name: 'is_deleted', type: 'INTEGER', default: 0, description: 'Is Deleted' }, // 0: Aktif, 1: Silinmiş
     { name: 'ekap_no', type: 'TEXT', description: 'Ekap Numarası' }, // EKAP Kayıt Numarası
     { name: 'is_ekap_sent', type: 'INTEGER', default: 0, description: 'Is Ekap Sent' }, // 0: Gönderilmedi, 1: Gönderildi
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
+    {
+      name: 'created_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Created At'
+    },
+    {
+      name: 'updated_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Updated At'
+    }
   ],
   initialData: []
 }

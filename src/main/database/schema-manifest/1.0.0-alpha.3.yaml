@@ -1,29 +1,29 @@
-app: "1.0.0-alpha.3"
+app: '1.0.0-alpha.3'
 schema_min: 1
 schema_max: 6
-release_date: "2026-05-25"
+release_date: '2026-05-25'
 changes:
   - schema: 3
-    type: "addColumn"
-    description: "Birim-Personel ilişkisi kuruldu"
+    type: 'addColumn'
+    description: 'Birim-Personel ilişkisi kuruldu'
     columns_added:
       - table: TANIM_Birim
         column: ilgili_personel_id
   - schema: 4
-    type: "addColumn"
-    description: "Kurum türü alanı eklendi"
+    type: 'addColumn'
+    description: 'Kurum türü alanı eklendi'
     columns_added:
       - table: settings
         column: kurumTuru
   - schema: 5
-    type: "addTable"
-    description: "Şablon sistemi eklendi"
+    type: 'addTable'
+    description: 'Şablon sistemi eklendi'
     tables_added:
       - TANIM_Sablon
       - TANIM_Placeholder
   - schema: 6
-    type: "addTable"
-    description: "Alım türü-şablon eşleşme tabloları"
+    type: 'addTable'
+    description: 'Alım türü-şablon eşleşme tabloları'
     tables_added:
       - TANIM_AlimTuru_Sablon
       - SABLON_Placeholder

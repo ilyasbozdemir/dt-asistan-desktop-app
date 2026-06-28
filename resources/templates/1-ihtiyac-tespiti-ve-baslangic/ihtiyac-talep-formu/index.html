@@ -1,148 +1,194 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>İhtiyaç Talep Formu</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 13px;
-            margin: 0;
-            padding: 20px;
-        }
-        .text-center { text-align: center; }
-        .text-left { text-align: left; }
-        .text-right { text-align: right; }
-        .font-bold { font-weight: bold; }
-        .w-full { width: 100%; }
-        .border-collapse { border-collapse: collapse; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { padding: 5px; }
-        .border-all th, .border-all td { border: 1px solid black; }
-        .antet-container { margin-bottom: 30px; }
-        .mt-4 { margin-top: 20px; }
-        .mb-4 { margin-bottom: 20px; }
-        .indent { text-indent: 55px; }
-        .text-justify { text-align: justify; }
-        .page-break { page-break-after: always; }
-        
-        /* master.html'den gelen global td border'larını ezmek için */
-        table:not(.border-all) th, table:not(.border-all) td { border: none !important; }
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        margin: 0;
+        padding: 20px;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .text-left {
+        text-align: left;
+      }
+      .text-right {
+        text-align: right;
+      }
+      .font-bold {
+        font-weight: bold;
+      }
+      .w-full {
+        width: 100%;
+      }
+      .border-collapse {
+        border-collapse: collapse;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      th,
+      td {
+        padding: 5px;
+      }
+      .border-all th,
+      .border-all td {
+        border: 1px solid black;
+      }
+      .antet-container {
+        margin-bottom: 30px;
+      }
+      .mt-4 {
+        margin-top: 20px;
+      }
+      .mb-4 {
+        margin-bottom: 20px;
+      }
+      .indent {
+        text-indent: 55px;
+      }
+      .text-justify {
+        text-align: justify;
+      }
+      .page-break {
+        page-break-after: always;
+      }
+
+      /* master.html'den gelen global td border'larını ezmek için */
+      table:not(.border-all) th,
+      table:not(.border-all) td {
+        border: none !important;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div class="w-full">
+      <table border="0">
+        <tr>
+          <td class="text-left" width="100">
+            {{#solLogo}}<img
+              src="{{solLogo}}"
+              alt="Sol Logo"
+              style="width: 80px; height: auto"
+            />{{/solLogo}}
+          </td>
+          <td class="text-center font-bold">
+            {{#antetSatirlari}}
+            <div>{{.}}</div>
+            {{/antetSatirlari}} {{^antetSatirlari}} T.C.<br />{{kurum_adi}}<br />{{birim_adi}}
+            {{/antetSatirlari}}
+            <br />
+            <div>İHTİYAÇ TALEP FORMU</div>
+          </td>
+          <td class="text-right" width="100">
+            {{#sagLogo}}<img
+              src="{{sagLogo}}"
+              alt="Sağ Logo"
+              style="width: 80px; height: auto"
+            />{{/sagLogo}}
+          </td>
+        </tr>
+      </table>
 
-<div class="w-full">
-    <table border="0">
+      <table class="border-all font-bold">
         <tr>
-            <td class="text-left" width="100">
-                {{#solLogo}}<img src="{{solLogo}}" alt="Sol Logo" style="width: 80px; height: auto;">{{/solLogo}}
-            </td>
-            <td class="text-center font-bold">
-                {{#antetSatirlari}}
-                    <div>{{.}}</div>
-                {{/antetSatirlari}}
-                {{^antetSatirlari}}
-                    T.C.<br>{{kurum_adi}}<br>{{birim_adi}}
-                {{/antetSatirlari}}
-                <br>
-                <div>İHTİYAÇ TALEP FORMU</div>
-            </td>
-            <td class="text-right" width="100">
-                {{#sagLogo}}<img src="{{sagLogo}}" alt="Sağ Logo" style="width: 80px; height: auto;">{{/sagLogo}}
-            </td>
+          <td colspan="6">TALEP EDEN BİRİM: {{birim_adi}}</td>
         </tr>
-    </table>
+        <tr>
+          <th class="text-center" width="5%">S.<br />NO</th>
+          <th class="text-center" width="35%">MALZEME/HİZMET ADI</th>
+          <th class="text-center" width="25%">ÖZELLİĞİ</th>
+          <th class="text-center" width="10%">MİKTAR</th>
+          <th class="text-center" width="10%">BİRİM</th>
+          <th class="text-center" width="15%">TAŞINIR KODU</th>
+        </tr>
 
-    <table class="border-all font-bold">
-        <tr>
-            <td colspan="6">
-                TALEP EDEN BİRİM: {{birim_adi}}
-            </td>
-        </tr>
-        <tr>
-            <th class="text-center" width="5%">S.<br>NO</th>
-            <th class="text-center" width="35%">MALZEME/HİZMET ADI</th>
-            <th class="text-center" width="25%">ÖZELLİĞİ</th>
-            <th class="text-center" width="10%">MİKTAR</th>
-            <th class="text-center" width="10%">BİRİM</th>
-            <th class="text-center" width="15%">TAŞINIR KODU</th>
-        </tr>
-        
         {{#ihtiyacKalemleri}}
-        <tr>   
-            <td class="text-center">-</td>
-            <td>{{malzemeAdi}}</td>
-            <td>{{ozelligi}}</td>
-            <td class="text-right">{{miktar}}</td>
-            <td class="text-center">{{birimi}}</td>
-            <td class="text-center">{{kodu}}</td>
-        </tr>                          
+        <tr>
+          <td class="text-center">-</td>
+          <td>{{malzemeAdi}}</td>
+          <td>{{ozelligi}}</td>
+          <td class="text-right">{{miktar}}</td>
+          <td class="text-center">{{birimi}}</td>
+          <td class="text-center">{{kodu}}</td>
+        </tr>
         {{/ihtiyacKalemleri}}
 
         <tr>
-            <th class="text-left" colspan="6">Not: Tabloda yer alan bilgileri eksiksiz olarak doldurunuz</th>
+          <th class="text-left" colspan="6">
+            Not: Tabloda yer alan bilgileri eksiksiz olarak doldurunuz
+          </th>
         </tr>
-    </table>
-   
-    <div class="mt-4 mb-4 indent text-justify">
-        Yukarıda istemi yapılan taleplerimizin önceki sarf edilen miktarlarla uyumlu ve ihtiyaçların fazla talep edilmediği, fazla talep edilmesinden kaynaklanan yasal sorumlulukların tarafımıza ait olduğunu hazırlamış olduğumuz talebe ait ekteki teknik şartnamelerin yürürlükteki kanunlara, yönetmeliklere uygun olduğunu ve rekabete engel teşkil etmediğini taahhüt ederiz.
-    </div>
-        
-    <table class="border-all w-full mt-4">
+      </table>
+
+      <div class="mt-4 mb-4 indent text-justify">
+        Yukarıda istemi yapılan taleplerimizin önceki sarf edilen miktarlarla uyumlu ve ihtiyaçların
+        fazla talep edilmediği, fazla talep edilmesinden kaynaklanan yasal sorumlulukların
+        tarafımıza ait olduğunu hazırlamış olduğumuz talebe ait ekteki teknik şartnamelerin
+        yürürlükteki kanunlara, yönetmeliklere uygun olduğunu ve rekabete engel teşkil etmediğini
+        taahhüt ederiz.
+      </div>
+
+      <table class="border-all w-full mt-4">
         <tr>
-            <td colspan="3" class="text-center font-bold">BİRİMİN TALEP GEREKÇESİ</td>
-        </tr>
-        <tr>
-            <td class="text-center font-bold" width="33%">TALEBİ YAPAN</td>
-            <td class="text-center font-bold" width="67%" colspan="2">ONAYLAYAN</td>
-        </tr>
-        <tr style="height:100px; vertical-align: top;">
-            <td class="text-center">
-                {{tarih}}<br>
-                {{talepEdenPersonelAdi}}<br>
-                {{talepEdenPersonelUnvan}}
-            </td>
-            <td class="text-center" colspan="2">
-                {{dosyaTarihi}}<br>
-                {{onaylayanPersonelAdi}}<br>
-                {{onaylayanPersonelUnvan}}
-            </td>
+          <td colspan="3" class="text-center font-bold">BİRİMİN TALEP GEREKÇESİ</td>
         </tr>
         <tr>
-            <td colspan="3">GEREKÇE: (Gerekçe yazılmayan talepler kabul edilmeyecektir.)</td>
+          <td class="text-center font-bold" width="33%">TALEBİ YAPAN</td>
+          <td class="text-center font-bold" width="67%" colspan="2">ONAYLAYAN</td>
         </tr>
-        <tr style="height: 50px;">
-            <td colspan="3" style="vertical-align: top; padding: 10px;">
-                {{gerekce}}
-            </td>
+        <tr style="height: 100px; vertical-align: top">
+          <td class="text-center">
+            {{tarih}}<br />
+            {{talepEdenPersonelAdi}}<br />
+            {{talepEdenPersonelUnvan}}
+          </td>
+          <td class="text-center" colspan="2">
+            {{dosyaTarihi}}<br />
+            {{onaylayanPersonelAdi}}<br />
+            {{onaylayanPersonelUnvan}}
+          </td>
         </tr>
         <tr>
-            <td class="text-center font-bold">TAŞINIR KAYIT YETKİLİSİNİN GÖRÜŞÜ</td>
-            <td class="text-center font-bold">TAŞINIR KODU</td>
-            <td class="text-center font-bold">……/……/202..</td>
+          <td colspan="3">GEREKÇE: (Gerekçe yazılmayan talepler kabul edilmeyecektir.)</td>
         </tr>
-        <tr style="height:100px; vertical-align: top;">
-            <td></td>
-            <td></td>
-            <td class="text-center" style="vertical-align: middle;">
-                Taşınır Kayıt Yetkilisinin<br>İmza ve Kaşesi
-            </td>
+        <tr style="height: 50px">
+          <td colspan="3" style="vertical-align: top; padding: 10px">{{gerekce}}</td>
         </tr>
-    </table>
-        
-    <div class="mt-4 text-justify">
-        1- Hizmet ve Yapım işi alımlarında Taşınır Kayıt Yetkilisi görüşü yazılmayacaktır.<br>
-        2- İstenilen malzeme depoda var ise bu talep formu satın alma birimine gönderilmeyecektir.<br>
-        3- Hizmet, Yapım İşleri ve Mal alımlarında (Demirbaş v.b. gibi) <strong>Teknik Şartname hazırlanması zorunludur.
-        (Tüm Teknik Şartnameler hazırlayanlar tarafından eksiksiz bir şekilde doldurulup Üst yazıyla Personel
-            ve Destek Hizmetleri Başkanlığına gönderilecektir.)</strong> Teknik şartname olmayan talepler değerlendirmeye
-        alınmayacaktır. Bu hususların eksiksiz yerine getirilmesi ve Makam Onayı alınmasından sonra satın alma
-        işlemleri başlatılacaktır.
+        <tr>
+          <td class="text-center font-bold">TAŞINIR KAYIT YETKİLİSİNİN GÖRÜŞÜ</td>
+          <td class="text-center font-bold">TAŞINIR KODU</td>
+          <td class="text-center font-bold">……/……/202..</td>
+        </tr>
+        <tr style="height: 100px; vertical-align: top">
+          <td></td>
+          <td></td>
+          <td class="text-center" style="vertical-align: middle">
+            Taşınır Kayıt Yetkilisinin<br />İmza ve Kaşesi
+          </td>
+        </tr>
+      </table>
+
+      <div class="mt-4 text-justify">
+        1- Hizmet ve Yapım işi alımlarında Taşınır Kayıt Yetkilisi görüşü yazılmayacaktır.<br />
+        2- İstenilen malzeme depoda var ise bu talep formu satın alma birimine
+        gönderilmeyecektir.<br />
+        3- Hizmet, Yapım İşleri ve Mal alımlarında (Demirbaş v.b. gibi)
+        <strong
+          >Teknik Şartname hazırlanması zorunludur. (Tüm Teknik Şartnameler hazırlayanlar tarafından
+          eksiksiz bir şekilde doldurulup Üst yazıyla Personel ve Destek Hizmetleri Başkanlığına
+          gönderilecektir.)</strong
+        >
+        Teknik şartname olmayan talepler değerlendirmeye alınmayacaktır. Bu hususların eksiksiz
+        yerine getirilmesi ve Makam Onayı alınmasından sonra satın alma işlemleri başlatılacaktır.
         <p class="font-bold mt-4">EKİ: Talebe ait teknik şartnameler</p>
+      </div>
     </div>
-
-</div>
-
-</body>
+  </body>
 </html>

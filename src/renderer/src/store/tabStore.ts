@@ -88,7 +88,7 @@ export const useTabStore = create<TabState>((set, get) => ({
 
     const { tabs, activeTabPath } = get()
     const newTabs = tabs.filter((t) => t.path !== path)
-    
+
     let nextPath: string | null = null
 
     if (activeTabPath === path) {

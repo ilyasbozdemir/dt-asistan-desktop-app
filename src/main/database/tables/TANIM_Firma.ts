@@ -25,7 +25,12 @@ export const TANIM_Firma = {
     { name: 'vergi_dairesi', type: 'TEXT', description: 'Vergi Dairesi' },
     { name: 'vergi_no', type: 'TEXT', description: 'Vergi Numarası' },
     { name: 'aktif_mi', type: 'INTEGER', notNull: true, default: 1, description: 'Aktif mı?' },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' }
+    {
+      name: 'created_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Created At'
+    }
   ],
   initialData: []
 }

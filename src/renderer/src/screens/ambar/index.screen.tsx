@@ -3,14 +3,47 @@ import { useAmbarHooks, AmbarInput } from './ambar.hooks'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { Modal } from '../../components/ui/Modal'
-import { Database, Plus, Trash2, Archive, MapPin, ShieldAlert, ChevronDown, ChevronUp } from 'lucide-react'
+import {
+  Database,
+  Plus,
+  Trash2,
+  Archive,
+  MapPin,
+  ShieldAlert,
+  ChevronDown,
+  ChevronUp
+} from 'lucide-react'
 
 const emptyAmbar: AmbarInput = {
-  ambar_adi: '', aciklama: '', adres: '', semt: '', posta_kodu: '', sehir: '',
-  telefon: '', faks: '', web_adresi: '', email: '', tasinir_kodu: '', tasinir_adi: ''
+  ambar_adi: '',
+  aciklama: '',
+  adres: '',
+  semt: '',
+  posta_kodu: '',
+  sehir: '',
+  telefon: '',
+  faks: '',
+  web_adresi: '',
+  email: '',
+  tasinir_kodu: '',
+  tasinir_adi: ''
 }
 
-const Field = ({ label, field, form, handleChange, required, placeholder }: { label: string; field: keyof AmbarInput; form: AmbarInput; handleChange: (field: keyof AmbarInput, value: string) => void; required?: boolean; placeholder?: string }) => (
+const Field = ({
+  label,
+  field,
+  form,
+  handleChange,
+  required,
+  placeholder
+}: {
+  label: string
+  field: keyof AmbarInput
+  form: AmbarInput
+  handleChange: (field: keyof AmbarInput, value: string) => void
+  required?: boolean
+  placeholder?: string
+}) => (
   <div>
     <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
       {label} {required && <span className="text-red-500">*</span>}
@@ -90,8 +123,12 @@ export default function AmbarScreen(): React.JSX.Element {
             <Archive className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Tanımlı Ambar Deposu</div>
-            <div className="text-xl font-bold text-slate-800 dark:text-slate-100 mt-0.5">{ambarlar.length} Adet</div>
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+              Tanımlı Ambar Deposu
+            </div>
+            <div className="text-xl font-bold text-slate-800 dark:text-slate-100 mt-0.5">
+              {ambarlar.length} Adet
+            </div>
           </div>
         </div>
 
@@ -100,9 +137,11 @@ export default function AmbarScreen(): React.JSX.Element {
             <MapPin className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Farklı Şehir</div>
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+              Farklı Şehir
+            </div>
             <div className="text-xl font-bold text-slate-800 dark:text-slate-100 mt-0.5">
-              {new Set(ambarlar.filter(a => a.sehir).map(a => a.sehir)).size || 0} Bölge
+              {new Set(ambarlar.filter((a) => a.sehir).map((a) => a.sehir)).size || 0} Bölge
             </div>
           </div>
         </div>
@@ -112,24 +151,32 @@ export default function AmbarScreen(): React.JSX.Element {
             <ShieldAlert className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Taşınır Kodlu</div>
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+              Taşınır Kodlu
+            </div>
             <div className="text-xl font-bold text-slate-800 dark:text-slate-100 mt-0.5">
-              {ambarlar.filter(a => a.tasinir_kodu).length} Adet
+              {ambarlar.filter((a) => a.tasinir_kodu).length} Adet
             </div>
           </div>
         </div>
       </div>
 
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
-        <h3 className="text-sm font-bold text-slate-850 dark:text-slate-200 mb-4">Kayıtlı Ambar Depoları</h3>
+        <h3 className="text-sm font-bold text-slate-850 dark:text-slate-200 mb-4">
+          Kayıtlı Ambar Depoları
+        </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {isLoadingAmbarlar ? (
-            <div className="col-span-full p-8 text-center text-slate-450 dark:text-slate-500 animate-pulse italic">Ambar depoları yükleniyor...</div>
+            <div className="col-span-full p-8 text-center text-slate-450 dark:text-slate-500 animate-pulse italic">
+              Ambar depoları yükleniyor...
+            </div>
           ) : ambarlar.length === 0 ? (
             <div className="col-span-full p-16 flex flex-col items-center justify-center text-slate-450 bg-slate-50 dark:bg-slate-950 rounded-xl">
               <Archive className="w-12 h-12 mb-3 text-slate-300 dark:text-slate-700" />
-              <h3 className="text-base font-semibold text-slate-700 dark:text-slate-300">Kayıtlı Ambar Bulunmuyor</h3>
+              <h3 className="text-base font-semibold text-slate-700 dark:text-slate-300">
+                Kayıtlı Ambar Bulunmuyor
+              </h3>
             </div>
           ) : (
             ambarlar.map((ambar) => (
@@ -161,12 +208,16 @@ export default function AmbarScreen(): React.JSX.Element {
                     </span>
                   )}
                 </div>
-                
-                <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1 leading-normal pr-8">{ambar.ambar_adi}</h4>
+
+                <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1 leading-normal pr-8">
+                  {ambar.ambar_adi}
+                </h4>
                 {ambar.aciklama && (
-                  <p className="text-[11px] text-slate-500 mb-3 line-clamp-2 flex-1">{ambar.aciklama}</p>
+                  <p className="text-[11px] text-slate-500 mb-3 line-clamp-2 flex-1">
+                    {ambar.aciklama}
+                  </p>
                 )}
-                
+
                 <div className="mt-auto border-t border-slate-200/60 dark:border-slate-800/60 pt-3 flex flex-col gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
                   {ambar.adres && (
                     <span className="flex items-start gap-1.5">
@@ -193,15 +244,32 @@ export default function AmbarScreen(): React.JSX.Element {
         description="Kurumunuza ait ana ambar veya depo ekleyin."
       >
         <form onSubmit={handleAdd} className="space-y-4">
-          <Field label="Ambar Adı" field="ambar_adi" form={form} handleChange={handleChange} required placeholder="Örn: Fen İşleri Yedek Parça Ambarı" />
-          <Field label="Açıklama" field="aciklama" form={form} handleChange={handleChange} placeholder="Ambar hakkında kısa bilgi" />
+          <Field
+            label="Ambar Adı"
+            field="ambar_adi"
+            form={form}
+            handleChange={handleChange}
+            required
+            placeholder="Örn: Fen İşleri Yedek Parça Ambarı"
+          />
+          <Field
+            label="Açıklama"
+            field="aciklama"
+            form={form}
+            handleChange={handleChange}
+            placeholder="Ambar hakkında kısa bilgi"
+          />
 
           <button
             type="button"
             onClick={() => setShowExtraFields(!showExtraFields)}
             className="flex items-center gap-1.5 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 font-semibold mt-2 cursor-pointer w-full justify-center bg-blue-50 dark:bg-blue-900/20 py-2 rounded-lg transition-colors"
           >
-            {showExtraFields ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            {showExtraFields ? (
+              <ChevronUp className="w-3.5 h-3.5" />
+            ) : (
+              <ChevronDown className="w-3.5 h-3.5" />
+            )}
             {showExtraFields ? 'Ek Bilgileri Gizle' : 'Adres, İletişim & Taşınır Bilgileri Göster'}
           </button>
 
@@ -210,7 +278,12 @@ export default function AmbarScreen(): React.JSX.Element {
               <Field label="Adres" field="adres" form={form} handleChange={handleChange} />
               <div className="grid grid-cols-3 gap-3">
                 <Field label="Semt" field="semt" form={form} handleChange={handleChange} />
-                <Field label="Posta Kodu" field="posta_kodu" form={form} handleChange={handleChange} />
+                <Field
+                  label="Posta Kodu"
+                  field="posta_kodu"
+                  form={form}
+                  handleChange={handleChange}
+                />
                 <Field label="Şehir" field="sehir" form={form} handleChange={handleChange} />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -218,12 +291,27 @@ export default function AmbarScreen(): React.JSX.Element {
                 <Field label="Faks" field="faks" form={form} handleChange={handleChange} />
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <Field label="Web Adresi" field="web_adresi" form={form} handleChange={handleChange} />
+                <Field
+                  label="Web Adresi"
+                  field="web_adresi"
+                  form={form}
+                  handleChange={handleChange}
+                />
                 <Field label="Email" field="email" form={form} handleChange={handleChange} />
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <Field label="Taşınır Kodu" field="tasinir_kodu" form={form} handleChange={handleChange} />
-                <Field label="Taşınır Adı" field="tasinir_adi" form={form} handleChange={handleChange} />
+                <Field
+                  label="Taşınır Kodu"
+                  field="tasinir_kodu"
+                  form={form}
+                  handleChange={handleChange}
+                />
+                <Field
+                  label="Taşınır Adı"
+                  field="tasinir_adi"
+                  form={form}
+                  handleChange={handleChange}
+                />
               </div>
             </div>
           )}

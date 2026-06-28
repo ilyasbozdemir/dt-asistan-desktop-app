@@ -3,7 +3,7 @@ export const EKONOMIK_KODLAR = [
   { kod: '03.2.1', aciklama: 'Kırtasiye ve Büro Malzemesi Alımları', seviye: 3 }
 ]
 
-// 2. Muhasebe/Taşınır Kodları (taşınır kaydında kullanılır)  
+// 2. Muhasebe/Taşınır Kodları (taşınır kaydında kullanılır)
 export const MUHASEBE_KODLAR = [
   { kod: '150.01.01', aciklama: 'Kırtasiye Malzemeleri', hesapAdi: 'İlk Madde ve Malzeme' }
 ]

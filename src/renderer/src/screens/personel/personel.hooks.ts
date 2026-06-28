@@ -67,10 +67,10 @@ export function usePersonelHooks() {
         personel.eposta || null,
         personel.aktif_mi !== undefined ? personel.aktif_mi : 1
       ]
-      
+
       const res = await window.electron.ipcRenderer.invoke('db:run', sql, params)
       if (!res.success) throw new Error(res.error)
-      
+
       const newPersonelId = res.lastInsertRowid
 
       // Rol atamaları
@@ -109,7 +109,7 @@ export function usePersonelHooks() {
         personel.aktif_mi !== undefined ? personel.aktif_mi : 1,
         personel.id
       ]
-      
+
       const res = await window.electron.ipcRenderer.invoke('db:run', sql, params)
       if (!res.success) throw new Error(res.error)
 
@@ -121,7 +121,7 @@ export function usePersonelHooks() {
           sql: 'UPDATE TANIM_Roller SET varsayilan_personel_id = NULL WHERE varsayilan_personel_id = ?',
           params: [personel.id]
         })
-        
+
         // Sonra seçilen rollere atanması
         for (const r of personel.assignedRoles) {
           transactions.push({
@@ -129,7 +129,7 @@ export function usePersonelHooks() {
             params: [personel.id, r]
           })
         }
-        
+
         await window.electron.ipcRenderer.invoke('db:transaction', transactions)
       }
 

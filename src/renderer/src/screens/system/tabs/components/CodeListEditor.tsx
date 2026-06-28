@@ -105,8 +105,10 @@ export function CodeListEditor({
               title={placeholderDesc || 'Seçiniz...'}
             >
               <option value="">{placeholderDesc || 'Seçiniz...'}</option>
-              {descOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              {descOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
               ))}
             </select>
           ) : (

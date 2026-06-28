@@ -15,16 +15,82 @@
     "sayfaNo": "Sayfa No"
   },
   "evraklar": [
-    { "sira": "1", "tarih": "12.01.2026", "sayi": "2026/01", "konu": "Lüzum Müzekkeresi ve İhtiyaç Listesi", "sayfa": "1-3" },
-    { "sira": "2", "tarih": "13.01.2026", "sayi": "2026/04", "konu": "Piyasa Fiyat Araştırması Görevlendirme Onayı", "sayfa": "4" },
-    { "sira": "3", "tarih": "15.01.2026", "sayi": "2026/08", "konu": "Yaklaşık Maliyet Hesap Cetveli", "sayfa": "5" },
-    { "sira": "4", "tarih": "16.01.2026", "sayi": "2026/12", "konu": "Piyasa Fiyat Araştırması Teklif Mektupları (3 Adet)", "sayfa": "6-12" },
-    { "sira": "5", "tarih": "18.01.2026", "sayi": "2026/15", "konu": "Piyasa Fiyat Araştırma Tutanağı", "sayfa": "13" },
-    { "sira": "6", "tarih": "20.01.2026", "sayi": "2026/19", "konu": "Doğrudan Temin Onay Belgesi (Harcama Talimatı)", "sayfa": "14-15" },
-    { "sira": "7", "tarih": "22.01.2026", "sayi": "-", "konu": "Sözleşme Davet Mektubu ve Tebliğ Alındısı", "sayfa": "16-17" },
-    { "sira": "8", "tarih": "25.01.2026", "sayi": "2026/22", "konu": "Doğrudan Temin Sözleşmesi", "sayfa": "18-21" },
-    { "sira": "9", "tarih": "05.02.2026", "sayi": "-", "konu": "Fatura ve Taşınır İşlem Fişi (TİF)", "sayfa": "22-24" },
-    { "sira": "10", "tarih": "08.02.2026", "sayi": "2026/30", "konu": "Muayene ve Kabul Komisyonu Tutanağı", "sayfa": "25" },
-    { "sira": "11", "tarih": "10.02.2026", "sayi": "2026/35", "konu": "Ödeme Emri Belgesi ve Eki Ödeme Yazısı", "sayfa": "26-28" }
+    {
+      "sira": "1",
+      "tarih": "12.01.2026",
+      "sayi": "2026/01",
+      "konu": "Lüzum Müzekkeresi ve İhtiyaç Listesi",
+      "sayfa": "1-3"
+    },
+    {
+      "sira": "2",
+      "tarih": "13.01.2026",
+      "sayi": "2026/04",
+      "konu": "Piyasa Fiyat Araştırması Görevlendirme Onayı",
+      "sayfa": "4"
+    },
+    {
+      "sira": "3",
+      "tarih": "15.01.2026",
+      "sayi": "2026/08",
+      "konu": "Yaklaşık Maliyet Hesap Cetveli",
+      "sayfa": "5"
+    },
+    {
+      "sira": "4",
+      "tarih": "16.01.2026",
+      "sayi": "2026/12",
+      "konu": "Piyasa Fiyat Araştırması Teklif Mektupları (3 Adet)",
+      "sayfa": "6-12"
+    },
+    {
+      "sira": "5",
+      "tarih": "18.01.2026",
+      "sayi": "2026/15",
+      "konu": "Piyasa Fiyat Araştırma Tutanağı",
+      "sayfa": "13"
+    },
+    {
+      "sira": "6",
+      "tarih": "20.01.2026",
+      "sayi": "2026/19",
+      "konu": "Doğrudan Temin Onay Belgesi (Harcama Talimatı)",
+      "sayfa": "14-15"
+    },
+    {
+      "sira": "7",
+      "tarih": "22.01.2026",
+      "sayi": "-",
+      "konu": "Sözleşme Davet Mektubu ve Tebliğ Alındısı",
+      "sayfa": "16-17"
+    },
+    {
+      "sira": "8",
+      "tarih": "25.01.2026",
+      "sayi": "2026/22",
+      "konu": "Doğrudan Temin Sözleşmesi",
+      "sayfa": "18-21"
+    },
+    {
+      "sira": "9",
+      "tarih": "05.02.2026",
+      "sayi": "-",
+      "konu": "Fatura ve Taşınır İşlem Fişi (TİF)",
+      "sayfa": "22-24"
+    },
+    {
+      "sira": "10",
+      "tarih": "08.02.2026",
+      "sayi": "2026/30",
+      "konu": "Muayene ve Kabul Komisyonu Tutanağı",
+      "sayfa": "25"
+    },
+    {
+      "sira": "11",
+      "tarih": "10.02.2026",
+      "sayi": "2026/35",
+      "konu": "Ödeme Emri Belgesi ve Eki Ödeme Yazısı",
+      "sayfa": "26-28"
+    }
   ]
 }

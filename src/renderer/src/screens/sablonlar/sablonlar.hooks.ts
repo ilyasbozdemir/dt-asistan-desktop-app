@@ -108,7 +108,7 @@ export function useDbDictionary() {
     queryFn: async () => {
       const res = await window.electron.ipcRenderer.invoke('db:get-schema-dict')
       if (!res.success) throw new Error(res.error)
-      return res.data as Record<string, { label: string, columns: Record<string, string> }>
+      return res.data as Record<string, { label: string; columns: Record<string, string> }>
     }
   })
 }
@@ -153,7 +153,17 @@ export function useSaveSablon() {
           'db:run',
           `INSERT INTO TANIM_Sablon (ad, dosya_adi, dosya_turu, icerik, aciklama, test_verisi, aktif_mi, parent_id, versiyon)
            VALUES (?, ?, ?, ?, ?, ?, 1, ?, (SELECT COALESCE(MAX(versiyon), 0) + 1 FROM TANIM_Sablon WHERE id = ? OR parent_id = ?))`,
-          [ad, dosya_adi, dosya_turu, icerik, aciklama, test_verisi || null, parent_id, parent_id, parent_id]
+          [
+            ad,
+            dosya_adi,
+            dosya_turu,
+            icerik,
+            aciklama,
+            test_verisi || null,
+            parent_id,
+            parent_id,
+            parent_id
+          ]
         )
         if (insertRes.error) throw new Error(insertRes.error)
         const newSablonId = insertRes.lastID
@@ -233,7 +243,14 @@ export function useAddPlaceholder() {
       const res = await window.electron.ipcRenderer.invoke(
         'db:run',
         'INSERT INTO TANIM_Placeholder (anahtar, etiket, kaynak_tablo, kaynak_sutun, varsayilan, aciklama) VALUES (?, ?, ?, ?, ?, ?)',
-        [data.anahtar, data.etiket, data.kaynak_tablo || null, data.kaynak_sutun || null, data.varsayilan || null, data.aciklama || null]
+        [
+          data.anahtar,
+          data.etiket,
+          data.kaynak_tablo || null,
+          data.kaynak_sutun || null,
+          data.varsayilan || null,
+          data.aciklama || null
+        ]
       )
       if (res.error) throw new Error(res.error)
       return res.lastID
@@ -251,7 +268,15 @@ export function useUpdatePlaceholder() {
       const res = await window.electron.ipcRenderer.invoke(
         'db:run',
         'UPDATE TANIM_Placeholder SET anahtar = ?, etiket = ?, kaynak_tablo = ?, kaynak_sutun = ?, varsayilan = ?, aciklama = ? WHERE id = ?',
-        [data.anahtar, data.etiket, data.kaynak_tablo || null, data.kaynak_sutun || null, data.varsayilan || null, data.aciklama || null, id]
+        [
+          data.anahtar,
+          data.etiket,
+          data.kaynak_tablo || null,
+          data.kaynak_sutun || null,
+          data.varsayilan || null,
+          data.aciklama || null,
+          id
+        ]
       )
       if (res.error) throw new Error(res.error)
       return id
@@ -267,9 +292,11 @@ export function useDeletePlaceholder() {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const res = await window.electron.ipcRenderer.invoke('db:run', 'DELETE FROM TANIM_Placeholder WHERE id = ?', [
-        id
-      ])
+      const res = await window.electron.ipcRenderer.invoke(
+        'db:run',
+        'DELETE FROM TANIM_Placeholder WHERE id = ?',
+        [id]
+      )
       if (res.error) throw new Error(res.error)
       return res
     },

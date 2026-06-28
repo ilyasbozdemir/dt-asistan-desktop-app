@@ -1,189 +1,191 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <title>Bütçe Sorgusu</title>
-  <style>
-    @page {
-      size: A4;
-      margin: 1.5cm;
-    }
-    body {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 11pt;
-      color: #000;
-      line-height: 1.5;
-      margin: 0;
-      padding: 0;
-      background-color: #f5f5f5;
-    }
-    .page-container {
-      max-width: 21cm;
-      min-height: 29.7cm;
-      margin: 20px auto;
-      padding: 2cm 1.5cm;
-      background: white;
-      box-sizing: border-box;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      position: relative;
-    }
-    @media print {
-      body {
-        background-color: white;
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bütçe Sorgusu</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 1.5cm;
       }
-      .page-container {
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 11pt;
+        color: #000;
+        line-height: 1.5;
         margin: 0;
         padding: 0;
-        box-shadow: none;
-        max-width: none;
-        min-height: 0;
+        background-color: #f5f5f5;
       }
-    }
-    .meta-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 30px;
-    }
-    .meta-table {
-      border-collapse: collapse;
-    }
-    .meta-table td {
-      padding: 2px 10px 2px 0;
-      vertical-align: top;
-    }
-    .meta-label {
-      font-weight: bold;
-      white-space: nowrap;
-    }
-    .makam {
-      text-align: center;
-      font-weight: bold;
-      margin: 40px 0 25px 0;
-      text-transform: uppercase;
-      font-size: 12pt;
-      line-height: 1.5;
-    }
-    .letter-body {
-      text-indent: 40px;
-      text-align: justify;
-      margin-bottom: 15px;
-      line-height: 1.6;
-    }
-    .signature-block {
-      float: right;
-      text-align: center;
-      margin-top: 40px;
-      margin-right: 30px;
-      line-height: 1.4;
-    }
-    .budget-info-table {
-      border-collapse: collapse;
-      border: none;
-      font-family: "Times New Roman", Times, serif;
-      font-size: 11pt;
-      margin-top: 50px;
-    }
-    .budget-info-table td {
-      padding: 3px 5px;
-    }
-    .budget-info-table td.label {
-      font-weight: bold;
-      width: 150px;
-    }
-  </style>
-</head>
-<body>
-  <div class="page-container">
-    <!-- ANTET -->
-    <div class="paged-header">
-      <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; min-height: 80px;">
-        <tr>
-          <td style="width: 90px; text-align: left; vertical-align: middle;">
-            {{#solLogo}}
-            <img src="{{solLogo}}" alt="Sol Logo" style="max-width: 80px; max-height: 80px; object-fit: contain;" />
-            {{/solLogo}}
-          </td>
-          
-          <td style="text-align: center; vertical-align: middle; line-height: 1.3;">
-            {{#antetSatirlari}}
-            <div style="font-weight: bold; font-size: 12pt;">{{.}}</div>
-            {{/antetSatirlari}}
-          </td>
-
-          <td style="width: 90px; text-align: right; vertical-align: middle;">
-            {{#sagLogo}}
-            <img src="{{sagLogo}}" alt="Sağ Logo" style="max-width: 80px; max-height: 80px; object-fit: contain;" />
-            {{/sagLogo}}
-          </td>
-        </tr>
-      </table>
-    </div>
-
-    <!-- META ROW (Sayı, Konu, Tarih) -->
-    <div class="meta-row">
-      <div>
-        <table class="meta-table">
+      .page-container {
+        max-width: 21cm;
+        min-height: 29.7cm;
+        margin: 20px auto;
+        padding: 2cm 1.5cm;
+        background: white;
+        box-sizing: border-box;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+      @media print {
+        body {
+          background-color: white;
+        }
+        .page-container {
+          margin: 0;
+          padding: 0;
+          box-shadow: none;
+          max-width: none;
+          min-height: 0;
+        }
+      }
+      .meta-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+      }
+      .meta-table {
+        border-collapse: collapse;
+      }
+      .meta-table td {
+        padding: 2px 10px 2px 0;
+        vertical-align: top;
+      }
+      .meta-label {
+        font-weight: bold;
+        white-space: nowrap;
+      }
+      .makam {
+        text-align: center;
+        font-weight: bold;
+        margin: 40px 0 25px 0;
+        text-transform: uppercase;
+        font-size: 12pt;
+        line-height: 1.5;
+      }
+      .letter-body {
+        text-indent: 40px;
+        text-align: justify;
+        margin-bottom: 15px;
+        line-height: 1.6;
+      }
+      .signature-block {
+        float: right;
+        text-align: center;
+        margin-top: 40px;
+        margin-right: 30px;
+        line-height: 1.4;
+      }
+      .budget-info-table {
+        border-collapse: collapse;
+        border: none;
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 11pt;
+        margin-top: 50px;
+      }
+      .budget-info-table td {
+        padding: 3px 5px;
+      }
+      .budget-info-table td.label {
+        font-weight: bold;
+        width: 150px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <!-- ANTET -->
+      <div class="paged-header">
+        <table
+          style="width: 100%; border-collapse: collapse; margin-bottom: 25px; min-height: 80px"
+        >
           <tr>
-            <td class="meta-label">Sayı</td>
-            <td>: {{evrakSayisi}}</td>
-          </tr>
-          <tr>
-            <td class="meta-label">Konu</td>
-            <td>: Bütçe Sorgusu</td>
+            <td style="width: 90px; text-align: left; vertical-align: middle">
+              {{#solLogo}}
+              <img
+                src="{{solLogo}}"
+                alt="Sol Logo"
+                style="max-width: 80px; max-height: 80px; object-fit: contain"
+              />
+              {{/solLogo}}
+            </td>
+
+            <td style="text-align: center; vertical-align: middle; line-height: 1.3">
+              {{#antetSatirlari}}
+              <div style="font-weight: bold; font-size: 12pt">{{.}}</div>
+              {{/antetSatirlari}}
+            </td>
+
+            <td style="width: 90px; text-align: right; vertical-align: middle">
+              {{#sagLogo}}
+              <img
+                src="{{sagLogo}}"
+                alt="Sağ Logo"
+                style="max-width: 80px; max-height: 80px; object-fit: contain"
+              />
+              {{/sagLogo}}
+            </td>
           </tr>
         </table>
       </div>
-      <div>
-        <strong>Tarih:</strong> {{tarih}}
+
+      <!-- META ROW (Sayı, Konu, Tarih) -->
+      <div class="meta-row">
+        <div>
+          <table class="meta-table">
+            <tr>
+              <td class="meta-label">Sayı</td>
+              <td>: {{evrakSayisi}}</td>
+            </tr>
+            <tr>
+              <td class="meta-label">Konu</td>
+              <td>: Bütçe Sorgusu</td>
+            </tr>
+          </table>
+        </div>
+        <div><strong>Tarih:</strong> {{tarih}}</div>
       </div>
-    </div>
 
-    <!-- RECIPIENT -->
-    <div class="makam">
-      {{muhatapBirim}}
-    </div>
+      <!-- RECIPIENT -->
+      <div class="makam">{{muhatapBirim}}</div>
 
-    <!-- LETTER BODY -->
-    <div class="letter-body">
-      {{kurumAdi}}'na ait "{{isAdi}}" işine ait ihtiyacın, 4734 Sayılı Kanun’un 22/d* maddesine göre karşılanabilmesi amacıyla bütçesindeki kullanılabilir ödenek miktarı ve bütçe tertibinin bildirilmesi hususunda;
-    </div>
-    <div class="letter-body" style="margin-top: 15px;">
-      Gereğini rica ederim.
-    </div>
+      <!-- LETTER BODY -->
+      <div class="letter-body">
+        {{kurumAdi}}'na ait "{{isAdi}}" işine ait ihtiyacın, 4734 Sayılı Kanun’un 22/d* maddesine
+        göre karşılanabilmesi amacıyla bütçesindeki kullanılabilir ödenek miktarı ve bütçe
+        tertibinin bildirilmesi hususunda;
+      </div>
+      <div class="letter-body" style="margin-top: 15px">Gereğini rica ederim.</div>
 
-    <!-- SIGNATURE BLOCK -->
-    <div class="signature-block">
-      <strong>{{hazirlayanPersonelAdi}}</strong><br>
-      {{hazirlayanPersonelUnvan}}
+      <!-- SIGNATURE BLOCK -->
+      <div class="signature-block">
+        <strong>{{hazirlayanPersonelAdi}}</strong><br />
+        {{hazirlayanPersonelUnvan}}
+      </div>
+      <div style="clear: both"></div>
+
+      <!-- BUDGET INFO SECTION (2 lines below, left-aligned) -->
+      <table class="budget-info-table">
+        <tr>
+          <td class="label">Bütçe Yılı</td>
+          <td>:</td>
+          <td>{{butceYili}}</td>
+        </tr>
+        <tr>
+          <td class="label" style="vertical-align: top">Bütçe Tertibi</td>
+          <td style="vertical-align: top">:</td>
+          <td style="vertical-align: top">
+            {{#butceTertibi}}
+            <div>{{.}}</div>
+            {{/butceTertibi}} {{^butceTertibi}} - {{/butceTertibi}}
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Kullanılabilir Ödenek</td>
+          <td>:</td>
+          <td>{{kullanilabilirOdenek}} ₺</td>
+        </tr>
+      </table>
     </div>
-    <div style="clear: both;"></div>
-
-    <!-- BUDGET INFO SECTION (2 lines below, left-aligned) -->
-    <table class="budget-info-table">
-      <tr>
-        <td class="label">Bütçe Yılı</td>
-        <td>:</td>
-        <td>{{butceYili}}</td>
-      </tr>
-      <tr>
-        <td class="label" style="vertical-align: top;">Bütçe Tertibi</td>
-        <td style="vertical-align: top;">:</td>
-        <td style="vertical-align: top;">
-          {{#butceTertibi}}
-          <div>{{.}}</div>
-          {{/butceTertibi}}
-          {{^butceTertibi}}
-          -
-          {{/butceTertibi}}
-        </td>
-      </tr>
-      <tr>
-        <td class="label">Kullanılabilir Ödenek</td>
-        <td>:</td>
-        <td>{{kullanilabilirOdenek}} ₺</td>
-      </tr>
-    </table>
-
-  </div>
-</body>
+  </body>
 </html>

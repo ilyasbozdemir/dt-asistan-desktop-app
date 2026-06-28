@@ -5,7 +5,16 @@ import { autoUpdater } from 'electron-updater'
 import fs from 'fs'
 
 protocol.registerSchemesAsPrivileged([
-  { scheme: 'dta-res', privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true, stream: true } }
+  {
+    scheme: 'dta-res',
+    privileges: {
+      standard: true,
+      secure: true,
+      supportFetchAPI: true,
+      corsEnabled: true,
+      stream: true
+    }
+  }
 ])
 
 import icon from '../../resources/icon.png?asset'
@@ -13,7 +22,12 @@ import { workspaceManager } from './database/workspace'
 import { CURRENT_SCHEMA_VERSION } from './database/migrate'
 import { manifests } from './database/schema-manifest/index'
 import nodemailer from 'nodemailer'
-import { isSupportedFile, defaultFormat, perFormatFilters, allFormatsFilter } from './config/fileFormats'
+import {
+  isSupportedFile,
+  defaultFormat,
+  perFormatFilters,
+  allFormatsFilter
+} from './config/fileFormats'
 import { recentFilesStore } from './store/recentFiles'
 import { startServer, stopServer, getSocketServer } from './server'
 import { connectToServer, disconnectFromServer, emitEvent } from './client'
@@ -171,10 +185,10 @@ if (!gotTheLock && !isMultiInstance) {
       const filePath = commandLine.find((arg) => isSupportedFile(arg))
       if (filePath) {
         const { spawn } = require('child_process')
-        const args = app.isPackaged 
-          ? [filePath, '--multi-instance'] 
+        const args = app.isPackaged
+          ? [filePath, '--multi-instance']
           : [app.getAppPath(), filePath, '--multi-instance']
-        
+
         spawn(process.execPath, args, {
           detached: true,
           stdio: 'ignore'
@@ -182,7 +196,7 @@ if (!gotTheLock && !isMultiInstance) {
       } else {
         if (mainWindow.isMinimized()) mainWindow.restore()
         mainWindow.focus()
-        
+
         if (commandLine.includes('--new-dosya')) {
           mainWindow.webContents.send('app:navigate', '/dosyalar/yeni')
         }
@@ -202,7 +216,7 @@ if (!gotTheLock && !isMultiInstance) {
       const resourcesDir = app.isPackaged
         ? process.resourcesPath
         : join(__dirname, '../../resources')
-      
+
       const targetFilePath = join(resourcesDir, urlPath)
       const fileUrl = `file://${targetFilePath}`
       const { net } = require('electron')
@@ -331,11 +345,11 @@ if (!gotTheLock && !isMultiInstance) {
     ipcMain.on('network:emit', (_, eventName: string, data: any) => {
       // Eğer istemciysek sunucuya gönder
       emitEvent(eventName, data)
-      
+
       // Eğer aynı zamanda sunucuysak, kendi istemcilerimize de dağıt
       const io = getSocketServer()
       if (io) {
-         io.emit(eventName, data)
+        io.emit(eventName, data)
       }
     })
 
@@ -357,13 +371,13 @@ if (!gotTheLock && !isMultiInstance) {
           const errorText = await response.text()
           throw new Error(`Sunucu Hatası: ${response.status} - ${errorText}`)
         }
-        
+
         const arrayBuffer = await response.arrayBuffer()
         const buffer = Buffer.from(arrayBuffer)
-        
+
         let currentFile = workspaceManager.getCurrentFilePath()
         let backupPath: string | null = null
-        
+
         if (!currentFile) {
           const { canceled, filePath } = await dialog.showSaveDialog({
             title: 'Ağdan Gelen Veritabanını Kaydet',
@@ -377,20 +391,22 @@ if (!gotTheLock && !isMultiInstance) {
           backupPath = currentFile + '.syncbak'
           fs.copyFileSync(currentFile, backupPath)
         }
-        
+
         try {
           fs.writeFileSync(currentFile, buffer)
           workspaceManager.open(currentFile, false)
-          
+
           BrowserWindow.getAllWindows().forEach((win) => {
             if (!win.isDestroyed()) win.webContents.send('network:db-pulled')
           })
-          
+
           return { success: true }
         } catch (e: any) {
           if (backupPath && fs.existsSync(backupPath)) {
             fs.copyFileSync(backupPath, currentFile)
-            try { workspaceManager.open(currentFile, false) } catch {}
+            try {
+              workspaceManager.open(currentFile, false)
+            } catch {}
           }
           throw e
         }
@@ -402,13 +418,14 @@ if (!gotTheLock && !isMultiInstance) {
     ipcMain.handle('network:push-db', async (_, url: string) => {
       try {
         const currentFile = workspaceManager.getCurrentFilePath()
-        if (!currentFile || !fs.existsSync(currentFile)) throw new Error('Gönderilecek açık bir dosya yok.')
-        
+        if (!currentFile || !fs.existsSync(currentFile))
+          throw new Error('Gönderilecek açık bir dosya yok.')
+
         // Ensure latest data is written
         workspaceManager.save()
-        
+
         const fileData = fs.readFileSync(currentFile)
-        
+
         const response = await fetch(`${url}/api/network/push`, {
           method: 'POST',
           headers: {
@@ -416,12 +433,12 @@ if (!gotTheLock && !isMultiInstance) {
           },
           body: fileData
         })
-        
+
         if (!response.ok) {
-           const errData = await response.json().catch(() => ({ error: 'Bilinmeyen Hata' }))
-           throw new Error(`Hata: ${errData.error || response.statusText}`)
+          const errData = await response.json().catch(() => ({ error: 'Bilinmeyen Hata' }))
+          throw new Error(`Hata: ${errData.error || response.statusText}`)
         }
-        
+
         return { success: true }
       } catch (err: any) {
         return { success: false, error: err.message }
@@ -448,16 +465,17 @@ if (!gotTheLock && !isMultiInstance) {
         const currentFile = workspaceManager.getCurrentFilePath()
         if (!currentFile) throw new Error('Açık bir çalışma dosyası yok.')
         const backupPath = currentFile + '.syncbak'
-        if (!fs.existsSync(backupPath)) throw new Error('Geri alınacak senkronizasyon yedeği bulunamadı.')
+        if (!fs.existsSync(backupPath))
+          throw new Error('Geri alınacak senkronizasyon yedeği bulunamadı.')
 
         workspaceManager.close()
-        
+
         // Restore backup
         fs.copyFileSync(backupPath, currentFile)
         fs.unlinkSync(backupPath)
 
         workspaceManager.open(currentFile, false)
-        
+
         BrowserWindow.getAllWindows().forEach((win) => {
           if (!win.isDestroyed()) {
             win.webContents.send('db:invalidated')
@@ -504,123 +522,132 @@ if (!gotTheLock && !isMultiInstance) {
       newWindow.loadURL(data.url)
     })
 
-    ipcMain.on('window:open-secondary', (_, data: { path: string; search: string; title?: string }) => {
-      const parent = BrowserWindow.getFocusedWindow() || BrowserWindow.getAllWindows()[0]
-      const newWindow = new BrowserWindow({
-        width: 1000,
-        height: 750,
-        minWidth: 800,
-        minHeight: 600,
-        parent: parent || undefined,
-        modal: false,
-        autoHideMenuBar: true,
-        title: data.title || 'DT Asistan — Detay',
-        icon: icon,
-        webPreferences: {
-          preload: join(__dirname, '../preload/index.js'),
-          sandbox: false
-        }
-      })
-
-      secondaryWindows.add(newWindow)
-      newWindow.on('closed', () => secondaryWindows.delete(newWindow))
-
-      if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-        newWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + data.path + data.search)
-      } else {
-        const indexHtml = join(__dirname, '../renderer/index.html')
-        newWindow.loadFile(indexHtml, {
-          search: data.search.replace(/^\?/, ''),
-          hash: data.path
+    ipcMain.on(
+      'window:open-secondary',
+      (_, data: { path: string; search: string; title?: string }) => {
+        const parent = BrowserWindow.getFocusedWindow() || BrowserWindow.getAllWindows()[0]
+        const newWindow = new BrowserWindow({
+          width: 1000,
+          height: 750,
+          minWidth: 800,
+          minHeight: 600,
+          parent: parent || undefined,
+          modal: false,
+          autoHideMenuBar: true,
+          title: data.title || 'DT Asistan — Detay',
+          icon: icon,
+          webPreferences: {
+            preload: join(__dirname, '../preload/index.js'),
+            sandbox: false
+          }
         })
+
+        secondaryWindows.add(newWindow)
+        newWindow.on('closed', () => secondaryWindows.delete(newWindow))
+
+        if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+          newWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + data.path + data.search)
+        } else {
+          const indexHtml = join(__dirname, '../renderer/index.html')
+          newWindow.loadFile(indexHtml, {
+            search: data.search.replace(/^\?/, ''),
+            hash: data.path
+          })
+        }
       }
-    })
+    )
 
     // --- Dosya ↔ Window IPC Handlers ---
     const dosyaWindows = new Map<number, BrowserWindow>()
 
-    ipcMain.on('window:open-dosya', (_, data: { dosyaId: number; path: string; workspacePath: string; title?: string }) => {
-      const existingWin = dosyaWindows.get(data.dosyaId)
-      if (existingWin && !existingWin.isDestroyed()) {
-        if (existingWin.isMinimized()) existingWin.restore()
-        existingWin.focus()
-        return
-      }
-
-      const newWindow = new BrowserWindow({
-        width: 1100,
-        height: 800,
-        minWidth: 800,
-        minHeight: 600,
-        autoHideMenuBar: true,
-        frame: false,
-        titleBarStyle: 'hidden',
-        titleBarOverlay: false,
-        title: data.title || `Dosya #${data.dosyaId}`,
-        icon: icon,
-        webPreferences: {
-          preload: join(__dirname, '../preload/index.js'),
-          sandbox: false
+    ipcMain.on(
+      'window:open-dosya',
+      (_, data: { dosyaId: number; path: string; workspacePath: string; title?: string }) => {
+        const existingWin = dosyaWindows.get(data.dosyaId)
+        if (existingWin && !existingWin.isDestroyed()) {
+          if (existingWin.isMinimized()) existingWin.restore()
+          existingWin.focus()
+          return
         }
-      })
 
-      dosyaWindows.set(data.dosyaId, newWindow)
-      newWindow.on('closed', () => {
-        dosyaWindows.delete(data.dosyaId)
-      })
-
-      const wpParam = data.workspacePath ? '&wp=' + encodeURIComponent(data.workspacePath) : ''
-      const searchParams = `?mode=dosya_window&dosyaId=${data.dosyaId}${wpParam}`
-
-      if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-        newWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + data.path + searchParams)
-      } else {
-        const indexHtml = join(__dirname, '../renderer/index.html')
-        newWindow.loadFile(indexHtml, {
-          hash: data.path,
-          search: searchParams.replace(/^\?/, '')
+        const newWindow = new BrowserWindow({
+          width: 1100,
+          height: 800,
+          minWidth: 800,
+          minHeight: 600,
+          autoHideMenuBar: true,
+          frame: false,
+          titleBarStyle: 'hidden',
+          titleBarOverlay: false,
+          title: data.title || `Dosya #${data.dosyaId}`,
+          icon: icon,
+          webPreferences: {
+            preload: join(__dirname, '../preload/index.js'),
+            sandbox: false
+          }
         })
+
+        dosyaWindows.set(data.dosyaId, newWindow)
+        newWindow.on('closed', () => {
+          dosyaWindows.delete(data.dosyaId)
+        })
+
+        const wpParam = data.workspacePath ? '&wp=' + encodeURIComponent(data.workspacePath) : ''
+        const searchParams = `?mode=dosya_window&dosyaId=${data.dosyaId}${wpParam}`
+
+        if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+          newWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + data.path + searchParams)
+        } else {
+          const indexHtml = join(__dirname, '../renderer/index.html')
+          newWindow.loadFile(indexHtml, {
+            hash: data.path,
+            search: searchParams.replace(/^\?/, '')
+          })
+        }
       }
-    })
+    )
 
     // --- Tab ↔ Window IPC Handlers ---
     // Opens a tab's content in a separate detached window
-    ipcMain.on('tab:open-in-window', (_, data: { path: string; title: string; workspacePath?: string }) => {
-      const newWindow = new BrowserWindow({
-        width: 1000,
-        height: 750,
-        minWidth: 800,
-        minHeight: 600,
-        autoHideMenuBar: true,
-        frame: false,
-        titleBarStyle: 'hidden',
-        titleBarOverlay: false,
-        title: data.title || 'DT Asistan',
-        icon: icon,
-        webPreferences: {
-          preload: join(__dirname, '../preload/index.js'),
-          sandbox: false
-        }
-      })
-
-      secondaryWindows.add(newWindow)
-      newWindow.on('closed', () => secondaryWindows.delete(newWindow))
-
-      const wpParam = data.workspacePath ? '&wp=' + encodeURIComponent(data.workspacePath) : ''
-      if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-        // Dev: path goes into URL pathname, params into query string
-        newWindow.loadURL(
-          process.env['ELECTRON_RENDERER_URL'] + data.path + '?mode=window' + wpParam
-        )
-      } else {
-        // Production: path goes into hash, params into search
-        const indexHtml = join(__dirname, '../renderer/index.html')
-        newWindow.loadFile(indexHtml, {
-          hash: data.path,
-          search: 'mode=window' + wpParam
+    ipcMain.on(
+      'tab:open-in-window',
+      (_, data: { path: string; title: string; workspacePath?: string }) => {
+        const newWindow = new BrowserWindow({
+          width: 1000,
+          height: 750,
+          minWidth: 800,
+          minHeight: 600,
+          autoHideMenuBar: true,
+          frame: false,
+          titleBarStyle: 'hidden',
+          titleBarOverlay: false,
+          title: data.title || 'DT Asistan',
+          icon: icon,
+          webPreferences: {
+            preload: join(__dirname, '../preload/index.js'),
+            sandbox: false
+          }
         })
+
+        secondaryWindows.add(newWindow)
+        newWindow.on('closed', () => secondaryWindows.delete(newWindow))
+
+        const wpParam = data.workspacePath ? '&wp=' + encodeURIComponent(data.workspacePath) : ''
+        if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+          // Dev: path goes into URL pathname, params into query string
+          newWindow.loadURL(
+            process.env['ELECTRON_RENDERER_URL'] + data.path + '?mode=window' + wpParam
+          )
+        } else {
+          // Production: path goes into hash, params into search
+          const indexHtml = join(__dirname, '../renderer/index.html')
+          newWindow.loadFile(indexHtml, {
+            hash: data.path,
+            search: 'mode=window' + wpParam
+          })
+        }
       }
-    })
+    )
 
     // Returns a detached window's content back to the main window as a tab
     ipcMain.on('tab:return-to-parent', (event, data: { path: string }) => {
@@ -652,30 +679,60 @@ if (!gotTheLock && !isMultiInstance) {
     })
 
     ipcMain.handle('get-changelog', async () => {
-      const allChanges: {version: string, notes: string, schema_max: number}[] = []
-      
+      const allChanges: { version: string; notes: string; schema_max: number }[] = []
+
       // Gerçek uygulama güncellemelerini manuel ekliyoruz
       const appUpdates = [
-        { version: '1.0.0-alpha.29', notes: '- İçe Aktarma (Import) ekranındaki buton stilleri (variant) ile ilgili TypeScript hataları düzeltildi.', schema_max: 20 },
-        { version: '1.0.0-alpha.28', notes: '- Yeni Özellik: Firmalar, Personel, Malzeme gibi kayıtların sisteme JSON dosyası olarak Toplu İçe Aktarılabilmesi sağlandı.', schema_max: 20 },
-        { version: '1.0.0-alpha.27', notes: '- Sistem tepsisi (Tray) entegrasyonu sağlandı. Uygulama X tuşuyla kapatıldığında arka planda çalışmaya devam eder.\n- Görev çubuğunda (Jump List) kısayollar aktif edildi.\n- Çeşitli hata düzeltmeleri yapıldı.', schema_max: 20 },
-        { version: '1.0.0-alpha.26', notes: '- Yeni dosya oluşturma ekranına Yapay Zeka destekli "İşin Kapsamı ve Tanımı" oluşturma özelliği eklendi.', schema_max: 20 },
-        { version: '1.0.0-alpha.25', notes: '- Profil ve Ayarlar ekranlarındaki arayüz sorunları giderildi.', schema_max: 20 }
+        {
+          version: '1.0.0-alpha.29',
+          notes:
+            '- İçe Aktarma (Import) ekranındaki buton stilleri (variant) ile ilgili TypeScript hataları düzeltildi.',
+          schema_max: 20
+        },
+        {
+          version: '1.0.0-alpha.28',
+          notes:
+            '- Yeni Özellik: Firmalar, Personel, Malzeme gibi kayıtların sisteme JSON dosyası olarak Toplu İçe Aktarılabilmesi sağlandı.',
+          schema_max: 20
+        },
+        {
+          version: '1.0.0-alpha.27',
+          notes:
+            '- Sistem tepsisi (Tray) entegrasyonu sağlandı. Uygulama X tuşuyla kapatıldığında arka planda çalışmaya devam eder.\n- Görev çubuğunda (Jump List) kısayollar aktif edildi.\n- Çeşitli hata düzeltmeleri yapıldı.',
+          schema_max: 20
+        },
+        {
+          version: '1.0.0-alpha.26',
+          notes:
+            '- Yeni dosya oluşturma ekranına Yapay Zeka destekli "İşin Kapsamı ve Tanımı" oluşturma özelliği eklendi.',
+          schema_max: 20
+        },
+        {
+          version: '1.0.0-alpha.25',
+          notes: '- Profil ve Ayarlar ekranlarındaki arayüz sorunları giderildi.',
+          schema_max: 20
+        }
       ]
 
       for (const v of manifests) {
         if (v.changes && v.changes.length > 0) {
-          const notes = v.changes.map((c: any) => `- Schema ${c.schema}: ${c.description}`).join('\n')
+          const notes = v.changes
+            .map((c: any) => `- Schema ${c.schema}: ${c.description}`)
+            .join('\n')
           allChanges.push({ version: v.app, notes, schema_max: v.schema_max })
         } else {
-          allChanges.push({ version: v.app, notes: 'Yapısal bir veritabanı değişikliği yok.', schema_max: v.schema_max })
+          allChanges.push({
+            version: v.app,
+            notes: 'Yapısal bir veritabanı değişikliği yok.',
+            schema_max: v.schema_max
+          })
         }
       }
 
       // App güncellemelerini ekle
-      appUpdates.forEach(update => {
+      appUpdates.forEach((update) => {
         // Eğer manifest'te aynı versiyon varsa onu ez
-        const index = allChanges.findIndex(c => c.version === update.version)
+        const index = allChanges.findIndex((c) => c.version === update.version)
         if (index !== -1) {
           allChanges[index] = update
         } else {
@@ -697,10 +754,10 @@ if (!gotTheLock && !isMultiInstance) {
             preNum: parseInt(m[5] || '0')
           }
         }
-        
+
         const va = parseVer(a.version)
         const vb = parseVer(b.version)
-        
+
         if (va.major !== vb.major) return vb.major - va.major
         if (va.minor !== vb.minor) return vb.minor - va.minor
         if (va.patch !== vb.patch) return vb.patch - va.patch
@@ -709,21 +766,24 @@ if (!gotTheLock && !isMultiInstance) {
       })
     })
 
-    ipcMain.handle('workspace:open', async (_, filePath: string, allowMigration: boolean = false) => {
-      try {
-        closeAllSecondaryWindows()
-        const meta = workspaceManager.open(filePath, allowMigration)
-        return { success: true, meta, newFilePath: workspaceManager.getCurrentFilePath() }
-      } catch (error: any) {
-        if (error.message && error.message.startsWith('MIGRATION_REQUIRED|')) {
-           const payloadStr = error.message.split('|')[1]
-           const payload = JSON.parse(payloadStr)
-           return { success: false, ...payload } // { requiresMigration: true, pendingUpdates: [] }
+    ipcMain.handle(
+      'workspace:open',
+      async (_, filePath: string, allowMigration: boolean = false) => {
+        try {
+          closeAllSecondaryWindows()
+          const meta = workspaceManager.open(filePath, allowMigration)
+          return { success: true, meta, newFilePath: workspaceManager.getCurrentFilePath() }
+        } catch (error: any) {
+          if (error.message && error.message.startsWith('MIGRATION_REQUIRED|')) {
+            const payloadStr = error.message.split('|')[1]
+            const payload = JSON.parse(payloadStr)
+            return { success: false, ...payload } // { requiresMigration: true, pendingUpdates: [] }
+          }
+          console.error('Open workspace error:', error)
+          return { success: false, error: error.message }
         }
-        console.error('Open workspace error:', error)
-        return { success: false, error: error.message }
       }
-    })
+    )
 
     ipcMain.handle('workspace:close', async () => {
       try {
@@ -772,9 +832,17 @@ if (!gotTheLock && !isMultiInstance) {
         if (!db) throw new Error('Açık bir çalışma alanı yok.')
 
         // Güvenlik: Sadece belirli tablolara izin ver (SQL Injection önlemi)
-        const allowedTargets = ['TANIM_Firma', 'TANIM_Personel', 'TANIM_Birim', 'TANIM_Kalem', 'TANIM_Ambar', 'DATA_TeminDosyasi', 'settings']
+        const allowedTargets = [
+          'TANIM_Firma',
+          'TANIM_Personel',
+          'TANIM_Birim',
+          'TANIM_Kalem',
+          'TANIM_Ambar',
+          'DATA_TeminDosyasi',
+          'settings'
+        ]
         if (!allowedTargets.includes(target)) {
-           throw new Error(`Geçersiz hedef tablo: ${target}`)
+          throw new Error(`Geçersiz hedef tablo: ${target}`)
         }
 
         // Aynı hedefe eşlenen JSON alanlarını grupla (Örn: adi -> ad_soyad, soyadi -> ad_soyad)
@@ -796,13 +864,15 @@ if (!gotTheLock && !isMultiInstance) {
               const mappedRow: any = {}
               for (const col of uniqueColumns) {
                 const keys = columnMap.get(col)!
-                const parts = keys.map(k => row[k]).filter(v => v !== undefined && v !== null && v !== '')
+                const parts = keys
+                  .map((k) => row[k])
+                  .filter((v) => v !== undefined && v !== null && v !== '')
                 if (parts.length > 0) {
                   mappedRow[col] = String(parts.join(' '))
                 }
               }
               for (const [k, v] of Object.entries(mappedRow)) {
-                 stmt.run(k, v)
+                stmt.run(k, v)
               }
               successCount++
             }
@@ -821,44 +891,56 @@ if (!gotTheLock && !isMultiInstance) {
 
         // Çakışan kayıtları atla (INSERT OR IGNORE)
         const placeholders = insertColumns.map(() => '?').join(', ')
-        const stmt = db.prepare(`INSERT OR IGNORE INTO ${target} (${insertColumns.join(', ')}) VALUES (${placeholders})`)
+        const stmt = db.prepare(
+          `INSERT OR IGNORE INTO ${target} (${insertColumns.join(', ')}) VALUES (${placeholders})`
+        )
 
         let successCount = 0
         const insertMany = db.transaction((rows: any[]) => {
           for (const row of rows) {
-            const values = insertColumns.map(col => {
+            const values = insertColumns.map((col) => {
               if (col === 'barkod_id' && autoBarkodId) {
                 return Math.floor(1000000000000 + Math.random() * 9000000000000).toString()
               }
               const keys = columnMap.get(col)!
-              const parts = keys.map(k => row[k]).filter(v => v !== undefined && v !== null && v !== '')
+              const parts = keys
+                .map((k) => row[k])
+                .filter((v) => v !== undefined && v !== null && v !== '')
               if (parts.length === 0) {
-                if (col === 'barkod_id') return Math.floor(1000000000000 + Math.random() * 9000000000000).toString()
+                if (col === 'barkod_id')
+                  return Math.floor(1000000000000 + Math.random() * 9000000000000).toString()
                 if (col === 'tipi') return 'Mal'
                 if (col === 'birim') return 'Adet'
                 if (col === 'aktif_mi') return 1
                 if (col === 'kdv_orani') return 20
-                if (col === 'is_personel' || col === 'ihale_yetkilisi_mi' || col === 'harcama_yetkilisi_mi') return 0
+                if (
+                  col === 'is_personel' ||
+                  col === 'ihale_yetkilisi_mi' ||
+                  col === 'harcama_yetkilisi_mi'
+                )
+                  return 0
                 return null
               }
               // Birden fazla alan aynı sütuna eşleştiyse aralarında boşluk bırakarak birleştir
               let combined = parts.join(' ')
-              
+
               // İsim/Soyisim alanları için özel formatlama (Son kelime BÜYÜK, diğerleri İlk Harf Büyük)
               if (['ad_soyad', 'ilgili_adi'].includes(col) && typeof combined === 'string') {
                 const words = combined.trim().split(/\s+/)
                 if (words.length > 1) {
                   const lastWord = words.pop()!.toLocaleUpperCase('tr-TR')
-                  const firstWords = words.map(w => 
-                    w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR')
+                  const firstWords = words.map(
+                    (w) =>
+                      w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR')
                   )
                   combined = [...firstWords, lastWord].join(' ')
                 } else if (words.length === 1 && words[0]) {
                   const w = words[0]
-                  combined = w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR')
+                  combined =
+                    w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR')
                 }
               }
-              
+
               return combined
             })
             const result = stmt.run(...values)
@@ -867,7 +949,7 @@ if (!gotTheLock && !isMultiInstance) {
         })
 
         insertMany(data)
-        
+
         return { success: true, count: successCount, total: data.length }
       } catch (error: any) {
         console.error('Bulk import error:', error)
@@ -923,23 +1005,26 @@ if (!gotTheLock && !isMultiInstance) {
       return { success: true }
     })
 
-    ipcMain.handle('export-pdf', async (_, htmlContent: string, _printOptions?: any, fileName?: string) => {
-      try {
-        const { canceled, filePath } = await dialog.showSaveDialog({
-          title: 'PDF Olarak Kaydet',
-          defaultPath: fileName ? `${fileName}.pdf` : 'Cikti.pdf',
-          filters: [{ name: 'PDF Dosyası', extensions: ['pdf'] }]
-        })
-        if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
-        
-        const pdfBuffer = await renderPdfBuffer(htmlContent)
-        fs.writeFileSync(filePath, pdfBuffer)
-        
-        return { success: true, filePath }
-      } catch (err: any) {
-        return { success: false, error: err.message }
+    ipcMain.handle(
+      'export-pdf',
+      async (_, htmlContent: string, _printOptions?: any, fileName?: string) => {
+        try {
+          const { canceled, filePath } = await dialog.showSaveDialog({
+            title: 'PDF Olarak Kaydet',
+            defaultPath: fileName ? `${fileName}.pdf` : 'Cikti.pdf',
+            filters: [{ name: 'PDF Dosyası', extensions: ['pdf'] }]
+          })
+          if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
+
+          const pdfBuffer = await renderPdfBuffer(htmlContent)
+          fs.writeFileSync(filePath, pdfBuffer)
+
+          return { success: true, filePath }
+        } catch (err: any) {
+          return { success: false, error: err.message }
+        }
       }
-    })
+    )
 
     ipcMain.handle('export-docx', async (_, htmlContent: string, fileName?: string) => {
       try {
@@ -949,11 +1034,11 @@ if (!gotTheLock && !isMultiInstance) {
           filters: [{ name: 'Word Dosyası', extensions: ['docx'] }]
         })
         if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
-        
+
         const { renderDocxBuffer } = await import('./docxService')
         const buffer = await renderDocxBuffer(htmlContent)
         fs.writeFileSync(filePath, buffer)
-        
+
         return { success: true, filePath }
       } catch (err: any) {
         return { success: false, error: err.message }
@@ -968,11 +1053,11 @@ if (!gotTheLock && !isMultiInstance) {
           filters: [{ name: 'UYAP Dokümanı', extensions: ['udf'] }]
         })
         if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
-        
+
         const stripHtml = htmlContent.replace(/<[^>]+>/g, ' ')
         const udfContent = `<?xml version="1.0" encoding="utf-8"?>\n<Document>\n<content>\n<![CDATA[\n${stripHtml}\n]]>\n</content>\n</Document>`
         fs.writeFileSync(filePath, udfContent, 'utf-8')
-        
+
         return { success: true, filePath }
       } catch (err: any) {
         return { success: false, error: err.message }
@@ -983,20 +1068,26 @@ if (!gotTheLock && !isMultiInstance) {
       try {
         const win = new BrowserWindow({ show: false })
         await win.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`)
-        
-        await new Promise(resolve => setTimeout(resolve, 500))
-        
+
+        await new Promise((resolve) => setTimeout(resolve, 500))
+
         return await new Promise((resolve) => {
-          win.webContents.print({ printBackground: true, ...printOptions }, (success, failureReason) => {
-            if (!win.isDestroyed()) {
-              win.destroy()
+          win.webContents.print(
+            { printBackground: true, ...printOptions },
+            (success, failureReason) => {
+              if (!win.isDestroyed()) {
+                win.destroy()
+              }
+              if (success) {
+                resolve({ success: true })
+              } else {
+                resolve({
+                  success: false,
+                  error: failureReason || 'Yazdırma işlemi iptal edildi veya başarısız oldu'
+                })
+              }
             }
-            if (success) {
-              resolve({ success: true })
-            } else {
-              resolve({ success: false, error: failureReason || 'Yazdırma işlemi iptal edildi veya başarısız oldu' })
-            }
-          })
+          )
         })
       } catch (err: any) {
         return { success: false, error: err.message }
@@ -1012,20 +1103,22 @@ if (!gotTheLock && !isMultiInstance) {
       }
     })
 
-    ipcMain.handle('export-html', async (_, htmlContent: string, options?: { paperSize?: string }, fileName?: string) => {
-      try {
-        const paperSize = options?.paperSize || 'A4'
-        const isA4 = paperSize === 'A4'
-        const width = isA4 ? '210mm' : 'auto'
+    ipcMain.handle(
+      'export-html',
+      async (_, htmlContent: string, options?: { paperSize?: string }, fileName?: string) => {
+        try {
+          const paperSize = options?.paperSize || 'A4'
+          const isA4 = paperSize === 'A4'
+          const width = isA4 ? '210mm' : 'auto'
 
-        const { canceled, filePath } = await dialog.showSaveDialog({
-          title: 'HTML Olarak Kaydet',
-          defaultPath: fileName ? `${fileName}.html` : 'Cikti.html',
-          filters: [{ name: 'HTML Dosyası', extensions: ['html'] }]
-        })
-        if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
-        
-        const fullHtml = `<!DOCTYPE html>
+          const { canceled, filePath } = await dialog.showSaveDialog({
+            title: 'HTML Olarak Kaydet',
+            defaultPath: fileName ? `${fileName}.html` : 'Cikti.html',
+            filters: [{ name: 'HTML Dosyası', extensions: ['html'] }]
+          })
+          if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
+
+          const fullHtml = `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -1062,13 +1155,14 @@ if (!gotTheLock && !isMultiInstance) {
 </body>
 </html>`
 
-        fs.writeFileSync(filePath, fullHtml, 'utf8')
-        
-        return { success: true, filePath }
-      } catch (err: any) {
-        return { success: false, error: err.message }
+          fs.writeFileSync(filePath, fullHtml, 'utf8')
+
+          return { success: true, filePath }
+        } catch (err: any) {
+          return { success: false, error: err.message }
+        }
       }
-    })
+    )
 
     ipcMain.handle('export-xlsx', async (_, bufferData: Uint8Array | ArrayBuffer) => {
       try {
@@ -1078,9 +1172,9 @@ if (!gotTheLock && !isMultiInstance) {
           filters: [{ name: 'Excel Dosyası', extensions: ['xlsx'] }]
         })
         if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
-        
+
         fs.writeFileSync(filePath, Buffer.from(bufferData as ArrayBuffer))
-        
+
         return { success: true, filePath }
       } catch (err: any) {
         return { success: false, error: err.message }
@@ -1094,8 +1188,9 @@ if (!gotTheLock && !isMultiInstance) {
           filters: [{ name: 'Word Document', extensions: ['docx'] }],
           properties: ['openFile']
         })
-        if (canceled || !filePaths || filePaths.length === 0) return { success: false, error: 'İptal edildi' }
-        
+        if (canceled || !filePaths || filePaths.length === 0)
+          return { success: false, error: 'İptal edildi' }
+
         const mammoth = require('mammoth')
         const result = await mammoth.convertToHtml({ path: filePaths[0] })
         return { success: true, html: result.value, messages: result.messages }
@@ -1111,8 +1206,9 @@ if (!gotTheLock && !isMultiInstance) {
           filters: [{ name: 'Excel Dosyası', extensions: ['xlsx', 'xls'] }],
           properties: ['openFile']
         })
-        if (canceled || !filePaths || filePaths.length === 0) return { success: false, error: 'İptal edildi' }
-        
+        if (canceled || !filePaths || filePaths.length === 0)
+          return { success: false, error: 'İptal edildi' }
+
         const buffer = fs.readFileSync(filePaths[0])
         return { success: true, data: buffer }
       } catch (err: any) {
@@ -1142,7 +1238,8 @@ if (!gotTheLock && !isMultiInstance) {
           filters: [{ name: 'DTAL Template', extensions: ['dtal.template'] }],
           properties: ['openFile']
         })
-        if (canceled || !filePaths || filePaths.length === 0) return { success: false, error: 'İptal edildi' }
+        if (canceled || !filePaths || filePaths.length === 0)
+          return { success: false, error: 'İptal edildi' }
         const content = fs.readFileSync(filePaths[0], 'utf-8')
         return { success: true, data: content, filePath: filePaths[0] }
       } catch (err: any) {
@@ -1154,7 +1251,7 @@ if (!gotTheLock && !isMultiInstance) {
       const templatesDirDev = join(app.getAppPath(), 'resources', 'templates')
       const templatesDirProd = join(process.resourcesPath, 'templates')
       const targetDir = fs.existsSync(templatesDirProd) ? templatesDirProd : templatesDirDev
-      
+
       const findFile = (dir: string): string | null => {
         try {
           const list = fs.readdirSync(dir)
@@ -1168,9 +1265,15 @@ if (!gotTheLock && !isMultiInstance) {
               return filePath
             } else if (file === 'index.html' && fileName === `${dir.split(/[\\/]/).pop()}.html`) {
               return filePath
-            } else if (file === 'index.html.json' && fileName === `${dir.split(/[\\/]/).pop()}.html.json`) {
+            } else if (
+              file === 'index.html.json' &&
+              fileName === `${dir.split(/[\\/]/).pop()}.html.json`
+            ) {
               return filePath
-            } else if (file === 'index.json' && fileName === `${dir.split(/[\\/]/).pop()}.html.json`) {
+            } else if (
+              file === 'index.json' &&
+              fileName === `${dir.split(/[\\/]/).pop()}.html.json`
+            ) {
               return filePath
             }
           }
@@ -1179,7 +1282,7 @@ if (!gotTheLock && !isMultiInstance) {
         }
         return null
       }
-      
+
       const filePath = findFile(targetDir)
       if (filePath) {
         return fs.readFileSync(filePath, 'utf-8')
@@ -1191,7 +1294,7 @@ if (!gotTheLock && !isMultiInstance) {
       const templatesDirDev = join(app.getAppPath(), 'resources', 'templates')
       const templatesDirProd = join(process.resourcesPath, 'templates')
       const targetDir = fs.existsSync(templatesDirProd) ? templatesDirProd : templatesDirDev
-      
+
       const findFile = (dir: string): string | null => {
         try {
           const list = fs.readdirSync(dir)
@@ -1205,9 +1308,15 @@ if (!gotTheLock && !isMultiInstance) {
               return filePath
             } else if (file === 'index.html' && fileName === `${dir.split(/[\\/]/).pop()}.html`) {
               return filePath
-            } else if (file === 'index.html.json' && fileName === `${dir.split(/[\\/]/).pop()}.html.json`) {
+            } else if (
+              file === 'index.html.json' &&
+              fileName === `${dir.split(/[\\/]/).pop()}.html.json`
+            ) {
               return filePath
-            } else if (file === 'index.json' && fileName === `${dir.split(/[\\/]/).pop()}.html.json`) {
+            } else if (
+              file === 'index.json' &&
+              fileName === `${dir.split(/[\\/]/).pop()}.html.json`
+            ) {
               return filePath
             }
           }
@@ -1216,9 +1325,9 @@ if (!gotTheLock && !isMultiInstance) {
         }
         return null
       }
-      
+
       const targetPath = findFile(targetDir)
-      
+
       if (targetPath) {
         try {
           fs.writeFileSync(targetPath, content, 'utf-8')
@@ -1325,7 +1434,6 @@ if (!gotTheLock && !isMultiInstance) {
           .prepare("SELECT value FROM settings WHERE key = 'adminPassword'")
           .get() as { value: string } | undefined
 
-
         const expectedUser = userRow?.value || ''
         const expectedPass = passRow?.value || ''
 
@@ -1404,7 +1512,7 @@ if (!gotTheLock && !isMultiInstance) {
 
         const port = parseInt(portRow.value) || 587
         const userSecure = secureRow?.value === 'true'
-        const actualSecure = port === 465 ? true : (port === 587 ? false : userSecure)
+        const actualSecure = port === 465 ? true : port === 587 ? false : userSecure
 
         const transporter = nodemailer.createTransport({
           host: hostRow.value,
@@ -1543,12 +1651,14 @@ if (!gotTheLock && !isMultiInstance) {
       try {
         const db = workspaceManager.getDb()
         const activeMeta = workspaceManager.getMeta()
-        
+
         const data: Record<string, any[]> = {}
         let recordCount = 0
 
         const exportTable = (tableName: string) => {
-          const row = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name = ?").get(tableName)
+          const row = db
+            .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name = ?")
+            .get(tableName)
           if (row) {
             const rows = db.prepare(`SELECT * FROM ${tableName}`).all()
             data[tableName] = rows
@@ -1563,8 +1673,9 @@ if (!gotTheLock && !isMultiInstance) {
         if (contentType === 'mevzuat' || contentType === 'all') exportTable('TANIM_Mevzuat')
         if (contentType === 'ambar' || contentType === 'all') exportTable('TANIM_Ambar')
         if (contentType === 'tasinir' || contentType === 'all') exportTable('TANIM_TasinirKod')
-        if (contentType === 'olcubirimleri' || contentType === 'all') exportTable('TANIM_OlcuBirimleri')
-        
+        if (contentType === 'olcubirimleri' || contentType === 'all')
+          exportTable('TANIM_OlcuBirimleri')
+
         // Note: DATA_TeminDosyasi is deliberately skipped unless explicitly requested, as it contains transactional data.
         if (contentType === 'full_backup') {
           exportTable('TANIM_Firma')
@@ -1578,29 +1689,33 @@ if (!gotTheLock && !isMultiInstance) {
           exportTable('DATA_TeminDosyasi')
           exportTable('settings')
         }
-        
+
         // Fetch active institution name from settings
         let institutionName = activeMeta?.institution || 'Bilinmeyen Kurum'
         try {
-          const row = db.prepare("SELECT value FROM settings WHERE key = 'institutionName'").get() as { value: string } | undefined
+          const row = db
+            .prepare("SELECT value FROM settings WHERE key = 'institutionName'")
+            .get() as { value: string } | undefined
           if (row && row.value) {
             institutionName = row.value
           }
         } catch (e) {
           // ignore
         }
-        
+
         // Get active schema version
         let activeSchemaVersion = CURRENT_SCHEMA_VERSION
         try {
-          const row = db.prepare("SELECT value FROM settings WHERE key = 'dbSchemaVersion'").get() as { value: string } | undefined
+          const row = db
+            .prepare("SELECT value FROM settings WHERE key = 'dbSchemaVersion'")
+            .get() as { value: string } | undefined
           if (row && row.value) {
             activeSchemaVersion = parseInt(row.value, 10) || CURRENT_SCHEMA_VERSION
           }
         } catch (e) {
           // ignore
         }
-        
+
         const payload = {
           dte_version: '1.0',
           exported_from_app: app.getVersion(),
@@ -1611,15 +1726,15 @@ if (!gotTheLock && !isMultiInstance) {
           record_count: recordCount,
           data
         }
-        
+
         const { filePath, canceled } = await dialog.showSaveDialog({
           title: 'Doğrudan Temin Verilerini Dışa Aktar (.dte)',
           defaultPath: `dt_veri_aktarimi_${contentType}_${new Date().toISOString().split('T')[0]}.dte`,
           filters: [{ name: 'DTE Files', extensions: ['dte', 'json'] }]
         })
-        
+
         if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
-        
+
         fs.writeFileSync(filePath, JSON.stringify(payload, null, 2), 'utf-8')
         return { success: true, filePath, recordCount }
       } catch (error: any) {
@@ -1646,22 +1761,22 @@ if (!gotTheLock && !isMultiInstance) {
             filters: [{ name: 'DTE Files', extensions: ['dte', 'json'] }],
             properties: ['openFile']
           })
-          
+
           if (canceled || !filePaths || filePaths.length === 0) {
             return { success: false, error: 'İptal edildi' }
           }
           filePath = filePaths[0]
         }
-        
+
         const content = fs.readFileSync(filePath, 'utf-8')
 
         const payload = JSON.parse(content)
-        
+
         // Metadata validations
         if (!payload.dte_version) {
           return { success: false, error: 'Geçersiz DTE dosyası: dte_version bulunamadı.' }
         }
-        
+
         const exportedSchema = parseInt(payload.exported_from_schema, 10) || 1
         if (exportedSchema > CURRENT_SCHEMA_VERSION) {
           return {
@@ -1669,26 +1784,30 @@ if (!gotTheLock && !isMultiInstance) {
             error: `Bu dosya daha yeni bir uygulama sürümü gerektirir. (Gereken Şema Sürümü: v${exportedSchema}, Mevcut Şema Sürümü: v${CURRENT_SCHEMA_VERSION})`
           }
         }
-        
+
         const contentType = payload.content_type || 'all'
         const dataToImport = payload.data || {}
-        
+
         const db = workspaceManager.getDb()
-        
+
         // Helpers to check tables & columns dynamically
         const checkTableExists = (tableName: string): boolean => {
-          const row = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name = ?").get(tableName)
+          const row = db
+            .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name = ?")
+            .get(tableName)
           return !!row
         }
-        
+
         const getTableColumns = (tableName: string): string[] => {
-          const rows = db.prepare(`PRAGMA table_info(${tableName})`).all() as Array<{ name: string }>
+          const rows = db.prepare(`PRAGMA table_info(${tableName})`).all() as Array<{
+            name: string
+          }>
           return rows.map((r) => r.name)
         }
-        
+
         let totalImportedCount = 0
         const warnings: string[] = []
-        
+
         db.transaction(() => {
           for (const [tableName, rows] of Object.entries(dataToImport)) {
             const tableRows = rows as any[]
@@ -1696,7 +1815,7 @@ if (!gotTheLock && !isMultiInstance) {
               if (checkTableExists(tableName)) {
                 const existingCols = getTableColumns(tableName)
                 let tableImportCount = 0
-                
+
                 for (const row of tableRows) {
                   const filteredRow: Record<string, any> = {}
                   for (const col of existingCols) {
@@ -1704,32 +1823,40 @@ if (!gotTheLock && !isMultiInstance) {
                       filteredRow[col] = row[col]
                     }
                   }
-                  
+
                   if (Object.keys(filteredRow).length > 0) {
-                    const colsStr = Object.keys(filteredRow).map((c) => `"${c}"`).join(', ')
-                    const placeholders = Object.keys(filteredRow).map(() => '?').join(', ')
+                    const colsStr = Object.keys(filteredRow)
+                      .map((c) => `"${c}"`)
+                      .join(', ')
+                    const placeholders = Object.keys(filteredRow)
+                      .map(() => '?')
+                      .join(', ')
                     const values = Object.values(filteredRow)
-                    
-                    db.prepare(`INSERT OR REPLACE INTO ${tableName} (${colsStr}) VALUES (${placeholders})`).run(...values)
+
+                    db.prepare(
+                      `INSERT OR REPLACE INTO ${tableName} (${colsStr}) VALUES (${placeholders})`
+                    ).run(...values)
                     tableImportCount++
                     totalImportedCount++
                   }
                 }
               } else {
-                warnings.push(`${tableName} tablosu hedef veritabanında bulunamadı. Aktarımı atlandı.`)
+                warnings.push(
+                  `${tableName} tablosu hedef veritabanında bulunamadı. Aktarımı atlandı.`
+                )
               }
             }
           }
         })()
-        
+
         workspaceManager.save()
         broadcastDbChange()
-        
+
         return {
           success: true,
           totalImportedCount,
-          importedFirmsCount: (dataToImport['TANIM_Firma']?.length || 0), // Kept for backwards compatibility in UI
-          importedItemsCount: (dataToImport['TANIM_Kalem']?.length || 0), // Kept for backwards compatibility in UI
+          importedFirmsCount: dataToImport['TANIM_Firma']?.length || 0, // Kept for backwards compatibility in UI
+          importedItemsCount: dataToImport['TANIM_Kalem']?.length || 0, // Kept for backwards compatibility in UI
           contentType,
           warnings
         }
@@ -1747,7 +1874,8 @@ if (!gotTheLock && !isMultiInstance) {
           properties: ['openFile']
         })
 
-        if (canceled || !filePaths || filePaths.length === 0) return { success: false, error: 'İptal edildi' }
+        if (canceled || !filePaths || filePaths.length === 0)
+          return { success: false, error: 'İptal edildi' }
 
         const filePath = filePaths[0]
         const xlsx = require('xlsx')
@@ -1757,7 +1885,7 @@ if (!gotTheLock && !isMultiInstance) {
         const data = xlsx.utils.sheet_to_json(sheet, { header: 1 }) as any[][]
 
         const db = workspaceManager.getDb()
-        
+
         const insertStmt = db.prepare(`
           INSERT INTO TANIM_TasinirKod (tam_kod, hesap_kodu, duzey_1, duzey_2, duzey_3, duzey_4, duzey_5, aciklama)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -1810,7 +1938,8 @@ if (!gotTheLock && !isMultiInstance) {
           properties: ['openFile']
         })
 
-        if (canceled || !filePaths || filePaths.length === 0) return { success: false, error: 'İptal edildi' }
+        if (canceled || !filePaths || filePaths.length === 0)
+          return { success: false, error: 'İptal edildi' }
 
         const xlsx = require('xlsx')
         const workbook = xlsx.readFile(filePaths[0])
@@ -1867,39 +1996,100 @@ if (!gotTheLock && !isMultiInstance) {
 
         const xlsx = require('xlsx')
         const headers = [
-          'Barkod/ID', 'Taşınır Kodu', 'OKAS Kodu', 'Malzeme/Hizmet Adı', 
-          'Türü', 'Birim', 'Kategori', 'Özelliği', 'KDV Oranı (%)', 
-          'Menşei', 'Personel Hizmeti Mi?', 'Asgari Ücret Fark Oranı (%)'
+          'Barkod/ID',
+          'Taşınır Kodu',
+          'OKAS Kodu',
+          'Malzeme/Hizmet Adı',
+          'Türü',
+          'Birim',
+          'Kategori',
+          'Özelliği',
+          'KDV Oranı (%)',
+          'Menşei',
+          'Personel Hizmeti Mi?',
+          'Asgari Ücret Fark Oranı (%)'
         ]
         const exampleRows = [
-          ['MLZ-0001', '150.01.01', '30192700', 'A4 Fotokopi Kağıdı', 'Mal', 'Paket', 'Kırtasiye', '80 gr/m2 beyaz renk', 20, 'Yerli', 'Hayır', 0],
-          ['MLZ-0002', '', '', 'Özel Yazılım Geliştirme', 'Hizmet, Diğer', 'Saat', 'Bilişim', '', 20, 'Yerli', 'Hayır', 0],
-          ['MLZ-0003', '', '', 'Güvenlik Personeli', 'Hizmet, Personel', 'Kişi', 'Güvenlik', 'Silahlı güvenlik görevlisi', 20, 'Yerli', 'Evet', 15]
+          [
+            'MLZ-0001',
+            '150.01.01',
+            '30192700',
+            'A4 Fotokopi Kağıdı',
+            'Mal',
+            'Paket',
+            'Kırtasiye',
+            '80 gr/m2 beyaz renk',
+            20,
+            'Yerli',
+            'Hayır',
+            0
+          ],
+          [
+            'MLZ-0002',
+            '',
+            '',
+            'Özel Yazılım Geliştirme',
+            'Hizmet, Diğer',
+            'Saat',
+            'Bilişim',
+            '',
+            20,
+            'Yerli',
+            'Hayır',
+            0
+          ],
+          [
+            'MLZ-0003',
+            '',
+            '',
+            'Güvenlik Personeli',
+            'Hizmet, Personel',
+            'Kişi',
+            'Güvenlik',
+            'Silahlı güvenlik görevlisi',
+            20,
+            'Yerli',
+            'Evet',
+            15
+          ]
         ]
-        
+
         const ws = xlsx.utils.aoa_to_sheet([headers, ...exampleRows])
         ws['!cols'] = [
-          { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 40 }, 
-          { wch: 15 }, { wch: 10 }, { wch: 15 }, { wch: 30 }, 
-          { wch: 15 }, { wch: 10 }, { wch: 20 }, { wch: 25 }
+          { wch: 15 },
+          { wch: 15 },
+          { wch: 15 },
+          { wch: 40 },
+          { wch: 15 },
+          { wch: 10 },
+          { wch: 15 },
+          { wch: 30 },
+          { wch: 15 },
+          { wch: 10 },
+          { wch: 20 },
+          { wch: 25 }
         ]
         const wb = xlsx.utils.book_new()
         xlsx.utils.book_append_sheet(wb, ws, 'Malzemeler')
 
         // Add beni_oku sheet
         const db = workspaceManager.getDb()
-        const birimler = db.prepare('SELECT ad FROM TANIM_OlcuBirimi WHERE aktif_mi = 1 ORDER BY ad ASC').all() as {ad: string}[]
+        const birimler = db
+          .prepare('SELECT ad FROM TANIM_OlcuBirimi WHERE aktif_mi = 1 ORDER BY ad ASC')
+          .all() as { ad: string }[]
         const beniOkuRows = [
           ['DİKKAT EDİLECEK HUSUSLAR'],
           ['1. Barkod/ID boş bırakılırsa sistem otomatik rastgele ID atar.'],
-          ['2. Türü alanı şu değerlerden biri olmalıdır: Mal, Hizmet, Personel, Hizmet, Diğer, Yapım'],
+          [
+            '2. Türü alanı şu değerlerden biri olmalıdır: Mal, Hizmet, Personel, Hizmet, Diğer, Yapım'
+          ],
           ['3. Menşei alanı şu değerlerden biri olmalıdır: Yerli, Yabancı'],
           ['4. Personel Hizmeti Mi? alanı: Evet veya Hayır olmalıdır.'],
           [''],
           ['SİSTEMDEKİ GEÇERLİ BİRİMLER (Ölçü Birimi sütununda bunlardan birini kullanın)']
         ]
-        birimler.forEach(b => beniOkuRows.push([b.ad]))
-        
+        birimler.forEach((b) => beniOkuRows.push([b.ad]))
+
         const wsBeniOku = xlsx.utils.aoa_to_sheet(beniOkuRows)
         wsBeniOku['!cols'] = [{ wch: 80 }]
         xlsx.utils.book_append_sheet(wb, wsBeniOku, 'beni_oku')
@@ -1921,7 +2111,8 @@ if (!gotTheLock && !isMultiInstance) {
           properties: ['openFile']
         })
 
-        if (canceled || !filePaths || filePaths.length === 0) return { success: false, error: 'İptal edildi' }
+        if (canceled || !filePaths || filePaths.length === 0)
+          return { success: false, error: 'İptal edildi' }
 
         const xlsx = require('xlsx')
         const workbook = xlsx.readFile(filePaths[0])
@@ -1964,10 +2155,26 @@ if (!gotTheLock && !isMultiInstance) {
               const kdv = row[8] !== undefined ? Number(row[8]) : 20
               const mensei = row[9] ? String(row[9]).trim() : null
               const isPersonelStr = row[10] ? String(row[10]).trim().toLowerCase() : 'hayır'
-              const isPersonel = isPersonelStr === 'evet' || isPersonelStr === '1' || isPersonelStr === 'true' ? 1 : 0
+              const isPersonel =
+                isPersonelStr === 'evet' || isPersonelStr === '1' || isPersonelStr === 'true'
+                  ? 1
+                  : 0
               const asgariOran = row[11] !== undefined ? Number(row[11]) : 0
 
-              insertStmt.run(barkodId, tasinirKodu, okasKodu, kalemAdi, tipi, birim, kategori, ozelligi, kdv, mensei, isPersonel, asgariOran)
+              insertStmt.run(
+                barkodId,
+                tasinirKodu,
+                okasKodu,
+                kalemAdi,
+                tipi,
+                birim,
+                kategori,
+                ozelligi,
+                kdv,
+                mensei,
+                isPersonel,
+                asgariOran
+              )
               count++
             }
           }
@@ -1995,7 +2202,15 @@ if (!gotTheLock && !isMultiInstance) {
         if (canceled || !filePath) return { success: false, error: 'İptal edildi' }
 
         const xlsx = require('xlsx')
-        const headers = ['Hesap Kodu', 'I. Düzey', 'II. Düzey', 'III. Düzey', 'IV. Düzey', 'V. Düzey', 'Açıklama']
+        const headers = [
+          'Hesap Kodu',
+          'I. Düzey',
+          'II. Düzey',
+          'III. Düzey',
+          'IV. Düzey',
+          'V. Düzey',
+          'Açıklama'
+        ]
         const exampleRows = [
           ['150', '01', '', '', '', '', 'Tüketim Malzemeleri'],
           ['150', '01', '01', '', '', '', 'Kırtasiye Malzemeleri'],
@@ -2057,7 +2272,9 @@ if (!gotTheLock && !isMultiInstance) {
             const values = Object.values(row).map((v) =>
               typeof v === 'string' ? "'" + (v as string).replace(/'/g, "''") + "'" : v
             )
-            db.exec(`INSERT INTO TANIM_Placeholder (${keys.join(', ')}) VALUES (${values.join(', ')});`)
+            db.exec(
+              `INSERT INTO TANIM_Placeholder (${keys.join(', ')}) VALUES (${values.join(', ')});`
+            )
           })
         }
         return { success: true }
@@ -2068,7 +2285,6 @@ if (!gotTheLock && !isMultiInstance) {
 
     // Genel okuma işlemi (SELECT)
     ipcMain.handle('db:query', async (_, sql: string, params: any[] = []) => {
-
       try {
         const db = workspaceManager.getDb()
         const stmt = db.prepare(sql)
@@ -2097,7 +2313,7 @@ if (!gotTheLock && !isMultiInstance) {
     ipcMain.handle('db:transaction', async (_, queries: { sql: string; params: any[] }[]) => {
       try {
         const db = workspaceManager.getDb()
-        
+
         let lastInsertRowid: number | bigint = 0
         let totalChanges = 0
 
@@ -2114,7 +2330,7 @@ if (!gotTheLock && !isMultiInstance) {
 
         broadcastDbChange()
         workspaceManager.save()
-        
+
         return { success: true, lastInsertRowid, changes: totalChanges }
       } catch (error: any) {
         return { success: false, error: error.message }
@@ -2126,7 +2342,7 @@ if (!gotTheLock && !isMultiInstance) {
     // Helper to send status to all open windows
     const sendUpdaterStatus = (status: string, data: any = {}) => {
       const windows = BrowserWindow.getAllWindows()
-      windows.forEach(w => {
+      windows.forEach((w) => {
         if (!w.isDestroyed()) {
           w.webContents.send('updater:status', { status, ...data })
         }
@@ -2141,7 +2357,7 @@ if (!gotTheLock && !isMultiInstance) {
     // Uygulama açıldıktan saniyeler sonra güncellemeleri kontrol et
     if (app.isPackaged || autoUpdater.forceDevUpdateConfig) {
       setTimeout(() => {
-        autoUpdater.checkForUpdates().catch(e => {
+        autoUpdater.checkForUpdates().catch((e) => {
           console.error('Update check error:', e.message)
         })
       }, 5000)
@@ -2176,21 +2392,26 @@ if (!gotTheLock && !isMultiInstance) {
 
     autoUpdater.on('update-available', (info) => {
       console.log(`Yeni sürüm bulundu! Sürüm: ${info.version}`)
-      
+
       try {
         const versionsPath = join(__dirname, '../../versions.json')
         if (fs.existsSync(versionsPath)) {
           const versionsList: string[] = JSON.parse(fs.readFileSync(versionsPath, 'utf8'))
-          const currentV = devUpdateVersionOverride || (autoUpdater.currentVersion as any)?.version || app.getVersion()
+          const currentV =
+            devUpdateVersionOverride ||
+            (autoUpdater.currentVersion as any)?.version ||
+            app.getVersion()
           const incomingVersion = info.version.replace(/^v/, '')
           const cleanCurrentV = currentV.replace(/^v/, '')
-          
+
           const currentIndex = versionsList.indexOf(cleanCurrentV)
           const incomingIndex = versionsList.indexOf(incomingVersion)
-          
+
           // Eğer ikisi de listedeyse ve gelen sürüm mevcut sürümden eski/aynı ise
           if (currentIndex !== -1 && incomingIndex !== -1 && incomingIndex <= currentIndex) {
-            console.log(`Bulunan sürüm (${incomingVersion}) mevcut sürümden (${cleanCurrentV}) daha eski veya aynı. Güncelleme reddedildi!`)
+            console.log(
+              `Bulunan sürüm (${incomingVersion}) mevcut sürümden (${cleanCurrentV}) daha eski veya aynı. Güncelleme reddedildi!`
+            )
             sendUpdaterStatus('not-available', { version: cleanCurrentV, info: null })
             return
           }
@@ -2225,11 +2446,17 @@ if (!gotTheLock && !isMultiInstance) {
     ipcMain.handle('updater:check', async () => {
       try {
         if (!app.isPackaged && !autoUpdater.forceDevUpdateConfig) {
-          return { success: false, error: 'Geliştirme modunda (Dev) otomatik güncelleme denetlenemez.' }
+          return {
+            success: false,
+            error: 'Geliştirme modunda (Dev) otomatik güncelleme denetlenemez.'
+          }
         }
         const result = await autoUpdater.checkForUpdates()
         if (result === null) {
-          return { success: false, error: 'Güncelleme kontrolü bu ortamda atlandı veya desteklenmiyor.' }
+          return {
+            success: false,
+            error: 'Güncelleme kontrolü bu ortamda atlandı veya desteklenmiyor.'
+          }
         }
         // Cannot clone CancellationToken, downloadPromise etc over IPC
         return { success: true, version: result.updateInfo.version }
@@ -2241,7 +2468,7 @@ if (!gotTheLock && !isMultiInstance) {
         }
 
         console.error('Manual update check error:', error)
-        
+
         // GİZLİ REPO (PRIVATE) HAZIRLIĞI:
         // Eğer repo private ise ve token verilmemişse genelde 404 Not Found veya 401/403 döner.
         // İleride kullanıcı ayarlarından token alıp autoUpdater.requestHeaders'a ekleyip tekrar deneyebiliriz:

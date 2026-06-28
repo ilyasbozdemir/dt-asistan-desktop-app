@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
 import { FileText, ExternalLink, Search, Copy, Check } from 'lucide-react'
-import { EKONOMIK_KODLAR, FONKSIYONEL_KODLAR, FINANSMAN_KODLARI, GELIR_KODLARI } from '../../../constants/butce-kodlari'
+import {
+  EKONOMIK_KODLAR,
+  FONKSIYONEL_KODLAR,
+  FINANSMAN_KODLARI,
+  GELIR_KODLARI
+} from '../../../constants/butce-kodlari'
 
 export function ButceKodlariTab(): React.JSX.Element {
   const [butceSearch, setButceSearch] = useState('')
@@ -20,8 +25,8 @@ export function ButceKodlariTab(): React.JSX.Element {
           <div className="text-sm">
             <p className="font-semibold mb-1">Analitik Bütçe Sınıflandırması (ABS)</p>
             <p>
-              Kurumunuzda ve ödeme emri belgelerinde kullanılacak standart bütçe kodları
-              listesidir. Ayarlar ekranından kurumunuza özel olanları seçebilirsiniz.
+              Kurumunuzda ve ödeme emri belgelerinde kullanılacak standart bütçe kodları listesidir.
+              Ayarlar ekranından kurumunuza özel olanları seçebilirsiniz.
             </p>
           </div>
         </div>

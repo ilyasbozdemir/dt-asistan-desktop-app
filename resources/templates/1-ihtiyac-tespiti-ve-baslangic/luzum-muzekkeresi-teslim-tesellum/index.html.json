@@ -1,85 +1,85 @@
 {
-    "antetSatirlari": [
-        "T.C.",
-        "SAĞLIK BAKANLIĞI",
-        "Ankara İl Sağlık Müdürlüğü",
-        "Destek Hizmetleri Başkanlığı"
-    ],
-    "dosyaKonusu": "TESLİM TESELLÜM BELGESİ",
-    "isinAdi": "Tıbbi Cihaz ve Laboratuvar Malzemeleri Alımı",
-    "isinDegeri": "150.000,00 TL",
-    "dosyaNumarasi": {
-        "yili": "2026",
-        "sayisi": "123"
+  "antetSatirlari": [
+    "T.C.",
+    "SAĞLIK BAKANLIĞI",
+    "Ankara İl Sağlık Müdürlüğü",
+    "Destek Hizmetleri Başkanlığı"
+  ],
+  "dosyaKonusu": "TESLİM TESELLÜM BELGESİ",
+  "isinAdi": "Tıbbi Cihaz ve Laboratuvar Malzemeleri Alımı",
+  "isinDegeri": "150.000,00 TL",
+  "dosyaNumarasi": {
+    "yili": "2026",
+    "sayisi": "123"
+  },
+  "kurumumuz": "Ankara İl Sağlık Müdürlüğü",
+  "dosyaTarihi": "20.06.2026",
+  "solLogo": "https://raw.githubusercontent.com/ilyasbozdemir/dt-asistan-desktop-app/refs/heads/main/resources/icon.png",
+  "sagLogo": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Logo_of_100th_years_of_the_Republic_of_T%C3%BCrkiye.svg",
+  "ihtiyacKalemleri": [
+    {
+      "siraNo": 1,
+      "kodu": "LAB-001",
+      "malzemeAdi": "Eldiven",
+      "ozelligi": "Nitril",
+      "birimi": "Kutu",
+      "kdvOrani": "20",
+      "miktar": 50
     },
-    "kurumumuz": "Ankara İl Sağlık Müdürlüğü",
-    "dosyaTarihi": "20.06.2026",
-    "solLogo": "https://raw.githubusercontent.com/ilyasbozdemir/dt-asistan-desktop-app/refs/heads/main/resources/icon.png",
-    "sagLogo": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Logo_of_100th_years_of_the_Republic_of_T%C3%BCrkiye.svg",
-    "ihtiyacKalemleri": [
-        {
-            "siraNo": 1,
-            "kodu": "LAB-001",
-            "malzemeAdi": "Eldiven",
-            "ozelligi": "Nitril",
-            "birimi": "Kutu",
-            "kdvOrani": "20",
-            "miktar": 50
-        },
-        {
-            "siraNo": 2,
-            "kodu": "LAB-002",
-            "malzemeAdi": "Maske",
-            "birimi": "Adet",
-            "kdvOrani": "10",
-            "miktar": 200
-        },
-        {
-            "siraNo": 3,
-            "kodu": "LAB-003",
-            "malzemeAdi": "Maske",
-            "ozelligi": "N95",
-            "birimi": "Adet",
-            "kdvOrani": "10",
-            "miktar": 200
-        },
-        {
-            "siraNo": 4,
-            "kodu": "LAB-004",
-            "malzemeAdi": "Dezenfektan",
-            "ozelligi": "Alkol Bazlı",
-            "birimi": "Litre",
-            "kdvOrani": "20",
-            "miktar": 10
-        },
-        {
-            "siraNo": 5,
-            "kodu": "LAB-005",
-            "malzemeAdi": "Önlük",
-            "ozelligi": "Tek Kullanımlık",
-            "birimi": "Adet",
-            "kdvOrani": "10",
-            "miktar": 150
-        }
-    ],
-    "teslimAlanlar": [
-        {
-            "adSoyad": "Ahmet Yılmaz",
-            "unvan": "Satınalma Memuru"
-        },
-        {
-            "adSoyad": "Mehmet Karaca",
-            "unvan": "V.H.K.İ."
-        }
-    ],
-    "teslimEdenler": [
-        {
-            "adSoyad": "Mustafa Şen",
-            "unvan": "Firma Yetkilisi"
-        },
-        {
-            "adSoyad": "Hasan Çelik",
-            "unvan": "Teslimat Görevlisi"
-        }
-    ]
+    {
+      "siraNo": 2,
+      "kodu": "LAB-002",
+      "malzemeAdi": "Maske",
+      "birimi": "Adet",
+      "kdvOrani": "10",
+      "miktar": 200
+    },
+    {
+      "siraNo": 3,
+      "kodu": "LAB-003",
+      "malzemeAdi": "Maske",
+      "ozelligi": "N95",
+      "birimi": "Adet",
+      "kdvOrani": "10",
+      "miktar": 200
+    },
+    {
+      "siraNo": 4,
+      "kodu": "LAB-004",
+      "malzemeAdi": "Dezenfektan",
+      "ozelligi": "Alkol Bazlı",
+      "birimi": "Litre",
+      "kdvOrani": "20",
+      "miktar": 10
+    },
+    {
+      "siraNo": 5,
+      "kodu": "LAB-005",
+      "malzemeAdi": "Önlük",
+      "ozelligi": "Tek Kullanımlık",
+      "birimi": "Adet",
+      "kdvOrani": "10",
+      "miktar": 150
+    }
+  ],
+  "teslimAlanlar": [
+    {
+      "adSoyad": "Ahmet Yılmaz",
+      "unvan": "Satınalma Memuru"
+    },
+    {
+      "adSoyad": "Mehmet Karaca",
+      "unvan": "V.H.K.İ."
+    }
+  ],
+  "teslimEdenler": [
+    {
+      "adSoyad": "Mustafa Şen",
+      "unvan": "Firma Yetkilisi"
+    },
+    {
+      "adSoyad": "Hasan Çelik",
+      "unvan": "Teslimat Görevlisi"
+    }
+  ]
 }

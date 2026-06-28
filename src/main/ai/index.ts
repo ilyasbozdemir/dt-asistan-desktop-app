@@ -34,9 +34,7 @@ async function generateWithGemini(options: AIGenerateOptions, apiKey: string): P
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: options.prompt,
-    config: options.systemInstruction
-      ? { systemInstruction: options.systemInstruction }
-      : undefined
+    config: options.systemInstruction ? { systemInstruction: options.systemInstruction } : undefined
   })
   return { success: true, data: response.text }
 }
@@ -118,9 +116,10 @@ export async function generateContent(options: AIGenerateOptions): Promise<AIRes
   try {
     let finalOptions = { ...options }
 
-    const aiIdentity = "Sen bir Kamu İhale ve Muhasebe Uzmanısın (Doğrudan Temin - DT). Kullanıcı sana soru sorduğunda veya form incelemesi yaptığında, muhasebe diline (ekonomik kod, bütçe türü, fonksiyonel kod, KDV hesabı vb.) ve Kamu İhale Kanununa (özellikle 22/d) hakim olduğunu göstererek profesyonelce yanıt ver. Analizlerinde tutarsızlıkları bul ve net öneriler sun."
-    
-    finalOptions.systemInstruction = finalOptions.systemInstruction 
+    const aiIdentity =
+      'Sen bir Kamu İhale ve Muhasebe Uzmanısın (Doğrudan Temin - DT). Kullanıcı sana soru sorduğunda veya form incelemesi yaptığında, muhasebe diline (ekonomik kod, bütçe türü, fonksiyonel kod, KDV hesabı vb.) ve Kamu İhale Kanununa (özellikle 22/d) hakim olduğunu göstererek profesyonelce yanıt ver. Analizlerinde tutarsızlıkları bul ve net öneriler sun.'
+
+    finalOptions.systemInstruction = finalOptions.systemInstruction
       ? `${aiIdentity}\n\nEk Talimat: ${finalOptions.systemInstruction}`
       : aiIdentity
 
@@ -139,29 +138,38 @@ export async function generateContent(options: AIGenerateOptions): Promise<AIRes
       const sqlMatch = result.data.match(/<SQL>([\s\S]*?)<\/SQL>/)
       if (sqlMatch) {
         let sql = sqlMatch[1].trim()
-        
+
         // Basic Security Check
         const upperSql = sql.toUpperCase()
-        if (upperSql.includes('INSERT ') || upperSql.includes('UPDATE ') || upperSql.includes('DELETE ') || upperSql.includes('DROP ') || upperSql.includes('ALTER ')) {
-          return { success: false, error: 'Güvenlik İhlali: AI sadece okuma (SELECT) yapabilir. Zararlı SQL engellendi.' }
+        if (
+          upperSql.includes('INSERT ') ||
+          upperSql.includes('UPDATE ') ||
+          upperSql.includes('DELETE ') ||
+          upperSql.includes('DROP ') ||
+          upperSql.includes('ALTER ')
+        ) {
+          return {
+            success: false,
+            error: 'Güvenlik İhlali: AI sadece okuma (SELECT) yapabilir. Zararlı SQL engellendi.'
+          }
         }
 
         try {
           const db = workspaceManager.getDb()
           const dbResult = db.prepare(sql).all()
-          
+
           // Limit response length to prevent token overflow
           let dbResultStr = JSON.stringify(dbResult)
           if (dbResultStr.length > 20000) {
-            dbResultStr = dbResultStr.substring(0, 20000) + '... (veri çok uzun olduğu için kesildi)'
+            dbResultStr =
+              dbResultStr.substring(0, 20000) + '... (veri çok uzun olduğu için kesildi)'
           }
 
           // Trigger Loop: Send DB results back to AI
           const secondPrompt = `Kullanıcının asıl isteği: "${options.prompt}"\n\nSenin çalıştırdığın arka plan SQL sorgusu: "${sql}"\n\nSorgu Sonucu: ${dbResultStr}\n\nLütfen sadece yukarıdaki "Sorgu Sonucu" verilerini kullanarak, kullanıcının asıl isteğine okunabilir, detaylı bir cevap üret. Sonuçları listelerken veya analiz ederken şık bir Markdown (listeler, tablolar veya kalın/italik) kullanabilirsin.`
-          
+
           finalOptions.prompt = secondPrompt
           result = await callProvider(finalOptions)
-
         } catch (dbErr: any) {
           // If DB throws an error (e.g. syntax error), ask AI to explain it or try without DB
           const errorPrompt = `Kullanıcının isteği: "${options.prompt}"\n\nYazdığın SQL sorgusu (${sql}) sistemde şu hatayı verdi: ${dbErr.message}\n\nLütfen hatanın nedenini kendi kendine analiz et ve soruyu veritabanı olmadan yanıtla veya kullanıcıya uygun bir dille açıklama yap.`

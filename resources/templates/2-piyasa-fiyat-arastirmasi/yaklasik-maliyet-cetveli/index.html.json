@@ -1,8 +1,5 @@
 {
-  "antetSatirlari": [
-    "T.C.",
-    "ACME BELEDİYE BAŞKANLIĞI"
-  ],
+  "antetSatirlari": ["T.C.", "ACME BELEDİYE BAŞKANLIĞI"],
   "kurumUst": "T.C.",
   "kurumAdi": "ACME BELEDİYE BAŞKANLIĞI",
   "mudurluk": "Destek Hizmetleri Müdürlüğü",

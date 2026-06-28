@@ -1,172 +1,208 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <title>Ödeme Yazısı</title>
-  <style>
-    @page {
-      size: A4;
-      margin: 2.5cm 2cm;
-    }
-    body {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 11pt;
-      color: #000;
-      line-height: 1.5;
-      margin: 0;
-      padding: 0;
-      background-color: #fff;
-    }
-    .page-container {
-      max-width: 21cm;
-      box-sizing: border-box;
-      margin: 0 auto;
-      padding: 0.5cm;
-    }
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-      font-weight: bold;
-      line-height: 1.3;
-    }
-    .info-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 30px;
-    }
-    .info-table td {
-      padding: 2px 0;
-      vertical-align: top;
-    }
-    .makam-header {
-      text-align: center;
-      font-weight: bold;
-      margin: 40px 0 30px;
-      font-size: 11.5pt;
-      text-transform: uppercase;
-    }
-    .content-body {
-      text-align: justify;
-      text-indent: 1.5cm;
-      margin-bottom: 40px;
-    }
-    .signature-container {
-      width: 100%;
-      margin-top: 40px;
-      margin-bottom: 40px;
-    }
-    .signature-right {
-      float: right;
-      width: 250px;
-      text-align: center;
-      line-height: 1.3;
-    }
-    .olur-container {
-      margin-top: 50px;
-      text-align: center;
-      line-height: 1.4;
-      clear: both;
-      break-inside: avoid;
-      page-break-inside: avoid;
-    }
-  </style>
-</head>
-<body>
-  <div class="page-container">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ödeme Yazısı</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 2.5cm 2cm;
+      }
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 11pt;
+        color: #000;
+        line-height: 1.5;
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+      }
+      .page-container {
+        max-width: 21cm;
+        box-sizing: border-box;
+        margin: 0 auto;
+        padding: 0.5cm;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: bold;
+        line-height: 1.3;
+      }
+      .info-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+      }
+      .info-table td {
+        padding: 2px 0;
+        vertical-align: top;
+      }
+      .makam-header {
+        text-align: center;
+        font-weight: bold;
+        margin: 40px 0 30px;
+        font-size: 11.5pt;
+        text-transform: uppercase;
+      }
+      .content-body {
+        text-align: justify;
+        text-indent: 1.5cm;
+        margin-bottom: 40px;
+      }
+      .signature-container {
+        width: 100%;
+        margin-top: 40px;
+        margin-bottom: 40px;
+      }
+      .signature-right {
+        float: right;
+        width: 250px;
+        text-align: center;
+        line-height: 1.3;
+      }
+      .olur-container {
+        margin-top: 50px;
+        text-align: center;
+        line-height: 1.4;
+        clear: both;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <!-- ANTET -->
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px; min-height: 80px">
+        <tbody>
+          <tr>
+            <td
+              style="
+                width: 90px;
+                text-align: left;
+                vertical-align: middle;
+                border: none;
+                padding: 0;
+              "
+            >
+              {{#solLogo}}
+              <img
+                src="{{solLogo}}"
+                alt="Sol Logo"
+                style="max-width: 80px; max-height: 80px; object-fit: contain"
+              />
+              {{/solLogo}}
+            </td>
 
-    <!-- ANTET -->
-    <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px; min-height: 80px;">
-      <tbody>
-        <tr>
-          <td style="width: 90px; text-align: left; vertical-align: middle; border: none; padding: 0;">
-            {{#solLogo}}
-            <img src="{{solLogo}}" alt="Sol Logo" style="max-width: 80px; max-height: 80px; object-fit: contain;" />
-            {{/solLogo}}
-          </td>
-          
-          <td style="text-align: center; vertical-align: middle; line-height: 1.3; font-weight: bold; border: none; padding: 0;">
-            {{#antetSatirlari}}
-            <div style="font-size: 12pt;">{{.}}</div>
-            {{/antetSatirlari}}
-            {{^antetSatir1}}
-            {{^antetSatirlari}}
-            <div style="font-size: 12pt;">T.C.</div>
-            <div style="font-size: 12pt;">{{kurumAdi}}{{^kurumAdi}}................ BELEDİYE BAŞKANLIĞI{{/kurumAdi}}</div>
-            {{/antetSatirlari}}
-            {{/antetSatir1}}
-            {{#antetSatir1}}
-            {{^antetSatirlari}}
-            <div style="font-size: 12pt;">T.C.</div>
-            <div style="font-size: 12pt;">{{antetSatir1}}</div>
-            {{/antetSatirlari}}
-            {{/antetSatir1}}
-          </td>
+            <td
+              style="
+                text-align: center;
+                vertical-align: middle;
+                line-height: 1.3;
+                font-weight: bold;
+                border: none;
+                padding: 0;
+              "
+            >
+              {{#antetSatirlari}}
+              <div style="font-size: 12pt">{{.}}</div>
+              {{/antetSatirlari}} {{^antetSatir1}} {{^antetSatirlari}}
+              <div style="font-size: 12pt">T.C.</div>
+              <div style="font-size: 12pt">
+                {{kurumAdi}}{{^kurumAdi}}................ BELEDİYE BAŞKANLIĞI{{/kurumAdi}}
+              </div>
+              {{/antetSatirlari}} {{/antetSatir1}} {{#antetSatir1}} {{^antetSatirlari}}
+              <div style="font-size: 12pt">T.C.</div>
+              <div style="font-size: 12pt">{{antetSatir1}}</div>
+              {{/antetSatirlari}} {{/antetSatir1}}
+            </td>
 
-          <td style="width: 90px; text-align: right; vertical-align: middle; border: none; padding: 0;">
-            {{#sagLogo}}
-            <img src="{{sagLogo}}" alt="Sağ Logo" style="max-width: 80px; max-height: 80px; object-fit: contain;" />
-            {{/sagLogo}}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <td
+              style="
+                width: 90px;
+                text-align: right;
+                vertical-align: middle;
+                border: none;
+                padding: 0;
+              "
+            >
+              {{#sagLogo}}
+              <img
+                src="{{sagLogo}}"
+                alt="Sağ Logo"
+                style="max-width: 80px; max-height: 80px; object-fit: contain"
+              />
+              {{/sagLogo}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- EVRAK BİLGİLERİ -->
-    <table class="info-table">
-      <tbody>
-        <tr>
-          <td width="60%">
-            Sayı&nbsp;&nbsp;&nbsp;: {{evrakSayisi}}{{^evrakSayisi}}................{{/evrakSayisi}}
-          </td>
-          <td align="right" width="40%">
-            Tarih: {{dosyaTarihi}}{{^dosyaTarihi}}..../..../20....{{/dosyaTarihi}}
-          </td>
-        </tr>
-        <tr>
-          <td>
-            Konu&nbsp;&nbsp;: Ödeme
-          </td>
-          <td>&nbsp;</td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- EVRAK BİLGİLERİ -->
+      <table class="info-table">
+        <tbody>
+          <tr>
+            <td width="60%">
+              Sayı&nbsp;&nbsp;&nbsp;:
+              {{evrakSayisi}}{{^evrakSayisi}}................{{/evrakSayisi}}
+            </td>
+            <td align="right" width="40%">
+              Tarih: {{dosyaTarihi}}{{^dosyaTarihi}}..../..../20....{{/dosyaTarihi}}
+            </td>
+          </tr>
+          <tr>
+            <td>Konu&nbsp;&nbsp;: Ödeme</td>
+            <td>&nbsp;</td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- HEDEF MAKAM -->
-    <div class="makam-header">
-      {{makamAdi}}{{^makamAdi}}{{kurumAdi}}{{^kurumAdi}}................ BELEDİYE BAŞKANLIĞINA{{/kurumAdi}}{{/makamAdi}}
-    </div>
-
-    <!-- YAZI İÇERİĞİ -->
-    <div class="content-body">
-      {{neyimizin}}{{^neyimizin}}İdaremizce{{/neyimizin}} alımı yapılan <b>{{isinAdi}}{{^isinAdi}}{{dosyaKonusu}}{{/isinAdi}}</b> işine ait tahakkuk eden fatura ilişikte gönderilmiştir.
-    </div>
-
-    <div class="content-body" style="margin-top: 20px;">
-      Söz konusu alımın bedeli olan KDV dahil <b>{{kdvDahilToplam}}{{^kdvDahilToplam}}{{genelToplam}}{{/kdvDahilToplam}}</b> TL'nin <b>{{harcamaKalemi}}{{^harcamaKalemi}}{{butceKodu}}{{^butceKodu}}................{{/butceKodu}}{{/harcamaKalemi}}</b> harcama kaleminden, alacaklısı <b>{{yukleniciFirma}}{{^yukleniciFirma}}................{{/yukleniciFirma}}</b>'in hesabına havale edilmesini rica ederim.
-    </div>
-
-    <!-- İMZA -->
-    <div class="signature-container">
-      <div class="signature-right">
-        <br>
-        {{hazirlayanPersonelAdi}}{{^hazirlayanPersonelAdi}}................{{/hazirlayanPersonelAdi}}<br>
-        {{hazirlayanPersonelUnvan}}{{^hazirlayanPersonelUnvan}}................{{/hazirlayanPersonelUnvan}}
+      <!-- HEDEF MAKAM -->
+      <div class="makam-header">
+        {{makamAdi}}{{^makamAdi}}{{kurumAdi}}{{^kurumAdi}}................ BELEDİYE
+        BAŞKANLIĞINA{{/kurumAdi}}{{/makamAdi}}
       </div>
-      <div style="clear: both;"></div>
-    </div>
 
-    <!-- OLUR ONAYI -->
-    {{#olurGoster}}
-    <div class="olur-container">
-      OLUR<br>
-      {{onayTarihi}}{{^onayTarihi}}{{dosyaTarihi}}{{/onayTarihi}}<br>
-      <br>
-      <br>
-      {{baskanAdi}}{{^baskanAdi}}................{{/baskanAdi}}<br>
-      {{baskanUnvan}}{{^baskanUnvan}}Belediye Başkanı{{/baskanUnvan}}
-    </div>
-    {{/olurGoster}}
+      <!-- YAZI İÇERİĞİ -->
+      <div class="content-body">
+        {{neyimizin}}{{^neyimizin}}İdaremizce{{/neyimizin}} alımı yapılan
+        <b>{{isinAdi}}{{^isinAdi}}{{dosyaKonusu}}{{/isinAdi}}</b> işine ait tahakkuk eden fatura
+        ilişikte gönderilmiştir.
+      </div>
 
-  </div>
-</body>
+      <div class="content-body" style="margin-top: 20px">
+        Söz konusu alımın bedeli olan KDV dahil
+        <b>{{kdvDahilToplam}}{{^kdvDahilToplam}}{{genelToplam}}{{/kdvDahilToplam}}</b> TL'nin
+        <b
+          >{{harcamaKalemi}}{{^harcamaKalemi}}{{butceKodu}}{{^butceKodu}}................{{/butceKodu}}{{/harcamaKalemi}}</b
+        >
+        harcama kaleminden, alacaklısı
+        <b>{{yukleniciFirma}}{{^yukleniciFirma}}................{{/yukleniciFirma}}</b>'in hesabına
+        havale edilmesini rica ederim.
+      </div>
+
+      <!-- İMZA -->
+      <div class="signature-container">
+        <div class="signature-right">
+          <br />
+          {{hazirlayanPersonelAdi}}{{^hazirlayanPersonelAdi}}................{{/hazirlayanPersonelAdi}}<br />
+          {{hazirlayanPersonelUnvan}}{{^hazirlayanPersonelUnvan}}................{{/hazirlayanPersonelUnvan}}
+        </div>
+        <div style="clear: both"></div>
+      </div>
+
+      <!-- OLUR ONAYI -->
+      {{#olurGoster}}
+      <div class="olur-container">
+        OLUR<br />
+        {{onayTarihi}}{{^onayTarihi}}{{dosyaTarihi}}{{/onayTarihi}}<br />
+        <br />
+        <br />
+        {{baskanAdi}}{{^baskanAdi}}................{{/baskanAdi}}<br />
+        {{baskanUnvan}}{{^baskanUnvan}}Belediye Başkanı{{/baskanUnvan}}
+      </div>
+      {{/olurGoster}}
+    </div>
+  </body>
 </html>

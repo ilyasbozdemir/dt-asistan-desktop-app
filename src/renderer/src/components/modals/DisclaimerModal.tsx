@@ -3,7 +3,8 @@ import { AlertTriangle, CheckCircle } from 'lucide-react'
 import { useSettingsStore } from '../../store/settingsStore'
 
 export const DisclaimerModal: React.FC = () => {
-  const { isDisclaimerAccepted, setDisclaimerAccepted, disclaimerHistory, setDisclaimerHistory } = useSettingsStore()
+  const { isDisclaimerAccepted, setDisclaimerAccepted, disclaimerHistory, setDisclaimerHistory } =
+    useSettingsStore()
 
   if (isDisclaimerAccepted) return null
 
@@ -46,20 +47,28 @@ export const DisclaimerModal: React.FC = () => {
             <AlertTriangle className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-slate-800 dark:text-white">Yasal Uyarı ve Sorumluluk Reddi</h2>
-            <p className="text-xs text-red-600/80 dark:text-red-400/80 font-medium mt-1">Lütfen kullanıma başlamadan önce okuyun.</p>
+            <h2 className="text-lg font-bold text-slate-800 dark:text-white">
+              Yasal Uyarı ve Sorumluluk Reddi
+            </h2>
+            <p className="text-xs text-red-600/80 dark:text-red-400/80 font-medium mt-1">
+              Lütfen kullanıma başlamadan önce okuyun.
+            </p>
           </div>
         </div>
-        
+
         <div className="p-6 text-sm text-slate-600 dark:text-slate-300 leading-relaxed space-y-4">
           <p>
-            Bu uygulama, kamu kurumları ve kuruluşlarının Doğrudan Temin süreçlerini dijitalleştirmek amacıyla yardımcı bir araç olarak geliştirilmiştir.
+            Bu uygulama, kamu kurumları ve kuruluşlarının Doğrudan Temin süreçlerini
+            dijitalleştirmek amacıyla yardımcı bir araç olarak geliştirilmiştir.
           </p>
           <p>
-            Uygulama üzerinden üretilen hesaplamaların, belgelerin ve raporların doğruluğunu, yasal mevzuata uygunluğunu ve güncelliğini kontrol etmek tamamen <strong>kullanıcının sorumluluğundadır</strong>.
+            Uygulama üzerinden üretilen hesaplamaların, belgelerin ve raporların doğruluğunu, yasal
+            mevzuata uygunluğunu ve güncelliğini kontrol etmek tamamen{' '}
+            <strong>kullanıcının sorumluluğundadır</strong>.
           </p>
           <p className="p-4 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-100 dark:border-slate-800 italic">
-            Geliştirici, hatalı hesaplamalar veya mevzuata aykırı işlemlerden doğabilecek hukuki, idari ve mali sorumlulukları kabul etmez.
+            Geliştirici, hatalı hesaplamalar veya mevzuata aykırı işlemlerden doğabilecek hukuki,
+            idari ve mali sorumlulukları kabul etmez.
           </p>
         </div>
 

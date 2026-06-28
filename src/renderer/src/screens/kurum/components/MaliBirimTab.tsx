@@ -4,16 +4,18 @@ import { Input } from '../../../components/ui/Input'
 import { Link } from '@tanstack/react-router'
 import { KurumTabProps } from '../types'
 
-export const MaliBirimTab: React.FC<KurumTabProps & { sozlukData: any[] }> = ({ data, onChange, sozlukData }) => {
+export const MaliBirimTab: React.FC<KurumTabProps & { sozlukData: any[] }> = ({
+  data,
+  onChange,
+  sozlukData
+}) => {
   return (
     <div className="space-y-6">
       <div className="border-b border-slate-100 dark:border-slate-800 pb-2">
         <h2 className="text-lg font-bold text-slate-850 dark:text-slate-100">
           Mali ve Bütçe Kodları
         </h2>
-        <p className="text-xs text-slate-500">
-          Kurumsal mali kodlarınız ve DETSİS bilgileri.
-        </p>
+        <p className="text-xs text-slate-500">Kurumsal mali kodlarınız ve DETSİS bilgileri.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

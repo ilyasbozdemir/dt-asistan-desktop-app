@@ -2,10 +2,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 export interface OkasKod {
   id: number
-  kod: string       // 8 haneli OKAS kodu: örn. 30192700
-  bolum: string | null  // İlk 2 hane
-  grup: string | null   // İlk 3 hane
-  sinif: string | null  // İlk 4 hane
+  kod: string // 8 haneli OKAS kodu: örn. 30192700
+  bolum: string | null // İlk 2 hane
+  grup: string | null // İlk 3 hane
+  sinif: string | null // İlk 4 hane
   aciklama: string
 }
 

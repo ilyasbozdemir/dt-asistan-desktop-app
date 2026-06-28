@@ -31,7 +31,7 @@ export function startServer(port: number = 3000): { success: boolean; error?: st
         console.log('Evrak güncellendi:', data)
         // Olayı diğer tüm istemcilere yayınla
         socket.broadcast.emit('document:updated', data)
-        
+
         // Host ekranına da (Eğer Ana Sunucu aynı zamanda client ise) IPC ile bildir
         BrowserWindow.getAllWindows().forEach((win) => {
           if (!win.isDestroyed()) {

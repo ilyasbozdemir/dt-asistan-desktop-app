@@ -24,7 +24,6 @@ fileAssociations:
 directories:
   buildResources: build
 files:
-
   - '!**/.vscode/*'
   - '!src/*'
   - '!electron.vite.config.{js,ts,mjs,cjs}'
@@ -38,7 +37,6 @@ extraResources:
     to: .
     filter:
       - '**/*'
-
 
 win:
   executableName: DTAsistan

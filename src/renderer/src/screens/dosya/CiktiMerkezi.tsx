@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query'
 export function CiktiMerkezi(): React.JSX.Element {
   const { activeDosyaId } = useWorkspaceStore()
   const [activeDosya, setActiveDosya] = useState<any>(null)
-  
+
   // Fetch active dosya
   useEffect(() => {
     if (!activeDosyaId) return
@@ -24,11 +24,14 @@ export function CiktiMerkezi(): React.JSX.Element {
   const { data: dbAlimTurleri = [] } = useQuery<any[]>({
     queryKey: ['alim_turleri_list_cikti'],
     queryFn: async () => {
-      const res = await window.electron.ipcRenderer.invoke('db:query', 'SELECT * FROM TANIM_AlimTuru WHERE aktif_mi = 1')
+      const res = await window.electron.ipcRenderer.invoke(
+        'db:query',
+        'SELECT * FROM TANIM_AlimTuru WHERE aktif_mi = 1'
+      )
       if (!res.success) return []
       return res.data.map((d: any) => ({
         ...d,
-        belgeler: typeof d.belgeler === 'string' ? JSON.parse(d.belgeler) : (d.belgeler || [])
+        belgeler: typeof d.belgeler === 'string' ? JSON.parse(d.belgeler) : d.belgeler || []
       }))
     }
   })
@@ -37,12 +40,20 @@ export function CiktiMerkezi(): React.JSX.Element {
     ? dbAlimTurleri.find((t) => {
         const fileTur = activeDosya.tur?.toLowerCase() || ''
         const dbTur = t.tur_adi?.toLowerCase() || ''
-        
+
         if (fileTur.includes('mal') && dbTur.includes('mal')) return true
         if (fileTur.includes('hizmet') && dbTur.includes('hizmet')) return true
-        if ((fileTur.includes('yapım') || fileTur.includes('yapim')) && (dbTur.includes('yapım') || dbTur.includes('yapim'))) return true
-        if ((fileTur.includes('danışmanlık') || fileTur.includes('danismanlik')) && (dbTur.includes('danışmanlık') || dbTur.includes('danismanlik'))) return true
-        
+        if (
+          (fileTur.includes('yapım') || fileTur.includes('yapim')) &&
+          (dbTur.includes('yapım') || dbTur.includes('yapim'))
+        )
+          return true
+        if (
+          (fileTur.includes('danışmanlık') || fileTur.includes('danismanlik')) &&
+          (dbTur.includes('danışmanlık') || dbTur.includes('danismanlik'))
+        )
+          return true
+
         return dbTur === fileTur
       })
     : null
@@ -53,7 +64,7 @@ export function CiktiMerkezi(): React.JSX.Element {
     queryFn: async () => {
       if (!activeDosyaId) return []
       const res = await window.electron.ipcRenderer.invoke(
-        'db:query', 
+        'db:query',
         `SELECT belge_adi FROM DATA_TeminBelge WHERE temin_dosya_id = ?`,
         [activeDosyaId]
       )
@@ -79,7 +90,7 @@ export function CiktiMerkezi(): React.JSX.Element {
   const getDocumentStatus = (docName: string, skippedDocs: string[]) => {
     if (!activeDosya) return 'bekliyor'
     if (skippedDocs.includes(docName)) return 'atlandi'
-    
+
     // Gerçek Belge Kontrolü: Bu belge DATA_TeminBelge tablosunda üretilmiş olarak var mı?
     const isProduced = dbBelgeler.some((b: any) => b.belge_adi === docName)
     if (isProduced) return 'tamamlandi'
@@ -97,7 +108,10 @@ export function CiktiMerkezi(): React.JSX.Element {
       <div className="p-8 max-w-7xl mx-auto w-full">
         <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900/30 text-amber-800 dark:text-amber-400 p-6 rounded-2xl flex items-center gap-3">
           <FileText className="w-6 h-6" />
-          <div className="font-semibold">Lütfen önce bir dosya seçin. İşlem yapabilmek için sol taraftan veya "Dosyalar" menüsünden aktif bir dosya seçmeniz gerekmektedir.</div>
+          <div className="font-semibold">
+            Lütfen önce bir dosya seçin. İşlem yapabilmek için sol taraftan veya "Dosyalar"
+            menüsünden aktif bir dosya seçmeniz gerekmektedir.
+          </div>
         </div>
       </div>
     )
@@ -105,23 +119,24 @@ export function CiktiMerkezi(): React.JSX.Element {
 
   let orderedDocs: string[] | null = null
   let skippedDocs: string[] = []
-  
+
   try {
     orderedDocs = activeDosya.ordered_docs ? JSON.parse(activeDosya.ordered_docs) : null
   } catch (e) {
-    console.error("ordered_docs parse error", e)
+    console.error('ordered_docs parse error', e)
   }
-  
+
   try {
     skippedDocs = activeDosya.skipped_docs ? JSON.parse(activeDosya.skipped_docs) : []
   } catch (e) {
-    console.error("skipped_docs parse error", e)
+    console.error('skipped_docs parse error', e)
   }
-  
-  const documentList = orderedDocs && Array.isArray(orderedDocs) && orderedDocs.length > 0 
-    ? orderedDocs 
-    : (activeAlimTuru && activeAlimTuru.belgeler && activeAlimTuru.belgeler.length > 0 
-        ? activeAlimTuru.belgeler.map((b: any) => typeof b === 'string' ? b : (b?.ad || '')) 
+
+  const documentList =
+    orderedDocs && Array.isArray(orderedDocs) && orderedDocs.length > 0
+      ? orderedDocs
+      : activeAlimTuru && activeAlimTuru.belgeler && activeAlimTuru.belgeler.length > 0
+        ? activeAlimTuru.belgeler.map((b: any) => (typeof b === 'string' ? b : b?.ad || ''))
         : [
             'Yaklaşık Maliyet Cetveli',
             'Piyasa Fiyat Araştırma Tutanağı',
@@ -129,7 +144,7 @@ export function CiktiMerkezi(): React.JSX.Element {
             'Harcama Talimatı',
             'Muayene Kabul Komisyonu Tutanağı',
             'Harcama Pusulası'
-          ])
+          ]
 
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -138,8 +153,12 @@ export function CiktiMerkezi(): React.JSX.Element {
           <Printer className="w-8 h-8" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Çıktı & Üretim Merkezi</h1>
-          <p className="text-slate-500 text-sm mt-1">Dosyanıza ait tüm evrakların tek merkezden üretimi ve yazdırılması.</p>
+          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+            Çıktı & Üretim Merkezi
+          </h1>
+          <p className="text-slate-500 text-sm mt-1">
+            Dosyanıza ait tüm evrakların tek merkezden üretimi ve yazdırılması.
+          </p>
         </div>
       </div>
 
@@ -149,22 +168,32 @@ export function CiktiMerkezi(): React.JSX.Element {
           const route = getDocumentRoute(docName)
 
           return (
-            <div 
-              key={idx} 
+            <div
+              key={idx}
               className={`relative overflow-hidden rounded-2xl border transition-all duration-300 ${
-                status === 'atlandi' ? 'bg-slate-50/50 dark:bg-slate-900/20 border-transparent opacity-60' : 
-                status === 'tamamlandi' ? 'bg-white dark:bg-slate-900 border-emerald-200 dark:border-emerald-900/30 shadow-sm hover:shadow-md' :
-                'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-blue-300'
+                status === 'atlandi'
+                  ? 'bg-slate-50/50 dark:bg-slate-900/20 border-transparent opacity-60'
+                  : status === 'tamamlandi'
+                    ? 'bg-white dark:bg-slate-900 border-emerald-200 dark:border-emerald-900/30 shadow-sm hover:shadow-md'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-blue-300'
               }`}
             >
               <div className="p-5">
                 <div className="flex items-start justify-between mb-4">
-                  <div className={`p-2.5 rounded-xl ${
-                    status === 'tamamlandi' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600' :
-                    status === 'atlandi' ? 'bg-slate-100 dark:bg-slate-800 text-slate-400' :
-                    'bg-blue-50 dark:bg-blue-900/20 text-blue-600'
-                  }`}>
-                    {status === 'tamamlandi' ? <FileCheck className="w-6 h-6" /> : <FileText className="w-6 h-6" />}
+                  <div
+                    className={`p-2.5 rounded-xl ${
+                      status === 'tamamlandi'
+                        ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600'
+                        : status === 'atlandi'
+                          ? 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                          : 'bg-blue-50 dark:bg-blue-900/20 text-blue-600'
+                    }`}
+                  >
+                    {status === 'tamamlandi' ? (
+                      <FileCheck className="w-6 h-6" />
+                    ) : (
+                      <FileText className="w-6 h-6" />
+                    )}
                   </div>
                   <div className="flex gap-2">
                     <span className="text-xs font-bold px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-lg">
@@ -172,22 +201,35 @@ export function CiktiMerkezi(): React.JSX.Element {
                     </span>
                   </div>
                 </div>
-                
-                <h3 className={`font-bold text-base mb-1 ${status === 'atlandi' ? 'text-slate-400 line-through' : 'text-slate-800 dark:text-slate-200'}`}>
+
+                <h3
+                  className={`font-bold text-base mb-1 ${status === 'atlandi' ? 'text-slate-400 line-through' : 'text-slate-800 dark:text-slate-200'}`}
+                >
                   {docName}
                 </h3>
-                
+
                 <div className="mt-4 flex items-center justify-between">
-                  <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${
-                    status === 'tamamlandi' ? 'bg-emerald-100 text-emerald-700' :
-                    status === 'atlandi' ? 'bg-slate-100 text-slate-500' :
-                    'bg-amber-100 text-amber-700'
-                  }`}>
-                    {status === 'tamamlandi' ? 'Hazır / Üretildi' : status === 'atlandi' ? 'Dışarıdan Sağlandı' : 'Üretim Bekliyor'}
+                  <span
+                    className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${
+                      status === 'tamamlandi'
+                        ? 'bg-emerald-100 text-emerald-700'
+                        : status === 'atlandi'
+                          ? 'bg-slate-100 text-slate-500'
+                          : 'bg-amber-100 text-amber-700'
+                    }`}
+                  >
+                    {status === 'tamamlandi'
+                      ? 'Hazır / Üretildi'
+                      : status === 'atlandi'
+                        ? 'Dışarıdan Sağlandı'
+                        : 'Üretim Bekliyor'}
                   </span>
-                  
+
                   {route && status !== 'atlandi' && (
-                    <Link to={route} className="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors">
+                    <Link
+                      to={route}
+                      className="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
+                    >
                       Üret/Gör <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   )}

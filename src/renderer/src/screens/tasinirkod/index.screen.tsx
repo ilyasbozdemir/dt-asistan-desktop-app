@@ -1,5 +1,15 @@
 import React, { useState } from 'react'
-import { FolderTree, Plus, Trash2, Search, Hash, AlertCircle, ExternalLink, FileUp, Download } from 'lucide-react'
+import {
+  FolderTree,
+  Plus,
+  Trash2,
+  Search,
+  Hash,
+  AlertCircle,
+  ExternalLink,
+  FileUp,
+  Download
+} from 'lucide-react'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { Modal } from '../../components/ui/Modal'
@@ -96,9 +106,10 @@ export default function TasinirKodScreen(): React.JSX.Element {
     }
   }
 
-  const filteredList = tasinirKodList.filter((m) =>
-    m.aciklama.toLowerCase().includes(search.toLowerCase()) ||
-    m.tam_kod.toLowerCase().includes(search.toLowerCase())
+  const filteredList = tasinirKodList.filter(
+    (m) =>
+      m.aciklama.toLowerCase().includes(search.toLowerCase()) ||
+      m.tam_kod.toLowerCase().includes(search.toLowerCase())
   )
 
   if (isLoading) {
@@ -119,8 +130,12 @@ export default function TasinirKodScreen(): React.JSX.Element {
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 w-full lg:w-auto">
           <div className="text-left sm:text-right sm:border-r border-slate-200 dark:border-slate-800 sm:pr-6">
-            <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{tasinirKodList.length}</div>
-            <div className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Kayıtlı Kod</div>
+            <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+              {tasinirKodList.length}
+            </div>
+            <div className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">
+              Kayıtlı Kod
+            </div>
           </div>
           <div className="flex flex-wrap gap-2">
             <Button
@@ -136,7 +151,8 @@ export default function TasinirKodScreen(): React.JSX.Element {
               disabled={isImporting}
               className="gap-2 bg-emerald-600 hover:bg-emerald-700 shadow-md flex items-center px-3 py-1.5 sm:px-4 sm:py-2 text-sm flex-1 sm:flex-initial justify-center"
             >
-              <FileUp className="w-4 h-4" /> {isImporting ? 'Aktarılıyor...' : "Excel'den İçe Aktar"}
+              <FileUp className="w-4 h-4" />{' '}
+              {isImporting ? 'Aktarılıyor...' : "Excel'den İçe Aktar"}
             </Button>
             <Button
               onClick={handleOpenModal}
@@ -162,9 +178,11 @@ export default function TasinirKodScreen(): React.JSX.Element {
             >
               Muhasebat Genel Müdürlüğü <ExternalLink className="w-3 h-3" />
             </a>{' '}
-            standartlarına uygun olarak sisteme gömülüdür. 
-            Eğer yeni bir kod eklerseniz, bu kod yalnızca <strong>aktif .dtal (kurum) dosyanıza</strong> kaydedilir. 
-            Listeyi veya eklediğiniz özel kodları başka kurumlara da taşımak isterseniz, ilerleyen güncellemelerde "Dışa Aktar (.dte)" menüsü ile bu verileri paylaşabilirsiniz. Lütfen kodu noktalarla (150.xx.xx) girmeye özen gösterin.
+            standartlarına uygun olarak sisteme gömülüdür. Eğer yeni bir kod eklerseniz, bu kod
+            yalnızca <strong>aktif .dtal (kurum) dosyanıza</strong> kaydedilir. Listeyi veya
+            eklediğiniz özel kodları başka kurumlara da taşımak isterseniz, ilerleyen
+            güncellemelerde "Dışa Aktar (.dte)" menüsü ile bu verileri paylaşabilirsiniz. Lütfen
+            kodu noktalarla (150.xx.xx) girmeye özen gösterin.
           </p>
         </div>
       </div>
@@ -207,14 +225,21 @@ export default function TasinirKodScreen(): React.JSX.Element {
                 </tr>
               ) : (
                 filteredList.map((item) => (
-                  <tr key={item.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors group">
-                    <td className="px-4 py-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">{item.hesap_kodu}</td>
+                  <tr
+                    key={item.id}
+                    className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors group"
+                  >
+                    <td className="px-4 py-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                      {item.hesap_kodu}
+                    </td>
                     <td className="px-4 py-3 font-mono text-slate-500">{item.duzey_1 || '-'}</td>
                     <td className="px-4 py-3 font-mono text-slate-500">{item.duzey_2 || '-'}</td>
                     <td className="px-4 py-3 font-mono text-slate-500">{item.duzey_3 || '-'}</td>
                     <td className="px-4 py-3 font-mono text-slate-500">{item.duzey_4 || '-'}</td>
                     <td className="px-4 py-3 font-mono text-slate-500">{item.duzey_5 || '-'}</td>
-                    <td className="px-4 py-3 font-semibold text-slate-800 dark:text-slate-200">{item.aciklama}</td>
+                    <td className="px-4 py-3 font-semibold text-slate-800 dark:text-slate-200">
+                      {item.aciklama}
+                    </td>
                     <td className="px-4 py-3 text-right">
                       <Button
                         title="Sil"
@@ -242,7 +267,9 @@ export default function TasinirKodScreen(): React.JSX.Element {
       >
         <form onSubmit={handleAdd} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-455 mb-1.5">Tam Taşınır Kodu <span className="text-red-500">*</span></label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-455 mb-1.5">
+              Tam Taşınır Kodu <span className="text-red-500">*</span>
+            </label>
             <Input
               required
               value={tamKod}
@@ -252,7 +279,9 @@ export default function TasinirKodScreen(): React.JSX.Element {
             />
             {tamKod.trim() && (
               <div className="mt-2 flex flex-wrap gap-1.5 items-center">
-                <span className="text-[10px] text-slate-500 font-semibold mr-1">Düzey Kırılımı:</span>
+                <span className="text-[10px] text-slate-500 font-semibold mr-1">
+                  Düzey Kırılımı:
+                </span>
                 {tamKod.split('.').map((part, i) => (
                   <span
                     key={i}
@@ -261,12 +290,12 @@ export default function TasinirKodScreen(): React.JSX.Element {
                       i === 0
                         ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800/50'
                         : i === 1
-                        ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50'
-                        : i === 2
-                        ? 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800/50'
-                        : i === 3
-                        ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50'
-                        : 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
+                          ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50'
+                          : i === 2
+                            ? 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800/50'
+                            : i === 3
+                              ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50'
+                              : 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
                     )}
                   >
                     {part || '?'}
@@ -277,7 +306,9 @@ export default function TasinirKodScreen(): React.JSX.Element {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-455 mb-1.5">Kod Açıklaması (Grup/Malzeme Adı) <span className="text-red-500">*</span></label>
+            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-455 mb-1.5">
+              Kod Açıklaması (Grup/Malzeme Adı) <span className="text-red-500">*</span>
+            </label>
             <Input
               required
               value={aciklama}

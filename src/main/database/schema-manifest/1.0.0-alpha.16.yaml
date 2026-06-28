@@ -1,11 +1,11 @@
-app: "1.0.0-alpha.16"
+app: '1.0.0-alpha.16'
 schema_min: 1
 schema_max: 19
-release_date: "2026-06-07"
+release_date: '2026-06-07'
 changes:
   - schema: 19
-    type: "addColumn"
-    description: "TANIM_Sablon tablosuna versiyonlama icin parent_id ve versiyon kolonlari eklendi"
+    type: 'addColumn'
+    description: 'TANIM_Sablon tablosuna versiyonlama icin parent_id ve versiyon kolonlari eklendi'
     tables_added:
       - TANIM_Sablon
     columns_added:

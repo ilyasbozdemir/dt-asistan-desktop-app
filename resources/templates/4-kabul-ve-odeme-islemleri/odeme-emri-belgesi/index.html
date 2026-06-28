@@ -1,427 +1,812 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <style>
-    @page { size: A4; margin: 1cm 1.2cm; }
-    body { font-family: "Times New Roman", Times, serif; font-size: 9.5pt; color: #000; box-sizing: border-box; line-height: 1.35; }
-    .bg-pink { background-color: #fce4e4; }
-    .bg-gray { background-color: #fafafa; }
-    .text-center { text-align: center; }
-    .text-right { text-align: right; }
-    .font-bold { font-weight: bold; }
-    .no-border { border: none; }
-    .paged-keep-together { break-inside: avoid; }
-    .paged-break-before  { break-before: page; }
-    .paged-break-after   { break-after: page; }
-  </style>
-</head>
-<body>
-  <!-- ÖDEME EMRİ DETAY TABLOSU -->
-  <table border="1" style="width: 100%; border-collapse: collapse; font-size: 9pt; margin-bottom: 15px; border: 1px solid #000;">
-    <tbody>
-      <tr>
-        <td colspan="10" align="center" style="padding: 6px; font-weight: bold; font-size: 11pt; border: 1px solid #000;">
-          ÖDEME EMRİ BELGESİ
-        </td>
-      </tr>
-      <tr>              
-        <td width="18%" style="font-weight: bold; padding: 4px; border: 1px solid #000;">Muhasebe Birim Kodu</td>
-        <td colspan="4" style="padding: 4px; border: 1px solid #000;">{{muhasebeBirimKodu}}{{^muhasebeBirimKodu}}................{{/muhasebeBirimKodu}}</td>
-        <td width="12%" style="font-weight: bold; padding: 4px; border: 1px solid #000;">Bütçe Yılı</td>
-        <td width="12%" style="padding: 4px; border: 1px solid #000;">{{butceYili}}{{^butceYili}}2026{{/butceYili}}</td>
-        <td width="2%" rowspan="6" align="center" style="font-weight: bold; font-size: 8pt; background-color: #fafafa; padding: 4px; border: 1px solid #000; line-height: 1.3;">
-          İ<br>L<br>G<br>İ<br>L<br>İ<br>N<br>İ<br>N
-        </td>
-        <td width="16%" style="font-weight: bold; padding: 4px; border: 1px solid #000;">Adı, Soyadı / Ünvanı</td>
-        <td width="24%" style="padding: 4px; border: 1px solid #000; font-weight: bold;">{{yukleniciFirma}}{{^yukleniciFirma}}................{{/yukleniciFirma}}</td>
-      </tr>
-      <tr>
-        <td style="font-weight: bold; padding: 4px; border: 1px solid #000;">Muhasebe Birim Adı</td>
-        <td colspan="4" style="padding: 4px; border: 1px solid #000;">{{muhasebeBirimAdi}}{{^muhasebeBirimAdi}}................{{/muhasebeBirimAdi}}</td>
-        <td style="font-weight: bold; padding: 4px; border: 1px solid #000;">Yevmiye Tarihi</td>
-        <td style="padding: 4px; border: 1px solid #000;">{{yevmiyeTarihi}}{{^yevmiyeTarihi}}..../..../20....{{/yevmiyeTarihi}}</td>
-        <td style="font-weight: bold; padding: 4px; border: 1px solid #000;">T.C. / Vergi Kimlik No</td>
-        <td style="padding: 4px; border: 1px solid #000;">{{yukleniciVergiNo}}{{^yukleniciVergiNo}}................{{/yukleniciVergiNo}}</td>
-      </tr>
-      <tr>
-        <td rowspan="2" style="font-weight: bold; padding: 4px; border: 1px solid #000; vertical-align: middle; text-align: center;">Kurum-Birim Kodu</td>
-        <td align="center" style="font-weight: bold; padding: 2px; font-size: 7.5pt; border: 1px solid #000;">İl</td>
-        <td align="center" style="font-weight: bold; padding: 2px; font-size: 7.5pt; border: 1px solid #000;">İlçe</td>
-        <td align="center" style="font-weight: bold; padding: 2px; font-size: 7.5pt; border: 1px solid #000;">Kurum</td>
-        <td align="center" style="font-weight: bold; padding: 2px; font-size: 7.5pt; border: 1px solid #000;">Birim</td>
-        <td style="font-weight: bold; padding: 4px; border: 1px solid #000;">Yevmiye No.su</td>
-        <td style="padding: 4px; border: 1px solid #000;">{{yevmiyeNo}}{{^yevmiyeNo}}................{{/yevmiyeNo}}</td>
-        <td style="font-weight: bold; padding: 4px; border: 1px solid #000;">Banka Şube Adı</td>
-        <td style="padding: 4px; border: 1px solid #000;">{{yukleniciBankaSube}}{{^yukleniciBankaSube}}................{{/yukleniciBankaSube}}</td>
-      </tr>
-      <tr>
-        <td align="center" style="padding: 4px; border: 1px solid #000;">{{kurumKoduIl}}{{^kurumKoduIl}}....{{/kurumKoduIl}}</td>
-        <td align="center" style="padding: 4px; border: 1px solid #000;">{{kurumKoduIlce}}{{^kurumKoduIlce}}....{{/kurumKoduIlce}}</td>
-        <td align="center" style="padding: 4px; border: 1px solid #000;">{{kurumKoduKurum}}{{^kurumKoduKurum}}70151{{/kurumKoduKurum}}</td>
-        <td align="center" style="padding: 4px; border: 1px solid #000;">{{kurumKoduBirim}}{{^kurumKoduBirim}}....{{/kurumKoduBirim}}</td>
-        <td colspan="2" style="background-color: #fafafa; border: 1px solid #000;">&nbsp;</td>
-        <td style="font-weight: bold; padding: 4px; border: 1px solid #000;">Banka Hesap No (IBAN)</td>
-        <td style="padding: 4px; border: 1px solid #000; font-family: monospace; font-size: 8pt;">{{yukleniciIban}}{{^yukleniciIban}}TR................................{{/yukleniciIban}}</td>
-      </tr>
-      <tr>
-        <td style="font-weight: bold; padding: 4px; border: 1px solid #000;">Kurum Adı</td>
-        <td colspan="6" style="padding: 4px; border: 1px solid #000;">{{kurumAdi}}{{^kurumAdi}}{{antetSatir1}}{{^antetSatir1}}................ BELEDİYE BAŞKANLIĞI{{/antetSatir1}}{{/kurumAdi}}</td>
-        <td style="font-weight: bold; padding: 4px; border: 1px solid #000;">Bağlı Olduğu V. Dairesi</td>
-        <td style="padding: 4px; border: 1px solid #000;">{{yukleniciVergiDairesi}}{{^yukleniciVergiDairesi}}................{{/yukleniciVergiDairesi}}</td>
-      </tr>
-      <tr>
-        <td style="font-weight: bold; padding: 4px; border: 1px solid #000;">Birim Adı</td>
-        <td colspan="6" style="padding: 4px; border: 1px solid #000;">{{birimAdi}}{{^birimAdi}}................ Müdüriyeti{{/birimAdi}}</td>
-        <td style="font-weight: bold; padding: 4px; border: 1px solid #000;">Adresi</td>
-        <td style="padding: 4px; border: 1px solid #000;">{{yukleniciAdres}}{{^yukleniciAdres}}................{{/yukleniciAdres}}</td>
-      </tr>
-    </tbody>
-  </table>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      @page {
+        size: A4;
+        margin: 1cm 1.2cm;
+      }
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 9.5pt;
+        color: #000;
+        box-sizing: border-box;
+        line-height: 1.35;
+      }
+      .bg-pink {
+        background-color: #fce4e4;
+      }
+      .bg-gray {
+        background-color: #fafafa;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .text-right {
+        text-align: right;
+      }
+      .font-bold {
+        font-weight: bold;
+      }
+      .no-border {
+        border: none;
+      }
+      .paged-keep-together {
+        break-inside: avoid;
+      }
+      .paged-break-before {
+        break-before: page;
+      }
+      .paged-break-after {
+        break-after: page;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ÖDEME EMRİ DETAY TABLOSU -->
+    <table
+      border="1"
+      style="
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 9pt;
+        margin-bottom: 15px;
+        border: 1px solid #000;
+      "
+    >
+      <tbody>
+        <tr>
+          <td
+            colspan="10"
+            align="center"
+            style="padding: 6px; font-weight: bold; font-size: 11pt; border: 1px solid #000"
+          >
+            ÖDEME EMRİ BELGESİ
+          </td>
+        </tr>
+        <tr>
+          <td width="18%" style="font-weight: bold; padding: 4px; border: 1px solid #000">
+            Muhasebe Birim Kodu
+          </td>
+          <td colspan="4" style="padding: 4px; border: 1px solid #000">
+            {{muhasebeBirimKodu}}{{^muhasebeBirimKodu}}................{{/muhasebeBirimKodu}}
+          </td>
+          <td width="12%" style="font-weight: bold; padding: 4px; border: 1px solid #000">
+            Bütçe Yılı
+          </td>
+          <td width="12%" style="padding: 4px; border: 1px solid #000">
+            {{butceYili}}{{^butceYili}}2026{{/butceYili}}
+          </td>
+          <td
+            width="2%"
+            rowspan="6"
+            align="center"
+            style="
+              font-weight: bold;
+              font-size: 8pt;
+              background-color: #fafafa;
+              padding: 4px;
+              border: 1px solid #000;
+              line-height: 1.3;
+            "
+          >
+            İ<br />L<br />G<br />İ<br />L<br />İ<br />N<br />İ<br />N
+          </td>
+          <td width="16%" style="font-weight: bold; padding: 4px; border: 1px solid #000">
+            Adı, Soyadı / Ünvanı
+          </td>
+          <td width="24%" style="padding: 4px; border: 1px solid #000; font-weight: bold">
+            {{yukleniciFirma}}{{^yukleniciFirma}}................{{/yukleniciFirma}}
+          </td>
+        </tr>
+        <tr>
+          <td style="font-weight: bold; padding: 4px; border: 1px solid #000">
+            Muhasebe Birim Adı
+          </td>
+          <td colspan="4" style="padding: 4px; border: 1px solid #000">
+            {{muhasebeBirimAdi}}{{^muhasebeBirimAdi}}................{{/muhasebeBirimAdi}}
+          </td>
+          <td style="font-weight: bold; padding: 4px; border: 1px solid #000">Yevmiye Tarihi</td>
+          <td style="padding: 4px; border: 1px solid #000">
+            {{yevmiyeTarihi}}{{^yevmiyeTarihi}}..../..../20....{{/yevmiyeTarihi}}
+          </td>
+          <td style="font-weight: bold; padding: 4px; border: 1px solid #000">
+            T.C. / Vergi Kimlik No
+          </td>
+          <td style="padding: 4px; border: 1px solid #000">
+            {{yukleniciVergiNo}}{{^yukleniciVergiNo}}................{{/yukleniciVergiNo}}
+          </td>
+        </tr>
+        <tr>
+          <td
+            rowspan="2"
+            style="
+              font-weight: bold;
+              padding: 4px;
+              border: 1px solid #000;
+              vertical-align: middle;
+              text-align: center;
+            "
+          >
+            Kurum-Birim Kodu
+          </td>
+          <td
+            align="center"
+            style="font-weight: bold; padding: 2px; font-size: 7.5pt; border: 1px solid #000"
+          >
+            İl
+          </td>
+          <td
+            align="center"
+            style="font-weight: bold; padding: 2px; font-size: 7.5pt; border: 1px solid #000"
+          >
+            İlçe
+          </td>
+          <td
+            align="center"
+            style="font-weight: bold; padding: 2px; font-size: 7.5pt; border: 1px solid #000"
+          >
+            Kurum
+          </td>
+          <td
+            align="center"
+            style="font-weight: bold; padding: 2px; font-size: 7.5pt; border: 1px solid #000"
+          >
+            Birim
+          </td>
+          <td style="font-weight: bold; padding: 4px; border: 1px solid #000">Yevmiye No.su</td>
+          <td style="padding: 4px; border: 1px solid #000">
+            {{yevmiyeNo}}{{^yevmiyeNo}}................{{/yevmiyeNo}}
+          </td>
+          <td style="font-weight: bold; padding: 4px; border: 1px solid #000">Banka Şube Adı</td>
+          <td style="padding: 4px; border: 1px solid #000">
+            {{yukleniciBankaSube}}{{^yukleniciBankaSube}}................{{/yukleniciBankaSube}}
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding: 4px; border: 1px solid #000">
+            {{kurumKoduIl}}{{^kurumKoduIl}}....{{/kurumKoduIl}}
+          </td>
+          <td align="center" style="padding: 4px; border: 1px solid #000">
+            {{kurumKoduIlce}}{{^kurumKoduIlce}}....{{/kurumKoduIlce}}
+          </td>
+          <td align="center" style="padding: 4px; border: 1px solid #000">
+            {{kurumKoduKurum}}{{^kurumKoduKurum}}70151{{/kurumKoduKurum}}
+          </td>
+          <td align="center" style="padding: 4px; border: 1px solid #000">
+            {{kurumKoduBirim}}{{^kurumKoduBirim}}....{{/kurumKoduBirim}}
+          </td>
+          <td colspan="2" style="background-color: #fafafa; border: 1px solid #000">&nbsp;</td>
+          <td style="font-weight: bold; padding: 4px; border: 1px solid #000">
+            Banka Hesap No (IBAN)
+          </td>
+          <td style="padding: 4px; border: 1px solid #000; font-family: monospace; font-size: 8pt">
+            {{yukleniciIban}}{{^yukleniciIban}}TR................................{{/yukleniciIban}}
+          </td>
+        </tr>
+        <tr>
+          <td style="font-weight: bold; padding: 4px; border: 1px solid #000">Kurum Adı</td>
+          <td colspan="6" style="padding: 4px; border: 1px solid #000">
+            {{kurumAdi}}{{^kurumAdi}}{{antetSatir1}}{{^antetSatir1}}................ BELEDİYE
+            BAŞKANLIĞI{{/antetSatir1}}{{/kurumAdi}}
+          </td>
+          <td style="font-weight: bold; padding: 4px; border: 1px solid #000">
+            Bağlı Olduğu V. Dairesi
+          </td>
+          <td style="padding: 4px; border: 1px solid #000">
+            {{yukleniciVergiDairesi}}{{^yukleniciVergiDairesi}}................{{/yukleniciVergiDairesi}}
+          </td>
+        </tr>
+        <tr>
+          <td style="font-weight: bold; padding: 4px; border: 1px solid #000">Birim Adı</td>
+          <td colspan="6" style="padding: 4px; border: 1px solid #000">
+            {{birimAdi}}{{^birimAdi}}................ Müdüriyeti{{/birimAdi}}
+          </td>
+          <td style="font-weight: bold; padding: 4px; border: 1px solid #000">Adresi</td>
+          <td style="padding: 4px; border: 1px solid #000">
+            {{yukleniciAdres}}{{^yukleniciAdres}}................{{/yukleniciAdres}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-  <!-- HESAP KODLARI VE TUTARLAR TABLOSU -->
-  <table border="1" style="width: 100%; border-collapse: collapse; font-size: 8.5pt; margin-top: 15px; border: 1px solid #000;">
-    <tbody>
-    <tr>
-        <td align="center" rowspan="2" class="bg-pink font-bold">Hesap<br>No</td>
-        <td colspan="4" align="center" rowspan="2" class="bg-pink font-bold">Kurumsal Kod</td>
-        <td colspan="4" align="center" rowspan="2" class="bg-pink font-bold">Fonksiyonel Kod</td>
-        <td align="center" rowspan="2" class="bg-pink font-bold">Fin<br>Kod</td>
-        <td colspan="4" align="center" rowspan="2" class="bg-pink font-bold">Ekonomik Kod</td>
-        <td colspan="4" align="center" class="bg-pink font-bold">Tutar</td>
-        <td align="center" class="bg-pink font-bold">Hesap / Ayrıntı Adı</td>
-    </tr>
-    <tr>
-         <td colspan="2" align="center" class="bg-pink font-bold">Borç</td>
-         <td colspan="2" align="center" class="bg-pink font-bold">Alacak</td>        
-         <td class="bg-pink">&nbsp;</td>  
-    </tr>
-    <tr style="font-size: 7.5pt;">                                                                                                                                       
-      <td class="bg-pink">&nbsp;</td>
-      <td align="center" class="bg-pink">1</td> <td align="center" class="bg-pink">2</td> <td align="center" class="bg-pink">3</td>
-      <td align="center" class="bg-pink">4</td> <td align="center" class="bg-pink">1</td> <td align="center" class="bg-pink">2</td>
-      <td align="center" class="bg-pink">3</td> <td align="center" class="bg-pink">4</td> <td align="center" class="bg-pink">1</td>
-      <td align="center" class="bg-pink">1</td> <td align="center" class="bg-pink">2</td> <td align="center" class="bg-pink">3</td>
-      <td align="center" class="bg-pink">4</td> <td align="center" class="bg-pink" width="8%">TL</td><td align="center" class="bg-pink" width="3%">kr</td>
-      <td align="center" class="bg-pink" width="8%">TL</td><td align="center" class="bg-pink" width="3%">kr</td><td class="bg-pink">&nbsp;</td>
-    </tr>
+    <!-- HESAP KODLARI VE TUTARLAR TABLOSU -->
+    <table
+      border="1"
+      style="
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 8.5pt;
+        margin-top: 15px;
+        border: 1px solid #000;
+      "
+    >
+      <tbody>
+        <tr>
+          <td align="center" rowspan="2" class="bg-pink font-bold">Hesap<br />No</td>
+          <td colspan="4" align="center" rowspan="2" class="bg-pink font-bold">Kurumsal Kod</td>
+          <td colspan="4" align="center" rowspan="2" class="bg-pink font-bold">Fonksiyonel Kod</td>
+          <td align="center" rowspan="2" class="bg-pink font-bold">Fin<br />Kod</td>
+          <td colspan="4" align="center" rowspan="2" class="bg-pink font-bold">Ekonomik Kod</td>
+          <td colspan="4" align="center" class="bg-pink font-bold">Tutar</td>
+          <td align="center" class="bg-pink font-bold">Hesap / Ayrıntı Adı</td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center" class="bg-pink font-bold">Borç</td>
+          <td colspan="2" align="center" class="bg-pink font-bold">Alacak</td>
+          <td class="bg-pink">&nbsp;</td>
+        </tr>
+        <tr style="font-size: 7.5pt">
+          <td class="bg-pink">&nbsp;</td>
+          <td align="center" class="bg-pink">1</td>
+          <td align="center" class="bg-pink">2</td>
+          <td align="center" class="bg-pink">3</td>
+          <td align="center" class="bg-pink">4</td>
+          <td align="center" class="bg-pink">1</td>
+          <td align="center" class="bg-pink">2</td>
+          <td align="center" class="bg-pink">3</td>
+          <td align="center" class="bg-pink">4</td>
+          <td align="center" class="bg-pink">1</td>
+          <td align="center" class="bg-pink">1</td>
+          <td align="center" class="bg-pink">2</td>
+          <td align="center" class="bg-pink">3</td>
+          <td align="center" class="bg-pink">4</td>
+          <td align="center" class="bg-pink" width="8%">TL</td>
+          <td align="center" class="bg-pink" width="3%">kr</td>
+          <td align="center" class="bg-pink" width="8%">TL</td>
+          <td align="center" class="bg-pink" width="3%">kr</td>
+          <td class="bg-pink">&nbsp;</td>
+        </tr>
 
-    <!-- ROW 1: Brüt Tutar -->
-    <tr>
-      <td align="center">{{hesapNo1}}{{^hesapNo1}}830{{/hesapNo1}}</td>
-      <td align="center">{{kurumsal1}}{{^kurumsal1}}57{{/kurumsal1}}</td>
-      <td align="center">{{kurumsal2}}{{^kurumsal2}}31{{/kurumsal2}}</td>
-      <td align="center">{{kurumsal3}}{{^kurumsal3}}__{{/kurumsal3}}</td>
-      <td align="center">{{kurumsal4}}{{^kurumsal4}}__{{/kurumsal4}}</td>
-      <td align="center">{{fonk1}}{{^fonk1}}01{{/fonk1}}</td>
-      <td align="center">{{fonk2}}{{^fonk2}}3{{/fonk2}}</td>
-      <td align="center">{{fonk3}}{{^fonk3}}9{{/fonk3}}</td>
-      <td align="center">{{fonk4}}{{^fonk4}}00{{/fonk4}}</td>
-      <td align="center">{{finKod}}{{^finKod}}1{{/finKod}}</td>
-      <td align="center">{{eko1}}{{^eko1}}03{{/eko1}}</td>
-      <td align="center">{{eko2}}{{^eko2}}5{{/eko2}}</td>
-      <td align="center">{{eko3}}{{^eko3}}1{{/eko3}}</td>
-      <td align="center">{{eko4}}{{^eko4}}90{{/eko4}}</td>
-      <td align="right" class="font-bold">{{brutTutarTL}}{{^brutTutarTL}}408.183{{/brutTutarTL}}</td>
-      <td align="right">{{brutTutarKR}}{{^brutTutarKR}}06{{/brutTutarKR}}</td>
-      <td align="center">&nbsp;</td>
-      <td align="center">&nbsp;</td>
-      <td style="font-size: 8pt;">{{dosyaKonusu}}</td>
-    </tr>
+        <!-- ROW 1: Brüt Tutar -->
+        <tr>
+          <td align="center">{{hesapNo1}}{{^hesapNo1}}830{{/hesapNo1}}</td>
+          <td align="center">{{kurumsal1}}{{^kurumsal1}}57{{/kurumsal1}}</td>
+          <td align="center">{{kurumsal2}}{{^kurumsal2}}31{{/kurumsal2}}</td>
+          <td align="center">{{kurumsal3}}{{^kurumsal3}}__{{/kurumsal3}}</td>
+          <td align="center">{{kurumsal4}}{{^kurumsal4}}__{{/kurumsal4}}</td>
+          <td align="center">{{fonk1}}{{^fonk1}}01{{/fonk1}}</td>
+          <td align="center">{{fonk2}}{{^fonk2}}3{{/fonk2}}</td>
+          <td align="center">{{fonk3}}{{^fonk3}}9{{/fonk3}}</td>
+          <td align="center">{{fonk4}}{{^fonk4}}00{{/fonk4}}</td>
+          <td align="center">{{finKod}}{{^finKod}}1{{/finKod}}</td>
+          <td align="center">{{eko1}}{{^eko1}}03{{/eko1}}</td>
+          <td align="center">{{eko2}}{{^eko2}}5{{/eko2}}</td>
+          <td align="center">{{eko3}}{{^eko3}}1{{/eko3}}</td>
+          <td align="center">{{eko4}}{{^eko4}}90{{/eko4}}</td>
+          <td align="right" class="font-bold">
+            {{brutTutarTL}}{{^brutTutarTL}}408.183{{/brutTutarTL}}
+          </td>
+          <td align="right">{{brutTutarKR}}{{^brutTutarKR}}06{{/brutTutarKR}}</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td style="font-size: 8pt">{{dosyaKonusu}}</td>
+        </tr>
 
-    <!-- ROW 2: Damga Vergisi -->
-    <tr>
-      <td align="center">360</td>
-      <td align="center">57</td>
-      <td align="center">31</td>
-      <td align="center">__</td>
-      <td align="center">__</td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td><td align="center">&nbsp;</td><td>&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="center">1</td><td align="center">5</td><td align="center">1</td><td align="center">1</td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="right" class="font-bold">{{damgaVergisiTL}}{{^damgaVergisiTL}}3.224{{/damgaVergisiTL}}</td>
-      <td align="right">{{damgaVergisiKR}}{{^damgaVergisiKR}}65{{/damgaVergisiKR}}</td>
-      <td style="font-size: 8pt;">Damga Vergisi (Binde 9.48)</td>
-    </tr>
+        <!-- ROW 2: Damga Vergisi -->
+        <tr>
+          <td align="center">360</td>
+          <td align="center">57</td>
+          <td align="center">31</td>
+          <td align="center">__</td>
+          <td align="center">__</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td>&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">1</td>
+          <td align="center">5</td>
+          <td align="center">1</td>
+          <td align="center">1</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="right" class="font-bold">
+            {{damgaVergisiTL}}{{^damgaVergisiTL}}3.224{{/damgaVergisiTL}}
+          </td>
+          <td align="right">{{damgaVergisiKR}}{{^damgaVergisiKR}}65{{/damgaVergisiKR}}</td>
+          <td style="font-size: 8pt">Damga Vergisi (Binde 9.48)</td>
+        </tr>
 
-    <!-- ROW 3: İhale Kararı Damga Vergisi -->
-    <tr>
-      <td align="center">360</td>
-      <td align="center">57</td>
-      <td align="center">31</td>
-      <td align="center">__</td>
-      <td align="center">__</td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td><td align="center">&nbsp;</td><td>&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="center">1</td><td align="center">5</td><td align="center">1</td><td align="center">2</td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="right" class="font-bold">{{ihaleKarariDamgaVergisiTL}}{{^ihaleKarariDamgaVergisiTL}}1.935{{/ihaleKarariDamgaVergisiTL}}</td>
-      <td align="right">{{ihaleKarariDamgaVergisiKR}}{{^ihaleKarariDamgaVergisiKR}}47{{/ihaleKarariDamgaVergisiKR}}</td>
-      <td style="font-size: 8pt;">İhale Kararı Damga Vergisi (Binde 5.69)</td>
-    </tr>
+        <!-- ROW 3: İhale Kararı Damga Vergisi -->
+        <tr>
+          <td align="center">360</td>
+          <td align="center">57</td>
+          <td align="center">31</td>
+          <td align="center">__</td>
+          <td align="center">__</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td>&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">1</td>
+          <td align="center">5</td>
+          <td align="center">1</td>
+          <td align="center">2</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="right" class="font-bold">
+            {{ihaleKarariDamgaVergisiTL}}{{^ihaleKarariDamgaVergisiTL}}1.935{{/ihaleKarariDamgaVergisiTL}}
+          </td>
+          <td align="right">
+            {{ihaleKarariDamgaVergisiKR}}{{^ihaleKarariDamgaVergisiKR}}47{{/ihaleKarariDamgaVergisiKR}}
+          </td>
+          <td style="font-size: 8pt">İhale Kararı Damga Vergisi (Binde 5.69)</td>
+        </tr>
 
-    <!-- ROW 4: Gelir Vergisi Tevkifatı -->
-    <tr>
-      <td align="center">360</td>
-      <td align="center">57</td>
-      <td align="center">31</td>
-      <td align="center">__</td>
-      <td align="center">__</td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td><td align="center">&nbsp;</td><td>&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">3</td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="right" class="font-bold">{{gelirVergisiTL}}{{^gelirVergisiTL}}0{{/gelirVergisiTL}}</td>
-      <td align="right">{{gelirVergisiKR}}{{^gelirVergisiKR}}00{{/gelirVergisiKR}}</td>
-      <td style="font-size: 8pt;">Gelir Vergisi Tevkifatı</td>
-    </tr>
+        <!-- ROW 4: Gelir Vergisi Tevkifatı -->
+        <tr>
+          <td align="center">360</td>
+          <td align="center">57</td>
+          <td align="center">31</td>
+          <td align="center">__</td>
+          <td align="center">__</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td>&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">1</td>
+          <td align="center">1</td>
+          <td align="center">1</td>
+          <td align="center">3</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="right" class="font-bold">
+            {{gelirVergisiTL}}{{^gelirVergisiTL}}0{{/gelirVergisiTL}}
+          </td>
+          <td align="right">{{gelirVergisiKR}}{{^gelirVergisiKR}}00{{/gelirVergisiKR}}</td>
+          <td style="font-size: 8pt">Gelir Vergisi Tevkifatı</td>
+        </tr>
 
-    <!-- ROW 5: KDV Tevkifatı (3/10) -->
-    <tr>
-      <td align="center">360</td>
-      <td align="center">57</td>
-      <td align="center">31</td>
-      <td align="center">__</td>
-      <td align="center">__</td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td><td align="center">&nbsp;</td><td>&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="center">1</td><td align="center">3</td><td align="center">1</td><td align="center">2</td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="right" class="font-bold">{{kdvTevkifatTL}}{{^kdvTevkifatTL}}20.409{{/kdvTevkifatTL}}</td>
-      <td align="right">{{kdvTevkifatKR}}{{^kdvTevkifatKR}}18{{/kdvTevkifatKR}}</td>
-      <td style="font-size: 8pt;">KDV Tevkifatı (3/10)</td>
-    </tr>
-        
-    <!-- ROW 6: Gider Yansıtma Hesabı -->
-    <tr>
-      <td align="center">835</td>
-      <td align="center">57</td>
-      <td align="center">31</td>
-      <td align="center">__</td>
-      <td align="center">__</td>
-      <td align="center"></td><td align="center"></td><td align="center"></td><td align="center"></td><td align="center"></td><td align="center"></td><td align="center"></td><td align="center"></td><td align="center"></td>
-      <td align="right" class="font-bold">{{giderYansitmaTL}}{{^giderYansitmaTL}}408.183{{/giderYansitmaTL}}</td>
-      <td align="right">{{giderYansitmaKR}}{{^giderYansitmaKR}}06{{/giderYansitmaKR}}</td>
-      <td align="center">&nbsp;</td>
-      <td align="center">&nbsp;</td>
-      <td style="font-size: 8pt;">Gider Yansıtma Hesabı</td>
-    </tr>
-        
-    <!-- ROW 7: Gelir Yansıtma Hesabı -->
-    <tr>
-      <td align="center">805</td>
-      <td align="center">57</td>
-      <td align="center">31</td>
-      <td align="center">__</td>
-      <td align="center">__</td>
-      <td align="center"></td><td align="center"></td><td align="center"></td><td align="center"></td><td align="center"></td><td align="center"></td><td align="center"></td><td align="center"></td><td align="center"></td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="right" class="font-bold">{{gelirYansitmaTL}}{{^gelirYansitmaTL}}408.183{{/gelirYansitmaTL}}</td>
-      <td align="right">{{gelirYansitmaKR}}{{^gelirYansitmaKR}}06{{/gelirYansitmaKR}}</td>
-      <td style="font-size: 8pt;">Gelir Yansıtma Hesabı</td>
-    </tr>
+        <!-- ROW 5: KDV Tevkifatı (3/10) -->
+        <tr>
+          <td align="center">360</td>
+          <td align="center">57</td>
+          <td align="center">31</td>
+          <td align="center">__</td>
+          <td align="center">__</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td>&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">1</td>
+          <td align="center">3</td>
+          <td align="center">1</td>
+          <td align="center">2</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="right" class="font-bold">
+            {{kdvTevkifatTL}}{{^kdvTevkifatTL}}20.409{{/kdvTevkifatTL}}
+          </td>
+          <td align="right">{{kdvTevkifatKR}}{{^kdvTevkifatKR}}18{{/kdvTevkifatKR}}</td>
+          <td style="font-size: 8pt">KDV Tevkifatı (3/10)</td>
+        </tr>
 
-    <!-- ROW 8: Bütçe Ödenekleri Hesabı (800) - Damga Vergisi -->
-    <tr>
-      <td align="center">800</td>
-      <td align="center">57</td>
-      <td align="center">31</td>
-      <td align="center">__</td>
-      <td align="center">__</td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td><td align="center">&nbsp;</td><td>&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="center">1</td><td align="center">5</td><td align="center">1</td><td align="center">1</td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="right" class="font-bold">{{damgaVergisiTL}}{{^damgaVergisiTL}}3.224{{/damgaVergisiTL}}</td>
-      <td align="right">{{damgaVergisiKR}}{{^damgaVergisiKR}}65{{/damgaVergisiKR}}</td>
-      <td style="font-size: 8pt;">Damga Vergisi (800)</td>
-    </tr>
+        <!-- ROW 6: Gider Yansıtma Hesabı -->
+        <tr>
+          <td align="center">835</td>
+          <td align="center">57</td>
+          <td align="center">31</td>
+          <td align="center">__</td>
+          <td align="center">__</td>
+          <td align="center"></td>
+          <td align="center"></td>
+          <td align="center"></td>
+          <td align="center"></td>
+          <td align="center"></td>
+          <td align="center"></td>
+          <td align="center"></td>
+          <td align="center"></td>
+          <td align="center"></td>
+          <td align="right" class="font-bold">
+            {{giderYansitmaTL}}{{^giderYansitmaTL}}408.183{{/giderYansitmaTL}}
+          </td>
+          <td align="right">{{giderYansitmaKR}}{{^giderYansitmaKR}}06{{/giderYansitmaKR}}</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td style="font-size: 8pt">Gider Yansıtma Hesabı</td>
+        </tr>
 
-    <!-- ROW 9: Bütçe Ödenekleri Hesabı (800) - İhale Kararı Damga Vergisi -->
-    <tr>
-      <td align="center">800</td>
-      <td align="center">57</td>
-      <td align="center">31</td>
-      <td align="center">__</td>
-      <td align="center">__</td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td><td align="center">&nbsp;</td><td>&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="center">1</td><td align="center">5</td><td align="center">1</td><td align="center">2</td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="right" class="font-bold">{{ihaleKarariDamgaVergisiTL}}{{^ihaleKarariDamgaVergisiTL}}1.935{{/ihaleKarariDamgaVergisiTL}}</td>
-      <td align="right">{{ihaleKarariDamgaVergisiKR}}{{^ihaleKarariDamgaVergisiKR}}47{{/ihaleKarariDamgaVergisiKR}}</td>
-      <td style="font-size: 8pt;">İhale Kararı Damga Vergisi (800)</td>
-    </tr>
+        <!-- ROW 7: Gelir Yansıtma Hesabı -->
+        <tr>
+          <td align="center">805</td>
+          <td align="center">57</td>
+          <td align="center">31</td>
+          <td align="center">__</td>
+          <td align="center">__</td>
+          <td align="center"></td>
+          <td align="center"></td>
+          <td align="center"></td>
+          <td align="center"></td>
+          <td align="center"></td>
+          <td align="center"></td>
+          <td align="center"></td>
+          <td align="center"></td>
+          <td align="center"></td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="right" class="font-bold">
+            {{gelirYansitmaTL}}{{^gelirYansitmaTL}}408.183{{/gelirYansitmaTL}}
+          </td>
+          <td align="right">{{gelirYansitmaKR}}{{^gelirYansitmaKR}}06{{/gelirYansitmaKR}}</td>
+          <td style="font-size: 8pt">Gelir Yansıtma Hesabı</td>
+        </tr>
 
-    <!-- ROW 10: Bütçe Ödenekleri Hesabı (800) - Gelir Vergisi Tevkifatı -->
-    <tr>
-      <td align="center">800</td>
-      <td align="center">57</td>
-      <td align="center">31</td>
-      <td align="center">__</td>
-      <td align="center">__</td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td><td align="center">&nbsp;</td><td>&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">3</td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="right" class="font-bold">{{gelirVergisiTL}}{{^gelirVergisiTL}}0{{/gelirVergisiTL}}</td>
-      <td align="right">{{gelirVergisiKR}}{{^gelirVergisiKR}}00{{/gelirVergisiKR}}</td>
-      <td style="font-size: 8pt;">Gelir Vergisi Tevkifatı (800)</td>
-    </tr>
+        <!-- ROW 8: Bütçe Ödenekleri Hesabı (800) - Damga Vergisi -->
+        <tr>
+          <td align="center">800</td>
+          <td align="center">57</td>
+          <td align="center">31</td>
+          <td align="center">__</td>
+          <td align="center">__</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td>&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">1</td>
+          <td align="center">5</td>
+          <td align="center">1</td>
+          <td align="center">1</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="right" class="font-bold">
+            {{damgaVergisiTL}}{{^damgaVergisiTL}}3.224{{/damgaVergisiTL}}
+          </td>
+          <td align="right">{{damgaVergisiKR}}{{^damgaVergisiKR}}65{{/damgaVergisiKR}}</td>
+          <td style="font-size: 8pt">Damga Vergisi (800)</td>
+        </tr>
 
-    <!-- ROW 11: Bütçe Ödenekleri Hesabı (800) - KDV Tevkifatı (3/10) -->
-    <tr>
-      <td align="center">800</td>
-      <td align="center">57</td>
-      <td align="center">31</td>
-      <td align="center">__</td>
-      <td align="center">__</td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td><td align="center">&nbsp;</td><td>&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="center">1</td><td align="center">3</td><td align="center">1</td><td align="center">2</td>
-      <td align="center">&nbsp;</td><td align="center">&nbsp;</td>
-      <td align="right" class="font-bold">{{kdvTevkifatTL}}{{^kdvTevkifatTL}}20.409{{/kdvTevkifatTL}}</td>
-      <td align="right">{{kdvTevkifatKR}}{{^kdvTevkifatKR}}18{{/kdvTevkifatKR}}</td>
-      <td style="font-size: 8pt;">KDV Tevkifatı (3/10) (800)</td>
-    </tr>
+        <!-- ROW 9: Bütçe Ödenekleri Hesabı (800) - İhale Kararı Damga Vergisi -->
+        <tr>
+          <td align="center">800</td>
+          <td align="center">57</td>
+          <td align="center">31</td>
+          <td align="center">__</td>
+          <td align="center">__</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td>&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">1</td>
+          <td align="center">5</td>
+          <td align="center">1</td>
+          <td align="center">2</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="right" class="font-bold">
+            {{ihaleKarariDamgaVergisiTL}}{{^ihaleKarariDamgaVergisiTL}}1.935{{/ihaleKarariDamgaVergisiTL}}
+          </td>
+          <td align="right">
+            {{ihaleKarariDamgaVergisiKR}}{{^ihaleKarariDamgaVergisiKR}}47{{/ihaleKarariDamgaVergisiKR}}
+          </td>
+          <td style="font-size: 8pt">İhale Kararı Damga Vergisi (800)</td>
+        </tr>
 
-    <!-- Spacer Rows for official document styling -->
-    <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <!-- ROW 10: Bütçe Ödenekleri Hesabı (800) - Gelir Vergisi Tevkifatı -->
+        <tr>
+          <td align="center">800</td>
+          <td align="center">57</td>
+          <td align="center">31</td>
+          <td align="center">__</td>
+          <td align="center">__</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td>&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">1</td>
+          <td align="center">1</td>
+          <td align="center">1</td>
+          <td align="center">3</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="right" class="font-bold">
+            {{gelirVergisiTL}}{{^gelirVergisiTL}}0{{/gelirVergisiTL}}
+          </td>
+          <td align="right">{{gelirVergisiKR}}{{^gelirVergisiKR}}00{{/gelirVergisiKR}}</td>
+          <td style="font-size: 8pt">Gelir Vergisi Tevkifatı (800)</td>
+        </tr>
 
-    <!-- TOPLAM -->
-    <tr class="font-bold">
-        <td align="right" colspan="14">TOPLAM</td>
-        <td align="right">{{toplamBorcTL}}{{^toplamBorcTL}}816.366{{/toplamBorcTL}}</td>
-        <td align="right">{{toplamBorcKR}}{{^toplamBorcKR}}12{{/toplamBorcKR}}</td>
-        <td align="right">{{toplamAlacakTL}}{{^toplamAlacakTL}}841.936{{/toplamAlacakTL}}</td>
-        <td align="right">{{toplamAlacakKR}}{{^toplamAlacakKR}}50{{/toplamAlacakKR}}</td>
-        <td>&nbsp;</td>
-    </tr>
-    
-    <tr>
-        <td align="right" colspan="14" class="font-bold">Bütçe Gideri Tahakkuk Toplam</td>
-        <td align="right" class="font-bold">{{brutTutarTL}}{{^brutTutarTL}}408.183{{/brutTutarTL}}</td>
-        <td align="right" class="font-bold">{{brutTutarKR}}{{^brutTutarKR}}06{{/brutTutarKR}}</td>
-        <td align="right" class="font-bold">0</td>
-        <td align="right" class="font-bold">00</td>
-        <td>&nbsp;</td>
-    </tr>
-    
-    <tr>
-        <td colspan="19" style="padding: 8px; font-weight: bold;">
-          Yukarıda Yazılı; {{brutTutarTL}} TL {{brutTutarKR}} kr. Bütçe Gideri Tahakkuk Ettirilmiştir. Ödenmesi/Mahsubu Gerekir.
-        </td>
-    </tr>
-    </tbody>
-  </table>
+        <!-- ROW 11: Bütçe Ödenekleri Hesabı (800) - KDV Tevkifatı (3/10) -->
+        <tr>
+          <td align="center">800</td>
+          <td align="center">57</td>
+          <td align="center">31</td>
+          <td align="center">__</td>
+          <td align="center">__</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td>&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">1</td>
+          <td align="center">3</td>
+          <td align="center">1</td>
+          <td align="center">2</td>
+          <td align="center">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+          <td align="right" class="font-bold">
+            {{kdvTevkifatTL}}{{^kdvTevkifatTL}}20.409{{/kdvTevkifatTL}}
+          </td>
+          <td align="right">{{kdvTevkifatKR}}{{^kdvTevkifatKR}}18{{/kdvTevkifatKR}}</td>
+          <td style="font-size: 8pt">KDV Tevkifatı (3/10) (800)</td>
+        </tr>
 
-  <!-- KONTROL VE TAHAKKUK ÖZET TABLOSU -->
-  <table border="1" style="width: 100%; border-collapse: collapse; font-size: 8.5pt; margin-bottom: 12px; border: 1px solid #000;">
-    <tbody>
-    <tr class="font-bold text-center">
-        <td style="padding: 4px;">Öd. Emri<br>Belgesi No</td>        
-        <td colspan="2" style="padding: 4px;">Bütçe Giderleri<br>Tahakkuk Topl.</td>
-        <td colspan="2" style="padding: 4px;">Özel Gider<br>İndirimi Top.</td>
-        <td colspan="2" style="padding: 4px;">Kesinti<br>Toplamı</td>
-        <td colspan="2" style="padding: 4px;">Ödenmesi<br>Gereken</td>
-        <td style="padding: 4px;">Çek-Gönderme<br>Emri No</td>
-        <td rowspan="3" style="vertical-align: top; padding: 6px; font-weight: normal; text-align: left; width: 40%;">
-          Kontrol Edilmiş ve Uygun Görülmüştür.<br><br>
-          Tarih: {{onayTarih1}}{{^onayTarih1}}..../..../20....{{/onayTarih1}}<br><br>
-          İmza / Ad Soyad : <span class="font-bold">{{kontrolEdenAdi}}{{^kontrolEdenAdi}}................{{/kontrolEdenAdi}}</span><br>
-          Unvan : {{kontrolEdenUnvan}}{{^kontrolEdenUnvan}}Mali Hizmetler Müdürü{{/kontrolEdenUnvan}}
-        </td>
-    </tr>
-    <tr class="text-center">
-        <td rowspan="2" style="vertical-align: middle;">
-          {{odemeEmriBelgeNo}}{{^odemeEmriBelgeNo}}................{{/odemeEmriBelgeNo}}
-        </td>
-        <td class="font-bold" style="width: 10%;">TL</td><td style="width: 3%;">kr</td>
-        <td class="font-bold" style="width: 10%;">TL</td><td style="width: 3%;">kr</td>
-        <td class="font-bold" style="width: 10%;">TL</td><td style="width: 3%;">kr</td>
-        <td class="font-bold" style="width: 10%;">TL</td><td style="width: 3%;">kr</td>
-        <td rowspan="2" style="vertical-align: middle;">
-          {{cekGondermeEmirNo}}{{^cekGondermeEmirNo}}................{{/cekGondermeEmirNo}}
-        </td>
-    </tr>
-    <tr class="text-center font-bold">
-        <td>{{brutTutarTL}}</td><td>{{brutTutarKR}}</td>
-        <td>0</td><td>00</td>
-        <td>{{kesintiToplamTL}}</td><td>{{kesintiToplamKR}}</td>
-        <td>{{netOdenenTL}}</td><td>{{netOdenenKR}}</td>
-    </tr>
-    </tbody>
-  </table>
+        <!-- Spacer Rows for official document styling -->
+        <tr>
+          <td>&nbsp;</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
 
-  <!-- TETKİK EDENLER TABLOSU -->
-  <table style="width: 100%; border-collapse: collapse; font-size: 8.5pt; margin-bottom: 12px; border: 1px solid #000;" border="1">    
-    <tbody>
-    <tr class="font-bold text-center bg-gray">
-      <td colspan="6" style="padding: 4px;">TETKİK EDENLER</td>
-      <td style="padding: 4px; width: 40%;">AÇIKLAMA VE EKLER</td>
-    </tr>
-    <tr class="text-center font-bold" style="font-size: 8pt;">
-      <td colspan="2" width="20%">MEMUR</td>
-      <td colspan="2" width="20%">ŞEF</td>
-      <td colspan="2" width="20%">MUH. YET. YRD.</td>
-      <td rowspan="4" style="text-align: left; vertical-align: top; padding: 6px; font-weight: normal;">
-        {{aciklamalar}}{{^aciklamalar}}Dosya ekleri (fatura, muayene kabul tutanağı) kontrol edilerek tahakkuka bağlanmıştır.{{/aciklamalar}}
-      </td>
-    </tr>
-    <tr class="text-center" style="height: 40px;">
-        <td colspan="2" style="vertical-align: bottom;">
-          {{tetkikEdenMemur}}{{^tetkikEdenMemur}}................{{/tetkikEdenMemur}}
-        </td>
-        <td colspan="2" style="vertical-align: bottom;">
-          {{tetkikEdenSef}}{{^tetkikEdenSef}}................{{/tetkikEdenSef}}
-        </td>
-        <td colspan="2" style="vertical-align: bottom;">
-          {{tetkikEdenMuhYetYrd}}{{^tetkikEdenMuhYetYrd}}................{{/tetkikEdenMuhYetYrd}}
-        </td>
-    </tr>                              
-    <tr class="text-center font-bold bg-gray">
-      <td colspan="6" style="padding: 4px;">Ödemeye Esas Belgenin</td>
-    </tr>
-    <tr class="text-center" style="font-size: 8pt;">
-        <td style="font-weight: bold; width: 12%;">Türü</td>
-        <td colspan="2" style="font-weight: bold; width: 20%;">Tarihi</td>
-        <td colspan="2" style="font-weight: bold; width: 18%;">No'su</td>
-        <td style="font-weight: bold; width: 10%;">Tutarı (KDV Dahil)</td>
-    </tr>
-    <tr class="text-center">
-        <td class="font-bold">Fatura</td>
-        <td colspan="2">{{faturaTarihi}}</td>
-        <td colspan="2">{{faturaNo}}</td>
-        <td class="font-bold" align="right">{{brutTutarTL}},{{brutTutarKR}} TL</td>
-    </tr>
-    </tbody>
-  </table>
+        <!-- TOPLAM -->
+        <tr class="font-bold">
+          <td align="right" colspan="14">TOPLAM</td>
+          <td align="right">{{toplamBorcTL}}{{^toplamBorcTL}}816.366{{/toplamBorcTL}}</td>
+          <td align="right">{{toplamBorcKR}}{{^toplamBorcKR}}12{{/toplamBorcKR}}</td>
+          <td align="right">{{toplamAlacakTL}}{{^toplamAlacakTL}}841.936{{/toplamAlacakTL}}</td>
+          <td align="right">{{toplamAlacakKR}}{{^toplamAlacakKR}}50{{/toplamAlacakKR}}</td>
+          <td>&nbsp;</td>
+        </tr>
 
-  <!-- OLUR / ONAY TABLOSU -->
-  <table border="1" style="width: 100%; border-collapse: collapse; font-size: 8.5pt; border: 1px solid #000;">
-    <tbody>
-    <tr class="text-center font-bold bg-gray">
-      <td width="33%">GERÇEKLEŞTİRME GÖREVLİSİ</td>
-      <td width="34%">OLUR</td>
-      <td width="33%">ÖDEYİNİZ / MAHSUP EDİNİZ</td>
-    </tr>
-    <tr class="text-center" style="height: 70px;">
-        <td style="vertical-align: top; padding: 6px; text-align: left; font-weight: normal;">
-          Yukarıdaki giderlerin kabulleri yapılmış olup ödenmesi uygundur.<br><br>
-          Ad Soyad: <span class="font-bold">{{gerceklestirmeGorevlisiAdi}}{{^gerceklestirmeGorevlisiAdi}}{{hazirlayanPersonelAdi}}{{^hazirlayanPersonelAdi}}................{{/hazirlayanPersonelAdi}}{{/gerceklestirmeGorevlisiAdi}}</span><br>
-          Unvan: {{gerceklestirmeGorevlisiUnvan}}{{^gerceklestirmeGorevlisiUnvan}}{{hazirlayanPersonelUnvan}}{{^hazirlayanPersonelUnvan}}................{{/hazirlayanPersonelUnvan}}{{/gerceklestirmeGorevlisiUnvan}}
-        </td>
-        <td style="vertical-align: top; padding: 6px;">
-          Tarih: {{olurTarihi}}{{^olurTarihi}}{{onayTarih2}}{{^onayTarih2}}..../..../20....{{/onayTarih2}}{{/olurTarihi}}<br><br>
-          İmza / Ad Soyad : <span class="font-bold">{{olurKisiAdi}}{{^olurKisiAdi}}{{onaylayanPersonelAdi}}{{^onaylayanPersonelAdi}}................{{/onaylayanPersonelAdi}}{{/olurKisiAdi}}</span><br>
-          Unvan : {{olurKisiUnvan}}{{^olurKisiUnvan}}{{onaylayanPersonelUnvan}}{{^onaylayanPersonelUnvan}}Mali Hizmetler Müdürü{{/onaylayanPersonelUnvan}}{{/olurKisiUnvan}}
-        </td>
-        <td style="vertical-align: top; padding: 6px; text-align: left; font-weight: normal;">
-          Ad Soyad: <span class="font-bold">{{odeyinizKisiAdi}}{{^odeyinizKisiAdi}}{{baskanAdi}}{{^baskanAdi}}................{{/baskanAdi}}{{/odeyinizKisiAdi}}</span><br>
-          Unvan: {{odeyinizKisiUnvan}}{{^odeyinizKisiUnvan}}{{baskanUnvan}}{{^baskanUnvan}}Belediye Başkanı{{/baskanUnvan}}{{/odeyinizKisiUnvan}}
-        </td>
-    </tr>
-    <tr>        
-        <td colspan="3" style="padding: 8px; font-weight: bold; font-size: 9pt;">
-          Yalnız; {{netOdenenYazi}}{{^netOdenenYazi}}................ TL, ................ Krş.{{/netOdenenYazi}} ödenmiştir.
-        </td>
-    </tr>
-    </tbody>
-  </table>
-</body>
+        <tr>
+          <td align="right" colspan="14" class="font-bold">Bütçe Gideri Tahakkuk Toplam</td>
+          <td align="right" class="font-bold">
+            {{brutTutarTL}}{{^brutTutarTL}}408.183{{/brutTutarTL}}
+          </td>
+          <td align="right" class="font-bold">{{brutTutarKR}}{{^brutTutarKR}}06{{/brutTutarKR}}</td>
+          <td align="right" class="font-bold">0</td>
+          <td align="right" class="font-bold">00</td>
+          <td>&nbsp;</td>
+        </tr>
+
+        <tr>
+          <td colspan="19" style="padding: 8px; font-weight: bold">
+            Yukarıda Yazılı; {{brutTutarTL}} TL {{brutTutarKR}} kr. Bütçe Gideri Tahakkuk
+            Ettirilmiştir. Ödenmesi/Mahsubu Gerekir.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- KONTROL VE TAHAKKUK ÖZET TABLOSU -->
+    <table
+      border="1"
+      style="
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 8.5pt;
+        margin-bottom: 12px;
+        border: 1px solid #000;
+      "
+    >
+      <tbody>
+        <tr class="font-bold text-center">
+          <td style="padding: 4px">Öd. Emri<br />Belgesi No</td>
+          <td colspan="2" style="padding: 4px">Bütçe Giderleri<br />Tahakkuk Topl.</td>
+          <td colspan="2" style="padding: 4px">Özel Gider<br />İndirimi Top.</td>
+          <td colspan="2" style="padding: 4px">Kesinti<br />Toplamı</td>
+          <td colspan="2" style="padding: 4px">Ödenmesi<br />Gereken</td>
+          <td style="padding: 4px">Çek-Gönderme<br />Emri No</td>
+          <td
+            rowspan="3"
+            style="
+              vertical-align: top;
+              padding: 6px;
+              font-weight: normal;
+              text-align: left;
+              width: 40%;
+            "
+          >
+            Kontrol Edilmiş ve Uygun Görülmüştür.<br /><br />
+            Tarih: {{onayTarih1}}{{^onayTarih1}}..../..../20....{{/onayTarih1}}<br /><br />
+            İmza / Ad Soyad :
+            <span class="font-bold"
+              >{{kontrolEdenAdi}}{{^kontrolEdenAdi}}................{{/kontrolEdenAdi}}</span
+            ><br />
+            Unvan : {{kontrolEdenUnvan}}{{^kontrolEdenUnvan}}Mali Hizmetler
+            Müdürü{{/kontrolEdenUnvan}}
+          </td>
+        </tr>
+        <tr class="text-center">
+          <td rowspan="2" style="vertical-align: middle">
+            {{odemeEmriBelgeNo}}{{^odemeEmriBelgeNo}}................{{/odemeEmriBelgeNo}}
+          </td>
+          <td class="font-bold" style="width: 10%">TL</td>
+          <td style="width: 3%">kr</td>
+          <td class="font-bold" style="width: 10%">TL</td>
+          <td style="width: 3%">kr</td>
+          <td class="font-bold" style="width: 10%">TL</td>
+          <td style="width: 3%">kr</td>
+          <td class="font-bold" style="width: 10%">TL</td>
+          <td style="width: 3%">kr</td>
+          <td rowspan="2" style="vertical-align: middle">
+            {{cekGondermeEmirNo}}{{^cekGondermeEmirNo}}................{{/cekGondermeEmirNo}}
+          </td>
+        </tr>
+        <tr class="text-center font-bold">
+          <td>{{brutTutarTL}}</td>
+          <td>{{brutTutarKR}}</td>
+          <td>0</td>
+          <td>00</td>
+          <td>{{kesintiToplamTL}}</td>
+          <td>{{kesintiToplamKR}}</td>
+          <td>{{netOdenenTL}}</td>
+          <td>{{netOdenenKR}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- TETKİK EDENLER TABLOSU -->
+    <table
+      style="
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 8.5pt;
+        margin-bottom: 12px;
+        border: 1px solid #000;
+      "
+      border="1"
+    >
+      <tbody>
+        <tr class="font-bold text-center bg-gray">
+          <td colspan="6" style="padding: 4px">TETKİK EDENLER</td>
+          <td style="padding: 4px; width: 40%">AÇIKLAMA VE EKLER</td>
+        </tr>
+        <tr class="text-center font-bold" style="font-size: 8pt">
+          <td colspan="2" width="20%">MEMUR</td>
+          <td colspan="2" width="20%">ŞEF</td>
+          <td colspan="2" width="20%">MUH. YET. YRD.</td>
+          <td
+            rowspan="4"
+            style="text-align: left; vertical-align: top; padding: 6px; font-weight: normal"
+          >
+            {{aciklamalar}}{{^aciklamalar}}Dosya ekleri (fatura, muayene kabul tutanağı) kontrol
+            edilerek tahakkuka bağlanmıştır.{{/aciklamalar}}
+          </td>
+        </tr>
+        <tr class="text-center" style="height: 40px">
+          <td colspan="2" style="vertical-align: bottom">
+            {{tetkikEdenMemur}}{{^tetkikEdenMemur}}................{{/tetkikEdenMemur}}
+          </td>
+          <td colspan="2" style="vertical-align: bottom">
+            {{tetkikEdenSef}}{{^tetkikEdenSef}}................{{/tetkikEdenSef}}
+          </td>
+          <td colspan="2" style="vertical-align: bottom">
+            {{tetkikEdenMuhYetYrd}}{{^tetkikEdenMuhYetYrd}}................{{/tetkikEdenMuhYetYrd}}
+          </td>
+        </tr>
+        <tr class="text-center font-bold bg-gray">
+          <td colspan="6" style="padding: 4px">Ödemeye Esas Belgenin</td>
+        </tr>
+        <tr class="text-center" style="font-size: 8pt">
+          <td style="font-weight: bold; width: 12%">Türü</td>
+          <td colspan="2" style="font-weight: bold; width: 20%">Tarihi</td>
+          <td colspan="2" style="font-weight: bold; width: 18%">No'su</td>
+          <td style="font-weight: bold; width: 10%">Tutarı (KDV Dahil)</td>
+        </tr>
+        <tr class="text-center">
+          <td class="font-bold">Fatura</td>
+          <td colspan="2">{{faturaTarihi}}</td>
+          <td colspan="2">{{faturaNo}}</td>
+          <td class="font-bold" align="right">{{brutTutarTL}},{{brutTutarKR}} TL</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- OLUR / ONAY TABLOSU -->
+    <table
+      border="1"
+      style="width: 100%; border-collapse: collapse; font-size: 8.5pt; border: 1px solid #000"
+    >
+      <tbody>
+        <tr class="text-center font-bold bg-gray">
+          <td width="33%">GERÇEKLEŞTİRME GÖREVLİSİ</td>
+          <td width="34%">OLUR</td>
+          <td width="33%">ÖDEYİNİZ / MAHSUP EDİNİZ</td>
+        </tr>
+        <tr class="text-center" style="height: 70px">
+          <td style="vertical-align: top; padding: 6px; text-align: left; font-weight: normal">
+            Yukarıdaki giderlerin kabulleri yapılmış olup ödenmesi uygundur.<br /><br />
+            Ad Soyad:
+            <span class="font-bold"
+              >{{gerceklestirmeGorevlisiAdi}}{{^gerceklestirmeGorevlisiAdi}}{{hazirlayanPersonelAdi}}{{^hazirlayanPersonelAdi}}................{{/hazirlayanPersonelAdi}}{{/gerceklestirmeGorevlisiAdi}}</span
+            ><br />
+            Unvan:
+            {{gerceklestirmeGorevlisiUnvan}}{{^gerceklestirmeGorevlisiUnvan}}{{hazirlayanPersonelUnvan}}{{^hazirlayanPersonelUnvan}}................{{/hazirlayanPersonelUnvan}}{{/gerceklestirmeGorevlisiUnvan}}
+          </td>
+          <td style="vertical-align: top; padding: 6px">
+            Tarih:
+            {{olurTarihi}}{{^olurTarihi}}{{onayTarih2}}{{^onayTarih2}}..../..../20....{{/onayTarih2}}{{/olurTarihi}}<br /><br />
+            İmza / Ad Soyad :
+            <span class="font-bold"
+              >{{olurKisiAdi}}{{^olurKisiAdi}}{{onaylayanPersonelAdi}}{{^onaylayanPersonelAdi}}................{{/onaylayanPersonelAdi}}{{/olurKisiAdi}}</span
+            ><br />
+            Unvan :
+            {{olurKisiUnvan}}{{^olurKisiUnvan}}{{onaylayanPersonelUnvan}}{{^onaylayanPersonelUnvan}}Mali
+            Hizmetler Müdürü{{/onaylayanPersonelUnvan}}{{/olurKisiUnvan}}
+          </td>
+          <td style="vertical-align: top; padding: 6px; text-align: left; font-weight: normal">
+            Ad Soyad:
+            <span class="font-bold"
+              >{{odeyinizKisiAdi}}{{^odeyinizKisiAdi}}{{baskanAdi}}{{^baskanAdi}}................{{/baskanAdi}}{{/odeyinizKisiAdi}}</span
+            ><br />
+            Unvan:
+            {{odeyinizKisiUnvan}}{{^odeyinizKisiUnvan}}{{baskanUnvan}}{{^baskanUnvan}}Belediye
+            Başkanı{{/baskanUnvan}}{{/odeyinizKisiUnvan}}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3" style="padding: 8px; font-weight: bold; font-size: 9pt">
+            Yalnız; {{netOdenenYazi}}{{^netOdenenYazi}}................ TL, ................
+            Krş.{{/netOdenenYazi}} ödenmiştir.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
 </html>

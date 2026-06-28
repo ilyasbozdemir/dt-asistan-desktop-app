@@ -22,7 +22,8 @@ export function PageWrapper(): React.ReactNode {
   const searchParams = new URLSearchParams(window.location.search)
   const hashParams = new URLSearchParams(window.location.hash.split('?')[1] || '')
   const isWindowMode = searchParams.get('mode') === 'window' || hashParams.get('mode') === 'window'
-  const isDosyaWindowMode = searchParams.get('mode') === 'dosya_window' || hashParams.get('mode') === 'dosya_window'
+  const isDosyaWindowMode =
+    searchParams.get('mode') === 'dosya_window' || hashParams.get('mode') === 'dosya_window'
   const isAnyWindowMode = isWindowMode || isDosyaWindowMode
 
   useEffect(() => {
@@ -39,14 +40,22 @@ export function PageWrapper(): React.ReactNode {
     else if (path.startsWith('/ambar')) title += ' - Ambar Tanımları'
     else if (path.startsWith('/olcubirimleri')) title += ' - Ölçü Birimleri'
     else if (path.startsWith('/malzemeler/yeni')) title += ' - Yeni Kayıt (Mal/Hizmet/Yapım İşi)'
-    else if (path.startsWith('/malzemeler')) title += ' - Kayıtlı Mal / Hizmet / Yapım İşleri Listesi'
+    else if (path.startsWith('/malzemeler'))
+      title += ' - Kayıtlı Mal / Hizmet / Yapım İşleri Listesi'
     else if (path.startsWith('/kurum')) title += ' - Kurum Bilgileri'
     else if (path.startsWith('/profil')) title += ' — Kullanıcı Profili'
 
     document.title = title
   }, [routerState.location.pathname])
 
-  const { activeFilePath, openWorkspace, isAuthenticated, loadActiveMeta, activeDosyaId, setActiveDosyaId } = useWorkspaceStore()
+  const {
+    activeFilePath,
+    openWorkspace,
+    isAuthenticated,
+    loadActiveMeta,
+    activeDosyaId,
+    setActiveDosyaId
+  } = useWorkspaceStore()
   const { loadSettings } = useSettingsStore()
 
   // Yeni pencerede açıldığında URL'den id'yi alıp aktif dosya olarak set etme (Windows Forms formlar arası veri taşıma mantığı)
@@ -170,15 +179,13 @@ export function PageWrapper(): React.ReactNode {
     }
   }, [addTab, navigate])
 
-
-
   // When opened as a detached window, restore workspace context from URL params
   useEffect(() => {
     if (!isAnyWindowMode) return
     const wpFromSearch = searchParams.get('wp')
     const wpFromHash = hashParams.get('wp')
     const workspacePath = wpFromSearch || wpFromHash
-    
+
     // Check dosyaId for dosya_window mode
     const dosyaId = searchParams.get('dosyaId') || hashParams.get('dosyaId')
     if (dosyaId) {
@@ -198,7 +205,7 @@ export function PageWrapper(): React.ReactNode {
         }
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Run once on mount
 
   useEffect(() => {
@@ -224,7 +231,7 @@ export function PageWrapper(): React.ReactNode {
       const confirmImport = confirm(
         `"${fileBaseName}" veri dosyasındaki kayıtları aktif kurumunuza aktarmak istiyor musunuz?`
       )
-      
+
       if (!confirmImport) return
 
       try {
@@ -232,8 +239,9 @@ export function PageWrapper(): React.ReactNode {
         if (res.success) {
           let msg = ''
           if (res.importedFirmsCount > 0) msg += `${res.importedFirmsCount} adet firma `
-          if (res.importedItemsCount > 0) msg += `${msg ? 've ' : ''}${res.importedItemsCount} adet malzeme/hizmet kalemi `
-          
+          if (res.importedItemsCount > 0)
+            msg += `${msg ? 've ' : ''}${res.importedItemsCount} adet malzeme/hizmet kalemi `
+
           if (!msg) {
             msg = 'Aktarılacak yeni kayıt bulunamadı veya atlandı.'
           } else {
@@ -290,14 +298,11 @@ export function PageWrapper(): React.ReactNode {
     )
 
     // Listen for navigate events from main process (Tray, Jump Lists)
-    const removeNavListener = window.electron?.ipcRenderer.on(
-      'app:navigate',
-      (_, route) => {
-        if (route) {
-          navigate({ to: route })
-        }
+    const removeNavListener = window.electron?.ipcRenderer.on('app:navigate', (_, route) => {
+      if (route) {
+        navigate({ to: route })
       }
-    )
+    })
 
     return () => {
       if (removeListener) removeListener()
@@ -425,4 +430,3 @@ export function PageWrapper(): React.ReactNode {
     </div>
   )
 }
-

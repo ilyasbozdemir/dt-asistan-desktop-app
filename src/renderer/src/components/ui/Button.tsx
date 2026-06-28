@@ -12,9 +12,12 @@ const buttonVariants = cva(
       variant: {
         default: 'bg-blue-600 text-white hover:bg-blue-700',
         destructive: 'bg-red-500 text-white hover:bg-red-600',
-        outline: 'border border-slate-200 bg-white hover:bg-slate-100 text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-900 dark:text-slate-100',
-        secondary: 'bg-slate-100 text-slate-900 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700',
-        ghost: 'hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100',
+        outline:
+          'border border-slate-200 bg-white hover:bg-slate-100 text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-900 dark:text-slate-100',
+        secondary:
+          'bg-slate-100 text-slate-900 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700',
+        ghost:
+          'hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100',
         link: 'text-blue-600 underline-offset-4 hover:underline dark:text-blue-400'
       },
       size: {
@@ -40,7 +43,7 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, desc, onClick, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button'
-    
+
     const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       if (desc) {
         logActivity('Sistem İşlemi', desc, 'info').catch(console.error)
@@ -51,11 +54,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     return (
-      <Comp 
-        className={cn(buttonVariants({ variant, size, className }))} 
-        ref={ref} 
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
         onClick={handleClick}
-        {...props} 
+        {...props}
       />
     )
   }

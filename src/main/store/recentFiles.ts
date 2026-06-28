@@ -46,22 +46,22 @@ class RecentFilesStore {
   public addRecentFile(filePath: string, name: string) {
     let files = this.readData()
     const id = Buffer.from(filePath).toString('base64')
-    
+
     // Remove if already exists to move it to the top
-    files = files.filter(f => f.path !== filePath)
-    
+    files = files.filter((f) => f.path !== filePath)
+
     files.unshift({
       id,
       name,
       path: filePath,
       lastOpened: Date.now()
     })
-    
+
     // Limit to MAX_RECENT_FILES
     if (files.length > MAX_RECENT_FILES) {
       files = files.slice(0, MAX_RECENT_FILES)
     }
-    
+
     this.writeData(files)
   }
 

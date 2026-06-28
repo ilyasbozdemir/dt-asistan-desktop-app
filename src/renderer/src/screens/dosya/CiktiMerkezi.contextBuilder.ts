@@ -13,7 +13,7 @@ export function buildDocumentContext(
   resolvedMappings: Record<string, any>
 ): any {
   const subInstType = settings?.subInstitutionType || ''
-  
+
   // Antet satırlarını parse et
   let antetSatirlari: string[] = []
   if (kurum?.kurum_anteti) {
@@ -35,14 +35,22 @@ export function buildDocumentContext(
     kurumlari: settings?.customSubInstitutionKurumlari
   })
 
-  const today = new Intl.DateTimeFormat('tr-TR', { timeZone: 'Europe/Istanbul', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date())
+  const today = new Intl.DateTimeFormat('tr-TR', {
+    timeZone: 'Europe/Istanbul',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date())
 
   const kalemSayisi = kalemlerData?.length || 0
   const kalemSayisiYazi = sayiyiYaziyaCevir(kalemSayisi)
 
   // Para birimi formatlayıcı
   const formatTR = (val: number) => {
-    return new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val)
+    return new Intl.NumberFormat('tr-TR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(val)
   }
 
   // Firma toplamlarını hesapla
@@ -57,20 +65,22 @@ export function buildDocumentContext(
     }
   })
 
-  const calculatedTeklifler = firms.map((f: any, index: number) => {
-    let sum = 0
-    kalemlerData?.forEach((k: any) => {
-      const price = bidsMap[`${k.id}_${f.temin_firma_id}`] || 0
-      sum += price * (k.miktar || 0)
+  const calculatedTeklifler = firms
+    .map((f: any, index: number) => {
+      let sum = 0
+      kalemlerData?.forEach((k: any) => {
+        const price = bidsMap[`${k.id}_${f.temin_firma_id}`] || 0
+        sum += price * (k.miktar || 0)
+      })
+      return {
+        siraNo: index + 1,
+        istekliUnvani: f.unvan,
+        teklifBedeli: formatTR(sum),
+        teklifBedeliRaw: sum,
+        yaziIle: paraYaziyaCevir(sum)
+      }
     })
-    return {
-      siraNo: index + 1,
-      istekliUnvani: f.unvan,
-      teklifBedeli: formatTR(sum),
-      teklifBedeliRaw: sum,
-      yaziIle: paraYaziyaCevir(sum)
-    }
-  }).sort((a: any, b: any) => a.teklifBedeliRaw - b.teklifBedeliRaw)
+    .sort((a: any, b: any) => a.teklifBedeliRaw - b.teklifBedeliRaw)
 
   const enAvantajliTeklifSahibi = calculatedTeklifler[0]?.istekliUnvani || ''
   const enAvantajliTeklifBedeli = calculatedTeklifler[0]?.teklifBedeli || ''
@@ -79,51 +89,56 @@ export function buildDocumentContext(
 
   // En düşük fiyatlar ve genel toplam hesaplama
   let grandTotal = 0
-  const needItems = kalemlerData?.map((k: any, index: number) => {
-    const itemPrices = firms.map((f: any) => ({
-      unvan: f.unvan,
-      price: bidsMap[`${k.id}_${f.temin_firma_id}`] || 0
-    }))
-    const validPrices = itemPrices.filter((p: any) => p.price > 0)
-    const minPrice = validPrices.length > 0 ? Math.min(...validPrices.map((p: any) => p.price)) : 0
-    const toplamBedel = minPrice * (k.miktar || 0)
-    grandTotal += toplamBedel
+  const needItems =
+    kalemlerData?.map((k: any, index: number) => {
+      const itemPrices = firms.map((f: any) => ({
+        unvan: f.unvan,
+        price: bidsMap[`${k.id}_${f.temin_firma_id}`] || 0
+      }))
+      const validPrices = itemPrices.filter((p: any) => p.price > 0)
+      const minPrice =
+        validPrices.length > 0 ? Math.min(...validPrices.map((p: any) => p.price)) : 0
+      const toplamBedel = minPrice * (k.miktar || 0)
+      grandTotal += toplamBedel
 
-    const enUygunFirma = validPrices.length > 0 ? validPrices.reduce((prev: any, curr: any) => prev.price < curr.price ? prev : curr) : null
-    const enUygunFirmaAdi = enUygunFirma ? enUygunFirma.unvan : 'Teklif Yok'
+      const enUygunFirma =
+        validPrices.length > 0
+          ? validPrices.reduce((prev: any, curr: any) => (prev.price < curr.price ? prev : curr))
+          : null
+      const enUygunFirmaAdi = enUygunFirma ? enUygunFirma.unvan : 'Teklif Yok'
 
-    const firmaTeklifleri = firms.map((f: any) => {
-      const price = bidsMap[`${k.id}_${f.temin_firma_id}`] || 0
+      const firmaTeklifleri = firms.map((f: any) => {
+        const price = bidsMap[`${k.id}_${f.temin_firma_id}`] || 0
+        return {
+          fiyat: price > 0 ? formatTR(price) : '-'
+        }
+      })
+
+      const firmaTeklifleriDetay = firms.map((f: any) => {
+        const price = bidsMap[`${k.id}_${f.temin_firma_id}`] || 0
+        const total = price * (k.miktar || 0)
+        return {
+          birimFiyat: price > 0 ? formatTR(price) : '-',
+          tutar: total > 0 ? formatTR(total) : '-',
+          hasPrice: price > 0
+        }
+      })
+
       return {
-        fiyat: price > 0 ? formatTR(price) : '-'
+        siraNo: index + 1,
+        kodu: k.tasinir_kodu || k.okas_kodu || '-',
+        malzemeAdi: k.kalem_adi,
+        ozelligi: k.aciklama || '',
+        birimi: k.birim,
+        kdvOrani: k.kdv_orani,
+        miktar: formatTR(k.miktar || 0),
+        firmaTeklifleri,
+        firmaTeklifleriDetay,
+        enUygunFirmaAdi,
+        enDusukFiyat: minPrice > 0 ? formatTR(minPrice) : '-',
+        toplamBedel: toplamBedel > 0 ? formatTR(toplamBedel) : '-'
       }
-    })
-
-    const firmaTeklifleriDetay = firms.map((f: any) => {
-      const price = bidsMap[`${k.id}_${f.temin_firma_id}`] || 0
-      const total = price * (k.miktar || 0)
-      return {
-        birimFiyat: price > 0 ? formatTR(price) : '-',
-        tutar: total > 0 ? formatTR(total) : '-',
-        hasPrice: price > 0
-      }
-    })
-
-    return {
-      siraNo: index + 1,
-      kodu: k.tasinir_kodu || k.okas_kodu || '-',
-      malzemeAdi: k.kalem_adi,
-      ozelligi: k.aciklama || '',
-      birimi: k.birim,
-      kdvOrani: k.kdv_orani,
-      miktar: formatTR(k.miktar || 0),
-      firmaTeklifleri,
-      firmaTeklifleriDetay,
-      enUygunFirmaAdi,
-      enDusukFiyat: minPrice > 0 ? formatTR(minPrice) : '-',
-      toplamBedel: toplamBedel > 0 ? formatTR(toplamBedel) : '-'
-    }
-  }) || []
+    }) || []
 
   const genelToplam = formatTR(grandTotal)
 
@@ -156,7 +171,8 @@ export function buildDocumentContext(
   const dbYaklasikMaliyet = dosyaResData?.yaklasik_maliyet || 0
   const yaklasikMaliyetText = dbYaklasikMaliyet > 0 ? formatTR(dbYaklasikMaliyet) : '0,00'
 
-  const teminSekliText = dosyaResData?.ihale_sekli || '4734 sayılı Kanun\'un 22/d maddesi gereğince Doğrudan Temin'
+  const teminSekliText =
+    dosyaResData?.ihale_sekli || "4734 sayılı Kanun'un 22/d maddesi gereğince Doğrudan Temin"
 
   const rawKapakDetaylari: any[] = []
   if (dosyaResData?.konu) {
@@ -176,7 +192,11 @@ export function buildDocumentContext(
     rawKapakDetaylari.push({ label: 'BÜTÇE TERTİBİ', value: butceTertibiArray })
   }
   if (dosyaResData?.yuklenici_firma_adi) {
-    rawKapakDetaylari.push({ label: 'İHALEYİ ALAN FİRMA', value: dosyaResData.yuklenici_firma_adi, isBold: true })
+    rawKapakDetaylari.push({
+      label: 'İHALEYİ ALAN FİRMA',
+      value: dosyaResData.yuklenici_firma_adi,
+      isBold: true
+    })
   }
   if (dosyaResData?.tarih) {
     rawKapakDetaylari.push({ label: 'DOSYA TARİHİ', value: dosyaResData.tarih })
@@ -190,15 +210,19 @@ export function buildDocumentContext(
 
   // evrakSayisi formatting: detsisno-yil-sayisi
   const detsisNo = kurum?.detsis_kodu || ''
-  const dosyaYili = dosyaResData?.butce_yili || (dosyaResData?.tarih ? dosyaResData.tarih.split('.')[2] : new Date().getFullYear())
+  const dosyaYili =
+    dosyaResData?.butce_yili ||
+    (dosyaResData?.tarih ? dosyaResData.tarih.split('.')[2] : new Date().getFullYear())
   const dosyaSayisi = dosyaResData?.temin_no || ''
-  
+
   let formattedEvrakSayisi = 'Belirtilmedi'
   if (detsisNo) {
     if (dosyaYili && dosyaSayisi) {
-      const cleanSayi = dosyaSayisi.includes('/') 
-        ? dosyaSayisi.split('/').pop() 
-        : (dosyaSayisi.includes('-') ? dosyaSayisi.split('-').pop() : dosyaSayisi)
+      const cleanSayi = dosyaSayisi.includes('/')
+        ? dosyaSayisi.split('/').pop()
+        : dosyaSayisi.includes('-')
+          ? dosyaSayisi.split('-').pop()
+          : dosyaSayisi
       formattedEvrakSayisi = `${detsisNo}-${dosyaYili}-${cleanSayi}`
     } else {
       formattedEvrakSayisi = detsisNo
@@ -255,7 +279,8 @@ export function buildDocumentContext(
     projeNo: dosyaResData?.yatirim_proje_no || 'Yok',
     butceTertibi: butceTertibiArray,
     butceKodu: rawButceKodu || 'Belirtilmedi',
-    avansSartlari: dosyaResData?.avans_verilecek_mi === 1 ? 'Avans verilecektir.' : 'Avans verilmeyecek',
+    avansSartlari:
+      dosyaResData?.avans_verilecek_mi === 1 ? 'Avans verilecektir.' : 'Avans verilmeyecek',
     fiyatFarkiSartlari: dosyaResData?.fiyat_farki_dayanagi || 'Fiyat Farkı Ödenmeyecek',
     dokumanHazirlik: 'Hazırlanmayacaktır.',
     isinAciklamasi: dosyaResData?.isin_aciklamasi || dosyaResData?.konu || 'Belirtilmedi',
@@ -313,13 +338,21 @@ export function buildDocumentContext(
   }
 
   // Sadece mapping dosyasında tanımlıysa şablona gönderilsin
-  if (resolvedMappings.antetSatirlari !== undefined && (resolvedMappings.antetSatirlari === null || String(resolvedMappings.antetSatirlari).startsWith('[Belirtilmedi'))) {
+  if (
+    resolvedMappings.antetSatirlari !== undefined &&
+    (resolvedMappings.antetSatirlari === null ||
+      String(resolvedMappings.antetSatirlari).startsWith('[Belirtilmedi'))
+  ) {
     context.antetSatirlari = antetSatirlari
   } else if (resolvedMappings.antetSatirlari !== undefined) {
     context.antetSatirlari = resolvedMappings.antetSatirlari
   }
 
-  if (resolvedMappings.ihtiyacKalemleri !== undefined && (resolvedMappings.ihtiyacKalemleri === null || String(resolvedMappings.ihtiyacKalemleri).startsWith('[Belirtilmedi'))) {
+  if (
+    resolvedMappings.ihtiyacKalemleri !== undefined &&
+    (resolvedMappings.ihtiyacKalemleri === null ||
+      String(resolvedMappings.ihtiyacKalemleri).startsWith('[Belirtilmedi'))
+  ) {
     context.ihtiyacKalemleri = needItems
   } else if (resolvedMappings.ihtiyacKalemleri !== undefined) {
     context.ihtiyacKalemleri = resolvedMappings.ihtiyacKalemleri

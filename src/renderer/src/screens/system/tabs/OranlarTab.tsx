@@ -87,8 +87,8 @@ export function OranlarTab(): React.JSX.Element {
           <div className="text-sm">
             <p className="font-semibold mb-1">Vergi ve Tevkifat Oranları</p>
             <p>
-              Burada belirlediğiniz oranlar, hakediş ve ödeme emri belgeleri oluşturulurken
-              otomatik hesaplamalarda varsayılan değer olarak kullanılır.
+              Burada belirlediğiniz oranlar, hakediş ve ödeme emri belgeleri oluşturulurken otomatik
+              hesaplamalarda varsayılan değer olarak kullanılır.
             </p>
           </div>
         </div>
@@ -99,7 +99,18 @@ export function OranlarTab(): React.JSX.Element {
               Vergi ve Kesinti Tanımları
             </h3>
             <button
-              onClick={() => setRates([...rates, { id: Date.now().toString(), ad: 'Yeni Kesinti', oran: '0', tur: 'yuzde', hesapKodu: '' }])}
+              onClick={() =>
+                setRates([
+                  ...rates,
+                  {
+                    id: Date.now().toString(),
+                    ad: 'Yeni Kesinti',
+                    oran: '0',
+                    tur: 'yuzde',
+                    hesapKodu: ''
+                  }
+                ])
+              }
               className="px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 dark:text-blue-400 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer"
             >
               <Plus className="w-3 h-3" /> Yeni Ekle
@@ -107,28 +118,35 @@ export function OranlarTab(): React.JSX.Element {
           </div>
           <div className="p-5 space-y-4">
             {rates.map((rate, index) => (
-              <div key={rate.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-800 rounded-xl relative group">
+              <div
+                key={rate.id}
+                className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-800 rounded-xl relative group"
+              >
                 <div className="flex-1">
-                  <label className="block text-[10px] font-semibold text-slate-500 mb-1">Kesinti/Vergi Adı</label>
+                  <label className="block text-[10px] font-semibold text-slate-500 mb-1">
+                    Kesinti/Vergi Adı
+                  </label>
                   <input
                     type="text"
                     value={rate.ad}
                     onChange={(e) => {
-                      const newRates = [...rates];
-                      newRates[index].ad = e.target.value;
-                      setRates(newRates);
+                      const newRates = [...rates]
+                      newRates[index].ad = e.target.value
+                      setRates(newRates)
                     }}
                     className="w-full px-3 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200 font-medium"
                   />
                 </div>
                 <div className="w-full sm:w-32">
-                  <label className="block text-[10px] font-semibold text-slate-500 mb-1">Türü</label>
+                  <label className="block text-[10px] font-semibold text-slate-500 mb-1">
+                    Türü
+                  </label>
                   <select
                     value={rate.tur}
                     onChange={(e) => {
-                      const newRates = [...rates];
-                      newRates[index].tur = e.target.value as 'yuzde' | 'binde';
-                      setRates(newRates);
+                      const newRates = [...rates]
+                      newRates[index].tur = e.target.value as 'yuzde' | 'binde'
+                      setRates(newRates)
                     }}
                     className="w-full px-3 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200 font-medium"
                   >
@@ -137,15 +155,17 @@ export function OranlarTab(): React.JSX.Element {
                   </select>
                 </div>
                 <div className="w-full sm:w-32">
-                  <label className="block text-[10px] font-semibold text-slate-500 mb-1">Oran Değeri</label>
+                  <label className="block text-[10px] font-semibold text-slate-500 mb-1">
+                    Oran Değeri
+                  </label>
                   <div className="relative">
                     <input
                       type="text"
                       value={rate.oran}
                       onChange={(e) => {
-                        const newRates = [...rates];
-                        newRates[index].oran = e.target.value;
-                        setRates(newRates);
+                        const newRates = [...rates]
+                        newRates[index].oran = e.target.value
+                        setRates(newRates)
                       }}
                       className="w-full pl-3 pr-8 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-right font-bold text-emerald-600 dark:text-emerald-400"
                     />
@@ -155,14 +175,19 @@ export function OranlarTab(): React.JSX.Element {
                   </div>
                 </div>
                 <div className="w-full sm:w-36">
-                  <label className="block text-[10px] font-semibold text-slate-500 mb-1" title="Hesap/Muhasebe Kodu (İsteğe Bağlı)">Hesap Kodu (Ops.)</label>
+                  <label
+                    className="block text-[10px] font-semibold text-slate-500 mb-1"
+                    title="Hesap/Muhasebe Kodu (İsteğe Bağlı)"
+                  >
+                    Hesap Kodu (Ops.)
+                  </label>
                   <input
                     type="text"
                     value={rate.hesapKodu || ''}
                     onChange={(e) => {
-                      const newRates = [...rates];
-                      newRates[index].hesapKodu = e.target.value;
-                      setRates(newRates);
+                      const newRates = [...rates]
+                      newRates[index].hesapKodu = e.target.value
+                      setRates(newRates)
                     }}
                     placeholder="Örn: 360.01.01"
                     className="w-full px-3 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-slate-200 font-medium"
@@ -171,7 +196,7 @@ export function OranlarTab(): React.JSX.Element {
                 <div className="w-full sm:w-auto pt-4 sm:pt-0 sm:pl-2 flex items-end">
                   <button
                     onClick={() => {
-                      setRates(rates.filter(r => r.id !== rate.id));
+                      setRates(rates.filter((r) => r.id !== rate.id))
                     }}
                     className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors cursor-pointer w-full sm:w-auto flex justify-center"
                     title="Sil"

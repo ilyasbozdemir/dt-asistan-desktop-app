@@ -6,12 +6,20 @@ export const TANIM_Komisyon = {
     { name: 'ad', type: 'TEXT', notNull: true, description: 'Adı' }, // Örn: Fiyat Araştırma Komisyonu
     { name: 'aciklama', type: 'TEXT', description: 'Aciklama' },
     { name: 'aktif_mi', type: 'BOOLEAN', default: 1, description: 'Aktif mı?' },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
+    {
+      name: 'created_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Created At'
+    },
+    {
+      name: 'updated_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Updated At'
+    }
   ],
-  constraints: [
-    'UNIQUE(ad)'
-  ],
+  constraints: ['UNIQUE(ad)'],
   initialData: [
     { ad: 'Fiyat Araştırma Komisyonu' },
     { ad: 'Yaklaşık Maliyet Tespit Komisyonu' },

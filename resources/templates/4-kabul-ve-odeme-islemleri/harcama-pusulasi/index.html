@@ -1,187 +1,218 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <title>Harcama Pusulası</title>
-  <style>
-    @page {
-      size: A4 portrait;
-      margin: 1.2cm;
-    }
-    body {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 10.5pt;
-      color: #000;
-      line-height: 1.4;
-      margin: 0;
-      padding: 0;
-      background-color: #fff;
-    }
-    .page-container {
-      max-width: 21cm;
-      margin: 0 auto;
-      padding: 0.2cm;
-      box-sizing: border-box;
-    }
-    .kik-table {
-      width: 100%;
-      border-collapse: collapse;
-      border: 1px solid #000;
-      margin-bottom: 12px;
-    }
-    .kik-table th, .kik-table td {
-      border: 1px solid #000;
-      padding: 8px 10px;
-      vertical-align: top;
-    }
-    .kik-table .header-cell {
-      text-align: center;
-      font-weight: bold;
-      font-size: 13pt;
-      text-transform: uppercase;
-      padding: 10px;
-      background-color: #fff;
-    }
-    .kik-table .section-title-cell {
-      text-align: center;
-      font-weight: bold;
-      background-color: #fff;
-      font-size: 10.5pt;
-      text-transform: uppercase;
-      padding: 6px;
-    }
-    .kik-table .label-cell {
-      width: 30%;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-    .kik-table .value-cell {
-      width: 70%;
-    }
-    .inner-signature-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-    .inner-signature-table td {
-      border: 1px solid #000;
-      padding: 10px;
-      width: 50%;
-      vertical-align: top;
-    }
-    .footnote {
-      font-size: 8.5pt;
-      color: #333;
-      text-align: justify;
-      margin-top: 15px;
-      line-height: 1.35;
-    }
-    @media print {
+  <head>
+    <meta charset="UTF-8" />
+    <title>Harcama Pusulası</title>
+    <style>
+      @page {
+        size: A4 portrait;
+        margin: 1.2cm;
+      }
       body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 10.5pt;
+        color: #000;
+        line-height: 1.4;
+        margin: 0;
+        padding: 0;
         background-color: #fff;
       }
       .page-container {
-        padding: 0;
-        margin: 0;
-        max-width: none;
+        max-width: 21cm;
+        margin: 0 auto;
+        padding: 0.2cm;
+        box-sizing: border-box;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="page-container">
-    
-    <table class="kik-table">
-      <!-- Title -->
-      <tr>
-        <th colspan="2" class="header-cell">HARCAMA PUSULASI</th>
-      </tr>
-      
-      <!-- Dairesi -->
-      <tr>
-        <td class="label-cell">Dairesi</td>
-        <td class="value-cell" style="font-weight: bold;">{{idareAdi}}</td>
-      </tr>
-      
-      <!-- Section Header -->
-      <tr>
-        <td colspan="2" class="section-title-cell">SATIN ALINAN MAL VEYA HİZMETİN</td>
-      </tr>
-      
-      <!-- Çeşidi -->
-      <tr>
-        <td class="label-cell">Çeşidi</td>
-        <td class="value-cell">{{alimTuru}} ({{isAdi}})</td>
-      </tr>
-      
-      <!-- Miktarı -->
-      <tr>
-        <td class="label-cell">Miktarı</td>
-        <td class="value-cell">{{#miktar}}{{miktar}}{{/miktar}}{{^miktar}}{{isMiktari}}{{/miktar}}</td>
-      </tr>
-      
-      <!-- Birim Fiyat -->
-      <tr>
-        <td class="label-cell">Birim Fiyatı</td>
-        <td class="value-cell">{{birimFiyat}} ₺</td>
-      </tr>
-      
-      <!-- Tutarı -->
-      <tr>
-        <td class="label-cell">Tutarı</td>
-        <td class="value-cell" style="font-weight: bold;">{{tutar}} ₺</td>
-      </tr>
-      
-      <!-- Yalnız (Yazı ile) -->
-      <tr>
-        <td colspan="2" style="font-weight: bold; font-style: italic; font-size: 11pt; padding: 10px;">
-          Yalnız {{tutarYazi}} TL.sıdır.
-        </td>
-      </tr>
-      
-      <!-- Açıklama -->
-      <tr>
-        <td colspan="2">
-          <strong>Açıklama:</strong>
-          <p style="text-align: justify; margin-top: 6px; margin-bottom: 0; text-indent: 20px;">
-            {{#aciklama}}{{aciklama}}{{/aciklama}}{{^aciklama}}Belediyemizce gerçekleştirilen "{{isAdi}}" işi kapsamında {{alimTuru}} bedeli olarak {{tutar}} ₺ ödenmiştir.{{/aciklama}}
-          </p>
-        </td>
-      </tr>
-      
-      <!-- Tarih and Signatures Inner Block -->
-      <tr>
-        <td colspan="2" style="padding: 10px;">
-          <div style="text-align: center; font-weight: bold; margin-bottom: 10px;">Tarih: {{tarih}}</div>
-          
-          <table class="inner-signature-table">
-            <tr>
-              <td style="text-align: center; font-weight: bold; background-color: #fff; padding: 4px;">Malı Satan veya Hizmeti Yapanın</td>
-              <td style="text-align: center; font-weight: bold; background-color: #fff; padding: 4px;">Satın Almayı veya Hizmeti Yaptıranın</td>
-            </tr>
-            <tr>
-              <td style="height: 120px; line-height: 1.5;">
-                <div><strong>T.C. Kimlik No :</strong> {{saticiTcNo}}</div>
-                <div style="margin-top: 4px;"><strong>Adı Soyadı :</strong> {{saticiAdiSoyadi}}</div>
-                <div style="margin-top: 4px;"><strong>Adresi :</strong> {{saticiAdres}}</div>
-                <div style="margin-top: 15px; font-style: italic; color: #888;">(İmza)</div>
-              </td>
-              <td style="text-align: center; vertical-align: middle; height: 120px;">
-                <div style="font-weight: bold; font-size: 11pt;">{{onaylayanPersonelAdi}}</div>
-                <div style="font-size: 10pt; margin-top: 4px;">{{onaylayanPersonelUnvan}}</div>
-                <div style="font-size: 9pt; color: #555; margin-top: 2px;">Harcama Yetkilisi</div>
-              </td>
-            </tr>
-          </table>
-          
-          <div class="footnote">
-            <strong>Not:</strong> Bu belge, fatura veya fatura yerine geçen belgeleri düzenleme zorunluluğu bulunmayan kişilerden yapılan iş, mal veya hizmet alımlarında düzenlenir. Taksi ile yapılan seyahatlerde (şehir içi taksi ücretleri hariç) seyahat edilen taksinin plaka numarası ile yolculuğun nereden nereye yapıldığı açıklama bölümünde belirtilir.
-          </div>
-        </td>
-      </tr>
-      
-    </table>
+      .kik-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #000;
+        margin-bottom: 12px;
+      }
+      .kik-table th,
+      .kik-table td {
+        border: 1px solid #000;
+        padding: 8px 10px;
+        vertical-align: top;
+      }
+      .kik-table .header-cell {
+        text-align: center;
+        font-weight: bold;
+        font-size: 13pt;
+        text-transform: uppercase;
+        padding: 10px;
+        background-color: #fff;
+      }
+      .kik-table .section-title-cell {
+        text-align: center;
+        font-weight: bold;
+        background-color: #fff;
+        font-size: 10.5pt;
+        text-transform: uppercase;
+        padding: 6px;
+      }
+      .kik-table .label-cell {
+        width: 30%;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+      .kik-table .value-cell {
+        width: 70%;
+      }
+      .inner-signature-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+      .inner-signature-table td {
+        border: 1px solid #000;
+        padding: 10px;
+        width: 50%;
+        vertical-align: top;
+      }
+      .footnote {
+        font-size: 8.5pt;
+        color: #333;
+        text-align: justify;
+        margin-top: 15px;
+        line-height: 1.35;
+      }
+      @media print {
+        body {
+          background-color: #fff;
+        }
+        .page-container {
+          padding: 0;
+          margin: 0;
+          max-width: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <table class="kik-table">
+        <!-- Title -->
+        <tr>
+          <th colspan="2" class="header-cell">HARCAMA PUSULASI</th>
+        </tr>
 
-  </div>
-</body>
+        <!-- Dairesi -->
+        <tr>
+          <td class="label-cell">Dairesi</td>
+          <td class="value-cell" style="font-weight: bold">{{idareAdi}}</td>
+        </tr>
+
+        <!-- Section Header -->
+        <tr>
+          <td colspan="2" class="section-title-cell">SATIN ALINAN MAL VEYA HİZMETİN</td>
+        </tr>
+
+        <!-- Çeşidi -->
+        <tr>
+          <td class="label-cell">Çeşidi</td>
+          <td class="value-cell">{{alimTuru}} ({{isAdi}})</td>
+        </tr>
+
+        <!-- Miktarı -->
+        <tr>
+          <td class="label-cell">Miktarı</td>
+          <td class="value-cell">
+            {{#miktar}}{{miktar}}{{/miktar}}{{^miktar}}{{isMiktari}}{{/miktar}}
+          </td>
+        </tr>
+
+        <!-- Birim Fiyat -->
+        <tr>
+          <td class="label-cell">Birim Fiyatı</td>
+          <td class="value-cell">{{birimFiyat}} ₺</td>
+        </tr>
+
+        <!-- Tutarı -->
+        <tr>
+          <td class="label-cell">Tutarı</td>
+          <td class="value-cell" style="font-weight: bold">{{tutar}} ₺</td>
+        </tr>
+
+        <!-- Yalnız (Yazı ile) -->
+        <tr>
+          <td
+            colspan="2"
+            style="font-weight: bold; font-style: italic; font-size: 11pt; padding: 10px"
+          >
+            Yalnız {{tutarYazi}} TL.sıdır.
+          </td>
+        </tr>
+
+        <!-- Açıklama -->
+        <tr>
+          <td colspan="2">
+            <strong>Açıklama:</strong>
+            <p style="text-align: justify; margin-top: 6px; margin-bottom: 0; text-indent: 20px">
+              {{#aciklama}}{{aciklama}}{{/aciklama}}{{^aciklama}}Belediyemizce gerçekleştirilen
+              "{{isAdi}}" işi kapsamında {{alimTuru}} bedeli olarak {{tutar}} ₺
+              ödenmiştir.{{/aciklama}}
+            </p>
+          </td>
+        </tr>
+
+        <!-- Tarih and Signatures Inner Block -->
+        <tr>
+          <td colspan="2" style="padding: 10px">
+            <div style="text-align: center; font-weight: bold; margin-bottom: 10px">
+              Tarih: {{tarih}}
+            </div>
+
+            <table class="inner-signature-table">
+              <tr>
+                <td
+                  style="
+                    text-align: center;
+                    font-weight: bold;
+                    background-color: #fff;
+                    padding: 4px;
+                  "
+                >
+                  Malı Satan veya Hizmeti Yapanın
+                </td>
+                <td
+                  style="
+                    text-align: center;
+                    font-weight: bold;
+                    background-color: #fff;
+                    padding: 4px;
+                  "
+                >
+                  Satın Almayı veya Hizmeti Yaptıranın
+                </td>
+              </tr>
+              <tr>
+                <td style="height: 120px; line-height: 1.5">
+                  <div><strong>T.C. Kimlik No :</strong> {{saticiTcNo}}</div>
+                  <div style="margin-top: 4px">
+                    <strong>Adı Soyadı :</strong> {{saticiAdiSoyadi}}
+                  </div>
+                  <div style="margin-top: 4px"><strong>Adresi :</strong> {{saticiAdres}}</div>
+                  <div style="margin-top: 15px; font-style: italic; color: #888">(İmza)</div>
+                </td>
+                <td style="text-align: center; vertical-align: middle; height: 120px">
+                  <div style="font-weight: bold; font-size: 11pt">{{onaylayanPersonelAdi}}</div>
+                  <div style="font-size: 10pt; margin-top: 4px">{{onaylayanPersonelUnvan}}</div>
+                  <div style="font-size: 9pt; color: #555; margin-top: 2px">Harcama Yetkilisi</div>
+                </td>
+              </tr>
+            </table>
+
+            <div class="footnote">
+              <strong>Not:</strong> Bu belge, fatura veya fatura yerine geçen belgeleri düzenleme
+              zorunluluğu bulunmayan kişilerden yapılan iş, mal veya hizmet alımlarında düzenlenir.
+              Taksi ile yapılan seyahatlerde (şehir içi taksi ücretleri hariç) seyahat edilen
+              taksinin plaka numarası ile yolculuğun nereden nereye yapıldığı açıklama bölümünde
+              belirtilir.
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
 </html>

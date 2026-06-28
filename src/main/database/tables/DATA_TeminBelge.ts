@@ -10,10 +10,13 @@ export const DATA_TeminBelge = {
     { name: 'is_signed', type: 'INTEGER', default: 0, description: 'Is Signed' },
     { name: 'imzali_dosya_yolu', type: 'TEXT', description: 'Imzali Dosya Yolu' },
     { name: 'olusturan_personel_id', type: 'INTEGER', description: 'Olusturan Personel ID' },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' }
+    {
+      name: 'created_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Created At'
+    }
   ],
-  constraints: [
-    'FOREIGN KEY(temin_dosya_id) REFERENCES DATA_TeminDosyasi(id) ON DELETE CASCADE'
-  ],
+  constraints: ['FOREIGN KEY(temin_dosya_id) REFERENCES DATA_TeminDosyasi(id) ON DELETE CASCADE'],
   initialData: []
 }

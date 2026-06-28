@@ -10,13 +10,7 @@
   "mudurluk": "Destek Hizmetleri Başkanlığı",
   "belgeBasligi": "PİYASA FİYAT ARAŞTIRMASI MEKTUBU DAĞITIM ÇİZELGESİ",
   "isAdi": "Tıbbi Sarf Malzeme Alımı İşi",
-  "satirlar": [
-    { "sira": 1 },
-    { "sira": 2 },
-    { "sira": 3 },
-    { "sira": 4 },
-    { "sira": 5 }
-  ],
+  "satirlar": [{ "sira": 1 }, { "sira": 2 }, { "sira": 3 }, { "sira": 4 }, { "sira": 5 }],
   "kalemSayisi": 15,
   "kalemSayisiYazi": "on beş",
   "vtarih": "21.06.2026",

@@ -11,7 +11,12 @@ interface PersonelAtaModalProps {
   komisyonId: number | null
 }
 
-export function PersonelAtaModal({ isOpen, onClose, roleId, komisyonId }: PersonelAtaModalProps): React.JSX.Element | null {
+export function PersonelAtaModal({
+  isOpen,
+  onClose,
+  roleId,
+  komisyonId
+}: PersonelAtaModalProps): React.JSX.Element | null {
   const queryClient = useQueryClient()
   const [selectedPersonelId, setSelectedPersonelId] = useState<number | ''>('')
 
@@ -65,7 +70,9 @@ export function PersonelAtaModal({ isOpen, onClose, roleId, komisyonId }: Person
         )}
 
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Personel Seçimi</label>
+          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            Personel Seçimi
+          </label>
           <select
             value={selectedPersonelId}
             onChange={(e) => setSelectedPersonelId(e.target.value ? Number(e.target.value) : '')}
@@ -73,16 +80,20 @@ export function PersonelAtaModal({ isOpen, onClose, roleId, komisyonId }: Person
           >
             <option value="">-- Lütfen bir personel seçin --</option>
             {personeller.map((p: any) => (
-              <option key={p.id} value={p.id}>{p.ad_soyad} ({p.unvan})</option>
+              <option key={p.id} value={p.id}>
+                {p.ad_soyad} ({p.unvan})
+              </option>
             ))}
           </select>
         </div>
 
         <div className="flex items-center gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
-          <Button type="button" variant="outline" className="flex-1" onClick={onClose}>İptal</Button>
-          <Button 
-            type="button" 
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" 
+          <Button type="button" variant="outline" className="flex-1" onClick={onClose}>
+            İptal
+          </Button>
+          <Button
+            type="button"
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
             onClick={() => saveMutation.mutate()}
             disabled={saveMutation.isPending || !selectedPersonelId}
           >

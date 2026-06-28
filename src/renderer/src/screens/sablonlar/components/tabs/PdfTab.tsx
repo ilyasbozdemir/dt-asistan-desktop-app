@@ -31,7 +31,7 @@ export function PdfTab({ isPdfLoading, pdfBase64, handleUpdatePdfPreview }: PdfT
     } else {
       setPdfUrl('')
     }
-    
+
     return () => {
       if (url) URL.revokeObjectURL(url)
     }
@@ -51,26 +51,24 @@ export function PdfTab({ isPdfLoading, pdfBase64, handleUpdatePdfPreview }: PdfT
   const renderPdfContent = () => {
     return (
       <>
-         {isPdfLoading ? (
-           <div className="absolute inset-0 flex items-center justify-center bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm z-10">
-             <div className="flex flex-col items-center gap-3">
-               <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-               <div className="text-blue-600 dark:text-blue-400 font-semibold text-sm">PDF Hazırlanıyor...</div>
-             </div>
-           </div>
-         ) : null}
-         {pdfUrl ? (
-          <iframe
-            title="pdf-preview"
-            src={pdfUrl}
-            className="w-full h-full border-0 bg-white"
-          />
+        {isPdfLoading ? (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm z-10">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              <div className="text-blue-600 dark:text-blue-400 font-semibold text-sm">
+                PDF Hazırlanıyor...
+              </div>
+            </div>
+          </div>
+        ) : null}
+        {pdfUrl ? (
+          <iframe title="pdf-preview" src={pdfUrl} className="w-full h-full border-0 bg-white" />
         ) : (
-           <div className="flex flex-col items-center justify-center text-slate-500 h-full">
-             <FileText className="w-12 h-12 text-slate-300 mb-3" />
-             <p>PDF oluşturmak için Yenile butonuna basın.</p>
-           </div>
-         )}
+          <div className="flex flex-col items-center justify-center text-slate-500 h-full">
+            <FileText className="w-12 h-12 text-slate-300 mb-3" />
+            <p>PDF oluşturmak için Yenile butonuna basın.</p>
+          </div>
+        )}
       </>
     )
   }
@@ -82,20 +80,32 @@ export function PdfTab({ isPdfLoading, pdfBase64, handleUpdatePdfPreview }: PdfT
           <div className="flex items-center gap-2">
             <FileText className="w-5 h-5 text-blue-600" />
             <div>
-              <h2 className="text-sm font-bold text-slate-700 dark:text-slate-300">Gerçek PDF Çıktısı Önizleme</h2>
-              <p className="text-xs text-slate-500">Sayfalanmış, antetli ve altbilgili son halini görüntülüyorsunuz.</p>
+              <h2 className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                Gerçek PDF Çıktısı Önizleme
+              </h2>
+              <p className="text-xs text-slate-500">
+                Sayfalanmış, antetli ve altbilgili son halini görüntülüyorsunuz.
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             {pdfUrl && (
-              <Button onClick={() => setIsFullscreen(true)} variant="outline" className="text-slate-600 dark:text-slate-300 text-xs py-1.5 px-3 shadow-sm flex items-center gap-2">
+              <Button
+                onClick={() => setIsFullscreen(true)}
+                variant="outline"
+                className="text-slate-600 dark:text-slate-300 text-xs py-1.5 px-3 shadow-sm flex items-center gap-2"
+              >
                 <Maximize2 className="w-3.5 h-3.5" />
                 Tam Ekran
               </Button>
             )}
-            <Button onClick={handleUpdatePdfPreview} disabled={isPdfLoading} className="bg-blue-600 hover:bg-blue-700 text-white text-xs py-1.5 px-4 shadow-sm flex items-center gap-2 border-0">
+            <Button
+              onClick={handleUpdatePdfPreview}
+              disabled={isPdfLoading}
+              className="bg-blue-600 hover:bg-blue-700 text-white text-xs py-1.5 px-4 shadow-sm flex items-center gap-2 border-0"
+            >
               <RefreshCw className={`w-3.5 h-3.5 ${isPdfLoading ? 'animate-spin' : ''}`} />
-              {isPdfLoading ? 'Oluşturuluyor...' : 'PDF\'i Yenile'}
+              {isPdfLoading ? 'Oluşturuluyor...' : "PDF'i Yenile"}
             </Button>
           </div>
         </div>
@@ -116,12 +126,16 @@ export function PdfTab({ isPdfLoading, pdfBase64, handleUpdatePdfPreview }: PdfT
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Button onClick={handleUpdatePdfPreview} disabled={isPdfLoading} className="bg-blue-600 hover:bg-blue-700 text-white text-sm py-2 px-4 shadow-sm flex items-center gap-2 border-0">
+              <Button
+                onClick={handleUpdatePdfPreview}
+                disabled={isPdfLoading}
+                className="bg-blue-600 hover:bg-blue-700 text-white text-sm py-2 px-4 shadow-sm flex items-center gap-2 border-0"
+              >
                 <RefreshCw className={`w-4 h-4 ${isPdfLoading ? 'animate-spin' : ''}`} />
                 Yenile
               </Button>
-              <button 
-                onClick={() => setIsFullscreen(false)} 
+              <button
+                onClick={() => setIsFullscreen(false)}
                 className="w-10 h-10 rounded-full bg-slate-800 hover:bg-red-500/20 text-slate-300 hover:text-red-400 flex items-center justify-center transition-colors outline-none"
                 title="Kapat (ESC)"
               >

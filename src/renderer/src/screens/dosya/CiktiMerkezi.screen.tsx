@@ -1,6 +1,22 @@
 import React, { useState, useMemo, useCallback } from 'react'
 import { SubScreen } from './SubScreens.screen'
-import { Printer, Download, FileText, CheckSquare, Square, Layers, Loader2, Star, AlertCircle, RefreshCw, ChevronDown, ChevronRight, Eye, X } from 'lucide-react'
+import {
+  Printer,
+  Download,
+  FileText,
+  CheckSquare,
+  Square,
+  Layers,
+  Loader2,
+  Star,
+  AlertCircle,
+  RefreshCw,
+  ChevronDown,
+  ChevronRight,
+  Eye,
+  X,
+  CheckCircle2
+} from 'lucide-react'
 import { useWorkspaceStore } from '../../store/workspaceStore'
 import Mustache from 'mustache'
 import { Sablon } from '../sablonlar/sablonlar.hooks'
@@ -10,7 +26,8 @@ import { useRouterState } from '@tanstack/react-router'
 import { PrintManagerModal } from './components/PrintManagerModal'
 
 const normalizeForMatch = (str: string) => {
-  return str.toLocaleLowerCase('tr-TR')
+  return str
+    .toLocaleLowerCase('tr-TR')
     .replace(/ğ/g, 'g')
     .replace(/ü/g, 'u')
     .replace(/ş/g, 's')
@@ -18,12 +35,13 @@ const normalizeForMatch = (str: string) => {
     .replace(/i̇/g, 'i')
     .replace(/ö/g, 'o')
     .replace(/ç/g, 'c')
-    .replace(/[^a-z0-9]/g, '');
+    .replace(/[^a-z0-9]/g, '')
 }
 
 export function CiktiMerkeziScreen(): React.JSX.Element {
   const { activeDosyaId, activeStarredDocs, setActiveStarredDocs } = useWorkspaceStore()
-  const { sablons, loading, masterHtml, dosyaContext, activeDosya } = useCiktiMerkeziData(activeDosyaId)
+  const { sablons, loading, masterHtml, dosyaContext, activeDosya } =
+    useCiktiMerkeziData(activeDosyaId)
   const { logDocument } = useDocumentLogger()
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
   const [processing, setProcessing] = useState(false)
@@ -31,7 +49,19 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
   const [previewSablon, setPreviewSablon] = useState<Sablon | null>(null)
   const [isPrintManagerOpen, setIsPrintManagerOpen] = useState(false)
-  
+  const [toast, setToast] = useState<{
+    message: string
+    type: 'success' | 'error' | 'warning'
+  } | null>(null)
+
+  const showToast = useCallback(
+    (message: string, type: 'success' | 'error' | 'warning' = 'success') => {
+      setToast({ message, type })
+      setTimeout(() => setToast(null), 4000)
+    },
+    []
+  )
+
   const router = useRouterState()
   const searchSablonAd = (router.location.search as any)?.sablonAd
 
@@ -62,7 +92,9 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
           try {
             const docs = JSON.parse(res.data[0].starred_docs || '[]')
             setActiveStarredDocs(docs)
-          } catch (_e) { /* noop */ }
+          } catch (_e) {
+            /* noop */
+          }
         }
       }
     } finally {
@@ -72,11 +104,13 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
 
   React.useEffect(() => {
     if (searchSablonAd && sablons.length > 0) {
-      const found = sablons.find(s => normalizeForMatch(s.ad) === normalizeForMatch(searchSablonAd))
+      const found = sablons.find(
+        (s) => normalizeForMatch(s.ad) === normalizeForMatch(searchSablonAd)
+      )
       if (found && !selectedIds.has(found.id)) {
-        setSelectedIds(prev => new Set([...prev, found.id]))
+        setSelectedIds((prev) => new Set([...prev, found.id]))
         const cat = found.kategori || 'Diğer'
-        setExpandedCategories(prev => new Set([...prev, cat]))
+        setExpandedCategories((prev) => new Set([...prev, cat]))
       }
     }
   }, [searchSablonAd, sablons])
@@ -93,7 +127,7 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
 
   const toggleAllCategories = () => {
     const allCats = Object.keys(groupedSablons)
-    const allExpanded = allCats.every(cat => expandedCategories.has(cat))
+    const allExpanded = allCats.every((cat) => expandedCategories.has(cat))
     if (allExpanded) {
       setExpandedCategories(new Set())
     } else {
@@ -104,17 +138,19 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
   const toggleStar = async (sablonAd: string, e: React.MouseEvent) => {
     e.stopPropagation()
     if (!activeDosyaId) return
-    
-    const existingIdx = activeStarredDocs.findIndex(d => normalizeForMatch(d) === normalizeForMatch(sablonAd))
+
+    const existingIdx = activeStarredDocs.findIndex(
+      (d) => normalizeForMatch(d) === normalizeForMatch(sablonAd)
+    )
     let newDocs = [...activeStarredDocs]
-    
+
     if (existingIdx >= 0) {
       newDocs.splice(existingIdx, 1)
     } else {
       newDocs.push(sablonAd)
     }
-    
-    setActiveStarredDocs(newDocs)  // Instantly update global store
+
+    setActiveStarredDocs(newDocs) // Instantly update global store
     await window.electron.ipcRenderer.invoke(
       'db:run',
       'UPDATE DATA_TeminDosyasi SET starred_docs = ? WHERE id = ?',
@@ -124,7 +160,7 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
 
   const groupedSablons = useMemo(() => {
     const groups: Record<string, Sablon[]> = {}
-    sablons.forEach(s => {
+    sablons.forEach((s) => {
       const cat = s.kategori || 'Diğer'
       if (!groups[cat]) groups[cat] = []
       groups[cat].push(s)
@@ -134,10 +170,12 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
 
   const toggleGroup = (cat: string) => {
     const groupIds = groupedSablons[cat].map((s) => s.id)
-    const validIds = groupIds.filter((id) => !getMissingRequirement(sablons.find((s) => s.id === id)!))
+    const validIds = groupIds.filter(
+      (id) => !getMissingRequirement(sablons.find((s) => s.id === id)!)
+    )
     const allSelected = validIds.every((id) => selectedIds.has(id))
     const newSet = new Set(selectedIds)
-    
+
     if (allSelected) {
       validIds.forEach((id) => newSet.delete(id))
     } else {
@@ -148,20 +186,29 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
 
   const getMissingRequirement = (sablon: Sablon): string | null => {
     if (!sablon) return null
-    if (sablon.icerik.includes('{{#kalemler}}') && (!dosyaContext.kalemler || dosyaContext.kalemler.length === 0)) {
+    if (
+      sablon.icerik.includes('{{#kalemler}}') &&
+      (!dosyaContext.kalemler || dosyaContext.kalemler.length === 0)
+    ) {
       return 'İhtiyaç listesinde (malzeme kalemi) tanımlanmamış.'
     }
-    if (sablon.icerik.includes('{{#firmalar}}') && (!dosyaContext.firmalar || dosyaContext.firmalar.length === 0)) {
+    if (
+      sablon.icerik.includes('{{#firmalar}}') &&
+      (!dosyaContext.firmalar || dosyaContext.firmalar.length === 0)
+    ) {
       return 'Dosyaya yüklenici/davetli firma eklenmemiş.'
     }
-    if (sablon.icerik.includes('{{#komisyon_uyeleri}}') && (!dosyaContext.komisyon_uyeleri || dosyaContext.komisyon_uyeleri.length === 0)) {
+    if (
+      sablon.icerik.includes('{{#komisyon_uyeleri}}') &&
+      (!dosyaContext.komisyon_uyeleri || dosyaContext.komisyon_uyeleri.length === 0)
+    ) {
       return 'İlgili komisyon üyeleri belirlenmemiş.'
     }
     return null
   }
 
   const toggleSelect = (id: number) => {
-    const sablon = sablons.find(s => s.id === id)
+    const sablon = sablons.find((s) => s.id === id)
     if (sablon && getMissingRequirement(sablon)) return // Block selection if missing requirement
 
     const newSet = new Set(selectedIds)
@@ -173,7 +220,7 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
   const renderHtml = (sablon: Sablon) => {
     try {
       if (!masterHtml) return sablon.icerik
-      
+
       let templateContext = { ...dosyaContext }
       if (sablon.test_verisi) {
         try {
@@ -183,7 +230,7 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
           console.error('Şablon test verisi ayrıştırılamadı:', e)
         }
       }
-      
+
       const renderedContent = Mustache.render(sablon.icerik, templateContext)
       templateContext.icerik = renderedContent
       return Mustache.render(masterHtml, templateContext)
@@ -195,28 +242,41 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
 
   const handleAction = async (action: 'pdf' | 'udf' | 'docx' | 'print', specificIds?: number[]) => {
     const targetIds = specificIds ? new Set(specificIds) : selectedIds
-    
+
     if (targetIds.size === 0) {
-      alert('Lütfen en az bir belge seçin.')
+      showToast('Lütfen en az bir belge seçin.', 'warning')
       return
     }
 
     setProcessing(true)
     try {
-      const selectedSablons = sablons.filter(s => targetIds.has(s.id))
+      const selectedSablons = sablons.filter((s) => targetIds.has(s.id))
 
       for (const sablon of selectedSablons) {
         const html = renderHtml(sablon)
         const safeName = sablon.ad.replace(/[^a-z0-9]/gi, '_').toLowerCase()
 
         if (action === 'pdf') {
-          await window.electron.ipcRenderer.invoke('export-pdf', html, null, `${safeName}_${activeDosyaId}`)
+          await window.electron.ipcRenderer.invoke(
+            'export-pdf',
+            html,
+            null,
+            `${safeName}_${activeDosyaId}`
+          )
           await logDocument(sablon.ad, `${safeName}_${activeDosyaId}.pdf`)
         } else if (action === 'udf') {
-          await window.electron.ipcRenderer.invoke('export-udf', html, `${safeName}_${activeDosyaId}`)
+          await window.electron.ipcRenderer.invoke(
+            'export-udf',
+            html,
+            `${safeName}_${activeDosyaId}`
+          )
           await logDocument(sablon.ad, `${safeName}_${activeDosyaId}.udf`)
         } else if (action === 'docx') {
-          await window.electron.ipcRenderer.invoke('export-docx', html, `${safeName}_${activeDosyaId}`)
+          await window.electron.ipcRenderer.invoke(
+            'export-docx',
+            html,
+            `${safeName}_${activeDosyaId}`
+          )
           await logDocument(sablon.ad, `${safeName}_${activeDosyaId}.docx`)
         } else if (action === 'print') {
           await window.electron.ipcRenderer.invoke('print-html', html, { silent: true }) // Silent true for batch printing
@@ -226,12 +286,12 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
 
       if (action === 'print') {
         setIsPrintManagerOpen(false)
-        alert('Belgeler başarıyla yazdırma kuyruğuna gönderildi.')
+        showToast('Belgeler başarıyla yazdırma kuyruğuna gönderildi.', 'success')
       } else {
-        alert('Belgeler başarıyla oluşturuldu ve kaydedildi.')
+        showToast('Belgeler başarıyla oluşturuldu ve kaydedildi.', 'success')
       }
     } catch (error: any) {
-      alert(`İşlem sırasında hata oluştu: ${error.message}`)
+      showToast(`İşlem sırasında hata oluştu: ${error.message}`, 'error')
     } finally {
       setProcessing(false)
     }
@@ -244,7 +304,6 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
       description="Dosya gereksinimlerine uygun resmi evrakların tek merkezden toplu üretimi ve yazdırılması."
     >
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-sm flex flex-col md:flex-row min-h-[500px] mt-4 overflow-hidden">
-        
         {/* SOL: BELGE LİSTESİ */}
         <div className="flex-1 p-6 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 flex flex-col">
           <div className="flex items-center justify-between mb-4">
@@ -269,7 +328,9 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
                 className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-400 hover:text-blue-600 hover:border-blue-300 transition-all text-xs font-bold flex items-center gap-1"
                 title="Tüm Grupları Aç / Kapat"
               >
-                {Object.keys(groupedSablons).every(cat => expandedCategories.has(cat)) ? 'Hepsini Kapat' : 'Hepsini Aç'}
+                {Object.keys(groupedSablons).every((cat) => expandedCategories.has(cat))
+                  ? 'Hepsini Kapat'
+                  : 'Hepsini Aç'}
               </button>
             </div>
           </div>
@@ -284,7 +345,7 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
                 const isExpanded = expandedCategories.has(kategori)
                 return (
                   <div key={kategori} className="space-y-2">
-                    <div 
+                    <div
                       className="flex items-center justify-between px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg cursor-pointer transition-colors"
                       onClick={() => toggleCategory(kategori)}
                     >
@@ -296,13 +357,17 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
                           }}
                           className="p-0.5 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                         >
-                          {items.filter((i) => !getMissingRequirement(i)).every(i => selectedIds.has(i.id)) ? (
+                          {items
+                            .filter((i) => !getMissingRequirement(i))
+                            .every((i) => selectedIds.has(i.id)) ? (
                             <CheckSquare className="w-4 h-4 text-blue-600" />
                           ) : (
                             <Square className="w-4 h-4 text-slate-400" />
                           )}
                         </button>
-                        <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">{kategori}</h4>
+                        <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                          {kategori}
+                        </h4>
                       </div>
                       <div>
                         {isExpanded ? (
@@ -314,62 +379,76 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
                     </div>
                     {isExpanded && (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pl-4">
-                    {items.map((sablon) => {
-                      const missingMsg = getMissingRequirement(sablon)
-                      const isStarred = activeStarredDocs.some(d => normalizeForMatch(d) === normalizeForMatch(sablon.ad))
-                      
-                      return (
-                      <div 
-                        key={sablon.id}
-                        onClick={() => toggleSelect(sablon.id)}
-                        className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${
-                          missingMsg 
-                            ? 'bg-slate-50 border-slate-200 opacity-70 cursor-not-allowed dark:bg-slate-900 dark:border-slate-800'
-                            : selectedIds.has(sablon.id)
-                              ? 'bg-blue-50/50 border-blue-200 text-blue-800 cursor-pointer dark:bg-blue-900/20 dark:border-blue-800/50 dark:text-blue-300'
-                              : 'bg-white border-slate-200 text-slate-700 cursor-pointer hover:border-blue-300 dark:bg-slate-950 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-700'
-                        }`}
-                      >
-                        <div className="shrink-0">
-                          {missingMsg ? (
-                            <span title={missingMsg ?? undefined}>
-                              <AlertCircle className="w-4 h-4 text-rose-500" />
-                            </span>
-                          ) : selectedIds.has(sablon.id) ? (
-                            <CheckSquare className="w-4 h-4 text-blue-600" />
-                          ) : (
-                            <Square className="w-4 h-4 text-slate-300 dark:text-slate-600" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0" title={missingMsg || sablon.ad}>
-                          <p className={`text-xs font-bold truncate ${missingMsg ? 'text-slate-500 line-through' : ''}`}>{sablon.ad}</p>
-                          <p className="text-[10px] text-slate-500 truncate" title={sablon.dosya_adi}>{sablon.dosya_adi}</p>
-                        </div>
-                        <div className="flex items-center gap-1 shrink-0">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setPreviewSablon(sablon)
-                            }}
-                            className="p-1.5 rounded-lg transition-colors text-slate-300 hover:text-blue-500 hover:bg-slate-100 dark:text-slate-600 dark:hover:bg-slate-800"
-                            title="Önizle"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={(e) => toggleStar(sablon.ad, e)}
-                            className={`p-1.5 rounded-lg transition-colors ${
-                              isStarred 
-                                ? 'text-amber-500 bg-amber-50 hover:bg-amber-100 dark:bg-amber-900/20 dark:hover:bg-amber-900/40' 
-                                : 'text-slate-300 hover:text-amber-500 hover:bg-slate-100 dark:text-slate-600 dark:hover:bg-slate-800'
-                            }`}
-                            title={isStarred ? "Hızlı Erişimden Çıkar" : "Hızlı Erişime Ekle"}
-                          >
-                            <Star className={`w-4 h-4 ${isStarred ? 'fill-amber-500' : ''}`} />
-                          </button>
-                        </div>
-                      </div>
-                    )})}
+                        {items.map((sablon) => {
+                          const missingMsg = getMissingRequirement(sablon)
+                          const isStarred = activeStarredDocs.some(
+                            (d) => normalizeForMatch(d) === normalizeForMatch(sablon.ad)
+                          )
+
+                          return (
+                            <div
+                              key={sablon.id}
+                              onClick={() => toggleSelect(sablon.id)}
+                              className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${
+                                missingMsg
+                                  ? 'bg-slate-50 border-slate-200 opacity-70 cursor-not-allowed dark:bg-slate-900 dark:border-slate-800'
+                                  : selectedIds.has(sablon.id)
+                                    ? 'bg-blue-50/50 border-blue-200 text-blue-800 cursor-pointer dark:bg-blue-900/20 dark:border-blue-800/50 dark:text-blue-300'
+                                    : 'bg-white border-slate-200 text-slate-700 cursor-pointer hover:border-blue-300 dark:bg-slate-950 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-700'
+                              }`}
+                            >
+                              <div className="shrink-0">
+                                {missingMsg ? (
+                                  <span title={missingMsg ?? undefined}>
+                                    <AlertCircle className="w-4 h-4 text-rose-500" />
+                                  </span>
+                                ) : selectedIds.has(sablon.id) ? (
+                                  <CheckSquare className="w-4 h-4 text-blue-600" />
+                                ) : (
+                                  <Square className="w-4 h-4 text-slate-300 dark:text-slate-600" />
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0" title={missingMsg || sablon.ad}>
+                                <p
+                                  className={`text-xs font-bold truncate ${missingMsg ? 'text-slate-500 line-through' : ''}`}
+                                >
+                                  {sablon.ad}
+                                </p>
+                                <p
+                                  className="text-[10px] text-slate-500 truncate"
+                                  title={sablon.dosya_adi}
+                                >
+                                  {sablon.dosya_adi}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-1 shrink-0">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setPreviewSablon(sablon)
+                                  }}
+                                  className="p-1.5 rounded-lg transition-colors text-slate-300 hover:text-blue-500 hover:bg-slate-100 dark:text-slate-600 dark:hover:bg-slate-800"
+                                  title="Önizle"
+                                >
+                                  <Eye className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={(e) => toggleStar(sablon.ad, e)}
+                                  className={`p-1.5 rounded-lg transition-colors ${
+                                    isStarred
+                                      ? 'text-amber-500 bg-amber-50 hover:bg-amber-100 dark:bg-amber-900/20 dark:hover:bg-amber-900/40'
+                                      : 'text-slate-300 hover:text-amber-500 hover:bg-slate-100 dark:text-slate-600 dark:hover:bg-slate-800'
+                                  }`}
+                                  title={isStarred ? 'Hızlı Erişimden Çıkar' : 'Hızlı Erişime Ekle'}
+                                >
+                                  <Star
+                                    className={`w-4 h-4 ${isStarred ? 'fill-amber-500' : ''}`}
+                                  />
+                                </button>
+                              </div>
+                            </div>
+                          )
+                        })}
                       </div>
                     )}
                   </div>
@@ -383,7 +462,9 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
         <div className="w-full md:w-80 bg-slate-50 dark:bg-slate-900/50 p-6 flex flex-col gap-4">
           <div className="mb-2">
             <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-1">Toplu İşlemler</h3>
-            <p className="text-[11px] text-slate-500">Seçtiğiniz {selectedIds.size} belge için uygulamak istediğiniz işlemi seçin.</p>
+            <p className="text-[11px] text-slate-500">
+              Seçtiğiniz {selectedIds.size} belge için uygulamak istediğiniz işlemi seçin.
+            </p>
           </div>
 
           <button
@@ -409,7 +490,9 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
               <Download className="w-4 h-4" />
             </div>
             <div className="text-left flex-1">
-              <div className="text-xs font-bold text-slate-700 dark:text-slate-300">PDF Olarak İndir</div>
+              <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                PDF Olarak İndir
+              </div>
               <div className="text-[9px] text-slate-500">Orijinal sayfa yapısıyla</div>
             </div>
           </button>
@@ -423,7 +506,9 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
               <FileText className="w-4 h-4" />
             </div>
             <div className="text-left flex-1">
-              <div className="text-xs font-bold text-slate-700 dark:text-slate-300">ODF / DOCX İndir</div>
+              <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                ODF / DOCX İndir
+              </div>
               <div className="text-[9px] text-slate-500">Düzenlenebilir ofis belgesi</div>
             </div>
           </button>
@@ -441,7 +526,6 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
               <div className="text-[9px] text-slate-500">UYAP formatında (Salt metin)</div>
             </div>
           </button>
-
         </div>
       </div>
 
@@ -452,20 +536,30 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800 shrink-0 bg-slate-50 dark:bg-slate-900/50">
               <div>
-                <h3 className="font-bold text-slate-800 dark:text-slate-200 text-lg">{previewSablon.ad}</h3>
+                <h3 className="font-bold text-slate-800 dark:text-slate-200 text-lg">
+                  {previewSablon.ad}
+                </h3>
                 <p className="text-xs text-slate-500">{previewSablon.dosya_adi}</p>
               </div>
               <div className="flex items-center gap-3">
                 <button
                   onClick={(e) => toggleStar(previewSablon.ad, e as any)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                    activeStarredDocs.some(d => d.localeCompare(previewSablon.ad, 'tr', { sensitivity: 'base' }) === 0)
+                    activeStarredDocs.some(
+                      (d) => d.localeCompare(previewSablon.ad, 'tr', { sensitivity: 'base' }) === 0
+                    )
                       ? 'bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:hover:bg-amber-900/60 border border-amber-300 dark:border-amber-700/50'
                       : 'bg-white text-slate-600 hover:text-amber-600 hover:border-amber-400 dark:bg-slate-800 dark:text-slate-300 border border-slate-300 dark:border-slate-700'
                   }`}
                 >
-                  <Star className={`w-4 h-4 ${activeStarredDocs.some(d => d.localeCompare(previewSablon.ad, 'tr', { sensitivity: 'base' }) === 0) ? 'fill-current' : ''}`} />
-                  {activeStarredDocs.some(d => d.localeCompare(previewSablon.ad, 'tr', { sensitivity: 'base' }) === 0) ? 'Hızlı Erişimden Çıkar' : 'Hızlı Erişime Ekle'}
+                  <Star
+                    className={`w-4 h-4 ${activeStarredDocs.some((d) => d.localeCompare(previewSablon.ad, 'tr', { sensitivity: 'base' }) === 0) ? 'fill-current' : ''}`}
+                  />
+                  {activeStarredDocs.some(
+                    (d) => d.localeCompare(previewSablon.ad, 'tr', { sensitivity: 'base' }) === 0
+                  )
+                    ? 'Hızlı Erişimden Çıkar'
+                    : 'Hızlı Erişime Ekle'}
                 </button>
                 <button
                   onClick={() => setPreviewSablon(null)}
@@ -475,7 +569,7 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
                 </button>
               </div>
             </div>
-            
+
             {/* Modal Body */}
             <div className="flex-1 bg-slate-100 dark:bg-slate-950 p-4 relative min-h-0">
               <iframe
@@ -495,14 +589,17 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
         activeStarredDocs={activeStarredDocs}
         selectedIds={selectedIds}
         onRemoveFromQueue={(sablonId) => {
-          setSelectedIds(prev => {
+          setSelectedIds((prev) => {
             const next = new Set(prev)
             next.delete(sablonId)
             return next
           })
-          const sab = sablons.find(s => s.id === sablonId)
-          if (sab && activeStarredDocs.some(d => normalizeForMatch(d) === normalizeForMatch(sab.ad))) {
-             toggleStar(sab.ad, { stopPropagation: () => {} } as any)
+          const sab = sablons.find((s) => s.id === sablonId)
+          if (
+            sab &&
+            activeStarredDocs.some((d) => normalizeForMatch(d) === normalizeForMatch(sab.ad))
+          ) {
+            toggleStar(sab.ad, { stopPropagation: () => {} } as any)
           }
         }}
         onPrint={(validIds) => handleAction('print', validIds)}
@@ -510,6 +607,27 @@ export function CiktiMerkeziScreen(): React.JSX.Element {
         normalizeForMatch={normalizeForMatch}
         getMissingRequirement={getMissingRequirement}
       />
+
+      {toast && (
+        <div
+          className={`fixed bottom-6 right-6 px-4 py-3 rounded-2xl shadow-xl border backdrop-blur-md text-sm flex items-center gap-3 animate-in fade-in slide-in-from-bottom-4 z-[9999] transition-all duration-300 ${
+            toast.type === 'success'
+              ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800 dark:bg-emerald-950/90 dark:border-emerald-800 dark:text-emerald-300'
+              : toast.type === 'warning'
+                ? 'bg-amber-50/90 border-amber-200 text-amber-800 dark:bg-amber-950/90 dark:border-amber-800 dark:text-amber-300'
+                : 'bg-rose-50/90 border-rose-200 text-rose-800 dark:bg-rose-950/90 dark:border-rose-800 dark:text-rose-300'
+          }`}
+        >
+          {toast.type === 'success' ? (
+            <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-500" />
+          ) : toast.type === 'warning' ? (
+            <AlertCircle className="w-5 h-5 shrink-0 text-amber-500" />
+          ) : (
+            <AlertCircle className="w-5 h-5 shrink-0 text-rose-500" />
+          )}
+          <div className="font-semibold">{toast.message}</div>
+        </div>
+      )}
     </SubScreen>
   )
 }

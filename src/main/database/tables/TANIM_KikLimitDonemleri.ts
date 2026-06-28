@@ -10,16 +10,26 @@ export const TANIM_KikLimitDonemleri = {
     { name: 'diger_limit', type: 'REAL', notNull: true, description: 'Diger Limit' },
     { name: 'guncelleme_orani', type: 'TEXT', description: 'Guncelleme Orani' },
     { name: 'kaynak', type: 'TEXT', description: 'Kaynak' },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
+    {
+      name: 'created_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Created At'
+    },
+    {
+      name: 'updated_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Updated At'
+    }
   ],
   initialData: [
     {
       donem_kodu: '2026',
       baslangic_tarihi: '2026-02-01',
       bitis_tarihi: '2027-01-31',
-      buyuksehir_limit: 1021827.00,
-      diger_limit: 340391.00,
+      buyuksehir_limit: 1021827.0,
+      diger_limit: 340391.0,
       guncelleme_orani: '%43.93',
       kaynak: 'Sistem Kurulumu'
     }

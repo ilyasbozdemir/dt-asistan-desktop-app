@@ -72,20 +72,20 @@ export function useKurumHooks() {
 
   const saveKurum = useCallback(async (data: KurumVerisi) => {
     try {
-      const keys = Object.keys(data).filter(k => k !== 'id')
-      const setClause = keys.map(k => `${k} = ?`).join(', ')
-      const values = keys.map(k => data[k as keyof KurumVerisi])
+      const keys = Object.keys(data).filter((k) => k !== 'id')
+      const setClause = keys.map((k) => `${k} = ?`).join(', ')
+      const values = keys.map((k) => data[k as keyof KurumVerisi])
 
       const res = await window.electron.ipcRenderer.invoke(
         'db:run',
         `UPDATE TANIM_Kurum SET ${setClause} WHERE id = 1`,
         values
       )
-      
+
       if (!res.success) {
         throw new Error(res.error || 'Güncelleme hatası')
       }
-      
+
       return true
     } catch (err) {
       console.error('saveKurum Error:', err)

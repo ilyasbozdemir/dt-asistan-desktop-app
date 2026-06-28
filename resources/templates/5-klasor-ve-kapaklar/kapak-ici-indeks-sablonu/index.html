@@ -1,207 +1,221 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kapak İçi İndeks Şablonu</title>
-  <style>
-    @page {
-      size: A4;
-      margin: 1.5cm;
-    }
-    body {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 11pt;
-      color: #000;
-      line-height: 1.4;
-      margin: 0;
-      padding: 0;
-      background-color: #f5f5f5;
-    }
-    .page-container {
-      max-width: 21cm;
-      min-height: 29.7cm;
-      margin: 20px auto;
-      padding: 1.5cm;
-      background: white;
-      box-sizing: border-box;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      position: relative;
-    }
-    @media print {
-      body {
-        background-color: white;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kapak İçi İndeks Şablonu</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 1.5cm;
       }
-      .page-container {
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 11pt;
+        color: #000;
+        line-height: 1.4;
         margin: 0;
         padding: 0;
-        box-shadow: none;
-        max-width: none;
-        min-height: 0;
+        background-color: #f5f5f5;
       }
-    }
-    
-    .header-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 25px;
-    }
-    .header-table td {
-      vertical-align: middle;
-      padding: 5px;
-    }
-    
-    .tc-crest {
-      width: 1.8cm;
-      height: 1.8cm;
-    }
-    
-    .title-area {
-      text-align: center;
-      font-weight: bold;
-    }
-    .kurum-adi {
-      font-size: 12pt;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-      white-space: pre-wrap;
-    }
-    .birim-adi {
-      font-size: 11pt;
-      color: #333;
-      white-space: pre-wrap;
-    }
-    .klasor-baslik {
-      font-size: 14pt;
-      margin-top: 10px;
-      letter-spacing: 0.5px;
-      text-decoration: underline;
-    }
-    
-    /* Metadata Box */
-    .metadata-box {
-      width: 100%;
-      border: 1.5px solid #000;
-      border-collapse: collapse;
-      margin-bottom: 25px;
-      font-size: 10pt;
-    }
-    .metadata-box td {
-      border: 1px solid #000;
-      padding: 8px 12px;
-    }
-    .meta-label {
-      font-weight: bold;
-      background-color: #f8fafc;
-      width: 25%;
-    }
-    .meta-value {
-      width: 25%;
-    }
-    
-    /* Index Table */
-    .index-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 10pt;
-    }
-    .index-table th {
-      border: 1.5px solid #000;
-      background-color: #f1f5f9;
-      padding: 8px 6px;
-      font-weight: bold;
-      text-align: center;
-    }
-    .index-table td {
-      border: 1px solid #000;
-      padding: 8px 6px;
-    }
-    .text-center {
-      text-align: center;
-    }
-    
-    /* Alternating rows for readability in app */
-    .index-table tr:nth-child(even) {
-      background-color: #fafafa;
-    }
-    @media print {
+      .page-container {
+        max-width: 21cm;
+        min-height: 29.7cm;
+        margin: 20px auto;
+        padding: 1.5cm;
+        background: white;
+        box-sizing: border-box;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+      @media print {
+        body {
+          background-color: white;
+        }
+        .page-container {
+          margin: 0;
+          padding: 0;
+          box-shadow: none;
+          max-width: none;
+          min-height: 0;
+        }
+      }
+
+      .header-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 25px;
+      }
+      .header-table td {
+        vertical-align: middle;
+        padding: 5px;
+      }
+
+      .tc-crest {
+        width: 1.8cm;
+        height: 1.8cm;
+      }
+
+      .title-area {
+        text-align: center;
+        font-weight: bold;
+      }
+      .kurum-adi {
+        font-size: 12pt;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+        white-space: pre-wrap;
+      }
+      .birim-adi {
+        font-size: 11pt;
+        color: #333;
+        white-space: pre-wrap;
+      }
+      .klasor-baslik {
+        font-size: 14pt;
+        margin-top: 10px;
+        letter-spacing: 0.5px;
+        text-decoration: underline;
+      }
+
+      /* Metadata Box */
+      .metadata-box {
+        width: 100%;
+        border: 1.5px solid #000;
+        border-collapse: collapse;
+        margin-bottom: 25px;
+        font-size: 10pt;
+      }
+      .metadata-box td {
+        border: 1px solid #000;
+        padding: 8px 12px;
+      }
+      .meta-label {
+        font-weight: bold;
+        background-color: #f8fafc;
+        width: 25%;
+      }
+      .meta-value {
+        width: 25%;
+      }
+
+      /* Index Table */
+      .index-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 10pt;
+      }
+      .index-table th {
+        border: 1.5px solid #000;
+        background-color: #f1f5f9;
+        padding: 8px 6px;
+        font-weight: bold;
+        text-align: center;
+      }
+      .index-table td {
+        border: 1px solid #000;
+        padding: 8px 6px;
+      }
+      .text-center {
+        text-align: center;
+      }
+
+      /* Alternating rows for readability in app */
       .index-table tr:nth-child(even) {
-        background-color: transparent;
+        background-color: #fafafa;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="page-container">
-    <!-- Header -->
-    <table class="header-table">
-      <tr>
-        <td style="width: 15%;">
-          <svg class="tc-crest" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="45" stroke="#000" stroke-width="4.5" fill="none"/>
-            <path d="M50 15C30.67 15 15 30.67 15 50C15 69.33 30.67 85 50 85C69.33 85 85 69.33 85 50" stroke="#000" stroke-width="4.5" stroke-linecap="round"/>
-            <path d="M50 35L53.5 43.5H62.5L55 48.5L58 57.5L50 52L42 57.5L45 48.5L37.5 43.5H46.5L50 35Z" fill="#000"/>
-          </svg>
-        </td>
-        <td style="width: 70%;" class="title-area">
-          <div class="kurum-adi">{{{kurumAdi}}}</div>
-          <div class="birim-adi">{{{birimAdi}}}</div>
-          <div class="klasor-baslik">{{klasorBasligi}}</div>
-        </td>
-        <td style="width: 15%;">
-          <!-- Spacer for alignment -->
-        </td>
-      </tr>
-    </table>
+      @media print {
+        .index-table tr:nth-child(even) {
+          background-color: transparent;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <!-- Header -->
+      <table class="header-table">
+        <tr>
+          <td style="width: 15%">
+            <svg
+              class="tc-crest"
+              viewBox="0 0 100 100"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="50" cy="50" r="45" stroke="#000" stroke-width="4.5" fill="none" />
+              <path
+                d="M50 15C30.67 15 15 30.67 15 50C15 69.33 30.67 85 50 85C69.33 85 85 69.33 85 50"
+                stroke="#000"
+                stroke-width="4.5"
+                stroke-linecap="round"
+              />
+              <path
+                d="M50 35L53.5 43.5H62.5L55 48.5L58 57.5L50 52L42 57.5L45 48.5L37.5 43.5H46.5L50 35Z"
+                fill="#000"
+              />
+            </svg>
+          </td>
+          <td style="width: 70%" class="title-area">
+            <div class="kurum-adi">{{{kurumAdi}}}</div>
+            <div class="birim-adi">{{{birimAdi}}}</div>
+            <div class="klasor-baslik">{{klasorBasligi}}</div>
+          </td>
+          <td style="width: 15%">
+            <!-- Spacer for alignment -->
+          </td>
+        </tr>
+      </table>
 
-    <!-- Metadata Box -->
-    <table class="metadata-box">
-      <tr>
-        <td class="meta-label">İşin Adı / Tanımı</td>
-        <td class="meta-value" colspan="3">{{isAdi}}</td>
-      </tr>
-      <tr>
-        <td class="meta-label">Karar / İhale No</td>
-        <td class="meta-value">{{kararNo}}</td>
-        <td class="meta-label">Klasör Sıra No</td>
-        <td class="meta-value">{{klasorNo}}</td>
-      </tr>
-      <tr>
-        <td class="meta-label">Arşiv Kutu No</td>
-        <td class="meta-value">{{arsivNo}}</td>
-        <td class="meta-label">Düzenleme Tarihi</td>
-        <td class="meta-value">{{tarih}}</td>
-      </tr>
-    </table>
+      <!-- Metadata Box -->
+      <table class="metadata-box">
+        <tr>
+          <td class="meta-label">İşin Adı / Tanımı</td>
+          <td class="meta-value" colspan="3">{{isAdi}}</td>
+        </tr>
+        <tr>
+          <td class="meta-label">Karar / İhale No</td>
+          <td class="meta-value">{{kararNo}}</td>
+          <td class="meta-label">Klasör Sıra No</td>
+          <td class="meta-value">{{klasorNo}}</td>
+        </tr>
+        <tr>
+          <td class="meta-label">Arşiv Kutu No</td>
+          <td class="meta-value">{{arsivNo}}</td>
+          <td class="meta-label">Düzenleme Tarihi</td>
+          <td class="meta-value">{{tarih}}</td>
+        </tr>
+      </table>
 
-    <!-- Index List -->
-    <table class="index-table">
-      <thead>
-        <tr>
-          <th style="width: 8%;">{{tabloBasliklar.siraNo}}</th>
-          <th style="width: 15%;">{{tabloBasliklar.evrakTarihi}}</th>
-          <th style="width: 20%;">{{tabloBasliklar.evrakSayisi}}</th>
-          <th>{{tabloBasliklar.konu}}</th>
-          <th style="width: 12%;">{{tabloBasliklar.sayfaNo}}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#evraklar}}
-        <tr>
-          <td class="text-center">{{sira}}</td>
-          <td class="text-center">{{tarih}}</td>
-          <td class="text-center">{{sayi}}</td>
-          <td>{{konu}}</td>
-          <td class="text-center">{{sayfa}}</td>
-        </tr>
-        {{/evraklar}}
-        {{^evraklar}}
-        <tr>
-          <td colspan="5" class="text-center" style="color: #666; padding: 20px;">Kayıtlı evrak bulunmamaktadır.</td>
-        </tr>
-        {{/evraklar}}
-      </tbody>
-    </table>
-  </div>
-</body>
+      <!-- Index List -->
+      <table class="index-table">
+        <thead>
+          <tr>
+            <th style="width: 8%">{{tabloBasliklar.siraNo}}</th>
+            <th style="width: 15%">{{tabloBasliklar.evrakTarihi}}</th>
+            <th style="width: 20%">{{tabloBasliklar.evrakSayisi}}</th>
+            <th>{{tabloBasliklar.konu}}</th>
+            <th style="width: 12%">{{tabloBasliklar.sayfaNo}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#evraklar}}
+          <tr>
+            <td class="text-center">{{sira}}</td>
+            <td class="text-center">{{tarih}}</td>
+            <td class="text-center">{{sayi}}</td>
+            <td>{{konu}}</td>
+            <td class="text-center">{{sayfa}}</td>
+          </tr>
+          {{/evraklar}} {{^evraklar}}
+          <tr>
+            <td colspan="5" class="text-center" style="color: #666; padding: 20px">
+              Kayıtlı evrak bulunmamaktadır.
+            </td>
+          </tr>
+          {{/evraklar}}
+        </tbody>
+      </table>
+    </div>
+  </body>
 </html>

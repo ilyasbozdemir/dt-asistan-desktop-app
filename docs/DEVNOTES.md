@@ -33,7 +33,7 @@ an placeholder (Yakında).
 
 ```
 DATA_TeminKalem     → Dosyaya bağlı malzeme kalemleri (YM cetveli)
-DATA_TeminFirma     → Dosyaya bağlı istekli firmalar + teklifler  
+DATA_TeminFirma     → Dosyaya bağlı istekli firmalar + teklifler
 DATA_TeminKomisyon  → Komisyon üyeleri
 DATA_TeminBelge     → Üretilen belge kayıtları (log)
 ```

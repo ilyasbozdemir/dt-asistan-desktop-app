@@ -1,343 +1,386 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <title>Taşınır İşlem Fişi</title>
-  <style>
-    @page {
-      size: A4;
-      margin: 1cm;
-    }
-    body {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 10pt;
-      color: #000;
-      line-height: 1.3;
-      margin: 0;
-      padding: 0;
-      background-color: #fff;
-    }
-    .page-container {
-      max-width: 21cm;
-      box-sizing: border-box;
-      margin: 0 auto;
-      padding: 0.3cm;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-    .bordered td, .bordered th {
-      border: 1px solid #000;
-      padding: 3px 5px;
-    }
-    .bordered th {
-      text-align: center;
-      font-weight: bold;
-    }
-    .items-table td {
-      font-size: 9pt;
-      vertical-align: top;
-    }
-    .items-table td.center { text-align: center; }
-    .items-table td.right { text-align: right; }
-    .sig-table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-    .sig-table td {
-      border: 1px solid #000;
-      padding: 3px 5px;
-      vertical-align: top;
-    }
-    .no-border td {
-      border: none;
-      padding: 2px 5px;
-    }
-    h2 {
-      text-align: center;
-      margin: 5px 0 10px;
-      font-size: 14pt;
-    }
-  </style>
-</head>
-<body>
-  <div class="page-container">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Taşınır İşlem Fişi</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 1cm;
+      }
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 10pt;
+        color: #000;
+        line-height: 1.3;
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+      }
+      .page-container {
+        max-width: 21cm;
+        box-sizing: border-box;
+        margin: 0 auto;
+        padding: 0.3cm;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      .bordered td,
+      .bordered th {
+        border: 1px solid #000;
+        padding: 3px 5px;
+      }
+      .bordered th {
+        text-align: center;
+        font-weight: bold;
+      }
+      .items-table td {
+        font-size: 9pt;
+        vertical-align: top;
+      }
+      .items-table td.center {
+        text-align: center;
+      }
+      .items-table td.right {
+        text-align: right;
+      }
+      .sig-table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      .sig-table td {
+        border: 1px solid #000;
+        padding: 3px 5px;
+        vertical-align: top;
+      }
+      .no-border td {
+        border: none;
+        padding: 2px 5px;
+      }
+      h2 {
+        text-align: center;
+        margin: 5px 0 10px;
+        font-size: 14pt;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <!-- HEADER TABLE -->
+      <table class="bordered">
+        <tbody>
+          <tr>
+            <td colspan="5">
+              <h2><b>TAŞINIR İŞLEM FİŞİ</b></h2>
+            </td>
+          </tr>
+          <tr>
+            <td width="160">FİŞ NO</td>
+            <td width="80">{{fisNo}}{{^fisNo}}0{{/fisNo}}</td>
+            <td>&nbsp;</td>
+            <td width="60">TARİH</td>
+            <td width="120">{{fisTarihi}}{{^fisTarihi}}{{dosyaTarihi}}{{/fisTarihi}}</td>
+          </tr>
+          <tr>
+            <td>İL VE İLÇENİN (1)</td>
+            <td>ADI</td>
+            <td>{{ilIlce}}{{^ilIlce}}................{{/ilIlce}}</td>
+            <td>KODU</td>
+            <td>{{ilIlceKodu}}{{^ilIlceKodu}}................{{/ilIlceKodu}}</td>
+          </tr>
+          <tr>
+            <td>HARCAMA BİRİMİNİN</td>
+            <td>ADI</td>
+            <td>
+              {{harcamaBirimiAdi}}{{^harcamaBirimiAdi}}{{kurumAdi}}{{^kurumAdi}}................{{/kurumAdi}}{{/harcamaBirimiAdi}}
+            </td>
+            <td>KODU</td>
+            <td>
+              {{harcamaBirimiKodu}}{{^harcamaBirimiKodu}}................{{/harcamaBirimiKodu}}
+            </td>
+          </tr>
+          <tr>
+            <td>TAŞINIR AMBARININ</td>
+            <td>ADI</td>
+            <td>{{tasinirAmbariAdi}}{{^tasinirAmbariAdi}}Depo{{/tasinirAmbariAdi}}</td>
+            <td>KODU</td>
+            <td>
+              {{tasinirAmbariKodu}}{{^tasinirAmbariKodu}}................{{/tasinirAmbariKodu}}
+            </td>
+          </tr>
+          <tr>
+            <td>MUHASEBE BİRİMİNİN</td>
+            <td>ADI</td>
+            <td>
+              {{muhasebeBirimiAdi}}{{^muhasebeBirimiAdi}}................{{/muhasebeBirimiAdi}}
+            </td>
+            <td>KODU</td>
+            <td>
+              {{muhasebeBirimiKodu}}{{^muhasebeBirimiKodu}}................{{/muhasebeBirimiKodu}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- HEADER TABLE -->
-    <table class="bordered">
-      <tbody>
-        <tr>
-          <td colspan="5">
-            <h2><b>TAŞINIR İŞLEM FİŞİ</b></h2>
-          </td>
-        </tr>
-        <tr>
-          <td width="160">FİŞ NO</td>
-          <td width="80">{{fisNo}}{{^fisNo}}0{{/fisNo}}</td>
-          <td>&nbsp;</td>
-          <td width="60">TARİH</td>
-          <td width="120">{{fisTarihi}}{{^fisTarihi}}{{dosyaTarihi}}{{/fisTarihi}}</td>
-        </tr>
-        <tr>
-          <td>İL VE İLÇENİN (1)</td>
-          <td>ADI</td>
-          <td>{{ilIlce}}{{^ilIlce}}................{{/ilIlce}}</td>
-          <td>KODU</td>
-          <td>{{ilIlceKodu}}{{^ilIlceKodu}}................{{/ilIlceKodu}}</td>
-        </tr>
-        <tr>
-          <td>HARCAMA BİRİMİNİN</td>
-          <td>ADI</td>
-          <td>{{harcamaBirimiAdi}}{{^harcamaBirimiAdi}}{{kurumAdi}}{{^kurumAdi}}................{{/kurumAdi}}{{/harcamaBirimiAdi}}</td>
-          <td>KODU</td>
-          <td>{{harcamaBirimiKodu}}{{^harcamaBirimiKodu}}................{{/harcamaBirimiKodu}}</td>
-        </tr>
-        <tr>
-          <td>TAŞINIR AMBARININ</td>
-          <td>ADI</td>
-          <td>{{tasinirAmbariAdi}}{{^tasinirAmbariAdi}}Depo{{/tasinirAmbariAdi}}</td>
-          <td>KODU</td>
-          <td>{{tasinirAmbariKodu}}{{^tasinirAmbariKodu}}................{{/tasinirAmbariKodu}}</td>
-        </tr>
-        <tr>
-          <td>MUHASEBE BİRİMİNİN</td>
-          <td>ADI</td>
-          <td>{{muhasebeBirimiAdi}}{{^muhasebeBirimiAdi}}................{{/muhasebeBirimiAdi}}</td>
-          <td>KODU</td>
-          <td>{{muhasebeBirimiKodu}}{{^muhasebeBirimiKodu}}................{{/muhasebeBirimiKodu}}</td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- MUAYENE VE DAYANAK -->
+      <table class="bordered">
+        <tbody>
+          <tr>
+            <td width="340">MUAYENE VE KABUL KOMİSYONU TUTANAĞININ</td>
+            <td>TARİHİ</td>
+            <td>{{muayeneTarihi}}{{^muayeneTarihi}}{{dosyaTarihi}}{{/muayeneTarihi}}</td>
+            <td>SAYISI</td>
+            <td>{{muayeneSayisi}}</td>
+          </tr>
+          <tr>
+            <td>DAYANAĞI BELGENİN (5)</td>
+            <td>TARİHİ</td>
+            <td>
+              {{#faturaTarihi}}{{faturaTarihi}}{{/faturaTarihi}}{{^faturaTarihi}}................{{/faturaTarihi}}
+            </td>
+            <td>SAYISI</td>
+            <td>
+              {{#faturaNo}}{{faturaNo}}{{/faturaNo}}{{^faturaNo}}................{{/faturaNo}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- MUAYENE VE DAYANAK -->
-    <table class="bordered">
-      <tbody>
-        <tr>
-          <td width="340">MUAYENE VE KABUL KOMİSYONU TUTANAĞININ</td>
-          <td>TARİHİ</td>
-          <td>{{muayeneTarihi}}{{^muayeneTarihi}}{{dosyaTarihi}}{{/muayeneTarihi}}</td>
-          <td>SAYISI</td>
-          <td>{{muayeneSayisi}}</td>
-        </tr>
-        <tr>
-          <td>DAYANAĞI BELGENİN (5)</td>
-          <td>TARİHİ</td>
-          <td>{{#faturaTarihi}}{{faturaTarihi}}{{/faturaTarihi}}{{^faturaTarihi}}................{{/faturaTarihi}}</td>
-          <td>SAYISI</td>
-          <td>{{#faturaNo}}{{faturaNo}}{{/faturaNo}}{{^faturaNo}}................{{/faturaNo}}</td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- İŞLEM ÇEŞİDİ -->
+      <table class="bordered">
+        <tbody>
+          <tr>
+            <td>İŞLEM ÇEŞİDİ (6)</td>
+            <td>NEREDEN GELDİĞİ (7)</td>
+            <td>KİME VERİLDİĞİ (8)</td>
+            <td>NEREYE VERİLDİĞİ (9)</td>
+          </tr>
+          <tr>
+            <td>{{islemCesidi}}{{^islemCesidi}}Satın Alma{{/islemCesidi}}</td>
+            <td>
+              {{neredenGeldigi}}{{^neredenGeldigi}}{{yukleniciFirma}}{{^yukleniciFirma}}Piyasa{{/yukleniciFirma}}{{/neredenGeldigi}}
+            </td>
+            <td align="center">
+              {{kimeVerildigi}}{{^kimeVerildigi}}{{teslimAlanAdi}}{{^teslimAlanAdi}}................{{/teslimAlanAdi}}{{/kimeVerildigi}}
+            </td>
+            <td align="center">
+              {{nereyeVerildigi}}{{^nereyeVerildigi}}{{harcamaBirimiAdi}}{{^harcamaBirimiAdi}}{{kurumAdi}}{{^kurumAdi}}................{{/kurumAdi}}{{/harcamaBirimiAdi}}{{/nereyeVerildigi}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- İŞLEM ÇEŞİDİ -->
-    <table class="bordered">
-      <tbody>
-        <tr>
-          <td>İŞLEM ÇEŞİDİ (6)</td>
-          <td>NEREDEN GELDİĞİ (7)</td>
-          <td>KİME VERİLDİĞİ (8)</td>
-          <td>NEREYE VERİLDİĞİ (9)</td>
-        </tr>
-        <tr>
-          <td>{{islemCesidi}}{{^islemCesidi}}Satın Alma{{/islemCesidi}}</td>
-          <td>{{neredenGeldigi}}{{^neredenGeldigi}}{{yukleniciFirma}}{{^yukleniciFirma}}Piyasa{{/yukleniciFirma}}{{/neredenGeldigi}}</td>
-          <td align="center">{{kimeVerildigi}}{{^kimeVerildigi}}{{teslimAlanAdi}}{{^teslimAlanAdi}}................{{/teslimAlanAdi}}{{/kimeVerildigi}}</td>
-          <td align="center">{{nereyeVerildigi}}{{^nereyeVerildigi}}{{harcamaBirimiAdi}}{{^harcamaBirimiAdi}}{{kurumAdi}}{{^kurumAdi}}................{{/kurumAdi}}{{/harcamaBirimiAdi}}{{/nereyeVerildigi}}</td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- BİRİMLER VE AMBARLAR ARASI -->
+      <table class="bordered">
+        <tbody>
+          <tr>
+            <td colspan="5" align="center">BİRİMLER VE AMBARLAR ARASI TAŞINIR HAREKETLERİNDE</td>
+          </tr>
+          <tr>
+            <td>GÖNDERİLEN HARCAMA BİRİMİ (10)</td>
+            <td>ADI</td>
+            <td>
+              {{gonderHarcamaBirimiAdi}}{{^gonderHarcamaBirimiAdi}}................{{/gonderHarcamaBirimiAdi}}
+            </td>
+            <td>KODU</td>
+            <td>
+              {{gonderHarcamaBirimiKodu}}{{^gonderHarcamaBirimiKodu}}................{{/gonderHarcamaBirimiKodu}}
+            </td>
+          </tr>
+          <tr>
+            <td>GÖNDERİLEN TAŞINIR AMBARI (11)</td>
+            <td>ADI</td>
+            <td>
+              {{gonderTasinirAmbariAdi}}{{^gonderTasinirAmbariAdi}}................{{/gonderTasinirAmbariAdi}}
+            </td>
+            <td>KODU</td>
+            <td>
+              {{gonderTasinirAmbariKodu}}{{^gonderTasinirAmbariKodu}}................{{/gonderTasinirAmbariKodu}}
+            </td>
+          </tr>
+          <tr>
+            <td>MUHASEBE BİRİMİ (12)</td>
+            <td>ADI</td>
+            <td>
+              {{gonderMuhasebeBirimiAdi}}{{^gonderMuhasebeBirimiAdi}}................{{/gonderMuhasebeBirimiAdi}}
+            </td>
+            <td>KODU</td>
+            <td>
+              {{gonderMuhasebeBirimiKodu}}{{^gonderMuhasebeBirimiKodu}}................{{/gonderMuhasebeBirimiKodu}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- BİRİMLER VE AMBARLAR ARASI -->
-    <table class="bordered">
-      <tbody>
-        <tr>
-          <td colspan="5" align="center">BİRİMLER VE AMBARLAR ARASI TAŞINIR HAREKETLERİNDE</td>
-        </tr>
-        <tr>
-          <td>GÖNDERİLEN HARCAMA BİRİMİ (10)</td>
-          <td>ADI</td>
-          <td>{{gonderHarcamaBirimiAdi}}{{^gonderHarcamaBirimiAdi}}................{{/gonderHarcamaBirimiAdi}}</td>
-          <td>KODU</td>
-          <td>{{gonderHarcamaBirimiKodu}}{{^gonderHarcamaBirimiKodu}}................{{/gonderHarcamaBirimiKodu}}</td>
-        </tr>
-        <tr>
-          <td>GÖNDERİLEN TAŞINIR AMBARI (11)</td>
-          <td>ADI</td>
-          <td>{{gonderTasinirAmbariAdi}}{{^gonderTasinirAmbariAdi}}................{{/gonderTasinirAmbariAdi}}</td>
-          <td>KODU</td>
-          <td>{{gonderTasinirAmbariKodu}}{{^gonderTasinirAmbariKodu}}................{{/gonderTasinirAmbariKodu}}</td>
-        </tr>
-        <tr>
-          <td>MUHASEBE BİRİMİ (12)</td>
-          <td>ADI</td>
-          <td>{{gonderMuhasebeBirimiAdi}}{{^gonderMuhasebeBirimiAdi}}................{{/gonderMuhasebeBirimiAdi}}</td>
-          <td>KODU</td>
-          <td>{{gonderMuhasebeBirimiKodu}}{{^gonderMuhasebeBirimiKodu}}................{{/gonderMuhasebeBirimiKodu}}</td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- TAŞINIR KALEM TABLOSU -->
+      <table class="bordered items-table">
+        <tbody>
+          <tr>
+            <td colspan="8" align="center"><b>TAŞINIRIN</b></td>
+          </tr>
+          <tr>
+            <th>SIRA NO</th>
+            <th>KODU (13)</th>
+            <th>SİCİL NUMARASI (14)</th>
+            <th>ADI</th>
+            <th>ÖLÇÜ BİRİMİ</th>
+            <th>MİKTARI</th>
+            <th>BİRİM FİYATI</th>
+            <th>TUTARI</th>
+          </tr>
+          {{#ihtiyacKalemleri}}
+          <tr>
+            <td class="center">{{siraNo}}</td>
+            <td>{{kodu}}</td>
+            <td>{{sicilNo}}{{^sicilNo}}{{siraNo}}{{/sicilNo}}</td>
+            <td>{{malzemeAdi}}</td>
+            <td class="center">{{birimi}}</td>
+            <td class="right">{{miktar}}</td>
+            <td class="right">{{birimFiyat}}{{^birimFiyat}}{{enDusukFiyat}}{{/birimFiyat}}</td>
+            <td class="right">{{toplamBedel}}</td>
+          </tr>
+          {{/ihtiyacKalemleri}}
+          <tr>
+            <td colspan="4"></td>
+            <td><b>Ara Toplam</b></td>
+            <td colspan="2"></td>
+            <td class="right"><b>{{genelToplam}}</b></td>
+          </tr>
+          <tr>
+            <td colspan="7" align="right"><b>TOPLAM</b></td>
+            <td class="right"><b>{{genelToplam}}</b></td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- TAŞINIR KALEM TABLOSU -->
-    <table class="bordered items-table">
-      <tbody>
-        <tr>
-          <td colspan="8" align="center"><b>TAŞINIRIN</b></td>
-        </tr>
-        <tr>
-          <th>SIRA NO</th>
-          <th>KODU (13)</th>
-          <th>SİCİL NUMARASI (14)</th>
-          <th>ADI</th>
-          <th>ÖLÇÜ BİRİMİ</th>
-          <th>MİKTARI</th>
-          <th>BİRİM FİYATI</th>
-          <th>TUTARI</th>
-        </tr>
-        {{#ihtiyacKalemleri}}
-        <tr>
-          <td class="center">{{siraNo}}</td>
-          <td>{{kodu}}</td>
-          <td>{{sicilNo}}{{^sicilNo}}{{siraNo}}{{/sicilNo}}</td>
-          <td>{{malzemeAdi}}</td>
-          <td class="center">{{birimi}}</td>
-          <td class="right">{{miktar}}</td>
-          <td class="right">{{birimFiyat}}{{^birimFiyat}}{{enDusukFiyat}}{{/birimFiyat}}</td>
-          <td class="right">{{toplamBedel}}</td>
-        </tr>
-        {{/ihtiyacKalemleri}}
-        <tr>
-          <td colspan="4"></td>
-          <td><b>Ara Toplam</b></td>
-          <td colspan="2"></td>
-          <td class="right"><b>{{genelToplam}}</b></td>
-        </tr>
-        <tr>
-          <td colspan="7" align="right"><b>TOPLAM</b></td>
-          <td class="right"><b>{{genelToplam}}</b></td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- GİRİŞ / ÇIKIŞ KAYDI + TESLİM -->
+      <table class="sig-table">
+        <tbody>
+          <!-- GİRİŞ / ÇIKIŞ KAYDI -->
+          <tr>
+            <td align="center" valign="top" width="50%">
+              Yukarıda gösterilen <b>{{kalemSayisi}}</b> kalem, toplam
+              <b>{{toplamMiktar}}</b> taşınırın
+              <p align="center">
+                GİRİŞ KAYDI YAPILMIŞTIR.<br />
+                {{girisKayitTarihi}}{{^girisKayitTarihi}}..../..../20....{{/girisKayitTarihi}}
+              </p>
+              <table class="no-border" style="margin: 0 auto; width: 90%">
+                <tbody>
+                  <tr>
+                    <td colspan="2" align="center"><b>Taşınır Kayıt Kontrol Yetkilisinin</b></td>
+                  </tr>
+                  <tr>
+                    <td width="90">Adı Soyadı</td>
+                    <td>{{girisKontrolYetkilisiAdi}}</td>
+                  </tr>
+                  <tr>
+                    <td>Ünvanı</td>
+                    <td>{{girisKontrolYetkilisiUnvan}}</td>
+                  </tr>
+                  <tr>
+                    <td>İmzası</td>
+                    <td>..................</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+            <td align="center" valign="top">
+              Yukarıda gösterilen <b>{{kalemSayisi}}</b> kalem, toplam
+              <b>{{toplamMiktar}}</b> taşınırın
+              <p align="center">
+                ÇIKIŞ KAYDI YAPILMIŞTIR.<br />
+                {{cikisKayitTarihi}}{{^cikisKayitTarihi}}..../..../20....{{/cikisKayitTarihi}}
+              </p>
+              <table class="no-border" style="margin: 0 auto; width: 90%">
+                <tbody>
+                  <tr>
+                    <td colspan="2" align="center"><b>Taşınır Kayıt Kontrol Yetkilisinin</b></td>
+                  </tr>
+                  <tr>
+                    <td width="90">Adı Soyadı</td>
+                    <td>{{cikisKontrolYetkilisiAdi}}</td>
+                  </tr>
+                  <tr>
+                    <td>Ünvanı</td>
+                    <td>{{cikisKontrolYetkilisiUnvan}}</td>
+                  </tr>
+                  <tr>
+                    <td>İmzası</td>
+                    <td>..................</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+          <!-- boşluk -->
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <!-- TESLİM EDEN / TESLİM ALAN -->
+          <tr>
+            <td align="center" valign="top">
+              <br />TESLİM EDİLMİŞTİR.<br />
+              {{teslimEdenTarihi}}{{^teslimEdenTarihi}}..../..../20....{{/teslimEdenTarihi}}
+              <br /><br />TESLİM EDEN (15)
+              <table class="no-border" style="margin: 0 auto; width: 90%">
+                <tbody>
+                  <tr>
+                    <td width="90">Adı Soyadı ;</td>
+                    <td>{{teslimEdenAdi}}</td>
+                  </tr>
+                  <tr>
+                    <td>Unvanı ;</td>
+                    <td>
+                      {{teslimEdenUnvan}}{{^teslimEdenUnvan}}{{yukleniciFirma}}{{/teslimEdenUnvan}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>İmzası ;</td>
+                    <td>..................</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+            <td align="center" valign="top">
+              <br />TESLİM ALINMIŞTIR.<br />
+              {{teslimAlanTarihi}}{{^teslimAlanTarihi}}..../..../20....{{/teslimAlanTarihi}}
+              <br /><br />TESLİM ALAN (16)
+              <table class="no-border" style="margin: 0 auto; width: 90%">
+                <tbody>
+                  <tr>
+                    <td width="90">Adı Soyadı ;</td>
+                    <td>{{teslimAlanAdi}}</td>
+                  </tr>
+                  <tr>
+                    <td>Unvanı ;</td>
+                    <td>{{teslimAlanUnvan}}{{^teslimAlanUnvan}}{{kurumAdi}}{{/teslimAlanUnvan}}</td>
+                  </tr>
+                  <tr>
+                    <td>İmzası ;</td>
+                    <td>..................</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- GİRİŞ / ÇIKIŞ KAYDI + TESLİM -->
-    <table class="sig-table">
-      <tbody>
-        <!-- GİRİŞ / ÇIKIŞ KAYDI -->
-        <tr>
-          <td align="center" valign="top" width="50%">
-            Yukarıda gösterilen <b>{{kalemSayisi}}</b> kalem, toplam <b>{{toplamMiktar}}</b> taşınırın
-            <p align="center">
-              GİRİŞ KAYDI YAPILMIŞTIR.<br>
-              {{girisKayitTarihi}}{{^girisKayitTarihi}}..../..../20....{{/girisKayitTarihi}}
-            </p>
-            <table class="no-border" style="margin: 0 auto; width: 90%;">
-              <tbody>
-                <tr><td colspan="2" align="center"><b>Taşınır Kayıt Kontrol Yetkilisinin</b></td></tr>
-                <tr>
-                  <td width="90">Adı Soyadı</td>
-                  <td>{{girisKontrolYetkilisiAdi}}</td>
-                </tr>
-                <tr>
-                  <td>Ünvanı</td>
-                  <td>{{girisKontrolYetkilisiUnvan}}</td>
-                </tr>
-                <tr>
-                  <td>İmzası</td>
-                  <td>..................</td>
-                </tr>
-              </tbody>
-            </table>
-          </td>
-          <td align="center" valign="top">
-            Yukarıda gösterilen <b>{{kalemSayisi}}</b> kalem, toplam <b>{{toplamMiktar}}</b> taşınırın
-            <p align="center">
-              ÇIKIŞ KAYDI YAPILMIŞTIR.<br>
-              {{cikisKayitTarihi}}{{^cikisKayitTarihi}}..../..../20....{{/cikisKayitTarihi}}
-            </p>
-            <table class="no-border" style="margin: 0 auto; width: 90%;">
-              <tbody>
-                <tr><td colspan="2" align="center"><b>Taşınır Kayıt Kontrol Yetkilisinin</b></td></tr>
-                <tr>
-                  <td width="90">Adı Soyadı</td>
-                  <td>{{cikisKontrolYetkilisiAdi}}</td>
-                </tr>
-                <tr>
-                  <td>Ünvanı</td>
-                  <td>{{cikisKontrolYetkilisiUnvan}}</td>
-                </tr>
-                <tr>
-                  <td>İmzası</td>
-                  <td>..................</td>
-                </tr>
-              </tbody>
-            </table>
-          </td>
-        </tr>
-        <!-- boşluk -->
-        <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-        </tr>
-        <!-- TESLİM EDEN / TESLİM ALAN -->
-        <tr>
-          <td align="center" valign="top">
-            <br>TESLİM EDİLMİŞTİR.<br>
-            {{teslimEdenTarihi}}{{^teslimEdenTarihi}}..../..../20....{{/teslimEdenTarihi}}
-            <br><br>TESLİM EDEN (15)
-            <table class="no-border" style="margin: 0 auto; width: 90%;">
-              <tbody>
-                <tr>
-                  <td width="90">Adı Soyadı ;</td>
-                  <td>{{teslimEdenAdi}}</td>
-                </tr>
-                <tr>
-                  <td>Unvanı ;</td>
-                  <td>{{teslimEdenUnvan}}{{^teslimEdenUnvan}}{{yukleniciFirma}}{{/teslimEdenUnvan}}</td>
-                </tr>
-                <tr>
-                  <td>İmzası ;</td>
-                  <td>..................</td>
-                </tr>
-              </tbody>
-            </table>
-          </td>
-          <td align="center" valign="top">
-            <br>TESLİM ALINMIŞTIR.<br>
-            {{teslimAlanTarihi}}{{^teslimAlanTarihi}}..../..../20....{{/teslimAlanTarihi}}
-            <br><br>TESLİM ALAN (16)
-            <table class="no-border" style="margin: 0 auto; width: 90%;">
-              <tbody>
-                <tr>
-                  <td width="90">Adı Soyadı ;</td>
-                  <td>{{teslimAlanAdi}}</td>
-                </tr>
-                <tr>
-                  <td>Unvanı ;</td>
-                  <td>{{teslimAlanUnvan}}{{^teslimAlanUnvan}}{{kurumAdi}}{{/teslimAlanUnvan}}</td>
-                </tr>
-                <tr>
-                  <td>İmzası ;</td>
-                  <td>..................</td>
-                </tr>
-              </tbody>
-            </table>
-          </td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- OLUR -->
-    <div style="text-align: center; padding-top: 30px;">
-      OLUR<br><br>
-      {{#onayTarihi}}{{onayTarihi}}{{/onayTarihi}}{{^onayTarihi}}{{dosyaTarihi}}{{/onayTarihi}}<br>
-      {{baskanAdi}}<br>
-      {{baskanUnvan}}
+      <!-- OLUR -->
+      <div style="text-align: center; padding-top: 30px">
+        OLUR<br /><br />
+        {{#onayTarihi}}{{onayTarihi}}{{/onayTarihi}}{{^onayTarihi}}{{dosyaTarihi}}{{/onayTarihi}}<br />
+        {{baskanAdi}}<br />
+        {{baskanUnvan}}
+      </div>
     </div>
-
-  </div>
-</body>
+  </body>
 </html>

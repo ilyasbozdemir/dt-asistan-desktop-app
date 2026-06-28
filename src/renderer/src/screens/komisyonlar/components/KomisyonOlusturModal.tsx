@@ -11,17 +11,19 @@ interface KomisyonOlusturModalProps {
   komisyonId?: number | null
 }
 
-export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOlusturModalProps): React.JSX.Element | null {
+export function KomisyonOlusturModal({
+  isOpen,
+  onClose,
+  komisyonId
+}: KomisyonOlusturModalProps): React.JSX.Element | null {
   const queryClient = useQueryClient()
   const [ad, setAd] = useState('')
-  
+
   // Üyeler state: { personelId: number, gorevId: number, asilMi: boolean }
   const [uyeler, setUyeler] = useState<any[]>([])
-  
+
   // Şablonlar state
   const [seciliSablonlar, setSeciliSablonlar] = useState<number[]>([])
-
-
 
   const { data: gorevler = [] } = useQuery({
     queryKey: ['komisyon_gorevleri'],
@@ -55,7 +57,7 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
     queryKey: ['komisyon_detay', komisyonId],
     queryFn: async () => {
       if (!komisyonId) return null
-      
+
       const res = await window.electron.ipcRenderer.invoke(
         'db:query',
         'SELECT * FROM TANIM_Komisyon WHERE id = ?',
@@ -70,12 +72,14 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
         [komisyonId]
       )
       if (membersRes.success && membersRes.data) {
-        setUyeler(membersRes.data.map((m: any) => ({
-          id: Date.now() + Math.random(),
-          personelId: m.personel_id,
-          gorevId: m.gorev_id,
-          asilMi: m.asil_mi
-        })))
+        setUyeler(
+          membersRes.data.map((m: any) => ({
+            id: Date.now() + Math.random(),
+            personelId: m.personel_id,
+            gorevId: m.gorev_id,
+            asilMi: m.asil_mi
+          }))
+        )
       }
 
       // Mevcut şablonları çek
@@ -98,23 +102,23 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
   }
 
   const handleRemoveUye = (id: number) => {
-    setUyeler(uyeler.filter(u => u.id !== id))
+    setUyeler(uyeler.filter((u) => u.id !== id))
   }
 
   const handleUyeChange = (id: number, field: string, value: any) => {
-    setUyeler(uyeler.map(u => u.id === id ? { ...u, [field]: value } : u))
+    setUyeler(uyeler.map((u) => (u.id === id ? { ...u, [field]: value } : u)))
   }
 
   const handleSablonToggle = (sablonId: number) => {
-    setSeciliSablonlar(prev => 
-      prev.includes(sablonId) ? prev.filter(id => id !== sablonId) : [...prev, sablonId]
+    setSeciliSablonlar((prev) =>
+      prev.includes(sablonId) ? prev.filter((id) => id !== sablonId) : [...prev, sablonId]
     )
   }
 
   const saveMutation = useMutation({
     mutationFn: async () => {
       if (!ad) throw new Error('Lütfen komisyon adı giriniz.')
-      if (uyeler.some(u => !u.gorevId)) {
+      if (uyeler.some((u) => !u.gorevId)) {
         throw new Error('Lütfen tüm üyelerin görev (rol) seçimlerini yapınız.')
       }
 
@@ -134,8 +138,8 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
           }
         ])
         if (!updateRes.success) throw new Error(updateRes.error)
-        
-        const uyeQueries = uyeler.map(u => ({
+
+        const uyeQueries = uyeler.map((u) => ({
           sql: 'INSERT INTO TANIM_KomisyonUye (komisyon_id, gorev_id, asil_mi) VALUES (?, ?, ?)',
           params: [komisyonId, u.gorevId, u.asilMi]
         }))
@@ -145,18 +149,20 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
           if (!uyeRes.success) throw new Error(uyeRes.error)
         }
 
-        const sablonQueries = seciliSablonlar.map(sId => ({
+        const sablonQueries = seciliSablonlar.map((sId) => ({
           sql: 'INSERT INTO TANIM_Komisyon_Sablon (komisyon_id, sablon_id) VALUES (?, ?)',
           params: [komisyonId, sId]
         }))
 
         if (sablonQueries.length > 0) {
-          const sablonRes = await window.electron.ipcRenderer.invoke('db:transaction', sablonQueries)
+          const sablonRes = await window.electron.ipcRenderer.invoke(
+            'db:transaction',
+            sablonQueries
+          )
           if (!sablonRes.success) throw new Error(sablonRes.error)
         }
 
         return komisyonId
-
       } else {
         const res = await window.electron.ipcRenderer.invoke('db:transaction', [
           {
@@ -164,11 +170,11 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
             params: [ad]
           }
         ])
-        
+
         if (!res.success) throw new Error(res.error)
         const newKomisyonId = res.lastInsertRowid
 
-        const uyeQueries = uyeler.map(u => ({
+        const uyeQueries = uyeler.map((u) => ({
           sql: 'INSERT INTO TANIM_KomisyonUye (komisyon_id, gorev_id, asil_mi) VALUES (?, ?, ?)',
           params: [newKomisyonId, u.gorevId, u.asilMi]
         }))
@@ -178,13 +184,16 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
           if (!uyeRes.success) throw new Error(uyeRes.error)
         }
 
-        const sablonQueries = seciliSablonlar.map(sId => ({
+        const sablonQueries = seciliSablonlar.map((sId) => ({
           sql: 'INSERT INTO TANIM_Komisyon_Sablon (komisyon_id, sablon_id) VALUES (?, ?)',
           params: [newKomisyonId, sId]
         }))
 
         if (sablonQueries.length > 0) {
-          const sablonRes = await window.electron.ipcRenderer.invoke('db:transaction', sablonQueries)
+          const sablonRes = await window.electron.ipcRenderer.invoke(
+            'db:transaction',
+            sablonQueries
+          )
           if (!sablonRes.success) throw new Error(sablonRes.error)
         }
 
@@ -217,84 +226,113 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
         )}
 
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Komisyon Adı</label>
+          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            Komisyon Adı
+          </label>
           <Input
             type="text"
             placeholder="Örn: Bilişim Sistemleri Fiyat Araştırma Komisyonu"
             value={ad}
-            onChange={e => setAd(e.target.value)}
+            onChange={(e) => setAd(e.target.value)}
             className="w-full"
           />
         </div>
 
         <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">Komisyon Rolleri / Kadroları</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Bu komisyonda bulunması gereken görev/rolleri belirleyin. Personel atamaları daha sonra yapılacaktır.</p>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">
+                Komisyon Rolleri / Kadroları
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Bu komisyonda bulunması gereken görev/rolleri belirleyin. Personel atamaları daha
+                sonra yapılacaktır.
+              </p>
+            </div>
+            <Button
+              onClick={handleAddUye}
+              variant="outline"
+              className="gap-2 text-sm border-dashed"
+            >
+              <Plus className="w-4 h-4" /> Rol Ekle
+            </Button>
+          </div>
+
+          <div className="space-y-3">
+            {uyeler.length === 0 ? (
+              <div className="text-center py-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800 border-dashed">
+                <p className="text-sm text-slate-500">
+                  Henüz rol/kadro eklenmedi. "Rol Ekle" butonunu kullanarak komisyon yapısını
+                  oluşturabilirsiniz.
+                </p>
               </div>
-              <Button onClick={handleAddUye} variant="outline" className="gap-2 text-sm border-dashed">
-                <Plus className="w-4 h-4" /> Rol Ekle
-              </Button>
-            </div>
-
-            <div className="space-y-3">
-              {uyeler.length === 0 ? (
-                <div className="text-center py-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800 border-dashed">
-                  <p className="text-sm text-slate-500">Henüz rol/kadro eklenmedi. "Rol Ekle" butonunu kullanarak komisyon yapısını oluşturabilirsiniz.</p>
-                </div>
-              ) : (
-                uyeler.map((uye, index) => (
-                  <div key={uye.id} className="flex flex-col sm:flex-row items-center gap-3 p-3 bg-slate-50/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-500 text-xs font-bold shrink-0">
-                      {index + 1}
-                    </div>
-                    
-                    <select
-                      title="Görev Seç"
-                      value={uye.gorevId}
-                      onChange={e => handleUyeChange(uye.id, 'gorevId', e.target.value ? Number(e.target.value) : '')}
-                      className="flex-1 min-w-[150px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none dark:text-white"
-                    >
-                      <option value="">-- Görev Seç --</option>
-                      {gorevler.map((g: any) => (
-                        <option key={g.id} value={g.id}>{g.ad}</option>
-                      ))}
-                    </select>
-
-                    <select
-                      title="Durum"
-                      value={uye.asilMi}
-                      onChange={e => handleUyeChange(uye.id, 'asilMi', Number(e.target.value))}
-                      className="w-32 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none dark:text-white"
-                    >
-                      <option value={1}>Asil Üye</option>
-                      <option value={0}>Yedek Üye</option>
-                    </select>
-
-                    <button 
-                      onClick={() => handleRemoveUye(uye.id)}
-                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors shrink-0"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+            ) : (
+              uyeler.map((uye, index) => (
+                <div
+                  key={uye.id}
+                  className="flex flex-col sm:flex-row items-center gap-3 p-3 bg-slate-50/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl"
+                >
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-500 text-xs font-bold shrink-0">
+                    {index + 1}
                   </div>
-                ))
-              )}
-            </div>
+
+                  <select
+                    title="Görev Seç"
+                    value={uye.gorevId}
+                    onChange={(e) =>
+                      handleUyeChange(
+                        uye.id,
+                        'gorevId',
+                        e.target.value ? Number(e.target.value) : ''
+                      )
+                    }
+                    className="flex-1 min-w-[150px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none dark:text-white"
+                  >
+                    <option value="">-- Görev Seç --</option>
+                    {gorevler.map((g: any) => (
+                      <option key={g.id} value={g.id}>
+                        {g.ad}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    title="Durum"
+                    value={uye.asilMi}
+                    onChange={(e) => handleUyeChange(uye.id, 'asilMi', Number(e.target.value))}
+                    className="w-32 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none dark:text-white"
+                  >
+                    <option value={1}>Asil Üye</option>
+                    <option value={0}>Yedek Üye</option>
+                  </select>
+
+                  <button
+                    onClick={() => handleRemoveUye(uye.id)}
+                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors shrink-0"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
         </div>
 
         {/* Şablonlar */}
         <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
           <div className="mb-4">
-            <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">Belge ve Şablonlar</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Bu komisyonun üretebileceği belgeleri (ör: Onay/Olur, Karar Tutanağı) seçin.</p>
+            <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">
+              Belge ve Şablonlar
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Bu komisyonun üretebileceği belgeleri (ör: Onay/Olur, Karar Tutanağı) seçin.
+            </p>
           </div>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-48 overflow-y-auto custom-scrollbar pr-2">
             {tumSablonlar.map((sablon: any) => (
-              <label 
-                key={sablon.id} 
+              <label
+                key={sablon.id}
                 className={`flex items-start gap-3 p-3 border rounded-xl cursor-pointer transition-colors ${
                   seciliSablonlar.includes(sablon.id)
                     ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20 dark:border-blue-500/50'
@@ -310,8 +348,12 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
                   />
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-slate-800 dark:text-slate-200">{sablon.ad}</div>
-                  <div className="text-xs text-slate-500 line-clamp-1">{sablon.aciklama || 'Şablon'}</div>
+                  <div className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                    {sablon.ad}
+                  </div>
+                  <div className="text-xs text-slate-500 line-clamp-1">
+                    {sablon.aciklama || 'Şablon'}
+                  </div>
                 </div>
               </label>
             ))}
@@ -328,12 +370,12 @@ export function KomisyonOlusturModal({ isOpen, onClose, komisyonId }: KomisyonOl
           <Button variant="outline" onClick={onClose} disabled={saveMutation.isPending}>
             İptal
           </Button>
-          <Button 
-            className="bg-blue-600 hover:bg-blue-700 text-white" 
+          <Button
+            className="bg-blue-600 hover:bg-blue-700 text-white"
             onClick={() => saveMutation.mutate()}
             disabled={saveMutation.isPending}
           >
-            {saveMutation.isPending ? 'Kaydediliyor...' : (komisyonId ? 'Güncelle' : 'Kaydet')}
+            {saveMutation.isPending ? 'Kaydediliyor...' : komisyonId ? 'Güncelle' : 'Kaydet'}
           </Button>
         </div>
       </div>

@@ -40,8 +40,18 @@ export function useAmbarHooks() {
   const addAmbarMutation = useMutation({
     mutationFn: async (ambar: AmbarInput) => {
       const cols = [
-        'ambar_adi', 'aciklama', 'adres', 'semt', 'posta_kodu', 'sehir',
-        'telefon', 'faks', 'web_adresi', 'email', 'tasinir_kodu', 'tasinir_adi'
+        'ambar_adi',
+        'aciklama',
+        'adres',
+        'semt',
+        'posta_kodu',
+        'sehir',
+        'telefon',
+        'faks',
+        'web_adresi',
+        'email',
+        'tasinir_kodu',
+        'tasinir_adi'
       ]
       const placeholders = cols.map(() => '?').join(', ')
       const values = cols.map((col) => (ambar as any)[col] || '')

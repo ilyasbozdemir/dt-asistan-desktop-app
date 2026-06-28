@@ -37,7 +37,9 @@ function normalizeMeta(raw: any): WorkspaceMeta {
   return {
     dtal_version: raw.dtal_version || raw.dtm_version || '1.0',
     app_version: raw.app_version || raw.version || '1.0.0',
-    created_at: raw.created_at || (raw.createdAt ? raw.createdAt.split('T')[0] : new Date().toISOString().split('T')[0]),
+    created_at:
+      raw.created_at ||
+      (raw.createdAt ? raw.createdAt.split('T')[0] : new Date().toISOString().split('T')[0]),
     institution: raw.institution || raw.institutionName || 'Bilinmeyen Kurum',
     schema_version: parseInt(raw.schema_version || raw.schemaVersion || '1', 10) || 1,
     platform: raw.platform || process.platform,
@@ -68,7 +70,9 @@ function ensureSchemaIntegrity(db: Database.Database): void {
           })
           .join(', ')
         const constraintsSql = table.constraints ? ', ' + table.constraints.join(', ') : ''
-        db.exec('CREATE TABLE IF NOT EXISTS ' + table.name + ' (' + columnsSql + constraintsSql + ');')
+        db.exec(
+          'CREATE TABLE IF NOT EXISTS ' + table.name + ' (' + columnsSql + constraintsSql + ');'
+        )
       } else {
         const existingColumns = new Set(tableInfo.map((c) => c.name))
         for (const col of table.columns as any[]) {
@@ -166,7 +170,7 @@ function seedTemplates(db: Database.Database): void {
     const templatesDirProd = path.join(process.resourcesPath, 'templates')
     const targetDir = fs.existsSync(templatesDirProd) ? templatesDirProd : templatesDirDev
 
-    if (!fs.existsSync(targetDir)) return;
+    if (!fs.existsSync(targetDir)) return
 
     // Her şablonun navigasyon route'u — dosya_adi (uzantsız) → app route
     const ROUTE_BY_DOSYA_ADI: Record<string, string> = {
@@ -195,7 +199,7 @@ function seedTemplates(db: Database.Database): void {
       'harcama-talimati': '/dosya/harcama/talimat',
       'harcama-pusulasi': '/dosya/harcama/pusula',
       // Klasör ve Kapaklar
-      'ihale-kapagi': '/dosya/cikti-merkezi',
+      'ihale-kapagi': '/dosya/cikti-merkezi'
     }
 
     const findHtmlFiles = (dir: string): string[] => {
@@ -217,13 +221,13 @@ function seedTemplates(db: Database.Database): void {
     for (const filePath of htmlFiles) {
       const file = path.basename(filePath)
       const content = fs.readFileSync(filePath, 'utf-8')
-      
+
       let dosya_adi = file
       let ad = file.replace('.html', '').replace(/-/g, ' ').toUpperCase()
-      
+
       let kategori = 'Genel Şablonlar'
       const parentDir = path.basename(path.dirname(filePath))
-      
+
       if (file === 'index.html' && parentDir && parentDir !== 'templates') {
         dosya_adi = `${parentDir}.html`
         ad = TEMPLATE_NAMES[parentDir] || parentDir.replace(/-/g, ' ').toUpperCase()
@@ -234,7 +238,9 @@ function seedTemplates(db: Database.Database): void {
         const pathParts = relPath.split(path.sep)
         if (pathParts.length > 1) {
           const topLevelFolder = pathParts[0]
-          kategori = TEMPLATE_CATEGORIES[topLevelFolder] || topLevelFolder.charAt(0).toUpperCase() + topLevelFolder.slice(1).replace(/-/g, ' ')
+          kategori =
+            TEMPLATE_CATEGORIES[topLevelFolder] ||
+            topLevelFolder.charAt(0).toUpperCase() + topLevelFolder.slice(1).replace(/-/g, ' ')
         }
       }
 
@@ -245,46 +251,80 @@ function seedTemplates(db: Database.Database): void {
       }
 
       const relativeHtmlPath = path.relative(targetDir, filePath)
-      const relativeJsonPath = fs.existsSync(jsonFilePath) ? path.relative(targetDir, jsonFilePath) : null
+      const relativeJsonPath = fs.existsSync(jsonFilePath)
+        ? path.relative(targetDir, jsonFilePath)
+        : null
 
       const dosya_adi_no_ext = dosya_adi.replace(/\.html$/, '')
       const route_path = ROUTE_BY_DOSYA_ADI[dosya_adi_no_ext] || null
 
-      const existing = db.prepare('SELECT * FROM TANIM_Sablon WHERE dosya_adi = ?').get(dosya_adi) as any
+      const existing = db
+        .prepare('SELECT * FROM TANIM_Sablon WHERE dosya_adi = ?')
+        .get(dosya_adi) as any
       if (!existing) {
-        db.prepare(`
+        db.prepare(
+          `
           INSERT INTO TANIM_Sablon (ad, dosya_adi, dosya_turu, icerik, aciklama, aktif_mi, kategori, test_verisi, html_yolu, json_yolu, route_path)
           VALUES (?, ?, 'html', ?, ?, 1, ?, ?, ?, ?, ?)
-        `).run(ad, dosya_adi, content, 'Sistem varsayılan şablonu', kategori, testJsonContent, relativeHtmlPath, relativeJsonPath, route_path)
+        `
+        ).run(
+          ad,
+          dosya_adi,
+          content,
+          'Sistem varsayılan şablonu',
+          kategori,
+          testJsonContent,
+          relativeHtmlPath,
+          relativeJsonPath,
+          route_path
+        )
         console.log(`[Seed] Seeded default template: ${dosya_adi} in category: ${kategori}`)
       } else {
         if (existing.versiyon === 1) {
-          db.prepare(`
+          db.prepare(
+            `
             UPDATE TANIM_Sablon 
             SET ad = ?, kategori = ?, icerik = ?, test_verisi = ?, html_yolu = ?, json_yolu = ?, route_path = COALESCE(route_path, ?)
             WHERE id = ?
-          `).run(ad, kategori, content, testJsonContent, relativeHtmlPath, relativeJsonPath, route_path, existing.id)
+          `
+          ).run(
+            ad,
+            kategori,
+            content,
+            testJsonContent,
+            relativeHtmlPath,
+            relativeJsonPath,
+            route_path,
+            existing.id
+          )
           console.log(`[Seed] Updated default template: ${dosya_adi}`)
         } else {
-          db.prepare(`
+          db.prepare(
+            `
             UPDATE TANIM_Sablon 
             SET html_yolu = COALESCE(html_yolu, ?), json_yolu = COALESCE(json_yolu, ?), route_path = COALESCE(route_path, ?)
             WHERE id = ?
-          `).run(relativeHtmlPath, relativeJsonPath, route_path, existing.id)
+          `
+          ).run(relativeHtmlPath, relativeJsonPath, route_path, existing.id)
         }
       }
 
       // Ayrıca bu şablonun bir sürece (route_path) bağlı olduğu belirtilmişse, bunu varsayılan ayar olarak settings tablosuna ekle.
       if (route_path) {
-        let sablonId = existing ? existing.id : null;
+        let sablonId = existing ? existing.id : null
         if (!sablonId) {
-          const newRow = db.prepare('SELECT id FROM TANIM_Sablon WHERE dosya_adi = ?').get(dosya_adi) as any;
-          if (newRow) sablonId = newRow.id;
+          const newRow = db
+            .prepare('SELECT id FROM TANIM_Sablon WHERE dosya_adi = ?')
+            .get(dosya_adi) as any
+          if (newRow) sablonId = newRow.id
         }
         if (sablonId) {
-          const mappingKey = `MAPPING_${route_path}_SABLON_ID`;
+          const mappingKey = `MAPPING_${route_path}_SABLON_ID`
           // Sadece daha önce ayarlanmamışsa ekle (kullanıcı değiştirdiyse ezme)
-          db.prepare(`INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)`).run(mappingKey, sablonId.toString());
+          db.prepare(`INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)`).run(
+            mappingKey,
+            sablonId.toString()
+          )
         }
       }
     }
@@ -321,17 +361,23 @@ export class DtmWorkspace {
             // Ölü kilit dosyası tespit edildi, sil ve devam et
             fs.unlinkSync(lockPath)
           } else {
-            throw new Error('LOCKED|Bu dosya şu anda başka bir pencerede veya programda açık durumda. Çakışmayı önlemek için önce diğer taraftan kapatmalısınız.')
+            throw new Error(
+              'LOCKED|Bu dosya şu anda başka bir pencerede veya programda açık durumda. Çakışmayı önlemek için önce diğer taraftan kapatmalısınız.'
+            )
           }
         } else if (isNaN(pid)) {
-          throw new Error('LOCKED|Bu dosya şu anda başka bir pencerede veya programda açık durumda. Çakışmayı önlemek için önce diğer taraftan kapatmalısınız.')
+          throw new Error(
+            'LOCKED|Bu dosya şu anda başka bir pencerede veya programda açık durumda. Çakışmayı önlemek için önce diğer taraftan kapatmalısınız.'
+          )
         }
       } catch (err: any) {
         if (err.message.startsWith('LOCKED|')) throw err
-        throw new Error('LOCKED|Bu dosya şu anda başka bir pencerede veya programda açık durumda. Çakışmayı önlemek için önce diğer taraftan kapatmalısınız.')
+        throw new Error(
+          'LOCKED|Bu dosya şu anda başka bir pencerede veya programda açık durumda. Çakışmayı önlemek için önce diğer taraftan kapatmalısınız.'
+        )
       }
     }
-    
+
     try {
       fs.writeFileSync(lockPath, process.pid.toString(), { encoding: 'utf-8' })
     } catch (err: any) {
@@ -342,8 +388,8 @@ export class DtmWorkspace {
     this.ensureTempDir()
 
     const zipBuffer = fs.readFileSync(filePath)
-    
-    // Sağ Tık -> Yeni ile oluşturulmuş 0 baytlık bir dosya ise, 
+
+    // Sağ Tık -> Yeni ile oluşturulmuş 0 baytlık bir dosya ise,
     // yeni bir çalışma alanı olarak başlat (boş zip hatası almamak için)
     if (zipBuffer.length === 0) {
       if (fs.existsSync(lockPath)) {
@@ -365,12 +411,14 @@ export class DtmWorkspace {
     }
 
     const meta = normalizeMeta(rawMeta)
-    
+
     // Hash Validation
     if (meta.integrity_hash) {
       const expectedHash = calculateIntegrityHash(meta)
       if (meta.integrity_hash !== expectedHash) {
-        meta.warnings?.push("UYARI: meta.json değerleri bozulmuş veya dışarıdan değiştirilmiş olabilir (Hash uyuşmazlığı).")
+        meta.warnings?.push(
+          'UYARI: meta.json değerleri bozulmuş veya dışarıdan değiştirilmiş olabilir (Hash uyuşmazlığı).'
+        )
       }
     }
 
@@ -380,7 +428,9 @@ export class DtmWorkspace {
     }
 
     if (meta.schema_version > CURRENT_SCHEMA_VERSION) {
-      meta.warnings?.push(`UYARI: Bu dosya (v${meta.schema_version}) daha yeni bir uygulama sürümü gerektiriyor olabilir. Uyumsuzluk yaşamamak için lütfen uygulamanızı güncelleyin.`)
+      meta.warnings?.push(
+        `UYARI: Bu dosya (v${meta.schema_version}) daha yeni bir uygulama sürümü gerektiriyor olabilir. Uyumsuzluk yaşamamak için lütfen uygulamanızı güncelleyin.`
+      )
     }
 
     const fromVersion = meta.schema_version || 1
@@ -389,8 +439,8 @@ export class DtmWorkspace {
       if (!allowMigration) {
         const pendingUpdates = getPendingMigrations(fromVersion)
         if (pendingUpdates.length > 0) {
-           const payload = JSON.stringify({ requiresMigration: true, pendingUpdates })
-           throw new Error(`MIGRATION_REQUIRED|${payload}`)
+          const payload = JSON.stringify({ requiresMigration: true, pendingUpdates })
+          throw new Error(`MIGRATION_REQUIRED|${payload}`)
         }
       }
 
@@ -407,7 +457,7 @@ export class DtmWorkspace {
 
         runMigrations(this.db, fromVersion)
         ensureSchemaIntegrity(this.db)
-        
+
         meta.schema_version = CURRENT_SCHEMA_VERSION
         meta.app_version = app.getVersion()
         meta.platform = process.platform
@@ -415,17 +465,22 @@ export class DtmWorkspace {
         meta.updated_at = new Date().toISOString()
         meta.integrity_hash = calculateIntegrityHash(meta)
         fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2))
-        
+
         this.saveWorkspace()
 
         if (fs.existsSync(backupPath)) {
           fs.unlinkSync(backupPath)
         }
       } catch (migrationError: any) {
-        console.error('Veritabanı güncellemesi başarısız oldu, değişiklikler geri alınıyor:', migrationError)
-        
+        console.error(
+          'Veritabanı güncellemesi başarısız oldu, değişiklikler geri alınıyor:',
+          migrationError
+        )
+
         if (this.db) {
-          try { this.db.close() } catch (e) {}
+          try {
+            this.db.close()
+          } catch (e) {}
           this.db = null
         }
 
@@ -439,7 +494,9 @@ export class DtmWorkspace {
         }
 
         this.ensureTempDir()
-        throw new Error(`Dosya güncellenirken kritik bir hata oluştu ve işlem iptal edildi. Veri kaybı olmaması için dosya eski haline döndürüldü.\nHata Detayı: ${migrationError.message}`)
+        throw new Error(
+          `Dosya güncellenirken kritik bir hata oluştu ve işlem iptal edildi. Veri kaybı olmaması için dosya eski haline döndürüldü.\nHata Detayı: ${migrationError.message}`
+        )
       }
     } else {
       const dbPath = path.join(this.tempDir, 'database.sqlite')
@@ -454,13 +511,17 @@ export class DtmWorkspace {
     // Cross Validation
     if (this.db) {
       try {
-        const row = this.db.prepare("SELECT value FROM settings WHERE key = 'dbSchemaVersion'").get() as {value: string} | undefined
+        const row = this.db
+          .prepare("SELECT value FROM settings WHERE key = 'dbSchemaVersion'")
+          .get() as { value: string } | undefined
         const dbSchemaVer = row && row.value ? parseInt(row.value, 10) : 1
         if (dbSchemaVer !== meta.schema_version) {
-          meta.warnings?.push(`UYARI: meta.json içindeki sürüm (${meta.schema_version}) ile veritabanı sürümü (${dbSchemaVer}) uyuşmuyor. Dosya elle değiştirilmiş olabilir.`)
+          meta.warnings?.push(
+            `UYARI: meta.json içindeki sürüm (${meta.schema_version}) ile veritabanı sürümü (${dbSchemaVer}) uyuşmuyor. Dosya elle değiştirilmiş olabilir.`
+          )
         }
-      } catch(e) {
-         // Silently ignore
+      } catch (e) {
+        // Silently ignore
       }
     }
 
@@ -471,17 +532,18 @@ export class DtmWorkspace {
         buttons: ['Evet, Güncelle', 'Hayır, Eski Uzantıda Bırak'],
         defaultId: 0,
         title: 'Eski Uzantı Tespit Edildi',
-        message: 'Açtığınız dosyanın uzantısı eski formattadır (.dta veya .dtm). Uygulama verimliliği ve uyumluluğu için uzantının yeni .dtal formatına dönüştürülmesi önerilir.\n\nDosya uzantısı güncellensin mi?'
+        message:
+          'Açtığınız dosyanın uzantısı eski formattadır (.dta veya .dtm). Uygulama verimliliği ve uyumluluğu için uzantının yeni .dtal formatına dönüştürülmesi önerilir.\n\nDosya uzantısı güncellensin mi?'
       })
 
       if (response === 0) {
         const ext = path.extname(filePath)
         const newFilePath = filePath.substring(0, filePath.length - ext.length) + '.dtal'
-        
+
         const newLockPath = newFilePath + '.lock'
         try {
           fs.writeFileSync(newLockPath, process.pid.toString(), { encoding: 'utf-8' })
-          
+
           // Asıl dosyayı da yeniden adlandır ki kullanıcı eski dosyayı tekrar açmasın
           if (fs.existsSync(filePath)) {
             fs.renameSync(filePath, newFilePath)
@@ -512,7 +574,7 @@ export class DtmWorkspace {
     if (fs.existsSync(lockPath)) {
       throw new Error('LOCKED|Bu dosya şu anda başka bir pencerede veya programda açık durumda.')
     }
-    
+
     try {
       fs.writeFileSync(lockPath, process.pid.toString(), { encoding: 'utf-8' })
     } catch (err: any) {
@@ -534,7 +596,16 @@ export class DtmWorkspace {
       `)
       const seedTx = this.db.transaction((rows: any[]) => {
         for (const row of rows) {
-          insertStmt.run(row.tam_kod, row.hesap_kodu, row.duzey_1, row.duzey_2, row.duzey_3, row.duzey_4, row.duzey_5, row.aciklama)
+          insertStmt.run(
+            row.tam_kod,
+            row.hesap_kodu,
+            row.duzey_1,
+            row.duzey_2,
+            row.duzey_3,
+            row.duzey_4,
+            row.duzey_5,
+            row.aciklama
+          )
         }
       })
       seedTx(tasinirKodlariSeed)
@@ -554,7 +625,7 @@ export class DtmWorkspace {
       warnings: []
     }
     meta.integrity_hash = calculateIntegrityHash(meta)
-    
+
     const metaPath = path.join(this.tempDir, 'meta.json')
     fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2))
 
@@ -583,7 +654,9 @@ export class DtmWorkspace {
       meta.platform = process.platform
 
       try {
-        const row = this.db.prepare("SELECT value FROM settings WHERE key = 'institutionName'").get() as { value: string } | undefined
+        const row = this.db
+          .prepare("SELECT value FROM settings WHERE key = 'institutionName'")
+          .get() as { value: string } | undefined
         if (row && row.value) {
           meta.institution = row.value
         }
@@ -592,7 +665,9 @@ export class DtmWorkspace {
       }
 
       try {
-        const row = this.db.prepare("SELECT value FROM settings WHERE key = 'dbSchemaVersion'").get() as { value: string } | undefined
+        const row = this.db
+          .prepare("SELECT value FROM settings WHERE key = 'dbSchemaVersion'")
+          .get() as { value: string } | undefined
         if (row && row.value) {
           meta.schema_version = parseInt(row.value, 10) || CURRENT_SCHEMA_VERSION
         }
@@ -619,7 +694,9 @@ export class DtmWorkspace {
     if (this.currentFilePath) {
       const lockPath = this.currentFilePath + '.lock'
       if (fs.existsSync(lockPath)) {
-        try { fs.unlinkSync(lockPath) } catch (e) {}
+        try {
+          fs.unlinkSync(lockPath)
+        } catch (e) {}
       }
     }
 
@@ -690,8 +767,12 @@ export const workspaceManager = {
     if (!activeWorkspace) return null
     try {
       const db = activeWorkspace.getDb()
-      const tables = db.prepare("SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").all() as {name: string, sql: string}[]
-      return tables.map(t => t.sql).join('\n\n')
+      const tables = db
+        .prepare(
+          "SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+        )
+        .all() as { name: string; sql: string }[]
+      return tables.map((t) => t.sql).join('\n\n')
     } catch (e) {
       console.error('Failed to get schema for AI:', e)
       return null
@@ -701,17 +782,17 @@ export const workspaceManager = {
     if (!activeWorkspace) throw new Error('Açık bir çalışma dosyası yok.')
     const tempDir = (activeWorkspace as any).tempDir
     if (!tempDir) throw new Error('Geçici çalışma dizini bulunamadı.')
-    
+
     const attachmentsDir = path.join(tempDir, 'attachments')
     if (!fs.existsSync(attachmentsDir)) {
       fs.mkdirSync(attachmentsDir, { recursive: true })
     }
-    
+
     const fileExt = path.extname(sourcePath)
     const baseName = path.basename(sourcePath, fileExt)
     const safeName = `${baseName}_${Date.now()}${fileExt}`.replace(/[^a-zA-Z0-9_.-]/g, '_')
     const destPath = path.join(attachmentsDir, safeName)
-    
+
     fs.copyFileSync(sourcePath, destPath)
     activeWorkspace.saveWorkspace()
     return { fileName: safeName, relativePath: `attachments/${safeName}` }
@@ -720,7 +801,7 @@ export const workspaceManager = {
     if (!activeWorkspace) throw new Error('Açık bir çalışma dosyası yok.')
     const tempDir = (activeWorkspace as any).tempDir
     if (!tempDir) throw new Error('Geçici çalışma dizini bulunamadı.')
-    
+
     const fullPath = path.join(tempDir, relativePath)
     if (fs.existsSync(fullPath)) {
       const { shell } = require('electron')
@@ -734,6 +815,8 @@ export const workspaceManager = {
 // Ensure lock is cleared if the process exits
 process.on('exit', () => {
   if (activeWorkspace) {
-    try { activeWorkspace.closeWorkspace() } catch (e) {}
+    try {
+      activeWorkspace.closeWorkspace()
+    } catch (e) {}
   }
 })

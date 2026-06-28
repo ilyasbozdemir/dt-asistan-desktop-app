@@ -1,180 +1,216 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <title>Hizmet İşleri Kabul Teklif Belgesi</title>
-  <style>
-    @page {
-      size: A4;
-      margin: 1.5cm;
-    }
-    body {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 11pt;
-      color: #000;
-      line-height: 1.5;
-      margin: 0;
-      padding: 0;
-      background-color: #fff;
-    }
-    .page-container {
-      max-width: 21cm;
-      box-sizing: border-box;
-      margin: 0 auto;
-      padding: 0.5cm;
-    }
-    .main-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-    .main-table td {
-      padding: 5px;
-      vertical-align: middle;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hizmet İşleri Kabul Teklif Belgesi</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 1.5cm;
+      }
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 11pt;
+        color: #000;
+        line-height: 1.5;
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+      }
+      .page-container {
+        max-width: 21cm;
+        box-sizing: border-box;
+        margin: 0 auto;
+        padding: 0.5cm;
+      }
+      .main-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+      .main-table td {
+        padding: 5px;
+        vertical-align: middle;
+      }
 
-    .content-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 30px;
-    }
-    .content-table td {
-      padding: 5px 0;
-      line-height: 1.6;
-    }
+      .content-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 30px;
+      }
+      .content-table td {
+        padding: 5px 0;
+        line-height: 1.6;
+      }
 
-    .commission-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 30px;
-      break-inside: avoid;
-      page-break-inside: avoid;
-    }
-  </style>
-</head>
-<body>
-  <div class="page-container">
-    
-    <!-- TOP CONTROLS -->
-    <table width="100%" style="border-collapse: collapse;">
-      <tbody>
-        <tr align="center">
-          <td height="80" style="vertical-align: middle;">
-            <div style="font-weight: bold; font-size: 13pt; text-transform: uppercase;">HİZMET İŞLERİ KABUL TEKLİF BELGESİ</div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      .commission-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 30px;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <!-- TOP CONTROLS -->
+      <table width="100%" style="border-collapse: collapse">
+        <tbody>
+          <tr align="center">
+            <td height="80" style="vertical-align: middle">
+              <div style="font-weight: bold; font-size: 13pt; text-transform: uppercase">
+                HİZMET İŞLERİ KABUL TEKLİF BELGESİ
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- DETAILS TABLE -->
-    <table class="main-table">
-      <tbody>
-        <tr>
-          <td width="290"><span>İşin Adı</span></td>
-          <td width="5"><strong>:</strong></td>
-          <td><strong>{{dosyaKonusu}}</strong></td>
-        </tr>
-        <tr>
-          <td><span>Yüklenicinin Adı/Ticari Ünvanı</span></td>
-          <td><strong>:</strong></td>
-          <td><strong>{{yukleniciFirma}}</strong></td>
-        </tr>
-        <tr>
-          <td><span>Sözleşme Tarihi</span></td>
-          <td><strong>:</strong></td>
-          <td><strong>{{#sozlesmeTarihi}}{{sozlesmeTarihi}}{{/sozlesmeTarihi}}{{^sozlesmeTarihi}}................{{/sozlesmeTarihi}}</strong></td>
-        </tr>
-        <tr>
-          <td><span>Sözleşme Bedeli</span></td>
-          <td><strong>:</strong></td>
-          <td><strong>{{sozlesmeBedeli}}{{^sozlesmeBedeli}}{{genelToplam}}{{/sozlesmeBedeli}} TL</strong></td>
-        </tr>
-        <tr>
-          <td><span>Sözleşmeye Göre İşin Süresi (Takvim Günü)</span></td>
-          <td><strong>:</strong></td>
-          <td><strong>{{sozlesmeSuresi}}{{^sozlesmeSuresi}}10{{/sozlesmeSuresi}}</strong></td>
-        </tr>
-        <tr>
-          <td><span>Sözleşmeye Göre İşin Bitirilmesi Gereken Tarih</span></td>
-          <td><strong>:</strong></td>
-          <td><strong>{{#sozlesmeBitisTarihi}}{{sozlesmeBitisTarihi}}{{/sozlesmeBitisTarihi}}{{^sozlesmeBitisTarihi}}..../..../20....{{/sozlesmeBitisTarihi}}</strong></td>
-        </tr>
-        <tr>
-          <td><span>Varsa Süre Uzatımları</span></td>
-          <td><strong>:</strong></td>
-          <td><strong>{{sureUzatimlari}}{{^sureUzatimlari}}0{{/sureUzatimlari}}</strong></td>
-        </tr>
-        <tr>
-          <td><span>Süre Uzatımı Dahil İşin Bitirilmesi Gereken Tarih</span></td>
-          <td><strong>:</strong></td>
-          <td><strong>{{#sureUzatimliBitisTarihi}}{{sureUzatimliBitisTarihi}}{{/sureUzatimliBitisTarihi}}{{^sureUzatimliBitisTarihi}}..../..../20....{{/sureUzatimliBitisTarihi}}</strong></td>
-        </tr>
-        <tr>
-          <td><span>İşin bitirildiği tarih</span></td>
-          <td><strong>:</strong></td>
-          <td><strong>{{#isinBitirildigiTarih}}{{isinBitirildigiTarih}}{{/isinBitirildigiTarih}}{{^isinBitirildigiTarih}}..../..../20....{{/isinBitirildigiTarih}}</strong></td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- DETAILS TABLE -->
+      <table class="main-table">
+        <tbody>
+          <tr>
+            <td width="290"><span>İşin Adı</span></td>
+            <td width="5"><strong>:</strong></td>
+            <td><strong>{{dosyaKonusu}}</strong></td>
+          </tr>
+          <tr>
+            <td><span>Yüklenicinin Adı/Ticari Ünvanı</span></td>
+            <td><strong>:</strong></td>
+            <td><strong>{{yukleniciFirma}}</strong></td>
+          </tr>
+          <tr>
+            <td><span>Sözleşme Tarihi</span></td>
+            <td><strong>:</strong></td>
+            <td>
+              <strong
+                >{{#sozlesmeTarihi}}{{sozlesmeTarihi}}{{/sozlesmeTarihi}}{{^sozlesmeTarihi}}................{{/sozlesmeTarihi}}</strong
+              >
+            </td>
+          </tr>
+          <tr>
+            <td><span>Sözleşme Bedeli</span></td>
+            <td><strong>:</strong></td>
+            <td>
+              <strong
+                >{{sozlesmeBedeli}}{{^sozlesmeBedeli}}{{genelToplam}}{{/sozlesmeBedeli}} TL</strong
+              >
+            </td>
+          </tr>
+          <tr>
+            <td><span>Sözleşmeye Göre İşin Süresi (Takvim Günü)</span></td>
+            <td><strong>:</strong></td>
+            <td><strong>{{sozlesmeSuresi}}{{^sozlesmeSuresi}}10{{/sozlesmeSuresi}}</strong></td>
+          </tr>
+          <tr>
+            <td><span>Sözleşmeye Göre İşin Bitirilmesi Gereken Tarih</span></td>
+            <td><strong>:</strong></td>
+            <td>
+              <strong
+                >{{#sozlesmeBitisTarihi}}{{sozlesmeBitisTarihi}}{{/sozlesmeBitisTarihi}}{{^sozlesmeBitisTarihi}}..../..../20....{{/sozlesmeBitisTarihi}}</strong
+              >
+            </td>
+          </tr>
+          <tr>
+            <td><span>Varsa Süre Uzatımları</span></td>
+            <td><strong>:</strong></td>
+            <td><strong>{{sureUzatimlari}}{{^sureUzatimlari}}0{{/sureUzatimlari}}</strong></td>
+          </tr>
+          <tr>
+            <td><span>Süre Uzatımı Dahil İşin Bitirilmesi Gereken Tarih</span></td>
+            <td><strong>:</strong></td>
+            <td>
+              <strong
+                >{{#sureUzatimliBitisTarihi}}{{sureUzatimliBitisTarihi}}{{/sureUzatimliBitisTarihi}}{{^sureUzatimliBitisTarihi}}..../..../20....{{/sureUzatimliBitisTarihi}}</strong
+              >
+            </td>
+          </tr>
+          <tr>
+            <td><span>İşin bitirildiği tarih</span></td>
+            <td><strong>:</strong></td>
+            <td>
+              <strong
+                >{{#isinBitirildigiTarih}}{{isinBitirildigiTarih}}{{/isinBitirildigiTarih}}{{^isinBitirildigiTarih}}..../..../20....{{/isinBitirildigiTarih}}</strong
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- PARAGRAPH TABLE -->
-    <table class="content-table">
-      <tbody>
-        <tr>
-          <td style="text-align: justify;">
-            <strong>{{dosyaKonusu}}</strong> işinin bitirildiğine ilişkin yüklenici 
-            <strong>{{yukleniciFirma}}</strong>'ın verdiği 
-            <strong>{{#dilekceTarihi}}{{dilekceTarihi}}{{/dilekceTarihi}}{{^dilekceTarihi}}..../..../20....{{/dilekceTarihi}}</strong> 
-            tarihli dilekçe üzerine <strong>{{baskanAdi}}</strong>'ın talimatı ile, yukarıda yazılı işin ön incelemesi 
-            <strong>{{#onIncelemeTarihi}}{{onIncelemeTarihi}}{{/onIncelemeTarihi}}{{^onIncelemeTarihi}}..../..../20....{{/onIncelemeTarihi}}</strong> 
-            tarihinde tarafımızdan/tarafımdan yapılmış, işin sözleşmesine uygun olarak tamamlandığı ve kabule hazır olduğu tespit edilmiştir.
-            <p>Gereğinin yapılmasını arz ederim/ederiz.</p>
-          </td>
-        </tr>
-        <tr>
-          <td align="right">
-            Tarih: {{dosyaTarihi}}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- PARAGRAPH TABLE -->
+      <table class="content-table">
+        <tbody>
+          <tr>
+            <td style="text-align: justify">
+              <strong>{{dosyaKonusu}}</strong> işinin bitirildiğine ilişkin yüklenici
+              <strong>{{yukleniciFirma}}</strong>'ın verdiği
+              <strong
+                >{{#dilekceTarihi}}{{dilekceTarihi}}{{/dilekceTarihi}}{{^dilekceTarihi}}..../..../20....{{/dilekceTarihi}}</strong
+              >
+              tarihli dilekçe üzerine <strong>{{baskanAdi}}</strong>'ın talimatı ile, yukarıda
+              yazılı işin ön incelemesi
+              <strong
+                >{{#onIncelemeTarihi}}{{onIncelemeTarihi}}{{/onIncelemeTarihi}}{{^onIncelemeTarihi}}..../..../20....{{/onIncelemeTarihi}}</strong
+              >
+              tarihinde tarafımızdan/tarafımdan yapılmış, işin sözleşmesine uygun olarak
+              tamamlandığı ve kabule hazır olduğu tespit edilmiştir.
+              <p>Gereğinin yapılmasını arz ederim/ederiz.</p>
+            </td>
+          </tr>
+          <tr>
+            <td align="right">Tarih: {{dosyaTarihi}}</td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- COMMISSION TABLE -->
-    <table class="commission-table">
-      <tbody>
-        <tr>
-          <td align="center" style="font-weight: bold; padding-bottom: 20px; font-size: 11pt; text-transform: uppercase;">
-            HİZMET İŞLERİ KABUL KOMİSYONU
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <table style="width: 100%; border-collapse: collapse; text-align: center;">
-              <tbody>
-                <tr>
-                  {{#muayeneKomisyonu}}
-                  <td align="center" style="width: 33%; vertical-align: top; padding: 10px; line-height: 1.4;">
-                    <font style="font-weight: bold; text-decoration: underline;">{{gorevi}}</font><br><br>
-                    <span style="font-weight: bold;">{{adSoyad}}</span><br>
-                    <span>{{unvan}}</span>
-                  </td>
-                  {{/muayeneKomisyonu}}
-                  {{^muayeneKomisyonu}}
-                    {{#onaylayanlar}}
-                    <td align="center" style="width: 50%; vertical-align: top; padding: 10px; line-height: 1.4;">
-                      <span style="font-weight: bold;">{{onaylayanPersonelAdi}}</span><br>
+      <!-- COMMISSION TABLE -->
+      <table class="commission-table">
+        <tbody>
+          <tr>
+            <td
+              align="center"
+              style="
+                font-weight: bold;
+                padding-bottom: 20px;
+                font-size: 11pt;
+                text-transform: uppercase;
+              "
+            >
+              HİZMET İŞLERİ KABUL KOMİSYONU
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <table style="width: 100%; border-collapse: collapse; text-align: center">
+                <tbody>
+                  <tr>
+                    {{#muayeneKomisyonu}}
+                    <td
+                      align="center"
+                      style="width: 33%; vertical-align: top; padding: 10px; line-height: 1.4"
+                    >
+                      <font style="font-weight: bold; text-decoration: underline">{{gorevi}}</font
+                      ><br /><br />
+                      <span style="font-weight: bold">{{adSoyad}}</span><br />
+                      <span>{{unvan}}</span>
+                    </td>
+                    {{/muayeneKomisyonu}} {{^muayeneKomisyonu}} {{#onaylayanlar}}
+                    <td
+                      align="center"
+                      style="width: 50%; vertical-align: top; padding: 10px; line-height: 1.4"
+                    >
+                      <span style="font-weight: bold">{{onaylayanPersonelAdi}}</span><br />
                       <span>{{onaylayanPersonelUnvan}}</span>
                     </td>
-                    {{/onaylayanlar}}
-                  {{/muayeneKomisyonu}}
-                </tr>
-              </tbody>
-            </table>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-  </div>
-</body>
+                    {{/onaylayanlar}} {{/muayeneKomisyonu}}
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
 </html>

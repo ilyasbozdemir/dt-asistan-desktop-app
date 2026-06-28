@@ -16,12 +16,22 @@ export const TANIM_Sablon = {
     { name: 'html_yolu', type: 'TEXT', description: 'Html Yolu' },
     { name: 'json_yolu', type: 'TEXT', description: 'Json Yolu' },
     { name: 'route_path', type: 'TEXT', description: 'Route Path' },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
+    {
+      name: 'created_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Created At'
+    },
+    {
+      name: 'updated_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Updated At'
+    }
   ],
   constraints: [
     "CHECK(dosya_turu IN ('xlsx', 'docx', 'html'))",
-    "FOREIGN KEY(parent_id) REFERENCES TANIM_Sablon(id) ON DELETE SET NULL"
+    'FOREIGN KEY(parent_id) REFERENCES TANIM_Sablon(id) ON DELETE SET NULL'
   ],
   initialData: []
 }

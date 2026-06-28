@@ -37,17 +37,17 @@ export function Modal({ isOpen, onClose, title, description, children, className
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200"
         onClick={onClose}
       />
-      
+
       {/* Modal Dialog */}
-      <div 
+      <div
         ref={modalRef}
         className={cn(
-          "relative w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col",
-          "animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-300",
+          'relative w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col',
+          'animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-300',
           className
         )}
       >
@@ -68,9 +68,7 @@ export function Modal({ isOpen, onClose, title, description, children, className
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[70vh] custom-scrollbar">
-          {children}
-        </div>
+        <div className="p-6 overflow-y-auto max-h-[70vh] custom-scrollbar">{children}</div>
       </div>
     </div>
   )

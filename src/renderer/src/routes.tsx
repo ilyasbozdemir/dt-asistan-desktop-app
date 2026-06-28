@@ -116,7 +116,6 @@ const ciktiMerkeziDashboardRoute = createRoute({
   component: CiktiMerkeziScreen
 })
 
-
 const raporlarRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: APP_ROUTES.RAPORLAR,

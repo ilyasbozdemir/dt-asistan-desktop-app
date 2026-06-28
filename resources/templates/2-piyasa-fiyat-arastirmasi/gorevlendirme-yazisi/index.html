@@ -1,80 +1,123 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <style>
-    @page { size: A4; margin: 2cm 1.5cm 2.5cm 1.5cm; 
-      @bottom-right { content: "Sayfa " counter(page) " / " counter(pages); font-size: 8pt; font-family: "Times New Roman", serif; }
-    }
-    body { font-family: "Times New Roman", Times, serif; font-size: 11pt; box-sizing: border-box; line-height: 1.5; }
-    .header { text-align: center; line-height: 1.3; margin-bottom: 20px; text-transform: uppercase; font-weight: bold;}
-    .title { text-align: center; font-weight: bold; text-decoration: underline; margin: 20px 0; font-size: 12pt; }
-    .footer-info { font-size: 8pt; }
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      @page {
+        size: A4;
+        margin: 2cm 1.5cm 2.5cm 1.5cm;
+        @bottom-right {
+          content: 'Sayfa ' counter(page) ' / ' counter(pages);
+          font-size: 8pt;
+          font-family: 'Times New Roman', serif;
+        }
+      }
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 11pt;
+        box-sizing: border-box;
+        line-height: 1.5;
+      }
+      .header {
+        text-align: center;
+        line-height: 1.3;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+      .title {
+        text-align: center;
+        font-weight: bold;
+        text-decoration: underline;
+        margin: 20px 0;
+        font-size: 12pt;
+      }
+      .footer-info {
+        font-size: 8pt;
+      }
 
-    /* ── Paged.js Running Elements ── */
-    .paged-header {
-      position: running(pagedHeader);
-      display: block;
-      width: 100%;
-    }
+      /* ── Paged.js Running Elements ── */
+      .paged-header {
+        position: running(pagedHeader);
+        display: block;
+        width: 100%;
+      }
 
-    .paged-footer {
-      position: running(pagedFooter);
-      display: block;
-      width: 100%;
-    }
+      .paged-footer {
+        position: running(pagedFooter);
+        display: block;
+        width: 100%;
+      }
 
-    .paged-keep-together { break-inside: avoid; }
-    .paged-break-before  { break-before: page; }
-    .paged-break-after   { break-after: page; }
+      .paged-keep-together {
+        break-inside: avoid;
+      }
+      .paged-break-before {
+        break-before: page;
+      }
+      .paged-break-after {
+        break-after: page;
+      }
 
-    /* PAGE RULES — SINGLE SOURCE OF TRUTH */
-    @page {
-      @bottom-left { content: element(pagedFooter); }
-    }
+      /* PAGE RULES — SINGLE SOURCE OF TRUTH */
+      @page {
+        @bottom-left {
+          content: element(pagedFooter);
+        }
+      }
 
-    @page:first {
-      @top-center  { content: element(pagedHeader); }
-      @bottom-left { content: none; }
-    }
-  </style>
-</head>
-<body>
-  <div data-behavior="first-page-only" data-slot="top-center">
-    <div class="header">
-      {{#solLogo}}<img src="{{solLogo}}" alt="Logo" style="width: 60px; position: absolute; left: 0; top: 0;" />{{/solLogo}}
-      T.C.<br><strong>{{antetSatir1}}</strong><br>{{antetSatir2}}<br>{{antetSatir3}}
+      @page:first {
+        @top-center {
+          content: element(pagedHeader);
+        }
+        @bottom-left {
+          content: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div data-behavior="first-page-only" data-slot="top-center">
+      <div class="header">
+        {{#solLogo}}<img
+          src="{{solLogo}}"
+          alt="Logo"
+          style="width: 60px; position: absolute; left: 0; top: 0"
+        />{{/solLogo}} T.C.<br /><strong>{{antetSatir1}}</strong
+        ><br />{{antetSatir2}}<br />{{antetSatir3}}
+      </div>
     </div>
-  </div>
-  {{^kurumIci}}
-  <div data-behavior="every-page" data-slot="bottom-left">
-    <div class="footer-info">İletişim: {{kurumAdres}} | Tel: {{kurumTelefon}}</div>
-  </div>
-  {{/kurumIci}}
+    {{^kurumIci}}
+    <div data-behavior="every-page" data-slot="bottom-left">
+      <div class="footer-info">İletişim: {{kurumAdres}} | Tel: {{kurumTelefon}}</div>
+    </div>
+    {{/kurumIci}}
 
-  <div class="title">GÖREVLENDİRME YAZISI</div>
+    <div class="title">GÖREVLENDİRME YAZISI</div>
 
-  <div style="text-align: justify; margin-bottom: 20px;">
-    <strong>İlgi:</strong> {{dosyaTarihi}} tarihli ve {{evrakSayisi}} sayılı onay belgesi.<br><br>
-    Kurumumuzun ihtiyacı olan <strong>{{dosyaKonusu}}</strong> alımı işi için 4734 sayılı Kamu İhale Kanununun 22. maddesinin (d) bendi uyarınca Doğrudan Temin usulü ile piyasa fiyat araştırması yapmak üzere aşağıda ismi belirtilen personeller görevlendirilmiştir.
-    <br><br>
-    Gereğini rica ederim.
-  </div>
+    <div style="text-align: justify; margin-bottom: 20px">
+      <strong>İlgi:</strong> {{dosyaTarihi}} tarihli ve {{evrakSayisi}} sayılı onay belgesi.<br /><br />
+      Kurumumuzun ihtiyacı olan <strong>{{dosyaKonusu}}</strong> alımı işi için 4734 sayılı Kamu
+      İhale Kanununun 22. maddesinin (d) bendi uyarınca Doğrudan Temin usulü ile piyasa fiyat
+      araştırması yapmak üzere aşağıda ismi belirtilen personeller görevlendirilmiştir. <br /><br />
+      Gereğini rica ederim.
+    </div>
 
-  <div style="text-align:right; margin-bottom: 40px;">
-    {{onaylayanPersonelAdi}}<br>{{onaylayanPersonelUnvan}}<br>Harcama Yetkilisi
-  </div>
+    <div style="text-align: right; margin-bottom: 40px">
+      {{onaylayanPersonelAdi}}<br />{{onaylayanPersonelUnvan}}<br />Harcama Yetkilisi
+    </div>
 
-  <div style="font-weight: bold; margin-bottom: 10px;">Görevli Personeller:</div>
-  <table style="width: 100%; border-collapse: collapse;">
-    {{#gorevliler}}
-    <tr>
-      <td style="padding: 5px 0;">1. {{adi}} ({{unvani}})</td>
-    </tr>
-    {{/gorevliler}}
-    {{^gorevliler}}
-    <tr><td style="padding: 5px 0;">Personel bilgisi girilmemiş.</td></tr>
-    {{/gorevliler}}
-  </table>
-</body>
+    <div style="font-weight: bold; margin-bottom: 10px">Görevli Personeller:</div>
+    <table style="width: 100%; border-collapse: collapse">
+      {{#gorevliler}}
+      <tr>
+        <td style="padding: 5px 0">1. {{adi}} ({{unvani}})</td>
+      </tr>
+      {{/gorevliler}} {{^gorevliler}}
+      <tr>
+        <td style="padding: 5px 0">Personel bilgisi girilmemiş.</td>
+      </tr>
+      {{/gorevliler}}
+    </table>
+  </body>
 </html>

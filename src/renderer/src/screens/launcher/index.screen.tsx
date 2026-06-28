@@ -34,7 +34,10 @@ export default function LauncherScreen(): React.ReactNode {
 
   // Migration states
   const [showMigrationModal, setShowMigrationModal] = useState(false)
-  const [migrationData, setMigrationData] = useState<{ filePath: string; pendingUpdates: any[] } | null>(null)
+  const [migrationData, setMigrationData] = useState<{
+    filePath: string
+    pendingUpdates: any[]
+  } | null>(null)
 
   const [institutionName, setInstitutionName] = useState('')
   const [username, setUsername] = useState('admin')
@@ -47,9 +50,12 @@ export default function LauncherScreen(): React.ReactNode {
 
   React.useEffect(() => {
     // Fetch recent files on mount
-    window.electron?.ipcRenderer.invoke('app:get-recent-files').then(files => {
-      if (files) setRecentFiles(files)
-    }).catch(console.error)
+    window.electron?.ipcRenderer
+      .invoke('app:get-recent-files')
+      .then((files) => {
+        if (files) setRecentFiles(files)
+      })
+      .catch(console.error)
   }, [])
 
   const handleCreateNewFile = async (): Promise<void> => {
@@ -102,7 +108,7 @@ export default function LauncherScreen(): React.ReactNode {
       const res = await window.electron?.ipcRenderer.invoke('dialog:showOpenDialog')
       if (!res.canceled && res.filePath) {
         const result = await openWorkspace(res.filePath, false)
-        
+
         if (result.requiresMigration) {
           setMigrationData({ filePath: res.filePath, pendingUpdates: result.pendingUpdates || [] })
           setShowMigrationModal(true)
@@ -140,7 +146,9 @@ export default function LauncherScreen(): React.ReactNode {
 
   const handleRemoveRecent = async (filePath: string, e: React.MouseEvent): Promise<void> => {
     e.stopPropagation()
-    const confirmDelete = window.confirm('Bu dosyayı son açılanlar listesinden kaldırmak istediğinize emin misiniz?')
+    const confirmDelete = window.confirm(
+      'Bu dosyayı son açılanlar listesinden kaldırmak istediğinize emin misiniz?'
+    )
     if (!confirmDelete) return
 
     try {
@@ -172,15 +180,12 @@ export default function LauncherScreen(): React.ReactNode {
     }
   }
 
-
   const handleMinimize = (): void => window.electron?.ipcRenderer.send('window-minimize')
   const handleMaximize = (): void => window.electron?.ipcRenderer.send('window-maximize')
   const handleClose = (): void => window.electron?.ipcRenderer.send('window-close')
 
   return (
-    <div
-      className="flex items-center justify-center h-screen w-full bg-slate-50 dark:bg-slate-950 p-6 relative transition-colors duration-300"
-    >
+    <div className="flex items-center justify-center h-screen w-full bg-slate-50 dark:bg-slate-950 p-6 relative transition-colors duration-300">
       {/* Draggable Header with Window Controls & Theme Switcher */}
       <div
         className="absolute top-0 left-0 w-full h-12 flex justify-between items-center px-4 bg-transparent z-50 select-none"
@@ -252,79 +257,83 @@ export default function LauncherScreen(): React.ReactNode {
           </div>
 
           <div className="p-8 space-y-4 flex-1 flex flex-col justify-center">
-          <button
-            onClick={handleCreateNewFile}
-            className="w-full flex items-center gap-4 p-4 rounded-xl border border-blue-200 dark:border-blue-900/50 bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-100/50 dark:hover:bg-blue-900/20 text-blue-700 dark:text-blue-300 transition-all group"
-          >
-            <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform shadow-md shadow-blue-600/20">
-              <PlusCircle className="w-5 h-5" />
-            </div>
-            <div className="text-left">
-              <h3 className="font-bold text-base">Yeni Kurum Oluştur</h3>
-              <p className="text-xs opacity-80 mt-0.5">Yeni yıl veya kurum için sıfırdan başla</p>
-            </div>
-          </button>
+            <button
+              onClick={handleCreateNewFile}
+              className="w-full flex items-center gap-4 p-4 rounded-xl border border-blue-200 dark:border-blue-900/50 bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-100/50 dark:hover:bg-blue-900/20 text-blue-700 dark:text-blue-300 transition-all group"
+            >
+              <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform shadow-md shadow-blue-600/20">
+                <PlusCircle className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <h3 className="font-bold text-base">Yeni Kurum Oluştur</h3>
+                <p className="text-xs opacity-80 mt-0.5">Yeni yıl veya kurum için sıfırdan başla</p>
+              </div>
+            </button>
 
-          <button
-            onClick={handleOpenFile}
-            className="w-full flex items-center gap-4 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-all group"
-          >
-            <div className="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 shrink-0 group-hover:scale-105 transition-transform">
-              <FolderOpen className="w-5 h-5" />
-            </div>
-            <div className="text-left">
-              <h3 className="font-bold text-base">Mevcut Kurumu Aç</h3>
-              <p className="text-xs opacity-80 mt-0.5">Önceden oluşturulmuş .dtal dosyasını yükle</p>
-            </div>
-          </button>
+            <button
+              onClick={handleOpenFile}
+              className="w-full flex items-center gap-4 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-all group"
+            >
+              <div className="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 shrink-0 group-hover:scale-105 transition-transform">
+                <FolderOpen className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <h3 className="font-bold text-base">Mevcut Kurumu Aç</h3>
+                <p className="text-xs opacity-80 mt-0.5">
+                  Önceden oluşturulmuş .dtal dosyasını yükle
+                </p>
+              </div>
+            </button>
           </div>
         </div>
 
         <div className="w-80 border-l border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 p-6 flex flex-col">
-            <div className="flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
-              <Clock className="w-4 h-4" />
-              <span>Son Açılanlar</span>
-            </div>
-            <div className="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
-              {recentFiles.map((file) => (
-                <div
-                  key={file.id}
-                  onClick={() => handleOpenRecent(file.path)}
-                  className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all group text-left cursor-pointer"
-                >
-                  <div className="flex items-center gap-3 overflow-hidden">
-                    <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
-                      <FolderOpen className="w-4 h-4" />
-                    </div>
-                    <div className="truncate">
-                      <h4 className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">
-                        {file.name}
-                      </h4>
-                      <p className="text-xs text-slate-400 dark:text-slate-500 truncate" dir="rtl">
-                        {file.path}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <button
-                      onClick={(e) => handleRemoveRecent(file.path, e)}
-                      className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
-                      title="Listeden Kaldır"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                    <ChevronRight className="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-slate-400 dark:group-hover:text-slate-400 opacity-0 group-hover:opacity-100 transition-all shrink-0" />
-                  </div>
-                </div>
-              ))}
-              {recentFiles.length === 0 && (
-                <div className="flex flex-col items-center justify-center h-32 text-center">
-                  <FolderOpen className="w-8 h-8 text-slate-300 dark:text-slate-700 mb-2" />
-                  <p className="text-xs text-slate-400 dark:text-slate-500">Henüz son açılan bir dosya yok.</p>
-                </div>
-              )}
-            </div>
+          <div className="flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4">
+            <Clock className="w-4 h-4" />
+            <span>Son Açılanlar</span>
           </div>
+          <div className="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+            {recentFiles.map((file) => (
+              <div
+                key={file.id}
+                onClick={() => handleOpenRecent(file.path)}
+                className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all group text-left cursor-pointer"
+              >
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+                    <FolderOpen className="w-4 h-4" />
+                  </div>
+                  <div className="truncate">
+                    <h4 className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">
+                      {file.name}
+                    </h4>
+                    <p className="text-xs text-slate-400 dark:text-slate-500 truncate" dir="rtl">
+                      {file.path}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <button
+                    onClick={(e) => handleRemoveRecent(file.path, e)}
+                    className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                    title="Listeden Kaldır"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                  <ChevronRight className="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-slate-400 dark:group-hover:text-slate-400 opacity-0 group-hover:opacity-100 transition-all shrink-0" />
+                </div>
+              </div>
+            ))}
+            {recentFiles.length === 0 && (
+              <div className="flex flex-col items-center justify-center h-32 text-center">
+                <FolderOpen className="w-8 h-8 text-slate-300 dark:text-slate-700 mb-2" />
+                <p className="text-xs text-slate-400 dark:text-slate-500">
+                  Henüz son açılan bir dosya yok.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* CREATE WORKSPACE AUTH MODAL */}
@@ -406,8 +415,8 @@ export default function LauncherScreen(): React.ReactNode {
               <div className="flex gap-2 p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl text-amber-700 dark:text-amber-500 text-[10px] leading-relaxed">
                 <ShieldAlert className="w-5 h-5 shrink-0" />
                 <span>
-                  Bu şifre veritabanına kaydedilir. İnternet olmasa dahi bu kurum
-                  dosyasına girmek için bu şifreyi kullanacaksınız. Lütfen unutmayın.
+                  Bu şifre veritabanına kaydedilir. İnternet olmasa dahi bu kurum dosyasına girmek
+                  için bu şifreyi kullanacaksınız. Lütfen unutmayın.
                 </span>
               </div>
 
@@ -453,14 +462,17 @@ export default function LauncherScreen(): React.ReactNode {
             </div>
 
             <div className="mb-4 text-sm text-slate-600 dark:text-slate-400">
-              Bu dosya eski bir sürümde oluşturulmuş. Açılabilmesi için <strong>{migrationData.pendingUpdates.length}</strong> güncelleme uygulanacak:
+              Bu dosya eski bir sürümde oluşturulmuş. Açılabilmesi için{' '}
+              <strong>{migrationData.pendingUpdates.length}</strong> güncelleme uygulanacak:
             </div>
 
             <div className="max-h-48 overflow-y-auto mb-6 space-y-2 bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-100 dark:border-slate-800 text-xs">
               {migrationData.pendingUpdates.map((update, idx) => (
                 <div key={idx} className="flex gap-2 text-slate-600 dark:text-slate-400">
                   <span className="text-blue-500">•</span>
-                  <span><strong>Schema {update.schema}:</strong> {update.description}</span>
+                  <span>
+                    <strong>Schema {update.schema}:</strong> {update.description}
+                  </span>
                 </div>
               ))}
             </div>

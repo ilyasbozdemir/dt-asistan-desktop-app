@@ -1,54 +1,54 @@
 {
-    "antetSatirlari": [
-        "T.C.",
-        "SAĞLIK BAKANLIĞI",
-        "Ankara İl Sağlık Müdürlüğü",
-        "Destek Hizmetleri Başkanlığı"
-    ],
-    "dosyaNumarasi": {
-        "yili": "2026",
-        "sayisi": "123"
+  "antetSatirlari": [
+    "T.C.",
+    "SAĞLIK BAKANLIĞI",
+    "Ankara İl Sağlık Müdürlüğü",
+    "Destek Hizmetleri Başkanlığı"
+  ],
+  "dosyaNumarasi": {
+    "yili": "2026",
+    "sayisi": "123"
+  },
+  "detsisNo": "",
+  "dosyaKonusu": "Piyasa Fiyat Araştırma Görevlendirmesi",
+  "dosyaTarihi": "20.06.2026",
+  "kurumumuz": "Ankara İl Sağlık Müdürlüğü",
+  "isinAdi": "Tıbbi Cihaz ve Laboratuvar Malzemeleri Alımı",
+  "solLogo": "https://raw.githubusercontent.com/ilyasbozdemir/dt-asistan-desktop-app/refs/heads/main/resources/icon.png",
+  "sagLogo": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Logo_of_100th_years_of_the_Republic_of_T%C3%BCrkiye.svg",
+  "gorevlendirilenler": [
+    {
+      "adSoyad": "Ahmet Yılmaz",
+      "unvan": "Satınalma Memuru",
+      "hasMore": true
     },
-    "detsisNo": "",
-    "dosyaKonusu": "Piyasa Fiyat Araştırma Görevlendirmesi",
-    "dosyaTarihi": "20.06.2026",
-    "kurumumuz": "Ankara İl Sağlık Müdürlüğü",
-    "isinAdi": "Tıbbi Cihaz ve Laboratuvar Malzemeleri Alımı",
-    "solLogo": "https://raw.githubusercontent.com/ilyasbozdemir/dt-asistan-desktop-app/refs/heads/main/resources/icon.png",
-    "sagLogo": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Logo_of_100th_years_of_the_Republic_of_T%C3%BCrkiye.svg",
-    "gorevlendirilenler": [
-        {
-            "adSoyad": "Ahmet Yılmaz",
-            "unvan": "Satınalma Memuru",
-            "hasMore": true
-        },
-        {
-            "adSoyad": "Mehmet Karaca",
-            "unvan": "V.H.K.İ.",
-            "hasMore": false
-        }
-    ],
-    "hazirlayanPersonelAdi": "Ayşe Demir",
-    "hazirlayanPersonelUnvan": "Birim Sorumlusu",
-    "onaylayanPersonelAdi": "Mustafa Şen",
-    "onaylayanPersonelUnvan": "Harcama Yetkilisi",
-    "dagitimListesi": [
-        {
-            "adSoyad": "Ahmet Yılmaz",
-            "unvan": "Satınalma Memuru"
-        },
-        {
-            "adSoyad": "Mehmet Karaca",
-            "unvan": "V.H.K.İ."
-        }
-    ],
-    "kurumAdres": "Mustafa Kemal Mah. Dumlupınar Blv. No:1 Çankaya/Ankara",
-    "kurumTelefon": "0312 555 44 33",
-    "kurumFaks": "0312 555 44 34",
-    "kurumWeb": "www.saglik.gov.tr",
-    "kurumEposta": "ankara.destek@saglik.gov.tr",
-    "kurumKep": "saglikbakanligi@hs01.kep.tr",
-    "ilgiliPersonelAdi": "Ayşe Demir",
-    "ilgiliPersonelUnvan": "V.H.K.İ.",
-    "kurumIci": false
+    {
+      "adSoyad": "Mehmet Karaca",
+      "unvan": "V.H.K.İ.",
+      "hasMore": false
+    }
+  ],
+  "hazirlayanPersonelAdi": "Ayşe Demir",
+  "hazirlayanPersonelUnvan": "Birim Sorumlusu",
+  "onaylayanPersonelAdi": "Mustafa Şen",
+  "onaylayanPersonelUnvan": "Harcama Yetkilisi",
+  "dagitimListesi": [
+    {
+      "adSoyad": "Ahmet Yılmaz",
+      "unvan": "Satınalma Memuru"
+    },
+    {
+      "adSoyad": "Mehmet Karaca",
+      "unvan": "V.H.K.İ."
+    }
+  ],
+  "kurumAdres": "Mustafa Kemal Mah. Dumlupınar Blv. No:1 Çankaya/Ankara",
+  "kurumTelefon": "0312 555 44 33",
+  "kurumFaks": "0312 555 44 34",
+  "kurumWeb": "www.saglik.gov.tr",
+  "kurumEposta": "ankara.destek@saglik.gov.tr",
+  "kurumKep": "saglikbakanligi@hs01.kep.tr",
+  "ilgiliPersonelAdi": "Ayşe Demir",
+  "ilgiliPersonelUnvan": "V.H.K.İ.",
+  "kurumIci": false
 }

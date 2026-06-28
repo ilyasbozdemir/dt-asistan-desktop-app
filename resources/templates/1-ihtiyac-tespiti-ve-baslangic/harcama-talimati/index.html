@@ -1,254 +1,272 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <title>Harcama Talimatı</title>
-  <style>
-    @page {
-      size: A4 portrait;
-      margin: 1.2cm;
-    }
-    body {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 10pt;
-      color: #000;
-      line-height: 1.35;
-      margin: 0;
-      padding: 0;
-      background-color: #fff;
-    }
-    .page-container {
-      max-width: 21cm;
-      margin: 0 auto;
-      padding: 0.2cm;
-      box-sizing: border-box;
-    }
-    .kik-table {
-      width: 100%;
-      border-collapse: collapse;
-      border: 1px solid #000;
-      margin-bottom: 8px;
-    }
-    .kik-table th, .kik-table td {
-      border: 1px solid #000;
-      padding: 6px 8px;
-      vertical-align: top;
-    }
-    .kik-table .header-cell {
-      text-align: center;
-      font-weight: bold;
-      font-size: 13pt;
-      text-transform: uppercase;
-      padding: 8px;
-      background-color: #fff;
-    }
-    .kik-table .label-cell {
-      width: 35%;
-      font-size: 10pt;
-      font-weight: bold;
-      text-transform: uppercase;
-      background-color: #fff;
-    }
-    .kik-table .value-cell {
-      width: 65%;
-      font-size: 10pt;
-    }
-    .kik-table .section-title-cell {
-      text-align: center;
-      font-weight: bold;
-      background-color: #fff;
-      font-size: 10.5pt;
-      text-transform: uppercase;
-      padding: 6px;
-    }
-    .signature-container {
-      width: 100%;
-      border-collapse: collapse;
-      border: 1px solid #000;
-    }
-    .signature-container td {
-      border: 1px solid #000;
-      padding: 10px;
-      width: 50%;
-      vertical-align: top;
-      font-size: 10pt;
-      text-align: center;
-    }
-    .signature-text {
-      text-align: justify;
-      text-indent: 15px;
-      margin-bottom: 25px;
-      line-height: 1.4;
-    }
-    .signature-olur {
-      font-weight: bold;
-      margin-bottom: 25px;
-      text-align: center;
-    }
-    .signature-block-left {
-      margin-top: 40px;
-      text-align: center;
-    }
-    .signature-block-right {
-      margin-top: 40px;
-      text-align: center;
-    }
-    @media print {
+  <head>
+    <meta charset="UTF-8" />
+    <title>Harcama Talimatı</title>
+    <style>
+      @page {
+        size: A4 portrait;
+        margin: 1.2cm;
+      }
       body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 10pt;
+        color: #000;
+        line-height: 1.35;
+        margin: 0;
+        padding: 0;
         background-color: #fff;
       }
       .page-container {
-        padding: 0;
-        margin: 0;
-        max-width: none;
+        max-width: 21cm;
+        margin: 0 auto;
+        padding: 0.2cm;
+        box-sizing: border-box;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="page-container">
-    
-    <table class="kik-table">
-      <!-- Title -->
-      <tr>
-        <th colspan="2" class="header-cell">HARCAMA TALİMATI</th>
-      </tr>
-      
-      <!-- Sayı and Tarih -->
-      <tr>
-        <td style="width: 50%; font-weight: bold;">Sayı: {{evrakSayisi}}</td>
-        <td style="width: 50%; font-weight: bold; text-align: right;">Tarih: {{tarih}}</td>
-      </tr>
-      
-      <!-- Harcama Talebinde Bulunan Birim -->
-      <tr>
-        <td colspan="2" style="font-weight: bold; padding-bottom: 2px;">Harcama Talebinde Bulunan Birim:</td>
-      </tr>
-      <tr>
-        <td colspan="2" style="text-align: center; font-weight: bold; font-size: 11pt; padding: 6px; text-transform: uppercase;">
-          {{idareAdi}}
-        </td>
-      </tr>
-      
-      <!-- YAPILACAK HARCAMANIN -->
-      <tr>
-        <td colspan="2" class="section-title-cell" style="font-size: 10.5pt;">YAPILACAK HARCAMANIN</td>
-      </tr>
-      
-      <!-- Gerekçe ve hukuki dayanak -->
-      <tr>
-        <td class="label-cell">Gerekçesi ve Hukuki Dayanağı</td>
-        <td class="value-cell">{{gerekce}}</td>
-      </tr>
-      
-      <!-- Konusu / Nev'i / Niteliği -->
-      <tr>
-        <td class="label-cell">Konusu / Nev'i / Niteliği</td>
-        <td class="value-cell" style="font-weight: bold;">{{isAdi}}</td>
-      </tr>
-      
-      <!-- Miktarı -->
-      <tr>
-        <td class="label-cell">Miktarı</td>
-        <td class="value-cell">{{miktar}}</td>
-      </tr>
-      
-      <!-- Gerçekleştirme Süresi -->
-      <tr>
-        <td class="label-cell">Gerçekleştirme Süresi</td>
-        <td class="value-cell">{{sure}}</td>
-      </tr>
-      
-      <!-- Gerçekleştirme Usulü -->
-      <tr>
-        <td class="label-cell">Gerçekleştirme Usulü</td>
-        <td class="value-cell">{{teminSekli}}</td>
-      </tr>
-      
-      <!-- Tutarı veya yaklaşık bedeli -->
-      <tr>
-        <td class="label-cell">Tutarı veya Yaklaşık Bedeli</td>
-        <td class="value-cell">{{yaklasikMaliyet}} ₺</td>
-      </tr>
-      
-      <!-- Kullanılabilir ödenek tutarı -->
-      <tr>
-        <td class="label-cell">Kullanılabilir Ödenek Tutarı</td>
-        <td class="value-cell">{{odenekTutari}}</td>
-      </tr>
-      
-      <!-- Ödeneğin bütçe tertibi -->
-      <tr>
-        <td class="label-cell">Ödeneğin Bütçe Tertibi</td>
-        <td class="value-cell">
-          {{#butceTertibi}}
-          <div>{{.}}</div>
-          {{/butceTertibi}}
-          {{^butceTertibi}}
-          -
-          {{/butceTertibi}}
-        </td>
-      </tr>
-      
-      <!-- Gerçekleştirme görevlileri -->
-      <tr>
-        <td class="label-cell">Gerçekleştirme Görevlileri</td>
-        <td class="value-cell">
-          {{#gerceklestirmeGorevlileri}}
-          <div>{{.}}</div>
-          {{/gerceklestirmeGorevlileri}}
-          {{^gerceklestirmeGorevlileri}}
-          {{hazirlayanPersonelAdi}} ({{hazirlayanPersonelUnvan}})
-          {{/gerceklestirmeGorevlileri}}
-        </td>
-      </tr>
-      
-      <!-- AÇIKLAMALAR -->
-      <tr>
-        <td colspan="2" class="section-title-cell">AÇIKLAMALAR</td>
-      </tr>
-      <tr>
-        <td colspan="2" style="min-height: 80px; font-size: 10pt; text-align: justify; padding: 8px; white-space: pre-wrap;">{{#aciklama}}{{aciklama}}{{/aciklama}}{{^aciklama}}{{isinAciklamasi}}{{/aciklama}}</td>
-      </tr>
-    </table>
+      .kik-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #000;
+        margin-bottom: 8px;
+      }
+      .kik-table th,
+      .kik-table td {
+        border: 1px solid #000;
+        padding: 6px 8px;
+        vertical-align: top;
+      }
+      .kik-table .header-cell {
+        text-align: center;
+        font-weight: bold;
+        font-size: 13pt;
+        text-transform: uppercase;
+        padding: 8px;
+        background-color: #fff;
+      }
+      .kik-table .label-cell {
+        width: 35%;
+        font-size: 10pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        background-color: #fff;
+      }
+      .kik-table .value-cell {
+        width: 65%;
+        font-size: 10pt;
+      }
+      .kik-table .section-title-cell {
+        text-align: center;
+        font-weight: bold;
+        background-color: #fff;
+        font-size: 10.5pt;
+        text-transform: uppercase;
+        padding: 6px;
+      }
+      .signature-container {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #000;
+      }
+      .signature-container td {
+        border: 1px solid #000;
+        padding: 10px;
+        width: 50%;
+        vertical-align: top;
+        font-size: 10pt;
+        text-align: center;
+      }
+      .signature-text {
+        text-align: justify;
+        text-indent: 15px;
+        margin-bottom: 25px;
+        line-height: 1.4;
+      }
+      .signature-olur {
+        font-weight: bold;
+        margin-bottom: 25px;
+        text-align: center;
+      }
+      .signature-block-left {
+        margin-top: 40px;
+        text-align: center;
+      }
+      .signature-block-right {
+        margin-top: 40px;
+        text-align: center;
+      }
+      @media print {
+        body {
+          background-color: #fff;
+        }
+        .page-container {
+          padding: 0;
+          margin: 0;
+          max-width: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <table class="kik-table">
+        <!-- Title -->
+        <tr>
+          <th colspan="2" class="header-cell">HARCAMA TALİMATI</th>
+        </tr>
 
-    <!-- ONAY BLOCK -->
-    <table class="signature-container">
-      <tr>
-        <td colspan="2" class="section-title-cell" style="padding: 4px;">ONAY</td>
-      </tr>
-      <tr>
-        <td style="height: 70px; vertical-align: top; border-bottom: none;">
-          <div class="signature-text" style="margin-bottom: 0;">
-            Yukarıda belirtilen harcamanın yaptırılması için harcama yetkilisi mutemedi {{mutemetAdi}}‘a, işin tutarı, {{isTutari}} ₺, avans verilmesi hususu olurlarınıza arz olunur.
-          </div>
-        </td>
-        <td style="height: 70px; vertical-align: middle; text-align: center; border-bottom: none;">
-          <div class="signature-olur" style="margin-bottom: 0; padding-top: 15px;">
-            OLUR
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td style="border-top: none; padding-top: 15px; padding-bottom: 15px; text-align: center;">
-          <div class="signature-block-left" style="margin-top: 0;">
-            Teklif Eden Yetkili<br>
-            {{#sunumTarihi}}{{sunumTarihi}}{{/sunumTarihi}}{{^sunumTarihi}}{{tarih}}{{/sunumTarihi}}<br><br><br>
-            <strong>{{hazirlayanPersonelAdi}}</strong><br>
-            {{hazirlayanPersonelUnvan}}
-          </div>
-        </td>
-        <td style="border-top: none; padding-top: 15px; padding-bottom: 15px; text-align: center;">
-          <div class="signature-block-right" style="margin-top: 0;">
-            Harcama Yetkilisi<br>
-            {{#olurTarihi}}{{olurTarihi}}{{/olurTarihi}}{{^olurTarihi}}{{tarih}}{{/olurTarihi}}<br><br><br>
-            <strong>{{onaylayanPersonelAdi}}</strong><br>
-            {{onaylayanPersonelUnvan}}
-          </div>
-        </td>
-      </tr>
-    </table>
+        <!-- Sayı and Tarih -->
+        <tr>
+          <td style="width: 50%; font-weight: bold">Sayı: {{evrakSayisi}}</td>
+          <td style="width: 50%; font-weight: bold; text-align: right">Tarih: {{tarih}}</td>
+        </tr>
 
-  </div>
-</body>
+        <!-- Harcama Talebinde Bulunan Birim -->
+        <tr>
+          <td colspan="2" style="font-weight: bold; padding-bottom: 2px">
+            Harcama Talebinde Bulunan Birim:
+          </td>
+        </tr>
+        <tr>
+          <td
+            colspan="2"
+            style="
+              text-align: center;
+              font-weight: bold;
+              font-size: 11pt;
+              padding: 6px;
+              text-transform: uppercase;
+            "
+          >
+            {{idareAdi}}
+          </td>
+        </tr>
+
+        <!-- YAPILACAK HARCAMANIN -->
+        <tr>
+          <td colspan="2" class="section-title-cell" style="font-size: 10.5pt">
+            YAPILACAK HARCAMANIN
+          </td>
+        </tr>
+
+        <!-- Gerekçe ve hukuki dayanak -->
+        <tr>
+          <td class="label-cell">Gerekçesi ve Hukuki Dayanağı</td>
+          <td class="value-cell">{{gerekce}}</td>
+        </tr>
+
+        <!-- Konusu / Nev'i / Niteliği -->
+        <tr>
+          <td class="label-cell">Konusu / Nev'i / Niteliği</td>
+          <td class="value-cell" style="font-weight: bold">{{isAdi}}</td>
+        </tr>
+
+        <!-- Miktarı -->
+        <tr>
+          <td class="label-cell">Miktarı</td>
+          <td class="value-cell">{{miktar}}</td>
+        </tr>
+
+        <!-- Gerçekleştirme Süresi -->
+        <tr>
+          <td class="label-cell">Gerçekleştirme Süresi</td>
+          <td class="value-cell">{{sure}}</td>
+        </tr>
+
+        <!-- Gerçekleştirme Usulü -->
+        <tr>
+          <td class="label-cell">Gerçekleştirme Usulü</td>
+          <td class="value-cell">{{teminSekli}}</td>
+        </tr>
+
+        <!-- Tutarı veya yaklaşık bedeli -->
+        <tr>
+          <td class="label-cell">Tutarı veya Yaklaşık Bedeli</td>
+          <td class="value-cell">{{yaklasikMaliyet}} ₺</td>
+        </tr>
+
+        <!-- Kullanılabilir ödenek tutarı -->
+        <tr>
+          <td class="label-cell">Kullanılabilir Ödenek Tutarı</td>
+          <td class="value-cell">{{odenekTutari}}</td>
+        </tr>
+
+        <!-- Ödeneğin bütçe tertibi -->
+        <tr>
+          <td class="label-cell">Ödeneğin Bütçe Tertibi</td>
+          <td class="value-cell">
+            {{#butceTertibi}}
+            <div>{{.}}</div>
+            {{/butceTertibi}} {{^butceTertibi}} - {{/butceTertibi}}
+          </td>
+        </tr>
+
+        <!-- Gerçekleştirme görevlileri -->
+        <tr>
+          <td class="label-cell">Gerçekleştirme Görevlileri</td>
+          <td class="value-cell">
+            {{#gerceklestirmeGorevlileri}}
+            <div>{{.}}</div>
+            {{/gerceklestirmeGorevlileri}} {{^gerceklestirmeGorevlileri}} {{hazirlayanPersonelAdi}}
+            ({{hazirlayanPersonelUnvan}}) {{/gerceklestirmeGorevlileri}}
+          </td>
+        </tr>
+
+        <!-- AÇIKLAMALAR -->
+        <tr>
+          <td colspan="2" class="section-title-cell">AÇIKLAMALAR</td>
+        </tr>
+        <tr>
+          <td
+            colspan="2"
+            style="
+              min-height: 80px;
+              font-size: 10pt;
+              text-align: justify;
+              padding: 8px;
+              white-space: pre-wrap;
+            "
+          >
+            {{#aciklama}}{{aciklama}}{{/aciklama}}{{^aciklama}}{{isinAciklamasi}}{{/aciklama}}
+          </td>
+        </tr>
+      </table>
+
+      <!-- ONAY BLOCK -->
+      <table class="signature-container">
+        <tr>
+          <td colspan="2" class="section-title-cell" style="padding: 4px">ONAY</td>
+        </tr>
+        <tr>
+          <td style="height: 70px; vertical-align: top; border-bottom: none">
+            <div class="signature-text" style="margin-bottom: 0">
+              Yukarıda belirtilen harcamanın yaptırılması için harcama yetkilisi mutemedi
+              {{mutemetAdi}}‘a, işin tutarı, {{isTutari}} ₺, avans verilmesi hususu olurlarınıza arz
+              olunur.
+            </div>
+          </td>
+          <td style="height: 70px; vertical-align: middle; text-align: center; border-bottom: none">
+            <div class="signature-olur" style="margin-bottom: 0; padding-top: 15px">OLUR</div>
+          </td>
+        </tr>
+        <tr>
+          <td style="border-top: none; padding-top: 15px; padding-bottom: 15px; text-align: center">
+            <div class="signature-block-left" style="margin-top: 0">
+              Teklif Eden Yetkili<br />
+              {{#sunumTarihi}}{{sunumTarihi}}{{/sunumTarihi}}{{^sunumTarihi}}{{tarih}}{{/sunumTarihi}}<br /><br /><br />
+              <strong>{{hazirlayanPersonelAdi}}</strong><br />
+              {{hazirlayanPersonelUnvan}}
+            </div>
+          </td>
+          <td style="border-top: none; padding-top: 15px; padding-bottom: 15px; text-align: center">
+            <div class="signature-block-right" style="margin-top: 0">
+              Harcama Yetkilisi<br />
+              {{#olurTarihi}}{{olurTarihi}}{{/olurTarihi}}{{^olurTarihi}}{{tarih}}{{/olurTarihi}}<br /><br /><br />
+              <strong>{{onaylayanPersonelAdi}}</strong><br />
+              {{onaylayanPersonelUnvan}}
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
 </html>

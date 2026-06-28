@@ -22,7 +22,7 @@ export interface AppVersionManifest {
 
 export function getCurrentAppManifest(): AppVersionManifest {
   const appVersion = app.getVersion()
-  const found = manifests.find(v => v.app === appVersion)
+  const found = manifests.find((v) => v.app === appVersion)
   if (found) return found
   return manifests[manifests.length - 1]
 }
@@ -44,7 +44,7 @@ export function getPendingMigrations(fromVersion: number): PendingMigrationInfo[
   for (const v of manifests) {
     if (v.changes) {
       for (const change of v.changes) {
-        if (!allChanges.find(c => c.schema === change.schema)) {
+        if (!allChanges.find((c) => c.schema === change.schema)) {
           allChanges.push(change)
         }
       }
@@ -71,7 +71,7 @@ export function runMigrations(db: Database.Database, fromVersion: number): void 
   for (const v of manifests) {
     if (v.changes) {
       for (const change of v.changes) {
-        if (!allChanges.find(c => c.schema === change.schema)) {
+        if (!allChanges.find((c) => c.schema === change.schema)) {
           allChanges.push(change)
         }
       }
@@ -79,7 +79,7 @@ export function runMigrations(db: Database.Database, fromVersion: number): void 
   }
   allChanges.sort((a, b) => a.schema - b.schema)
 
-  const pendingChanges = allChanges.filter(c => c.schema > fromVersion && c.schema <= MAX_SCHEMA)
+  const pendingChanges = allChanges.filter((c) => c.schema > fromVersion && c.schema <= MAX_SCHEMA)
 
   if (pendingChanges.length === 0) return
 
@@ -93,29 +93,38 @@ export function runMigrations(db: Database.Database, fromVersion: number): void 
       try {
         if (change.tables_added && change.tables_added.length > 0) {
           for (const tableName of change.tables_added) {
-            const tableDef = dbSchemaDef.tables.find(t => t.name === tableName)
+            const tableDef = dbSchemaDef.tables.find((t) => t.name === tableName)
             if (!tableDef) throw new Error(`Tablo tanımı bulunamadı: ${tableName}`)
 
-            const columnsSql = tableDef.columns.map((col: any) => {
-              let colDef = '"' + col.name + '" ' + col.type
-              if (col.primaryKey) colDef += ' PRIMARY KEY'
-              if (col.autoIncrement) colDef += ' AUTOINCREMENT'
-              if (col.unique) colDef += ' UNIQUE'
-              if (col.notNull) colDef += ' NOT NULL'
-              if (col.default !== undefined) {
-                colDef += ' DEFAULT ' + (typeof col.default === 'string' ? col.default : col.default)
-              }
-              return colDef
-            }).join(', ')
+            const columnsSql = tableDef.columns
+              .map((col: any) => {
+                let colDef = '"' + col.name + '" ' + col.type
+                if (col.primaryKey) colDef += ' PRIMARY KEY'
+                if (col.autoIncrement) colDef += ' AUTOINCREMENT'
+                if (col.unique) colDef += ' UNIQUE'
+                if (col.notNull) colDef += ' NOT NULL'
+                if (col.default !== undefined) {
+                  colDef +=
+                    ' DEFAULT ' + (typeof col.default === 'string' ? col.default : col.default)
+                }
+                return colDef
+              })
+              .join(', ')
 
-            const constraintsSql = (tableDef as any).constraints ? ', ' + (tableDef as any).constraints.join(', ') : ''
+            const constraintsSql = (tableDef as any).constraints
+              ? ', ' + (tableDef as any).constraints.join(', ')
+              : ''
             db.exec(`CREATE TABLE IF NOT EXISTS ${tableName} (${columnsSql}${constraintsSql});`)
-            
+
             if (tableDef.initialData && tableDef.initialData.length > 0) {
               tableDef.initialData.forEach((row: any) => {
                 const keys = Object.keys(row)
-                const values = Object.values(row).map(v => typeof v === 'string' ? "'" + v.replace(/'/g, "''") + "'" : v)
-                db.exec(`INSERT OR IGNORE INTO ${tableName} (${keys.join(', ')}) VALUES (${values.join(', ')});`)
+                const values = Object.values(row).map((v) =>
+                  typeof v === 'string' ? "'" + v.replace(/'/g, "''") + "'" : v
+                )
+                db.exec(
+                  `INSERT OR IGNORE INTO ${tableName} (${keys.join(', ')}) VALUES (${values.join(', ')});`
+                )
               })
             }
           }
@@ -123,16 +132,21 @@ export function runMigrations(db: Database.Database, fromVersion: number): void 
 
         if (change.columns_added && change.columns_added.length > 0) {
           for (const colAdd of change.columns_added) {
-            const tableDef = dbSchemaDef.tables.find(t => t.name === colAdd.table)
+            const tableDef = dbSchemaDef.tables.find((t) => t.name === colAdd.table)
             if (!tableDef) throw new Error(`Tablo tanımı bulunamadı: ${colAdd.table}`)
             const colDef = tableDef.columns.find((c: any) => c.name === colAdd.column)
-            if (!colDef) throw new Error(`Kolon tanımı bulunamadı: ${colAdd.table}.${colAdd.column}`)
+            if (!colDef)
+              throw new Error(`Kolon tanımı bulunamadı: ${colAdd.table}.${colAdd.column}`)
 
             let sqlDef = '"' + colDef.name + '" ' + colDef.type
             if ((colDef as any).unique) sqlDef += ' UNIQUE'
             if ((colDef as any).notNull) sqlDef += ' NOT NULL'
             if ((colDef as any).default !== undefined) {
-              sqlDef += ' DEFAULT ' + (typeof (colDef as any).default === 'string' ? (colDef as any).default : (colDef as any).default)
+              sqlDef +=
+                ' DEFAULT ' +
+                (typeof (colDef as any).default === 'string'
+                  ? (colDef as any).default
+                  : (colDef as any).default)
             }
 
             try {
@@ -152,12 +166,14 @@ export function runMigrations(db: Database.Database, fromVersion: number): void 
             db.exec(sql)
           }
         }
-        
-        db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('dbSchemaVersion', ?);").run(
-          change.schema.toString()
-        )
+
+        db.prepare(
+          "INSERT OR REPLACE INTO settings (key, value) VALUES ('dbSchemaVersion', ?);"
+        ).run(change.schema.toString())
       } catch (error: any) {
-        throw new Error(`[Sürüm ${change.schema} - ${change.description}] adımı sırasında hata oluştu: ${error.message}`)
+        throw new Error(
+          `[Sürüm ${change.schema} - ${change.description}] adımı sırasında hata oluştu: ${error.message}`
+        )
       }
     }
   })
@@ -165,7 +181,7 @@ export function runMigrations(db: Database.Database, fromVersion: number): void 
   try {
     executeMigrationsTransaction()
   } catch (error: any) {
-    throw error 
+    throw error
   }
   console.log('Tüm veritabanı göç adımları başarıyla tamamlandı.')
 }

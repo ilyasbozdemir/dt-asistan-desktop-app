@@ -43,7 +43,7 @@ export function useDashboardStats() {
     ihalelereSecilenFirmaSayisi: 0,
     ihalelereKatilanFirmaSayisi: 0,
     ihaleEdilenMalzemeSayisi: 0,
-    
+
     // New Metrics Default Values
     kayitliBirimSayisi: 0,
     kayitliAmbarSayisi: 0,
@@ -62,19 +62,31 @@ export function useDashboardStats() {
     setIsLoading(true)
     try {
       // 1. İhale dosya sayısı
-      const dosyaRes = await window.electron.ipcRenderer.invoke('db:query', 'SELECT COUNT(*) as count FROM DATA_TeminDosyasi')
+      const dosyaRes = await window.electron.ipcRenderer.invoke(
+        'db:query',
+        'SELECT COUNT(*) as count FROM DATA_TeminDosyasi'
+      )
       const ihaleDosyaSayisi = dosyaRes.data[0]?.count || 0
 
       // 2. Kayıtlı Firma Sayısı
-      const firmaRes = await window.electron.ipcRenderer.invoke('db:query', 'SELECT COUNT(*) as count FROM TANIM_Firma')
+      const firmaRes = await window.electron.ipcRenderer.invoke(
+        'db:query',
+        'SELECT COUNT(*) as count FROM TANIM_Firma'
+      )
       const kayitliFirmaSayisi = firmaRes.data[0]?.count || 0
 
       // 3. Kayıtlı Personel Sayısı
-      const personelRes = await window.electron.ipcRenderer.invoke('db:query', 'SELECT COUNT(*) as count FROM TANIM_Personel')
+      const personelRes = await window.electron.ipcRenderer.invoke(
+        'db:query',
+        'SELECT COUNT(*) as count FROM TANIM_Personel'
+      )
       const kayitliPersonelSayisi = personelRes.data[0]?.count || 0
 
       // 4. Toplam Yaklaşık Maliyet
-      const toplamMaliyetRes = await window.electron.ipcRenderer.invoke('db:query', 'SELECT SUM(yaklasik_maliyet) as total FROM DATA_TeminDosyasi')
+      const toplamMaliyetRes = await window.electron.ipcRenderer.invoke(
+        'db:query',
+        'SELECT SUM(yaklasik_maliyet) as total FROM DATA_TeminDosyasi'
+      )
       const toplamYaklasikMaliyet = toplamMaliyetRes.data[0]?.total || 0
 
       // 5. Türlere Göre Yaklaşık Maliyetler
@@ -82,7 +94,7 @@ export function useDashboardStats() {
         'db:query',
         'SELECT tur, SUM(yaklasik_maliyet) as total FROM DATA_TeminDosyasi GROUP BY tur'
       )
-      
+
       let malYaklasikMaliyet = 0
       let hizmetYaklasikMaliyet = 0
       let yapimYaklasikMaliyet = 0
@@ -92,7 +104,8 @@ export function useDashboardStats() {
         turRes.data.forEach((row: any) => {
           if (row.tur === 'mal') malYaklasikMaliyet = row.total || 0
           else if (row.tur === 'hizmet') hizmetYaklasikMaliyet = row.total || 0
-          else if (row.tur === 'yapim_isi' || row.tur === 'yapim') yapimYaklasikMaliyet = row.total || 0
+          else if (row.tur === 'yapim_isi' || row.tur === 'yapim')
+            yapimYaklasikMaliyet = row.total || 0
           else if (row.tur === 'danismanlik') danismanlikYaklasikMaliyet = row.total || 0
         })
       }
@@ -102,11 +115,25 @@ export function useDashboardStats() {
         'db:query',
         "SELECT strftime('%m', created_at) as ay_no, SUM(yaklasik_maliyet) as total FROM DATA_TeminDosyasi GROUP BY ay_no ORDER BY ay_no ASC"
       )
-      const aylarTR = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık']
+      const aylarTR = [
+        'Ocak',
+        'Şubat',
+        'Mart',
+        'Nisan',
+        'Mayıs',
+        'Haziran',
+        'Temmuz',
+        'Ağustos',
+        'Eylül',
+        'Ekim',
+        'Kasım',
+        'Aralık'
+      ]
       const aylikHarcamalar = aylarTR.map((ayAd, index) => {
         const key = (index + 1).toString().padStart(2, '0')
-        const found = aylikRes.success && aylikRes.data ? aylikRes.data.find((r: any) => r.ay_no === key) : null
-        return { ay: ayAd, tutar: found ? (found.total || 0) : 0 }
+        const found =
+          aylikRes.success && aylikRes.data ? aylikRes.data.find((r: any) => r.ay_no === key) : null
+        return { ay: ayAd, tutar: found ? found.total || 0 : 0 }
       })
 
       // 7. İhalelere Seçilen Firma Sayısı (Unique selected firms in all dossiers)
@@ -132,11 +159,17 @@ export function useDashboardStats() {
 
       // NEW METRICS QUERIES:
       // 10. Kayıtlı Birim Sayısı
-      const birimCountRes = await window.electron.ipcRenderer.invoke('db:query', 'SELECT COUNT(*) as count FROM TANIM_Birim')
+      const birimCountRes = await window.electron.ipcRenderer.invoke(
+        'db:query',
+        'SELECT COUNT(*) as count FROM TANIM_Birim'
+      )
       const kayitliBirimSayisi = birimCountRes.data[0]?.count || 0
 
       // 11. Kayıtlı Ambar Sayısı
-      const ambarCountRes = await window.electron.ipcRenderer.invoke('db:query', 'SELECT COUNT(*) as count FROM TANIM_Ambar')
+      const ambarCountRes = await window.electron.ipcRenderer.invoke(
+        'db:query',
+        'SELECT COUNT(*) as count FROM TANIM_Ambar'
+      )
       const kayitliAmbarSayisi = ambarCountRes.data[0]?.count || 0
 
       // 12. Aktif Dosya Sayısı (durum_asama_id < 5 veya null)
@@ -154,16 +187,28 @@ export function useDashboardStats() {
       const tamamlananDosyaSayisi = tamamlananDosyaCountRes.data[0]?.count || 0
 
       // 14. Dosya Türlerine Göre Sayılar
-      const malDosyaCountRes = await window.electron.ipcRenderer.invoke('db:query', "SELECT COUNT(*) as count FROM DATA_TeminDosyasi WHERE tur = 'mal'")
+      const malDosyaCountRes = await window.electron.ipcRenderer.invoke(
+        'db:query',
+        "SELECT COUNT(*) as count FROM DATA_TeminDosyasi WHERE tur = 'mal'"
+      )
       const malDosyaSayisi = malDosyaCountRes.data[0]?.count || 0
 
-      const hizmetDosyaCountRes = await window.electron.ipcRenderer.invoke('db:query', "SELECT COUNT(*) as count FROM DATA_TeminDosyasi WHERE tur = 'hizmet'")
+      const hizmetDosyaCountRes = await window.electron.ipcRenderer.invoke(
+        'db:query',
+        "SELECT COUNT(*) as count FROM DATA_TeminDosyasi WHERE tur = 'hizmet'"
+      )
       const hizmetDosyaSayisi = hizmetDosyaCountRes.data[0]?.count || 0
 
-      const yapimDosyaCountRes = await window.electron.ipcRenderer.invoke('db:query', "SELECT COUNT(*) as count FROM DATA_TeminDosyasi WHERE tur IN ('yapim', 'yapim_isi')")
+      const yapimDosyaCountRes = await window.electron.ipcRenderer.invoke(
+        'db:query',
+        "SELECT COUNT(*) as count FROM DATA_TeminDosyasi WHERE tur IN ('yapim', 'yapim_isi')"
+      )
       const yapimDosyaSayisi = yapimDosyaCountRes.data[0]?.count || 0
 
-      const danismanlikDosyaCountRes = await window.electron.ipcRenderer.invoke('db:query', "SELECT COUNT(*) as count FROM DATA_TeminDosyasi WHERE tur = 'danismanlik'")
+      const danismanlikDosyaCountRes = await window.electron.ipcRenderer.invoke(
+        'db:query',
+        "SELECT COUNT(*) as count FROM DATA_TeminDosyasi WHERE tur = 'danismanlik'"
+      )
       const danismanlikDosyaSayisi = danismanlikDosyaCountRes.data[0]?.count || 0
 
       // 15. En Çok Seçilen Firma (Kazanan)
@@ -171,18 +216,20 @@ export function useDashboardStats() {
         'db:query',
         'SELECT f.unvan, COUNT(*) as count FROM DATA_TeminDosyasi d JOIN TANIM_Firma f ON d.firma_id = f.id WHERE d.firma_id IS NOT NULL GROUP BY d.firma_id ORDER BY count DESC LIMIT 1'
       )
-      const enCokSecilenFirma = topFirmaRes.success && topFirmaRes.data?.[0]
-        ? { unvan: topFirmaRes.data[0].unvan, count: topFirmaRes.data[0].count }
-        : null
+      const enCokSecilenFirma =
+        topFirmaRes.success && topFirmaRes.data?.[0]
+          ? { unvan: topFirmaRes.data[0].unvan, count: topFirmaRes.data[0].count }
+          : null
 
       // 16. En Çok Harcama Yapan Birim
       const topBirimRes = await window.electron.ipcRenderer.invoke(
         'db:query',
         'SELECT b.birim_adi, SUM(d.yaklasik_maliyet) as total FROM DATA_TeminDosyasi d JOIN TANIM_Birim b ON d.birim_id = b.id GROUP BY d.birim_id ORDER BY total DESC LIMIT 1'
       )
-      const enCokHarcamaYapanBirim = topBirimRes.success && topBirimRes.data?.[0]
-        ? { birim_adi: topBirimRes.data[0].birim_adi, total: topBirimRes.data[0].total || 0 }
-        : null
+      const enCokHarcamaYapanBirim =
+        topBirimRes.success && topBirimRes.data?.[0]
+          ? { birim_adi: topBirimRes.data[0].birim_adi, total: topBirimRes.data[0].total || 0 }
+          : null
 
       setStats({
         ihaleDosyaSayisi,
@@ -197,7 +244,7 @@ export function useDashboardStats() {
         ihalelereSecilenFirmaSayisi,
         ihalelereKatilanFirmaSayisi,
         ihaleEdilenMalzemeSayisi,
-        
+
         // New Metrics
         kayitliBirimSayisi,
         kayitliAmbarSayisi,
@@ -242,7 +289,11 @@ export interface ActiveDosyaSummary {
   durumAsamaId: number | null
 }
 
-export function useActiveDosyaSummary(activeDosyaId: number | null, institutionName: string, institutionTypeLabel: string) {
+export function useActiveDosyaSummary(
+  activeDosyaId: number | null,
+  institutionName: string,
+  institutionTypeLabel: string
+) {
   const [summary, setSummary] = useState<ActiveDosyaSummary | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -265,10 +316,10 @@ export function useActiveDosyaSummary(activeDosyaId: number | null, institutionN
         WHERE d.id = ?
       `
       const res = await window.electron.ipcRenderer.invoke('db:query', q, [activeDosyaId])
-      
+
       if (res.success && res.data.length > 0) {
         const row = res.data[0]
-        
+
         // Count invited/participating firms in DATA_TeminFirma for this dossier
         const katilanFirmaSayisiRes = await window.electron.ipcRenderer.invoke(
           'db:query',
@@ -285,9 +336,10 @@ export function useActiveDosyaSummary(activeDosyaId: number | null, institutionN
         )
         const malzemeSayisi = malzemeSayisiRes.data?.[0]?.count || 0
 
-        const formattedKonu = row.tekrar_no && row.tekrar_no > 1
-          ? `${row.konu || 'Konu Belirtilmedi'} (${row.tekrar_no})`
-          : (row.konu || 'Konu Belirtilmedi')
+        const formattedKonu =
+          row.tekrar_no && row.tekrar_no > 1
+            ? `${row.konu || 'Konu Belirtilmedi'} (${row.tekrar_no})`
+            : row.konu || 'Konu Belirtilmedi'
 
         setSummary({
           kurumAdi: institutionName,
@@ -341,7 +393,9 @@ export function useAnnouncements() {
       let remoteData: Announcement[] = []
       try {
         // Fetch from GitHub raw URL
-        const response = await fetch('https://raw.githubusercontent.com/ilyas-bozdemir/dt-asistan-desktop-app/main/docs/announcements.json')
+        const response = await fetch(
+          'https://raw.githubusercontent.com/ilyas-bozdemir/dt-asistan-desktop-app/main/docs/announcements.json'
+        )
         if (response.ok) {
           const data = await response.json()
           if (Array.isArray(data)) {
@@ -359,7 +413,7 @@ export function useAnnouncements() {
       let localLogs: Announcement[] = []
       try {
         const logRes = await window.electron.ipcRenderer.invoke(
-          'db:query', 
+          'db:query',
           'SELECT id, title, message, type, created_at FROM LOG_SystemLog ORDER BY created_at DESC LIMIT 50'
         )
         if (logRes.success && logRes.data) {
@@ -367,7 +421,11 @@ export function useAnnouncements() {
             id: `syslog_${row.id}`,
             title: row.title,
             content: row.message,
-            date: new Date(row.created_at).toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' }),
+            date: new Date(row.created_at).toLocaleDateString('tr-TR', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric'
+            }),
             _rawDate: new Date(row.created_at).getTime(),
             type: row.type as 'info' | 'success' | 'warning' | 'error'
           }))
@@ -407,7 +465,11 @@ export interface SmartAlert {
   actionText: string
 }
 
-export function useSmartAlerts(settings: any, activeDosyaId: number | null, activeSummary: ActiveDosyaSummary | null) {
+export function useSmartAlerts(
+  settings: any,
+  activeDosyaId: number | null,
+  activeSummary: ActiveDosyaSummary | null
+) {
   const [alerts, setAlerts] = useState<SmartAlert[]>([])
 
   useEffect(() => {
@@ -418,7 +480,8 @@ export function useSmartAlerts(settings: any, activeDosyaId: number | null, acti
       newAlerts.push({
         id: 'missing_kurum_identity',
         title: 'Kurum Kimliği Eksik',
-        message: 'Kurum adı ve bütçe limit türü seçilmemiş. Limitlerin doğru çalışması için ayarları tamamlayın.',
+        message:
+          'Kurum adı ve bütçe limit türü seçilmemiş. Limitlerin doğru çalışması için ayarları tamamlayın.',
         type: 'error',
         actionLink: '/ayarlar',
         actionSearch: { tab: 'kurum' },
@@ -431,7 +494,8 @@ export function useSmartAlerts(settings: any, activeDosyaId: number | null, acti
       newAlerts.push({
         id: 'missing_admin_info',
         title: 'Harcama Yetkilisi Eksik',
-        message: 'Harcama yetkilisi (gerçekleştirme görevlisi) kimlik bilgileri boş. Çıktı evraklarında imza alanları boş kalacaktır.',
+        message:
+          'Harcama yetkilisi (gerçekleştirme görevlisi) kimlik bilgileri boş. Çıktı evraklarında imza alanları boş kalacaktır.',
         type: 'warning',
         actionLink: '/ayarlar',
         actionSearch: { tab: 'kurum' },
@@ -444,7 +508,8 @@ export function useSmartAlerts(settings: any, activeDosyaId: number | null, acti
       newAlerts.push({
         id: 'missing_kurum_codes',
         title: 'Birim Kodları Eksik',
-        message: 'Muhasebat veya harcama birim kodları girilmemiş. Resmi yazışmalarda veya UYAP belgelerinde sorun yaşayabilirsiniz.',
+        message:
+          'Muhasebat veya harcama birim kodları girilmemiş. Resmi yazışmalarda veya UYAP belgelerinde sorun yaşayabilirsiniz.',
         type: 'info',
         actionLink: '/ayarlar',
         actionSearch: { tab: 'kurum' },
@@ -468,7 +533,8 @@ export function useSmartAlerts(settings: any, activeDosyaId: number | null, acti
         newAlerts.push({
           id: 'missing_cost',
           title: 'Maliyet Hesaplanmamış',
-          message: 'İhtiyaç listesi oluşturulmuş fakat Piyasa Fiyat Araştırması yapılarak Yaklaşık Maliyet henüz hesaplanmamış.',
+          message:
+            'İhtiyaç listesi oluşturulmuş fakat Piyasa Fiyat Araştırması yapılarak Yaklaşık Maliyet henüz hesaplanmamış.',
           type: 'error',
           actionLink: '/dosya/firmalar-maliyet/yaklasik',
           actionText: 'Maliyet Hesapla'

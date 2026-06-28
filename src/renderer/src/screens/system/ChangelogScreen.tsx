@@ -2,10 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { Megaphone, History } from 'lucide-react'
 
 export default function ChangelogScreen(): React.JSX.Element {
-  const [changelog, setChangelog] = useState<{version: string, notes: string, schema_max: number}[]>([])
+  const [changelog, setChangelog] = useState<
+    { version: string; notes: string; schema_max: number }[]
+  >([])
 
   useEffect(() => {
-    window.electron?.ipcRenderer.invoke('get-changelog').then(res => setChangelog(res)).catch(e => console.error(e))
+    window.electron?.ipcRenderer
+      .invoke('get-changelog')
+      .then((res) => setChangelog(res))
+      .catch((e) => console.error(e))
   }, [])
 
   return (
@@ -43,7 +48,7 @@ export default function ChangelogScreen(): React.JSX.Element {
               </div>
             </div>
           ))}
-          
+
           {changelog.length === 0 && (
             <div className="text-center text-slate-500 dark:text-slate-400 py-12 text-sm flex flex-col items-center">
               <History className="w-12 h-12 text-slate-300 dark:text-slate-700 mb-4" />

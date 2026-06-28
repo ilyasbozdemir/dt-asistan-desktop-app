@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { Wifi, Search, Download, Upload, X, AlertTriangle, CheckCircle2, Server } from 'lucide-react'
+import {
+  Wifi,
+  Search,
+  Download,
+  Upload,
+  X,
+  AlertTriangle,
+  CheckCircle2,
+  Server
+} from 'lucide-react'
 import { useWorkspaceStore } from '../../store/workspaceStore'
 
 interface NetworkSyncModalProps {
@@ -24,12 +33,12 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
   const [serverInfo, setServerInfo] = useState<ServerInfo | null>(null)
-  
+
   const [, setLocalServerActive] = useState(false)
   const [localIp, setLocalIp] = useState('')
   const [canUndo, setCanUndo] = useState(false)
   const [backupTime, setBackupTime] = useState<string | null>(null)
-  
+
   const electron = window.electron?.ipcRenderer
 
   const checkCanUndo = async () => {
@@ -54,7 +63,8 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
 
   useEffect(() => {
     if (electron?.invoke) {
-      electron.invoke('network:start-express', 4000)
+      electron
+        .invoke('network:start-express', 4000)
         .then((res: { success: boolean; ip: string; port: number; error?: string }) => {
           if (res && res.success) {
             setLocalServerActive(true)
@@ -64,24 +74,24 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
         })
         .catch(console.error)
     }
-    
+
     const onPulled = () => {
-       setStatus('success')
-       setMessage('Dosya başarıyla çekildi. Arayüz güncelleniyor...')
-       setTimeout(() => {
-         window.location.reload()
-       }, 2000)
+      setStatus('success')
+      setMessage('Dosya başarıyla çekildi. Arayüz güncelleniyor...')
+      setTimeout(() => {
+        window.location.reload()
+      }, 2000)
     }
-    
+
     const onPushed = () => {
-       // Local DB was overwritten by another peer!
-       alert('UYARI: Ağdaki başka bir cihaz tarafından dosyanız güncellendi. Sayfa yenilenecek.')
-       window.location.reload()
+      // Local DB was overwritten by another peer!
+      alert('UYARI: Ağdaki başka bir cihaz tarafından dosyanız güncellendi. Sayfa yenilenecek.')
+      window.location.reload()
     }
-    
+
     window.electron?.ipcRenderer?.on('network:db-pulled', onPulled)
     window.electron?.ipcRenderer?.on('network:db-pushed', onPushed)
-    
+
     return () => {
       window.electron?.ipcRenderer?.removeListener('network:db-pulled', onPulled)
       window.electron?.ipcRenderer?.removeListener('network:db-pushed', onPushed)
@@ -89,8 +99,13 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
   }, [])
 
   const handleUndo = async () => {
-    if (!confirm('DİKKAT: En son senkronizasyon öncesindeki veritabanı yedeğiniz (.syncbak) geri yüklenecektir. Bu işlem mevcut verilerinizi ezecektir. Devam etmek istiyor musunuz?')) return
-    
+    if (
+      !confirm(
+        'DİKKAT: En son senkronizasyon öncesindeki veritabanı yedeğiniz (.syncbak) geri yüklenecektir. Bu işlem mevcut verilerinizi ezecektir. Devam etmek istiyor musunuz?'
+      )
+    )
+      return
+
     setStatus('loading')
     setMessage('Yedek geri yükleniyor...')
     try {
@@ -112,7 +127,7 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
     let cleanIp = rawIp.trim()
     // Başındaki http:// veya https:// protokollerini kaldır (büyük/küçük harf duyarsız)
     cleanIp = cleanIp.replace(/^(https?:\/\/)/i, '')
-    
+
     // Eğer sonda port varsa (:3000, :4000 gibi) ayıkla, yoksa varsayılan portu kullan
     let targetPort = port
     const portMatch = cleanIp.match(/:(\d+)$/)
@@ -131,7 +146,7 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
       const url = getCleanUrl(ipAddress)
       const response = await fetch(`${url}/api/network/info`)
       if (!response.ok) throw new Error('Sunucuya ulaşılamadı.')
-      
+
       const data = await response.json()
       if (data.success) {
         setServerInfo(data)
@@ -148,8 +163,13 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
   }
 
   const handlePull = async () => {
-    if (!confirm('DİKKAT: Karşı taraftan dosya çekmek (Pull), sizin mevcut verilerinizi tamamen EZECEKTİR! Devam etmek istediğinize emin misiniz?')) return
-    
+    if (
+      !confirm(
+        'DİKKAT: Karşı taraftan dosya çekmek (Pull), sizin mevcut verilerinizi tamamen EZECEKTİR! Devam etmek istediğinize emin misiniz?'
+      )
+    )
+      return
+
     setStatus('loading')
     setMessage('Dosya çekiliyor...')
     try {
@@ -169,8 +189,13 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
   }
 
   const handlePush = async () => {
-    if (!confirm('DİKKAT: Dosyanızı karşı tarafa göndermek (Push), karşı tarafın mevcut verilerini tamamen EZECEKTİR! Devam etmek istediğinize emin misiniz?')) return
-    
+    if (
+      !confirm(
+        'DİKKAT: Dosyanızı karşı tarafa göndermek (Push), karşı tarafın mevcut verilerini tamamen EZECEKTİR! Devam etmek istediğinize emin misiniz?'
+      )
+    )
+      return
+
     setStatus('loading')
     setMessage('Dosya gönderiliyor...')
     try {
@@ -197,11 +222,18 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
               <Wifi className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-800 dark:text-white">Ağ Senkronizasyonu</h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Aynı ağdaki başka bir cihazla veri paylaşın</p>
+              <h2 className="text-lg font-bold text-slate-800 dark:text-white">
+                Ağ Senkronizasyonu
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Aynı ağdaki başka bir cihazla veri paylaşın
+              </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+          <button
+            onClick={onClose}
+            className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -215,15 +247,24 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
               </div>
               <div>
-                <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-400">Paylaşım Aktif</p>
-                <p className="text-xs text-emerald-600 dark:text-emerald-500">IP Adresiniz: <span className="font-mono bg-white dark:bg-slate-950 px-1 py-0.5 rounded shadow-sm">{localIp}:{port}</span></p>
+                <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-400">
+                  Paylaşım Aktif
+                </p>
+                <p className="text-xs text-emerald-600 dark:text-emerald-500">
+                  IP Adresiniz:{' '}
+                  <span className="font-mono bg-white dark:bg-slate-950 px-1 py-0.5 rounded shadow-sm">
+                    {localIp}:{port}
+                  </span>
+                </p>
               </div>
             </div>
           </div>
 
           {/* Connect Form */}
           <div className="flex flex-col gap-3">
-            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Karşı Cihazın IP Adresi</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              Karşı Cihazın IP Adresi
+            </label>
             <div className="flex gap-2">
               <input
                 type="text"
@@ -237,7 +278,11 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
                 disabled={!ipAddress || status === 'loading'}
                 className="px-4 py-2 bg-slate-800 dark:bg-slate-700 text-white rounded-lg text-sm font-medium hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors disabled:opacity-50 flex items-center gap-2"
               >
-                {status === 'loading' ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Search className="w-4 h-4" />}
+                {status === 'loading' ? (
+                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <Search className="w-4 h-4" />
+                )}
                 Bağlan
               </button>
             </div>
@@ -245,8 +290,14 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
 
           {/* Status Message */}
           {message && status !== 'idle' && (
-            <div className={`p-3 rounded-lg text-sm flex items-center gap-2 ${status === 'error' ? 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400' : 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400'}`}>
-              {status === 'error' ? <AlertTriangle className="w-4 h-4 shrink-0" /> : <InfoIcon className="w-4 h-4 shrink-0" />}
+            <div
+              className={`p-3 rounded-lg text-sm flex items-center gap-2 ${status === 'error' ? 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400' : 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400'}`}
+            >
+              {status === 'error' ? (
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+              ) : (
+                <InfoIcon className="w-4 h-4 shrink-0" />
+              )}
               <span>{message}</span>
             </div>
           )}
@@ -258,28 +309,42 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
                 <Server className="w-4 h-4 text-blue-500" />
                 Veri Karşılaştırması
               </h3>
-              
+
               <div className="grid grid-cols-2 gap-4 mt-2">
                 {/* Local Info */}
                 <div className="p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg flex flex-col gap-1">
-                  <span className="text-[10px] text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider">Yerel Cihaz (Siz)</span>
-                  <div className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">{activeMeta?.institution || 'Açık Dosya Yok'}</div>
+                  <span className="text-[10px] text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider">
+                    Yerel Cihaz (Siz)
+                  </span>
+                  <div className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
+                    {activeMeta?.institution || 'Açık Dosya Yok'}
+                  </div>
                   <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                    Son Güncelleme:<br />
+                    Son Güncelleme:
+                    <br />
                     <span className="font-semibold text-slate-700 dark:text-slate-300">
-                      {activeMeta?.updated_at ? new Date(activeMeta.updated_at).toLocaleString('tr-TR') : 'Bilinmiyor'}
+                      {activeMeta?.updated_at
+                        ? new Date(activeMeta.updated_at).toLocaleString('tr-TR')
+                        : 'Bilinmiyor'}
                     </span>
                   </div>
                 </div>
 
                 {/* Remote Info */}
                 <div className="p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg flex flex-col gap-1">
-                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">Karşı Cihaz</span>
-                  <div className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">{serverInfo.meta.institution}</div>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">
+                    Karşı Cihaz
+                  </span>
+                  <div className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
+                    {serverInfo.meta.institution}
+                  </div>
                   <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                    Son Güncelleme:<br />
+                    Son Güncelleme:
+                    <br />
                     <span className="font-semibold text-slate-700 dark:text-slate-300">
-                      {serverInfo.meta.updated_at ? new Date(serverInfo.meta.updated_at).toLocaleString('tr-TR') : 'Bilinmiyor'}
+                      {serverInfo.meta.updated_at
+                        ? new Date(serverInfo.meta.updated_at).toLocaleString('tr-TR')
+                        : 'Bilinmiyor'}
                     </span>
                   </div>
                 </div>
@@ -287,19 +352,25 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
 
               {/* Status Comparison Info */}
               {(() => {
-                const localTime = activeMeta?.updated_at ? new Date(activeMeta.updated_at).getTime() : 0
-                const remoteTime = serverInfo.meta.updated_at ? new Date(serverInfo.meta.updated_at).getTime() : 0
-                
+                const localTime = activeMeta?.updated_at
+                  ? new Date(activeMeta.updated_at).getTime()
+                  : 0
+                const remoteTime = serverInfo.meta.updated_at
+                  ? new Date(serverInfo.meta.updated_at).getTime()
+                  : 0
+
                 if (localTime > remoteTime) {
                   return (
                     <div className="text-xs p-2.5 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-800 dark:text-amber-400 rounded-lg font-medium">
-                      ⚠️ Sizin yerel verileriniz karşı cihazdaki verilerden daha güncel. Gönder (Push) yapabilirsiniz.
+                      ⚠️ Sizin yerel verileriniz karşı cihazdaki verilerden daha güncel. Gönder
+                      (Push) yapabilirsiniz.
                     </div>
                   )
                 } else if (remoteTime > localTime) {
                   return (
                     <div className="text-xs p-2.5 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-800 dark:text-emerald-400 rounded-lg font-medium">
-                      💡 Karşı cihazdaki veriler sizinkinden daha güncel! Çek (Pull) yapmanız önerilir.
+                      💡 Karşı cihazdaki veriler sizinkinden daha güncel! Çek (Pull) yapmanız
+                      önerilir.
                     </div>
                   )
                 } else {
@@ -310,15 +381,21 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
                   )
                 }
               })()}
-              
+
               <div className="grid grid-cols-2 gap-3 mt-2">
                 <button
                   onClick={handlePull}
                   className="flex flex-col items-center justify-center gap-2 p-3 bg-white dark:bg-slate-800 border-2 border-blue-200 dark:border-blue-500/30 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-xl transition-all cursor-pointer group"
                 >
                   <Download className="w-6 h-6 text-blue-500 group-hover:scale-110 transition-transform" />
-                  <span className="text-sm font-bold text-slate-700 dark:text-slate-200">Çek (Pull)</span>
-                  <span className="text-[10px] text-slate-500 text-center">Karşıdaki veriyi alıp<br/>sizin verinizi ezer</span>
+                  <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
+                    Çek (Pull)
+                  </span>
+                  <span className="text-[10px] text-slate-500 text-center">
+                    Karşıdaki veriyi alıp
+                    <br />
+                    sizin verinizi ezer
+                  </span>
                 </button>
 
                 <button
@@ -326,8 +403,14 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
                   className="flex flex-col items-center justify-center gap-2 p-3 bg-white dark:bg-slate-800 border-2 border-emerald-200 dark:border-emerald-500/30 hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 rounded-xl transition-all cursor-pointer group"
                 >
                   <Upload className="w-6 h-6 text-emerald-500 group-hover:scale-110 transition-transform" />
-                  <span className="text-sm font-bold text-slate-700 dark:text-slate-200">Gönder (Push)</span>
-                  <span className="text-[10px] text-slate-500 text-center">Sizin verinizi gönderip<br/>karşının verisini ezer</span>
+                  <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
+                    Gönder (Push)
+                  </span>
+                  <span className="text-[10px] text-slate-500 text-center">
+                    Sizin verinizi gönderip
+                    <br />
+                    karşının verisini ezer
+                  </span>
                 </button>
               </div>
             </div>
@@ -337,9 +420,12 @@ export function NetworkSyncModal({ onClose }: NetworkSyncModalProps): React.JSX.
           {canUndo && (
             <div className="flex items-center justify-between p-4 bg-amber-50/50 dark:bg-amber-500/5 border border-amber-200/50 dark:border-amber-500/20 rounded-xl">
               <div className="flex flex-col gap-0.5">
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 font-sans">Geri Yükleme Noktası</span>
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 font-sans">
+                  Geri Yükleme Noktası
+                </span>
                 <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
-                  Senkronizasyon öncesi yedek: {backupTime ? new Date(backupTime).toLocaleString('tr-TR') : ''}
+                  Senkronizasyon öncesi yedek:{' '}
+                  {backupTime ? new Date(backupTime).toLocaleString('tr-TR') : ''}
                 </span>
               </div>
               <button

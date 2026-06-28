@@ -1,210 +1,287 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <title>Muayene ve Kabul Tutanağı</title>
-  <style>
-    @page {
-      size: A4;
-      margin: 1.5cm;
-    }
-    body {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 11pt;
-      color: #000;
-      line-height: 1.5;
-      margin: 0;
-      padding: 0;
-      background-color: #fff;
-    }
-    .page-container {
-      max-width: 21cm;
-      box-sizing: border-box;
-      margin: 0 auto;
-      padding: 0.5cm;
-    }
-    .items-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-      font-size: 10pt;
-    }
-    .items-table th, .items-table td {
-      border: 1px solid #a0a0a0;
-      padding: 6px 8px;
-    }
-    .items-table th {
-      background-color: #dcdcdc;
-      font-weight: bold;
-      text-align: center;
-    }
-    .items-table td.center {
-      text-align: center;
-    }
-    .items-table td.right {
-      text-align: right;
-    }
-    .items-table tr {
-      break-inside: avoid;
-      page-break-inside: avoid;
-    }
-  </style>
-</head>
-<body>
-  <div class="page-container">
-    
-    <table border="0" align="center" style="border-collapse: collapse; width: 100%;">
-      <tbody>
-        <!-- HEADER -->
-        <tr>
-          <td colspan="99" align="center">
-            <table width="100%" style="border-collapse: collapse;">
-              <tbody>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Muayene ve Kabul Tutanağı</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 1.5cm;
+      }
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 11pt;
+        color: #000;
+        line-height: 1.5;
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+      }
+      .page-container {
+        max-width: 21cm;
+        box-sizing: border-box;
+        margin: 0 auto;
+        padding: 0.5cm;
+      }
+      .items-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        font-size: 10pt;
+      }
+      .items-table th,
+      .items-table td {
+        border: 1px solid #a0a0a0;
+        padding: 6px 8px;
+      }
+      .items-table th {
+        background-color: #dcdcdc;
+        font-weight: bold;
+        text-align: center;
+      }
+      .items-table td.center {
+        text-align: center;
+      }
+      .items-table td.right {
+        text-align: right;
+      }
+      .items-table tr {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <table border="0" align="center" style="border-collapse: collapse; width: 100%">
+        <tbody>
+          <!-- HEADER -->
+          <tr>
+            <td colspan="99" align="center">
+              <table width="100%" style="border-collapse: collapse">
+                <tbody>
+                  <tr>
+                    <td align="left" width="100">
+                      {{#solLogo}}
+                      <img
+                        src="{{solLogo}}"
+                        alt="Sol Logo"
+                        style="max-height: 80px; max-width: 80px; object-fit: contain"
+                      />
+                      {{/solLogo}}
+                    </td>
+                    <td align="center" style="line-height: 1.4">
+                      <b>T.C.<br />{{kurumAdi}}<br /></b>
+                    </td>
+                    <td align="right" width="100">
+                      {{#sagLogo}}
+                      <img
+                        src="{{sagLogo}}"
+                        alt="Sağ Logo"
+                        style="max-height: 80px; max-width: 80px; object-fit: contain"
+                      />
+                      {{/sagLogo}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td colspan="99" style="height: 10px"></td>
+          </tr>
+          <tr>
+            <td
+              colspan="99"
+              align="center"
+              style="font-size: 13pt; font-weight: bold; padding-bottom: 20px"
+            >
+              MUAYENE VE KABUL TUTANAĞI
+            </td>
+          </tr>
+
+          <!-- INFO BLOCK -->
+          <tr>
+            <td colspan="99">
+              <table width="100%" style="border-collapse: collapse">
                 <tr>
-                  <td align="left" width="100">
-                    {{#solLogo}}
-                    <img src="{{solLogo}}" alt="Sol Logo" style="max-height: 80px; max-width: 80px; object-fit: contain;" />
-                    {{/solLogo}}
+                  <td style="font-size: 11pt; line-height: 1.8; vertical-align: top">
+                    Tarih &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+                    {{dosyaTarihi}}<br />
+                    Sayı &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+                    {{evrakSayisi}}
                   </td>
-                  <td align="center" style="line-height: 1.4;">
-                    <b>T.C.<br>{{kurumAdi}}<br></b>
-                  </td>
-                  <td align="right" width="100">
-                    {{#sagLogo}}
-                    <img src="{{sagLogo}}" alt="Sağ Logo" style="max-height: 80px; max-width: 80px; object-fit: contain;" />
-                    {{/sagLogo}}
-                  </td>
+                  <td align="right" style="vertical-align: bottom; font-size: 10pt"></td>
                 </tr>
-              </tbody>
-            </table>
-          </td>
-        </tr>
-        
-        <tr><td colspan="99" style="height: 10px;"></td></tr>
-        <tr><td colspan="99" align="center" style="font-size: 13pt; font-weight: bold; padding-bottom: 20px;">MUAYENE VE KABUL TUTANAĞI</td></tr>
-        
-        <!-- INFO BLOCK -->
-        <tr>
-          <td colspan="99">
-            <table width="100%" style="border-collapse: collapse;">
-              <tr>
-                <td style="font-size: 11pt; line-height: 1.8; vertical-align: top;">
-                  Tarih &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{dosyaTarihi}}<br>
-                  Sayı &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{evrakSayisi}}
-                </td>
-                <td align="right" style="vertical-align: bottom; font-size: 10pt;">
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-        
-        <tr><td colspan="99" style="height: 10px;"></td></tr>
+              </table>
+            </td>
+          </tr>
 
-        <!-- ITEMS TABLE -->
-        <tr>
-          <td colspan="99">
-            <table class="items-table">
-              <thead>
+          <tr>
+            <td colspan="99" style="height: 10px"></td>
+          </tr>
+
+          <!-- ITEMS TABLE -->
+          <tr>
+            <td colspan="99">
+              <table class="items-table">
+                <thead>
+                  <tr>
+                    <th style="width: 4%">Sıra</th>
+                    <th>Malzeme Adı</th>
+                    <th>Özelliği</th>
+                    <th>Birimi</th>
+                    <th>Miktarı</th>
+                    <th>Bugüne Kadar Kabul Edilen</th>
+                    <th>Bugün Kabul Edilen Miktar</th>
+                    <th>Kalan Miktar</th>
+                    <th>Teslim Yeri</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#ihtiyacKalemleri}}
+                  <tr>
+                    <td class="center">{{siraNo}}</td>
+                    <td>{{malzemeAdi}}</td>
+                    <td>{{ozelligi}}</td>
+                    <td class="center">{{birimi}}</td>
+                    <td class="right">{{miktar}}</td>
+                    <td class="right">
+                      {{buguneKadarKabulEdilen}}{{^buguneKadarKabulEdilen}}0{{/buguneKadarKabulEdilen}}
+                    </td>
+                    <td class="right">
+                      {{bugunKabulEdilenMiktar}}{{^bugunKabulEdilenMiktar}}{{miktar}}{{/bugunKabulEdilenMiktar}}
+                    </td>
+                    <td class="right">{{kalanMiktar}}{{^kalanMiktar}}0{{/kalanMiktar}}</td>
+                    <td>{{teslimYeri}}{{^teslimYeri}}Belediye Deposu{{/teslimYeri}}</td>
+                  </tr>
+                  {{/ihtiyacKalemleri}}
+                </tbody>
+              </table>
+            </td>
+          </tr>
+
+          <!-- NOT -->
+          <tr>
+            <td colspan="99" style="padding-top: 15px; font-size: 10.5pt; text-align: left">
+              <b>Not:</b> {{tutanakNotu}}{{^tutanakNotu}}Belediye Deposundan Yeni mahalle
+              mahallesindeki yapımı devam eden düğün soluna aktarıldı{{/tutanakNotu}}
+            </td>
+          </tr>
+
+          <tr>
+            <td colspan="99" style="height: 20px"></td>
+          </tr>
+
+          <!-- TUTANAK PARAGRAPH -->
+          <tr>
+            <td
+              colspan="99"
+              style="text-align: justify; line-height: 1.6; font-size: 11pt; padding-bottom: 25px"
+            >
+              {{yukleniciFirma}} tarafından
+              {{#faturaTarihi}}{{faturaTarihi}}{{/faturaTarihi}}{{^faturaTarihi}}..../..../20....{{/faturaTarihi}}
+              tarih ve
+              {{#faturaNo}}{{faturaNo}}{{/faturaNo}}{{^faturaNo}}................{{/faturaNo}} no’lu
+              faturayla KDV hariç {{genelToplam}} TL ye doğrudan temin yoluyla alınan,
+              {{#kabulTarihi}}{{kabulTarihi}}{{/kabulTarihi}}{{^kabulTarihi}}{{dosyaTarihi}}{{/kabulTarihi}}
+              tarihinde teslim edilen ve yukarıda cins, birim ve miktarı belirtilen mal/hizmet
+              kalemleri, doğrudan temin kapsamında istenilen şartlara göre tarafımızca muayene
+              edilmiştir. Söz konusu mal kalemlerinden niteliklere uygun olanların (kabul
+              edilenlerin) teslim alınmasında ve kullanılmasında herhangi bir sakınca yoktur.
+            </td>
+          </tr>
+
+          <!-- SIGNATURES BLOCK -->
+          <tr>
+            <td
+              colspan="99"
+              align="center"
+              style="font-weight: bold; padding-bottom: 15px; font-size: 11pt"
+            >
+              Muayene Komisyon Görevlileri
+            </td>
+          </tr>
+          <tr>
+            <td colspan="99">
+              <table
+                width="100%"
+                style="border-collapse: collapse; text-align: center; font-size: 11pt"
+              >
                 <tr>
-                  <th style="width: 4%;">Sıra</th>
-                  <th>Malzeme Adı</th>
-                  <th>Özelliği</th>
-                  <th>Birimi</th>
-                  <th>Miktarı</th>
-                  <th>Bugüne Kadar Kabul Edilen</th>
-                  <th>Bugün Kabul Edilen Miktar</th>
-                  <th>Kalan Miktar</th>
-                  <th>Teslim Yeri</th>
-                </tr>
-              </thead>
-              <tbody>
-                {{#ihtiyacKalemleri}}
-                <tr>
-                  <td class="center">{{siraNo}}</td>
-                  <td>{{malzemeAdi}}</td>
-                  <td>{{ozelligi}}</td>
-                  <td class="center">{{birimi}}</td>
-                  <td class="right">{{miktar}}</td>
-                  <td class="right">{{buguneKadarKabulEdilen}}{{^buguneKadarKabulEdilen}}0{{/buguneKadarKabulEdilen}}</td>
-                  <td class="right">{{bugunKabulEdilenMiktar}}{{^bugunKabulEdilenMiktar}}{{miktar}}{{/bugunKabulEdilenMiktar}}</td>
-                  <td class="right">{{kalanMiktar}}{{^kalanMiktar}}0{{/kalanMiktar}}</td>
-                  <td>{{teslimYeri}}{{^teslimYeri}}Belediye Deposu{{/teslimYeri}}</td>
-                </tr>
-                {{/ihtiyacKalemleri}}
-              </tbody>
-            </table>
-          </td>
-        </tr>
-
-        <!-- NOT -->
-        <tr>
-          <td colspan="99" style="padding-top: 15px; font-size: 10.5pt; text-align: left;">
-            <b>Not:</b> {{tutanakNotu}}{{^tutanakNotu}}Belediye Deposundan Yeni mahalle mahallesindeki yapımı devam eden düğün soluna aktarıldı{{/tutanakNotu}}
-          </td>
-        </tr>
-
-        <tr><td colspan="99" style="height: 20px;"></td></tr>
-
-        <!-- TUTANAK PARAGRAPH -->
-        <tr>
-          <td colspan="99" style="text-align: justify; line-height: 1.6; font-size: 11pt; padding-bottom: 25px;">
-            {{yukleniciFirma}} tarafından {{#faturaTarihi}}{{faturaTarihi}}{{/faturaTarihi}}{{^faturaTarihi}}..../..../20....{{/faturaTarihi}} tarih ve {{#faturaNo}}{{faturaNo}}{{/faturaNo}}{{^faturaNo}}................{{/faturaNo}} no’lu faturayla KDV hariç {{genelToplam}} TL ye doğrudan temin yoluyla alınan, {{#kabulTarihi}}{{kabulTarihi}}{{/kabulTarihi}}{{^kabulTarihi}}{{dosyaTarihi}}{{/kabulTarihi}} tarihinde teslim edilen ve yukarıda cins, birim ve miktarı belirtilen mal/hizmet kalemleri, doğrudan temin kapsamında istenilen şartlara göre tarafımızca muayene edilmiştir. Söz konusu mal kalemlerinden niteliklere uygun olanların (kabul edilenlerin) teslim alınmasında ve kullanılmasında herhangi bir sakınca yoktur.
-          </td>
-        </tr>
-
-        <!-- SIGNATURES BLOCK -->
-        <tr>
-          <td colspan="99" align="center" style="font-weight: bold; padding-bottom: 15px; font-size: 11pt;">
-            Muayene Komisyon Görevlileri
-          </td>
-        </tr>
-        <tr>
-          <td colspan="99">
-            <table width="100%" style="border-collapse: collapse; text-align: center; font-size: 11pt;">
-              <tr>
-                {{#muayeneKomisyonu}}
-                <td align="center" style="width: 33%; padding: 10px; vertical-align: top; line-height: 1.4;">
-                  <span>{{gorevi}}</span><br>
-                  <span style="font-weight: bold;">{{adSoyad}}</span><br>
-                  <span>{{unvan}}</span>
-                </td>
-                {{/muayeneKomisyonu}}
-                {{^muayeneKomisyonu}}
-                  {{#onaylayanlar}}
-                  <td align="center" style="width: 50%; padding: 10px; vertical-align: top; line-height: 1.4;">
-                    <span style="font-weight: bold;">{{onaylayanPersonelAdi}}</span><br>
+                  {{#muayeneKomisyonu}}
+                  <td
+                    align="center"
+                    style="width: 33%; padding: 10px; vertical-align: top; line-height: 1.4"
+                  >
+                    <span>{{gorevi}}</span><br />
+                    <span style="font-weight: bold">{{adSoyad}}</span><br />
+                    <span>{{unvan}}</span>
+                  </td>
+                  {{/muayeneKomisyonu}} {{^muayeneKomisyonu}} {{#onaylayanlar}}
+                  <td
+                    align="center"
+                    style="width: 50%; padding: 10px; vertical-align: top; line-height: 1.4"
+                  >
+                    <span style="font-weight: bold">{{onaylayanPersonelAdi}}</span><br />
                     <span>{{onaylayanPersonelUnvan}}</span>
                   </td>
-                  {{/onaylayanlar}}
-                {{/muayeneKomisyonu}}
-              </tr>
-            </table>
-          </td>
-        </tr>
+                  {{/onaylayanlar}} {{/muayeneKomisyonu}}
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-        <!-- OLUR SECTION -->
-        {{#olurGoster}}
-        <tr><td colspan="99" style="height: 30px;"></td></tr>
-        <tr>
-          <td colspan="99" align="center">
-            <table style="border-collapse: collapse; text-align: center; line-height: 1.4; font-size: 11pt; margin: 0 auto;">
-              <tr>
-                <td align="center">
-                  <b>OLUR</b> <input type="checkbox" checked style="vertical-align: middle; pointer-events: none;"><br><br>
-                  <input type="text" value="{{dosyaTarihi}}" style="text-align: center; width: 100px; font-family: inherit; font-size: inherit; border: 1px solid #7a7a7a; padding: 2px 5px;" readonly><br>
-                  <span style="font-weight: bold; display: block; margin-top: 10px;">{{baskanAdi}}</span>
-                  <span>{{baskanUnvan}}</span>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-        {{/olurGoster}}
-
-      </tbody>
-    </table>
-
-  </div>
-</body>
+          <!-- OLUR SECTION -->
+          {{#olurGoster}}
+          <tr>
+            <td colspan="99" style="height: 30px"></td>
+          </tr>
+          <tr>
+            <td colspan="99" align="center">
+              <table
+                style="
+                  border-collapse: collapse;
+                  text-align: center;
+                  line-height: 1.4;
+                  font-size: 11pt;
+                  margin: 0 auto;
+                "
+              >
+                <tr>
+                  <td align="center">
+                    <b>OLUR</b>
+                    <input
+                      type="checkbox"
+                      checked
+                      style="vertical-align: middle; pointer-events: none"
+                    /><br /><br />
+                    <input
+                      type="text"
+                      value="{{dosyaTarihi}}"
+                      style="
+                        text-align: center;
+                        width: 100px;
+                        font-family: inherit;
+                        font-size: inherit;
+                        border: 1px solid #7a7a7a;
+                        padding: 2px 5px;
+                      "
+                      readonly
+                    /><br />
+                    <span style="font-weight: bold; display: block; margin-top: 10px"
+                      >{{baskanAdi}}</span
+                    >
+                    <span>{{baskanUnvan}}</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          {{/olurGoster}}
+        </tbody>
+      </table>
+    </div>
+  </body>
 </html>

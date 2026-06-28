@@ -14,18 +14,22 @@ export default function KomisyonDetayScreen(): React.JSX.Element {
   const [isAtaModalOpen, setIsAtaModalOpen] = useState(false)
   const [ataRoleId, setAtaRoleId] = useState<number | null>(null)
 
-  const { data: komisyon, isLoading, error } = useQuery({
+  const {
+    data: komisyon,
+    isLoading,
+    error
+  } = useQuery({
     queryKey: ['komisyon_detay', komisyonId],
     queryFn: async () => {
       if (!komisyonId) throw new Error('Komisyon ID bulunamadı')
-      
+
       const res = await window.electron.ipcRenderer.invoke(
         'db:query',
         'SELECT * FROM TANIM_Komisyon WHERE id = ?',
         [komisyonId]
       )
       if (!res.success || res.data.length === 0) throw new Error('Komisyon bulunamadı')
-      
+
       const komisyonData = res.data[0]
 
       const membersRes = await window.electron.ipcRenderer.invoke(
@@ -37,7 +41,7 @@ export default function KomisyonDetayScreen(): React.JSX.Element {
          ORDER BY u.id ASC`,
         [komisyonId]
       )
-      
+
       if (membersRes.success) {
         komisyonData.uyeler = membersRes.data
       } else {
@@ -102,42 +106,57 @@ export default function KomisyonDetayScreen(): React.JSX.Element {
 
       <div className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm overflow-hidden flex flex-col">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200">Görevli Personeller</h2>
+          <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200">
+            Görevli Personeller
+          </h2>
           <span className="text-xs font-semibold px-2.5 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg">
             Toplam {komisyon.uyeler?.length || 0} Kontenjan
           </span>
         </div>
-        
+
         <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
           {komisyon.uyeler && komisyon.uyeler.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {komisyon.uyeler.map((uye: any, idx: number) => (
-                <div key={idx} className="flex flex-col p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-shadow">
+                <div
+                  key={idx}
+                  className="flex flex-col p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-shadow"
+                >
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-bold text-base text-slate-800 dark:text-slate-200">
-                      {uye.personel_id ? uye.ad_soyad : <span className="text-slate-400 italic">Boş Kontenjan</span>}
+                      {uye.personel_id ? (
+                        uye.ad_soyad
+                      ) : (
+                        <span className="text-slate-400 italic">Boş Kontenjan</span>
+                      )}
                     </span>
                     {uye.asil_mi === 1 ? (
-                      <span className="text-[10px] bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Asil</span>
+                      <span className="text-[10px] bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                        Asil
+                      </span>
                     ) : (
-                      <span className="text-[10px] bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Yedek</span>
+                      <span className="text-[10px] bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                        Yedek
+                      </span>
                     )}
                   </div>
-                  
+
                   <div className="flex items-center gap-1.5 mt-2 text-xs text-slate-600 dark:text-slate-400 font-medium">
                     {uye.personel_id && (
                       <>
-                        <span className="bg-slate-200/50 dark:bg-slate-700/50 px-1.5 py-0.5 rounded text-slate-700 dark:text-slate-300">{uye.unvan}</span>
+                        <span className="bg-slate-200/50 dark:bg-slate-700/50 px-1.5 py-0.5 rounded text-slate-700 dark:text-slate-300">
+                          {uye.unvan}
+                        </span>
                         <span className="text-slate-300 dark:text-slate-600">•</span>
                       </>
                     )}
                     <span className="text-blue-600 dark:text-blue-400">{uye.gorev_adi}</span>
                   </div>
-                  
+
                   <div className="mt-4 pt-4 border-t border-slate-200/60 dark:border-slate-700/50">
                     {!uye.personel_id ? (
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="w-full text-xs py-2 h-auto rounded-lg text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-200"
                         onClick={() => {
                           setAtaRoleId(uye.role_id)
@@ -148,8 +167,8 @@ export default function KomisyonDetayScreen(): React.JSX.Element {
                       </Button>
                     ) : (
                       <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           className="flex-1 text-xs py-2 h-auto rounded-lg text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-200 bg-white dark:bg-slate-900"
                           onClick={() => {
                             setAtaRoleId(uye.role_id)
@@ -158,14 +177,20 @@ export default function KomisyonDetayScreen(): React.JSX.Element {
                         >
                           Değiştir
                         </Button>
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           className="flex-1 text-xs py-2 h-auto rounded-lg text-rose-600 hover:text-rose-700 hover:bg-rose-50 border-rose-200 bg-white dark:bg-slate-900"
                           onClick={async () => {
-                            if(confirm('Personeli bu görevden almak istediğinize emin misiniz?')) {
-                              const res = await window.electron.ipcRenderer.invoke('db:run', 'UPDATE TANIM_KomisyonUye SET personel_id = NULL WHERE id = ?', [uye.role_id])
+                            if (confirm('Personeli bu görevden almak istediğinize emin misiniz?')) {
+                              const res = await window.electron.ipcRenderer.invoke(
+                                'db:run',
+                                'UPDATE TANIM_KomisyonUye SET personel_id = NULL WHERE id = ?',
+                                [uye.role_id]
+                              )
                               if (res.success) {
-                                queryClient.invalidateQueries({ queryKey: ['komisyon_detay', komisyonId] })
+                                queryClient.invalidateQueries({
+                                  queryKey: ['komisyon_detay', komisyonId]
+                                })
                               }
                             }
                           }}

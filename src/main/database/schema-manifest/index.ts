@@ -20,8 +20,27 @@ import v1alpha59 from './1.0.0-alpha.59.yaml?raw'
 import v1beta8 from './1.0.0-beta.8.yaml?raw'
 
 // Sıralama schema_version'a göre ascending (küçükten büyüğe) olmalıdır. Sıra şart!
-export const manifestsRaw = [v1alpha1, v1alpha2, v1alpha3, v1alpha4, v1alpha5, v1alpha6, v1alpha7, v1alpha8, v1alpha9, v1alpha10, v1alpha11, v1alpha12, v1alpha13, v1alpha16, v1alpha17, v1alpha18, v1alpha19, v1alpha59, v1beta8]
+export const manifestsRaw = [
+  v1alpha1,
+  v1alpha2,
+  v1alpha3,
+  v1alpha4,
+  v1alpha5,
+  v1alpha6,
+  v1alpha7,
+  v1alpha8,
+  v1alpha9,
+  v1alpha10,
+  v1alpha11,
+  v1alpha12,
+  v1alpha13,
+  v1alpha16,
+  v1alpha17,
+  v1alpha18,
+  v1alpha19,
+  v1alpha59,
+  v1beta8
+]
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const manifests = manifestsRaw.map(raw => yaml.load(raw) as any)
-
+export const manifests = manifestsRaw.map((raw) => yaml.load(raw) as any)

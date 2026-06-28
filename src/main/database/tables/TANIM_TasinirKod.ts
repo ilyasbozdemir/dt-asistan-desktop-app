@@ -11,8 +11,18 @@ export const TANIM_TasinirKod = {
     { name: 'duzey_5', type: 'TEXT', description: 'Duzey 5' },
     { name: 'tam_kod', type: 'TEXT', unique: true, notNull: true, description: 'Tam Kod' },
     { name: 'aciklama', type: 'TEXT', notNull: true, description: 'Aciklama' },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
+    {
+      name: 'created_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Created At'
+    },
+    {
+      name: 'updated_at',
+      type: 'DATETIME',
+      default: 'CURRENT_TIMESTAMP',
+      description: 'Updated At'
+    }
   ],
   initialData: []
 }

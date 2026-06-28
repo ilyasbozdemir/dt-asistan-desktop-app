@@ -62,7 +62,7 @@ export function useDeleteOlcuBirimi() {
         'SELECT ad FROM TANIM_OlcuBirimi WHERE id = ?',
         [id]
       )
-      
+
       if (birimRes.success && birimRes.data && birimRes.data.length > 0) {
         const ad = birimRes.data[0].ad
         // Check if used in TANIM_Kalem
@@ -72,7 +72,11 @@ export function useDeleteOlcuBirimi() {
           [ad]
         )
         if (checkRes.success && checkRes.data && checkRes.data[0].count > 0) {
-          throw new Error('Bu ölçü birimi ' + checkRes.data[0].count + ' adet malzemede kullanıldığı için silinemez! Bunun yerine "Pasif" duruma getirebilirsiniz.')
+          throw new Error(
+            'Bu ölçü birimi ' +
+              checkRes.data[0].count +
+              ' adet malzemede kullanıldığı için silinemez! Bunun yerine "Pasif" duruma getirebilirsiniz.'
+          )
         }
       }
 

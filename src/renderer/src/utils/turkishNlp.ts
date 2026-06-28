@@ -44,7 +44,6 @@ export class TurkishNLP {
     return 'e'
   }
 
-
   public static addGenitive(word: string, isProperNoun: boolean = false): string {
     if (!word) return ''
     const lastVowel = this.getLastVowel(word)
@@ -52,7 +51,6 @@ export class TurkishNLP {
     const suffix = this.endsWithVowel(word) ? `n${iType}n` : `${iType}n`
     return isProperNoun ? `${word}'${suffix}` : `${word}${suffix}`
   }
-
 
   public static addDative(word: string, isProperNoun: boolean = false): string {
     if (!word) return ''
@@ -72,7 +70,6 @@ export class TurkishNLP {
     return isProperNoun ? `${word}'${suffix}` : `${mutatedWord}${suffix}`
   }
 
-
   public static addAccusative(word: string, isProperNoun: boolean = false): string {
     if (!word) return ''
     const lastVowel = this.getLastVowel(word)
@@ -90,7 +87,6 @@ export class TurkishNLP {
     return isProperNoun ? `${word}'${suffix}` : `${mutatedWord}${suffix}`
   }
 
-
   public static addLocative(word: string, isProperNoun: boolean = false): string {
     if (!word) return ''
     const lastVowel = this.getLastVowel(word)
@@ -99,7 +95,6 @@ export class TurkishNLP {
     const suffix = `${dChar}${aType}`
     return isProperNoun ? `${word}'${suffix}` : `${word}${suffix}`
   }
-
 
   public static addAblative(word: string, isProperNoun: boolean = false): string {
     if (!word) return ''
