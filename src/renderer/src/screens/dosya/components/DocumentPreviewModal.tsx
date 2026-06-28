@@ -181,7 +181,13 @@ export function DocumentPreviewModal({
   ])
 
   // Orijinal bağlamdaki (mergedContext) verilerden SADECE şablonda kullanılan form alanlarını üret
-  const allowedFormKeys = ['sunulacakMakamAdi', 'tarih', 'dosyaTarihi', 'ihtiyacYeri']
+  const allowedFormKeys = [
+    'sunulacakMakamAdi',
+    'evrakSayisi',
+    'tarih',
+    'dosyaTarihi',
+    'ihtiyacYeri'
+  ]
   const formFields = Object.keys(mergedContext || {}).filter(
     (k) => k !== 'icerik' && usedVars.has(k) && allowedFormKeys.includes(k)
   )
