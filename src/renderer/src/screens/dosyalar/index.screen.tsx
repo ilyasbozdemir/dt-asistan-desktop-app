@@ -6,6 +6,7 @@ import {
   Search,
   Plus,
   FileText,
+  FolderOpen,
   ChevronRight,
   Trash2,
   Edit,
@@ -454,6 +455,10 @@ export default function DosyalarScreen(): React.ReactNode {
                 <div
                   key={dosya.id}
                   onClick={() => setActiveDosyaId(dosya.id)}
+                  onDoubleClick={() => {
+                    setActiveDosyaId(dosya.id)
+                    navigate({ to: '/takip' })
+                  }}
                   className={cn(
                     'bg-white dark:bg-slate-900 border rounded-2xl cursor-pointer hover:shadow-lg transition-all flex flex-col group relative overflow-hidden',
                     activeDosyaId === dosya.id
@@ -593,6 +598,10 @@ export default function DosyalarScreen(): React.ReactNode {
                       <tr
                         key={dosya.id}
                         onClick={() => setActiveDosyaId(dosya.id)}
+                        onDoubleClick={() => {
+                          setActiveDosyaId(dosya.id)
+                          navigate({ to: '/takip' })
+                        }}
                         className={cn(
                           'hover:bg-slate-50/50 dark:hover:bg-slate-800/30 cursor-pointer transition-colors',
                           activeDosyaId === dosya.id && 'bg-blue-50/30 dark:bg-blue-900/10',
@@ -846,6 +855,18 @@ export default function DosyalarScreen(): React.ReactNode {
 
                 {/* Aksiyon Butonları */}
                 <div className="p-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                  {selectedDosya.is_deleted !== 1 && (
+                    <button
+                      onClick={() => {
+                        setActiveDosyaId(selectedDosya.id)
+                        navigate({ to: '/takip' })
+                      }}
+                      className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow-md"
+                    >
+                      <FolderOpen size={14} />
+                      Dosyayı Aç / Süreç Takibi
+                    </button>
+                  )}
                   <div className="grid grid-cols-2 gap-2">
                     {selectedDosya.is_deleted !== 1 && selectedDosya.is_ekap_sent !== 1 && (
                       <button
