@@ -508,6 +508,7 @@ if (!gotTheLock && !isMultiInstance) {
         height: 800,
         minWidth: 800,
         minHeight: 600,
+        show: false,
         autoHideMenuBar: false,
         title: data.title || 'Sorgulama Ekranı',
         icon: icon,
@@ -518,6 +519,10 @@ if (!gotTheLock && !isMultiInstance) {
       })
       secondaryWindows.add(newWindow)
       newWindow.on('closed', () => secondaryWindows.delete(newWindow))
+      newWindow.once('ready-to-show', () => {
+        newWindow.show()
+        newWindow.focus()
+      })
       newWindow.loadURL(data.url)
     })
 
@@ -529,6 +534,7 @@ if (!gotTheLock && !isMultiInstance) {
           height: 750,
           minWidth: 800,
           minHeight: 600,
+          show: false,
           autoHideMenuBar: true,
           title: data.title || 'DT Asistan — Detay',
           icon: icon,
@@ -540,6 +546,10 @@ if (!gotTheLock && !isMultiInstance) {
 
         secondaryWindows.add(newWindow)
         newWindow.on('closed', () => secondaryWindows.delete(newWindow))
+        newWindow.once('ready-to-show', () => {
+          newWindow.show()
+          newWindow.focus()
+        })
 
         if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
           newWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + data.path + data.search)
@@ -571,6 +581,7 @@ if (!gotTheLock && !isMultiInstance) {
           height: 800,
           minWidth: 800,
           minHeight: 600,
+          show: false,
           autoHideMenuBar: true,
           frame: false,
           titleBarStyle: 'hidden',
@@ -586,6 +597,10 @@ if (!gotTheLock && !isMultiInstance) {
         dosyaWindows.set(data.dosyaId, newWindow)
         newWindow.on('closed', () => {
           dosyaWindows.delete(data.dosyaId)
+        })
+        newWindow.once('ready-to-show', () => {
+          newWindow.show()
+          newWindow.focus()
         })
 
         const wpParam = data.workspacePath ? '&wp=' + encodeURIComponent(data.workspacePath) : ''
@@ -613,6 +628,7 @@ if (!gotTheLock && !isMultiInstance) {
           height: 750,
           minWidth: 800,
           minHeight: 600,
+          show: false,
           autoHideMenuBar: true,
           frame: false,
           titleBarStyle: 'hidden',
@@ -627,6 +643,10 @@ if (!gotTheLock && !isMultiInstance) {
 
         secondaryWindows.add(newWindow)
         newWindow.on('closed', () => secondaryWindows.delete(newWindow))
+        newWindow.once('ready-to-show', () => {
+          newWindow.show()
+          newWindow.focus()
+        })
 
         const wpParam = data.workspacePath ? '&wp=' + encodeURIComponent(data.workspacePath) : ''
         if (is.dev && process.env['ELECTRON_RENDERER_URL']) {

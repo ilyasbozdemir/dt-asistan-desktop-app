@@ -457,7 +457,7 @@ export default function DosyalarScreen(): React.ReactNode {
                   onClick={() => setActiveDosyaId(dosya.id)}
                   onDoubleClick={() => {
                     setActiveDosyaId(dosya.id)
-                    navigate({ to: '/takip' })
+                    navigate({ to: '/dosya' })
                   }}
                   className={cn(
                     'bg-white dark:bg-slate-900 border rounded-2xl cursor-pointer hover:shadow-lg transition-all flex flex-col group relative overflow-hidden',
@@ -600,7 +600,7 @@ export default function DosyalarScreen(): React.ReactNode {
                         onClick={() => setActiveDosyaId(dosya.id)}
                         onDoubleClick={() => {
                           setActiveDosyaId(dosya.id)
-                          navigate({ to: '/takip' })
+                          navigate({ to: '/dosya' })
                         }}
                         className={cn(
                           'hover:bg-slate-50/50 dark:hover:bg-slate-800/30 cursor-pointer transition-colors',
@@ -859,12 +859,12 @@ export default function DosyalarScreen(): React.ReactNode {
                     <button
                       onClick={() => {
                         setActiveDosyaId(selectedDosya.id)
-                        navigate({ to: '/takip' })
+                        navigate({ to: '/dosya' })
                       }}
                       className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow-md"
                     >
                       <FolderOpen size={14} />
-                      Dosyayı Aç / Süreç Takibi
+                      Dosyayı Aç
                     </button>
                   )}
                   <div className="grid grid-cols-2 gap-2">
