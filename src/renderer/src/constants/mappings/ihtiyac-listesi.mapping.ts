@@ -79,7 +79,7 @@ export const IhtiyacListesiMapping: ProcessMapping = {
     varsayilan: '[E-Posta Belirtilmedi]',
     aciklama: 'Kurum e-posta adresi'
   },
-   kurumKep: {
+  kurumKep: {
     tablo: 'TANIM_Kurum',
     sutun: 'kep_adresi',
     varsayilan: '[Kep Adresi Belirtilmedi]',

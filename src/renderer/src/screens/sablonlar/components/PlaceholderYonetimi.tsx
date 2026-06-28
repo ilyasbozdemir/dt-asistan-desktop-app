@@ -8,7 +8,8 @@ import {
   Plus,
   Pencil,
   ChevronRight,
-  CheckCircle2
+  CheckCircle2,
+  ChevronDown
 } from 'lucide-react'
 import { Button } from '../../../components/ui/Button'
 import { cn } from '../../../utils/cn'
@@ -459,6 +460,19 @@ export function PlaceholderYonetimi(): React.JSX.Element {
   const { data: sablonlar = [] } = useSablonlar()
   const [allSettings, setAllSettings] = useState<Record<string, string>>({})
   const [editingProcess, setEditingProcess] = useState<(typeof subPagesMapping)[0] | null>(null)
+  const [expandedStages, setExpandedStages] = useState<Record<number, boolean>>({
+    1: true,
+    2: true,
+    3: true,
+    4: true
+  })
+
+  const toggleStage = (stageNum: number) => {
+    setExpandedStages((prev) => ({
+      ...prev,
+      [stageNum]: !prev[stageNum]
+    }))
+  }
 
   const loadAllSettings = async () => {
     try {
@@ -527,29 +541,51 @@ export function PlaceholderYonetimi(): React.JSX.Element {
 
       {/* SÜREÇ LİSTESİ */}
       <div className="flex-1 overflow-y-auto flex flex-col gap-4">
-        {Object.entries(stageGroups).map(([stage, processes]) => (
-          <div
-            key={stage}
-            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden"
-          >
-            <div className="px-4 py-3 bg-slate-50/80 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800">
-              <h3 className="font-bold text-slate-700 dark:text-slate-300 text-sm flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0">
-                  {stage}
-                </span>
-                {stageLabels[Number(stage)] || `Aşama ${stage}`}
-              </h3>
+        {Object.entries(stageGroups).map(([stage, processes]) => {
+          const stageNum = Number(stage)
+          const isExpanded = expandedStages[stageNum]
+          return (
+            <div
+              key={stage}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden"
+            >
+              <div
+                onClick={() => toggleStage(stageNum)}
+                className="px-4 py-3 bg-slate-50/80 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between cursor-pointer select-none hover:bg-slate-100/50 dark:hover:bg-slate-900/50 transition-colors"
+              >
+                <h3 className="font-bold text-slate-700 dark:text-slate-300 text-sm flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0">
+                    {stage}
+                  </span>
+                  {stageLabels[stageNum] || `Aşama ${stage}`}
+                </h3>
+                <ChevronDown
+                  className={cn(
+                    'w-4 h-4 text-slate-400 transition-transform duration-300',
+                    isExpanded ? 'transform rotate-180' : ''
+                  )}
+                />
+              </div>
+              <div
+                className={cn(
+                  'grid transition-all duration-300 ease-in-out',
+                  isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'
+                )}
+              >
+                <div className="overflow-hidden divide-y divide-slate-100 dark:divide-slate-800/60">
+                  {processes.map((p) => (
+                    <SurecSatiri
+                      key={p.path}
+                      process={p}
+                      boundSablonAd={getBoundSablonAd(p.path)}
+                      onEdit={() => setEditingProcess(p)}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
-            {processes.map((p) => (
-              <SurecSatiri
-                key={p.path}
-                process={p}
-                boundSablonAd={getBoundSablonAd(p.path)}
-                onEdit={() => setEditingProcess(p)}
-              />
-            ))}
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

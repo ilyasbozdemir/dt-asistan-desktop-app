@@ -1172,14 +1172,15 @@ export default function YeniDosyaScreen(): React.JSX.Element {
                           const oldDate = formData.dosya_acilis_tarihi
                           const newYear = newDate ? new Date(newDate).getFullYear() : null
                           const oldYear = oldDate ? new Date(oldDate).getFullYear() : null
-                          
+
                           let updatedTeminNo = formData.temin_no
                           if (newYear && newYear !== oldYear) {
                             const oldYearStr = oldYear ? oldYear.toString() : ''
-                            const isOldPattern = !formData.temin_no || 
-                              formData.temin_no.startsWith(`${oldYearStr}/`) || 
+                            const isOldPattern =
+                              !formData.temin_no ||
+                              formData.temin_no.startsWith(`${oldYearStr}/`) ||
                               formData.temin_no.startsWith(`DT${oldYearStr}/`)
-                            
+
                             if (isOldPattern) {
                               updatedTeminNo = getNextTeminNo(newYear)
                             }
@@ -1336,10 +1337,11 @@ export default function YeniDosyaScreen(): React.JSX.Element {
 
                           if (newYear && newYear !== oldYear) {
                             const oldYearStr = oldYear ? oldYear.toString() : ''
-                            const isOldPattern = !formData.temin_no || 
-                              formData.temin_no.startsWith(`${oldYearStr}/`) || 
+                            const isOldPattern =
+                              !formData.temin_no ||
+                              formData.temin_no.startsWith(`${oldYearStr}/`) ||
                               formData.temin_no.startsWith(`DT${oldYearStr}/`)
-                            
+
                             if (isOldPattern) {
                               updatedTeminNo = getNextTeminNo(newYear)
                             }

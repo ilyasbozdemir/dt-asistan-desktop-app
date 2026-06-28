@@ -176,24 +176,32 @@ function seedTemplates(db: Database.Database): void {
     const ROUTE_BY_DOSYA_ADI: Record<string, string> = {
       // Komisyon
       'fiyat-arastirma-komisyonu-atama': '/dosya/komisyon/fiyat-arastirma',
+      'komisyon-gorevlendirme-onayi': '/dosya/komisyon/fiyat-arastirma',
       'muayene-kabul-komisyonu-atama': '/dosya/komisyon/muayene-kabul',
+      'muayene-kabul-komisyonu': '/dosya/komisyon/muayene-kabul',
       'fiyat-arastirma-ve-muayene-komisyonu': '/dosya/komisyon/fiyat-muayene',
       'komisyon-atama-onay-eki': '/dosya/komisyon/onay-eki',
+      'komisyon-gorevlendirme-onayi-eki': '/dosya/komisyon/onay-eki',
       // Malzemeler
       'ihtiyac-listesi': '/dosya/malzemeler/liste',
       'ihtiyac-talep-formu': '/dosya/luzum/talep-formu',
       'malzeme-hizmet-kalem-listesi': '/dosya/malzemeler/liste',
       // Lüzum
       'luzum-muzekkeresi-belgesi': '/dosya/luzum/belge',
+      'luzum-muzekkeresi': '/dosya/luzum/belge',
       'luzum-onay-eki': '/dosya/luzum/onay-eki',
+      'luzum-muzekkeresi-onay-eki': '/dosya/luzum/onay-eki',
       'teslim-tesellum-belgesi': '/dosya/luzum/teslim-tesellum',
+      'luzum-muzekkeresi-teslim-tesellum': '/dosya/luzum/teslim-tesellum',
       // Firmalar / Maliyet
       'istekli-tedarikci-firmalar': '/dosya/firmalar-maliyet/istekliler',
       'yaklasik-maliyet-hesap-cetveli': '/dosya/firmalar-maliyet/yaklasik',
+      'yaklasik-maliyet-cetveli': '/dosya/firmalar-maliyet/yaklasik',
       'piyasa-fiyat-arastirma-tutanagi': '/dosya/firmalar-maliyet/tutanak',
       // Onay
       'dogrudan-temin-onay-belgesi': '/dosya/onay/dt-onay',
       'ihale-onay-belgesi': '/dosya/onay/ihale-onay',
+      'idare-onay-belgesi': '/dosya/onay/ihale-onay',
       'butce-sorgusu': '/dosya/onay/butce-sorgu',
       // Harcama
       'harcama-talimati': '/dosya/harcama/talimat',
