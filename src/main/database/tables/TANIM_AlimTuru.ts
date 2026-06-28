@@ -3,13 +3,13 @@ export const TANIM_AlimTuru = {
   description: 'Alım Türleri ve Şablon Bağlantıları',
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
-    { name: 'tur_adi', type: 'TEXT', notNull: true },
-    { name: 'ikon', type: 'TEXT' },
-    { name: 'belgeler', type: 'TEXT' },
-    { name: 'sablon_id', type: 'TEXT' },
-    { name: 'aktif_mi', type: 'INTEGER', notNull: true, default: 1 },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' }
+    { name: 'tur_adi', type: 'TEXT', notNull: true, description: 'Tur Adi' },
+    { name: 'ikon', type: 'TEXT', description: 'Ikon' },
+    { name: 'belgeler', type: 'TEXT', description: 'Belgeler' },
+    { name: 'sablon_id', type: 'TEXT', description: 'Sablon ID' },
+    { name: 'aktif_mi', type: 'INTEGER', notNull: true, default: 1, description: 'Aktif mı?' },
+    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
+    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
   ],
   constraints: [
     'UNIQUE(tur_adi)'

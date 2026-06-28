@@ -3,15 +3,15 @@ export const TANIM_KikLimitDonemleri = {
   description: 'KİK Madde 22/d Doğrudan Temin parasal limitlerinin dönemsel olarak tutulduğu tablo',
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
-    { name: 'donem_kodu', type: 'TEXT', notNull: true, unique: true },
-    { name: 'baslangic_tarihi', type: 'TEXT', notNull: true },
-    { name: 'bitis_tarihi', type: 'TEXT', notNull: true },
-    { name: 'buyuksehir_limit', type: 'REAL', notNull: true },
-    { name: 'diger_limit', type: 'REAL', notNull: true },
-    { name: 'guncelleme_orani', type: 'TEXT' },
-    { name: 'kaynak', type: 'TEXT' },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' }
+    { name: 'donem_kodu', type: 'TEXT', notNull: true, unique: true, description: 'Donem Kodu' },
+    { name: 'baslangic_tarihi', type: 'TEXT', notNull: true, description: 'Baslangic Tarihi' },
+    { name: 'bitis_tarihi', type: 'TEXT', notNull: true, description: 'Bitis Tarihi' },
+    { name: 'buyuksehir_limit', type: 'REAL', notNull: true, description: 'Buyuksehir Limit' },
+    { name: 'diger_limit', type: 'REAL', notNull: true, description: 'Diger Limit' },
+    { name: 'guncelleme_orani', type: 'TEXT', description: 'Guncelleme Orani' },
+    { name: 'kaynak', type: 'TEXT', description: 'Kaynak' },
+    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
+    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
   ],
   initialData: [
     {

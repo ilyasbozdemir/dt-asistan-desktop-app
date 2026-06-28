@@ -3,11 +3,11 @@ export const TANIM_KomisyonGorevi = {
   description: 'Komisyon görev/unvan tanımları',
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
-    { name: 'ad', type: 'TEXT', notNull: true },
-    { name: 'aciklama', type: 'TEXT' },
-    { name: 'aktif_mi', type: 'BOOLEAN', notNull: true, default: 1 },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' }
+    { name: 'ad', type: 'TEXT', notNull: true, description: 'Adı' },
+    { name: 'aciklama', type: 'TEXT', description: 'Aciklama' },
+    { name: 'aktif_mi', type: 'BOOLEAN', notNull: true, default: 1, description: 'Aktif mı?' },
+    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
+    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
   ],
   constraints: [
     'UNIQUE(ad)'

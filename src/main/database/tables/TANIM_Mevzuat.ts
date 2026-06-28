@@ -3,17 +3,17 @@ export const TANIM_Mevzuat = {
   description: 'Yıllara göre Doğrudan Temin parasal limitleri ve geçerli vergi oranları',
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
-    { name: 'yil', type: 'INTEGER', notNull: true, unique: true },
-    { name: 'limit_buyuksehir', type: 'REAL', notNull: true, default: 0 },
-    { name: 'limit_diger', type: 'REAL', notNull: true, default: 0 },
-    { name: 'kdv_oran_1', type: 'REAL', notNull: true, default: 1 },
-    { name: 'kdv_oran_2', type: 'REAL', notNull: true, default: 10 },
-    { name: 'kdv_oran_3', type: 'REAL', notNull: true, default: 20 },
-    { name: 'damga_vergisi_orani', type: 'REAL', notNull: true, default: 9.48 },
-    { name: 'karar_pulu_orani', type: 'REAL', notNull: true, default: 5.69 },
-    { name: 'aktif_mi', type: 'BOOLEAN', notNull: true, default: 0 },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' }
+    { name: 'yil', type: 'INTEGER', notNull: true, unique: true, description: 'Yil' },
+    { name: 'limit_buyuksehir', type: 'REAL', notNull: true, default: 0, description: 'Limit Buyuksehir' },
+    { name: 'limit_diger', type: 'REAL', notNull: true, default: 0, description: 'Limit Diger' },
+    { name: 'kdv_oran_1', type: 'REAL', notNull: true, default: 1, description: 'Kdv Oran 1' },
+    { name: 'kdv_oran_2', type: 'REAL', notNull: true, default: 10, description: 'Kdv Oran 2' },
+    { name: 'kdv_oran_3', type: 'REAL', notNull: true, default: 20, description: 'Kdv Oran 3' },
+    { name: 'damga_vergisi_orani', type: 'REAL', notNull: true, default: 9.48, description: 'Damga Vergisi Orani' },
+    { name: 'karar_pulu_orani', type: 'REAL', notNull: true, default: 5.69, description: 'Karar Pulu Orani' },
+    { name: 'aktif_mi', type: 'BOOLEAN', notNull: true, default: 0, description: 'Aktif mı?' },
+    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
+    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
   ],
   initialData: [
     {

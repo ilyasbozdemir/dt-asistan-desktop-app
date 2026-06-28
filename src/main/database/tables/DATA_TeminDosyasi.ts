@@ -2,78 +2,78 @@ export const DATA_TeminDosyasi = {
   name: 'DATA_TeminDosyasi',
   description: 'Doğrudan temin dosyalarının ana kayıtları',
   columns: [
-    { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
-    { name: 'temin_no', type: 'TEXT' }, // Kurum içi numara (Örn: 2026/DT-001)
-    { name: 'dosya_acilis_tarihi', type: 'DATE' },
-    { name: 'butce_yili', type: 'INTEGER' },
-    { name: 'butce_tipi', type: 'TEXT' }, // Tümü | Genel Bütçe | Döner Sermaye | Diğer
-    { name: 'konu', type: 'TEXT', notNull: true }, // Temin konusu (İşin Adı)
-    { name: 'isin_aciklamasi', type: 'TEXT' },
-    { name: 'birim_id', type: 'INTEGER' }, // İhalesi yapılacak birim (TANIM_Birim)
+    { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true, description: 'Kayıt Numarası' },
+    { name: 'temin_no', type: 'TEXT', description: 'Kurum İçi Dosya Numarası' }, // Kurum içi numara (Örn: 2026/DT-001)
+    { name: 'dosya_acilis_tarihi', type: 'DATE', description: 'Dosya Açılış Tarihi' },
+    { name: 'butce_yili', type: 'INTEGER', description: 'Butce Yili' },
+    { name: 'butce_tipi', type: 'TEXT', description: 'Butce Tipi' }, // Tümü | Genel Bütçe | Döner Sermaye | Diğer
+    { name: 'konu', type: 'TEXT', notNull: true, description: 'İşin Adı / Temin Konusu' }, // Temin konusu (İşin Adı)
+    { name: 'isin_aciklamasi', type: 'TEXT', description: 'İşin Detaylı Açıklaması' },
+    { name: 'birim_id', type: 'INTEGER', description: 'Birim ID' }, // İhalesi yapılacak birim (TANIM_Birim)
 
     // Antet / İdari Alanlar
-    { name: 'antet_ek_satir', type: 'TEXT' },
-    { name: 'sunulacak_makam', type: 'TEXT' },
-    { name: 'ihtiyac_yeri', type: 'TEXT' },
+    { name: 'antet_ek_satir', type: 'TEXT', description: 'Antet Ek Satir' },
+    { name: 'sunulacak_makam', type: 'TEXT', description: 'Sunulacak Makam' },
+    { name: 'ihtiyac_yeri', type: 'TEXT', description: 'Ihtiyac Yeri' },
 
     // Mali Kodlar
-    { name: 'e_butce', type: 'TEXT' },
-    { name: 'say2000i', type: 'TEXT' },
-    { name: 'fonksiyonel_kod', type: 'TEXT' },
-    { name: 'muhasebe_birimi', type: 'TEXT' },
-    { name: 'harcama_birimi', type: 'TEXT' },
-    { name: 'finansman_kodu', type: 'TEXT' },
-    { name: 'ekonomik_kod', type: 'TEXT' },
+    { name: 'e_butce', type: 'TEXT', description: 'E Butce' },
+    { name: 'say2000i', type: 'TEXT', description: 'Say2000i' },
+    { name: 'fonksiyonel_kod', type: 'TEXT', description: 'Fonksiyonel Kod' },
+    { name: 'muhasebe_birimi', type: 'TEXT', description: 'Muhasebe Birimi' },
+    { name: 'harcama_birimi', type: 'TEXT', description: 'Harcama Birimi' },
+    { name: 'finansman_kodu', type: 'TEXT', description: 'Finansman Kodu' },
+    { name: 'ekonomik_kod', type: 'TEXT', description: 'Ekonomik Kod' },
 
     // Talep
-    { name: 'talep_tarihi', type: 'DATE' },
-    { name: 'talep_sayisi', type: 'TEXT' },
+    { name: 'talep_tarihi', type: 'DATE', description: 'Talep Tarihi' },
+    { name: 'talep_sayisi', type: 'TEXT', description: 'Talep Sayısı (Belge No)' },
 
     // İhale / Alım Türü
-    { name: 'ihale_tipi', type: 'TEXT', default: "'Doğrudan Temin'" },
-    { name: 'tur', type: 'TEXT', notNull: true, default: "'mal'" }, // Alım Türü: mal | hizmet | yapim_isi | danismanlik
-    { name: 'ihale_sekli', type: 'TEXT' }, // 22/d*, 22/a vb.
+    { name: 'ihale_tipi', type: 'TEXT', default: "'Doğrudan Temin'", description: 'Ihale Tipi' },
+    { name: 'tur', type: 'TEXT', notNull: true, default: "'mal'", description: 'Tur' }, // Alım Türü: mal | hizmet | yapim_isi | danismanlik
+    { name: 'ihale_sekli', type: 'TEXT', description: 'Ihale Sekli' }, // 22/d*, 22/a vb.
 
     // Teklif ve Sözleşme
-    { name: 'teklif_sozlesme_turu', type: 'TEXT' }, // Birim Fiyat | Götürü Bedel
-    { name: 'alt_yuklenici_olacak_mi', type: 'INTEGER', default: 0 },
-    { name: 'kismi_teklif_verilecek_mi', type: 'INTEGER', default: 0 },
-    { name: 'fiyat_farki_dayanagi', type: 'TEXT' },
-    { name: 'yatirim_proje_no', type: 'TEXT' },
-    { name: 'avans_verilecek_mi', type: 'INTEGER', default: 0 },
+    { name: 'teklif_sozlesme_turu', type: 'TEXT', description: 'Teklif Sozlesme Turu' }, // Birim Fiyat | Götürü Bedel
+    { name: 'alt_yuklenici_olacak_mi', type: 'INTEGER', default: 0, description: 'Alt Yuklenici Olacak mı?' },
+    { name: 'kismi_teklif_verilecek_mi', type: 'INTEGER', default: 0, description: 'Kismi Teklif Verilecek mı?' },
+    { name: 'fiyat_farki_dayanagi', type: 'TEXT', description: 'Fiyat Farki Dayanagi' },
+    { name: 'yatirim_proje_no', type: 'TEXT', description: 'Yatirim Proje Numarası' },
+    { name: 'avans_verilecek_mi', type: 'INTEGER', default: 0, description: 'Avans Verilecek mı?' },
 
     // Hesaplama ve Maliyet
-    { name: 'yaklasik_maliyet_hesaplamasi', type: 'TEXT' },
-    { name: 'kdv', type: 'TEXT' },
-    { name: 'hesaplama_esasi', type: 'TEXT' },
-    { name: 'komisyon_takdiri', type: 'TEXT' },
-    { name: 'tibbi_cihaz_alimi_mi', type: 'INTEGER', default: 0 },
+    { name: 'yaklasik_maliyet_hesaplamasi', type: 'TEXT', description: 'Yaklasik Maliyet Hesaplamasi' },
+    { name: 'kdv', type: 'TEXT', description: 'Kdv' },
+    { name: 'hesaplama_esasi', type: 'TEXT', description: 'Hesaplama Esasi' },
+    { name: 'komisyon_takdiri', type: 'TEXT', description: 'Komisyon Takdiri' },
+    { name: 'tibbi_cihaz_alimi_mi', type: 'INTEGER', default: 0, description: 'Tibbi Cihaz Alimi mı?' },
 
     // Süreç / Tarihler / Kişiler
-    { name: 'irtibat_yetkilisi_id', type: 'INTEGER' }, // Personel referans
-    { name: 'son_teklif_verme_tarihi', type: 'DATETIME' },
-    { name: 'teslim_tarihi', type: 'DATE' }, // Tahmini bitiş tarihi
+    { name: 'irtibat_yetkilisi_id', type: 'INTEGER', description: 'Irtibat Yetkilisi ID' }, // Personel referans
+    { name: 'son_teklif_verme_tarihi', type: 'DATETIME', description: 'Son Teklif Verme Tarihi' },
+    { name: 'teslim_tarihi', type: 'DATE', description: 'Teslim Tarihi' }, // Tahmini bitiş tarihi
 
-    { name: 'yaklasik_maliyet', type: 'REAL', default: 0 },
-    { name: 'butce_kodu', type: 'TEXT' },
-    { name: 'temin_tarihi', type: 'DATE' },
-    { name: 'firma_id', type: 'INTEGER' }, // Seçilen kazanan firma
-    { name: 'onay_personel_id', type: 'INTEGER' }, // Onay veren / harcama yetkilisi
-    { name: 'hazirlayan_personel_id', type: 'INTEGER' },
-    { name: 'durum_asama_id', type: 'INTEGER' }, // TANIM_Asama referansı
-    { name: 'mevzuat_id', type: 'INTEGER' }, // TANIM_Mevzuat kaydına referans
-    { name: 'surec_taslak_id', type: 'INTEGER' }, // TANIM_SurecTaslak referansı
-    { name: 'ordered_docs', type: 'TEXT' }, // Dosyaya özel belge sıralaması (JSON array)
-    { name: 'starred_docs', type: 'TEXT' }, // Dosyaya özel yıldızlı belgeler (JSON array)
-    { name: 'skipped_docs', type: 'TEXT' }, // Dosyaya özel atlanmış belgeler (JSON array)
-    { name: 'notlar', type: 'TEXT' },
-    { name: 'tekrar_no', type: 'INTEGER', default: 1 },
-    { name: 'status', type: 'TEXT', default: "'devam_ediyor'" }, // devam_ediyor, tamamlandi, iptal
-    { name: 'is_deleted', type: 'INTEGER', default: 0 }, // 0: Aktif, 1: Silinmiş
-    { name: 'ekap_no', type: 'TEXT' }, // EKAP Kayıt Numarası
-    { name: 'is_ekap_sent', type: 'INTEGER', default: 0 }, // 0: Gönderilmedi, 1: Gönderildi
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' }
+    { name: 'yaklasik_maliyet', type: 'REAL', default: 0, description: 'Yaklasik Maliyet' },
+    { name: 'butce_kodu', type: 'TEXT', description: 'Butce Kodu' },
+    { name: 'temin_tarihi', type: 'DATE', description: 'Temin Tarihi' },
+    { name: 'firma_id', type: 'INTEGER', description: 'Firma ID' }, // Seçilen kazanan firma
+    { name: 'onay_personel_id', type: 'INTEGER', description: 'Onay Personel ID' }, // Onay veren / harcama yetkilisi
+    { name: 'hazirlayan_personel_id', type: 'INTEGER', description: 'Hazirlayan Personel ID' },
+    { name: 'durum_asama_id', type: 'INTEGER', description: 'Durum Asama ID' }, // TANIM_Asama referansı
+    { name: 'mevzuat_id', type: 'INTEGER', description: 'Mevzuat ID' }, // TANIM_Mevzuat kaydına referans
+    { name: 'surec_taslak_id', type: 'INTEGER', description: 'Surec Taslak ID' }, // TANIM_SurecTaslak referansı
+    { name: 'ordered_docs', type: 'TEXT', description: 'Ordered Docs' }, // Dosyaya özel belge sıralaması (JSON array)
+    { name: 'starred_docs', type: 'TEXT', description: 'Starred Docs' }, // Dosyaya özel yıldızlı belgeler (JSON array)
+    { name: 'skipped_docs', type: 'TEXT', description: 'Skipped Docs' }, // Dosyaya özel atlanmış belgeler (JSON array)
+    { name: 'notlar', type: 'TEXT', description: 'Notlar' },
+    { name: 'tekrar_no', type: 'INTEGER', default: 1, description: 'Tekrar Numarası' },
+    { name: 'status', type: 'TEXT', default: "'devam_ediyor'", description: 'Status' }, // devam_ediyor, tamamlandi, iptal
+    { name: 'is_deleted', type: 'INTEGER', default: 0, description: 'Is Deleted' }, // 0: Aktif, 1: Silinmiş
+    { name: 'ekap_no', type: 'TEXT', description: 'Ekap Numarası' }, // EKAP Kayıt Numarası
+    { name: 'is_ekap_sent', type: 'INTEGER', default: 0, description: 'Is Ekap Sent' }, // 0: Gönderilmedi, 1: Gönderildi
+    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
+    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
   ],
   initialData: []
 }

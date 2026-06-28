@@ -3,13 +3,13 @@ export const TANIM_Placeholder = {
   description: 'Sistem genelinde kullanılabilen dinamik alanların tanımı',
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
-    { name: 'anahtar', type: 'TEXT', notNull: true, unique: true },
-    { name: 'etiket', type: 'TEXT', notNull: true },
-    { name: 'kaynak_tablo', type: 'TEXT' },
-    { name: 'kaynak_sutun', type: 'TEXT' },
-    { name: 'varsayilan', type: 'TEXT' },
-    { name: 'aciklama', type: 'TEXT' },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' }
+    { name: 'anahtar', type: 'TEXT', notNull: true, unique: true, description: 'Anahtar' },
+    { name: 'etiket', type: 'TEXT', notNull: true, description: 'Etiket' },
+    { name: 'kaynak_tablo', type: 'TEXT', description: 'Kaynak Tablo' },
+    { name: 'kaynak_sutun', type: 'TEXT', description: 'Kaynak Sutun' },
+    { name: 'varsayilan', type: 'TEXT', description: 'Varsayilan' },
+    { name: 'aciklama', type: 'TEXT', description: 'Aciklama' },
+    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' }
   ],
   initialData: [
     { anahtar: 'firma_adi', etiket: 'İstekli Firma Adı', kaynak_tablo: 'TANIM_Firma', kaynak_sutun: 'unvan', varsayilan: 'Firma A.Ş.', aciklama: 'Temin edilecek firmanın ticari ünvanı' },

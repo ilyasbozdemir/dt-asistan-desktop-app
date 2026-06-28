@@ -3,12 +3,12 @@ export const TANIM_KodSozlugu = {
   description: 'Mali ve Kurumsal Bütçe Kodları Sözlüğü (Kurumsal Kod, Fonksiyonel Kod, Muhasebe Birimi, vb.)',
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
-    { name: 'tur', type: 'TEXT', notNull: true }, // 'kurumsal', 'fonksiyonel', 'muhasebe_birimi', 'harcama_birimi'
-    { name: 'kod', type: 'TEXT', notNull: true },
-    { name: 'aciklama', type: 'TEXT' },
-    { name: 'aktif_mi', type: 'INTEGER', notNull: true, default: 1 },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' }
+    { name: 'tur', type: 'TEXT', notNull: true, description: 'Tur' }, // 'kurumsal', 'fonksiyonel', 'muhasebe_birimi', 'harcama_birimi'
+    { name: 'kod', type: 'TEXT', notNull: true, description: 'Kod' },
+    { name: 'aciklama', type: 'TEXT', description: 'Aciklama' },
+    { name: 'aktif_mi', type: 'INTEGER', notNull: true, default: 1, description: 'Aktif mı?' },
+    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
+    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
   ],
   constraints: [
     'UNIQUE(tur, kod)'

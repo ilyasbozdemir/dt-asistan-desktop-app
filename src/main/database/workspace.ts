@@ -118,6 +118,8 @@ function seedTemplates(db: Database.Database): void {
       'fiyat-arastirma-ve-muayene-komisyonu': '/dosya/komisyon/fiyat-muayene',
       'komisyon-atama-onay-eki': '/dosya/komisyon/onay-eki',
       // Malzemeler
+      'ihtiyac-listesi': '/dosya/malzemeler/liste',
+      'ihtiyac-talep-formu': '/dosya/malzemeler/liste',
       'malzeme-hizmet-kalem-listesi': '/dosya/malzemeler/liste',
       // Lüzum
       'luzum-muzekkeresi-belgesi': '/dosya/luzum/belge',

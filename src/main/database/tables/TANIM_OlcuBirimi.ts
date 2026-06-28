@@ -3,9 +3,9 @@ export const TANIM_OlcuBirimi = {
   description: 'Malzeme ve Hizmetler için geçerli ölçü birimleri havuzu',
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
-    { name: 'ad', type: 'TEXT', notNull: true, unique: true },
-    { name: 'aktif_mi', type: 'INTEGER', notNull: true, default: 1 },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' }
+    { name: 'ad', type: 'TEXT', notNull: true, unique: true, description: 'Adı' },
+    { name: 'aktif_mi', type: 'INTEGER', notNull: true, default: 1, description: 'Aktif mı?' },
+    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' }
   ],
   initialData: [
     { ad: 'Adet' }, { ad: 'Ampul' }, { ad: 'Ay' }, { ad: 'Bağ' }, { ad: 'Bakım' },

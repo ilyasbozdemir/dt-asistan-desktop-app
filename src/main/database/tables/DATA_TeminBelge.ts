@@ -3,14 +3,14 @@ export const DATA_TeminBelge = {
   description: 'Dosya kapsamında üretilen belgelerin log/geçmiş kaydı',
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
-    { name: 'temin_dosya_id', type: 'INTEGER', notNull: true },
-    { name: 'belge_adi', type: 'TEXT', notNull: true },
-    { name: 'sablon_id', type: 'INTEGER' },
-    { name: 'dosya_yolu', type: 'TEXT' },
-    { name: 'is_signed', type: 'INTEGER', default: 0 },
-    { name: 'imzali_dosya_yolu', type: 'TEXT' },
-    { name: 'olusturan_personel_id', type: 'INTEGER' },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' }
+    { name: 'temin_dosya_id', type: 'INTEGER', notNull: true, description: 'Temin Dosya ID' },
+    { name: 'belge_adi', type: 'TEXT', notNull: true, description: 'Belge Adi' },
+    { name: 'sablon_id', type: 'INTEGER', description: 'Sablon ID' },
+    { name: 'dosya_yolu', type: 'TEXT', description: 'Dosya Yolu' },
+    { name: 'is_signed', type: 'INTEGER', default: 0, description: 'Is Signed' },
+    { name: 'imzali_dosya_yolu', type: 'TEXT', description: 'Imzali Dosya Yolu' },
+    { name: 'olusturan_personel_id', type: 'INTEGER', description: 'Olusturan Personel ID' },
+    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' }
   ],
   constraints: [
     'FOREIGN KEY(temin_dosya_id) REFERENCES DATA_TeminDosyasi(id) ON DELETE CASCADE'

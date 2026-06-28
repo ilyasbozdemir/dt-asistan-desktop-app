@@ -3,13 +3,13 @@ export const TANIM_Asama = {
   description: 'Süreçteki işlem aşamaları (Status)',
   columns: [
     { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
-    { name: 'asama_sira', type: 'INTEGER', notNull: true },
-    { name: 'asama_adi', type: 'TEXT', notNull: true },
-    { name: 'aciklama', type: 'TEXT' },
-    { name: 'rozet_rengi', type: 'TEXT', default: "'blue'" },
-    { name: 'aktif_mi', type: 'INTEGER', notNull: true, default: 1 },
-    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' },
-    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP' }
+    { name: 'asama_sira', type: 'INTEGER', notNull: true, description: 'Asama Sira' },
+    { name: 'asama_adi', type: 'TEXT', notNull: true, description: 'Asama Adi' },
+    { name: 'aciklama', type: 'TEXT', description: 'Aciklama' },
+    { name: 'rozet_rengi', type: 'TEXT', default: "'blue'", description: 'Rozet Rengi' },
+    { name: 'aktif_mi', type: 'INTEGER', notNull: true, default: 1, description: 'Aktif mı?' },
+    { name: 'created_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Created At' },
+    { name: 'updated_at', type: 'DATETIME', default: 'CURRENT_TIMESTAMP', description: 'Updated At' }
   ],
   constraints: [
     'UNIQUE(asama_adi)'

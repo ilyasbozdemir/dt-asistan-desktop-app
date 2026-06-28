@@ -102,6 +102,17 @@ export function useDbColumns(tableName: string | null) {
   })
 }
 
+export function useDbDictionary() {
+  return useQuery({
+    queryKey: ['dbDictionary'],
+    queryFn: async () => {
+      const res = await window.electron.ipcRenderer.invoke('db:get-schema-dict')
+      if (!res.success) throw new Error(res.error)
+      return res.data as Record<string, { label: string, columns: Record<string, string> }>
+    }
+  })
+}
+
 export function useSaveSablon() {
   const queryClient = useQueryClient()
 

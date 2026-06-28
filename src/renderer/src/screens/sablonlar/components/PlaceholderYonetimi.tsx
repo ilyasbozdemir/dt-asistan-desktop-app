@@ -2,65 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { Key, LayoutTemplate, Save, RefreshCcw } from 'lucide-react'
 import { Button } from '../../../components/ui/Button'
 import { cn } from '../../../utils/cn'
-import { useSablonlar, Sablon, useDbTables, useDbColumns } from '../sablonlar.hooks'
+import { useSablonlar, Sablon, useDbTables, useDbColumns, useDbDictionary } from '../sablonlar.hooks'
 import { subPagesMapping } from '../../../constants/surecler'
 import { getDefaultMappingForProcess, ProcessMapping, TableColumnMapping } from '../../../constants/mappings'
-
-const DB_DICTIONARY: Record<string, { label: string, columns: Record<string, string> }> = {
-  'DATA_TeminDosyasi': {
-    label: 'Dosya Ana Bilgileri',
-    columns: {
-      'id': 'Kayıt Numarası',
-      'temin_no': 'Kurum İçi Dosya Numarası',
-      'dosya_acilis_tarihi': 'Dosya Açılış Tarihi',
-      'konu': 'İşin Adı / Temin Konusu',
-      'isin_aciklamasi': 'İşin Detaylı Açıklaması',
-      'yaklasik_maliyet': 'Toplam Yaklaşık Maliyet',
-      'talep_tarihi': 'Talep Tarihi',
-      'talep_sayisi': 'Talep Sayısı (Belge No)'
-    }
-  },
-  'DATA_TeminKalem': {
-    label: 'İhtiyaç Listesi (Kalemler)',
-    columns: {
-      'sira_no': 'Sıra No',
-      'malzeme_adi': 'Malzeme / Hizmet Adı',
-      'miktar': 'Miktar',
-      'olcu_birimi': 'Ölçü Birimi',
-      'ortalama_fiyat': 'Ortalama / Yaklaşık Birim Fiyat'
-    }
-  },
-  'DATA_TeminFirma': {
-    label: 'Davetli/Katılımcı Firmalar',
-    columns: {
-      'unvan': 'Firma Unvanı',
-      'vergi_no': 'Vergi Numarası',
-      'teklif_toplami': 'Firmanın Verdiği Toplam Teklif',
-      'kazandi_mi': 'İhale Bu Firmada mı Kaldı? (1/0)'
-    }
-  },
-  'DATA_TeminKomisyon': {
-    label: 'Komisyon Üyeleri',
-    columns: {
-      'gorev_turu': 'Görev Türü (Asil/Yedek)',
-      'unvan': 'Üyenin Unvanı'
-    }
-  },
-  'TANIM_Birim': {
-    label: 'Birim (Müdürlük) Bilgileri',
-    columns: {
-      'ad': 'Birim Adı',
-      'harcama_yetkilisi_unvan': 'Harcama Yetkilisi Unvanı'
-    }
-  },
-  'TANIM_Personel': {
-    label: 'Personel Bilgileri',
-    columns: {
-      'ad_soyad': 'Adı Soyadı',
-      'unvan': 'Unvanı'
-    }
-  }
-}
 
 
 function VariableRow({ 
@@ -72,6 +16,7 @@ function VariableRow({
   mapping?: TableColumnMapping
   onChange: (key: string, newMapping: TableColumnMapping) => void 
 }) {
+  const { data: dbDictionary = {} } = useDbDictionary()
   const { data: dbTables = [] } = useDbTables()
   const { data: dbColumns = [] } = useDbColumns(mapping?.tablo || null)
 
@@ -91,8 +36,8 @@ function VariableRow({
         >
           <option value="">-- Tablo Seçin --</option>
           {dbTables.map(t => {
-            const label = DB_DICTIONARY[t]?.label ? `${t} (${DB_DICTIONARY[t].label})` : t;
-            return <option key={t} value={t}>{label}</option>;
+            const tableLabel = dbDictionary[t]?.label ? `${t} (${dbDictionary[t].label})` : t;
+            return <option key={t} value={t}>{tableLabel}</option>;
           })}
         </select>
       </td>
@@ -107,7 +52,7 @@ function VariableRow({
           <option value="">-- Sütun Seçin --</option>
           {dbColumns.map(c => {
              const t = mapping?.tablo || '';
-             const colLabel = DB_DICTIONARY[t]?.columns[c] ? `${c} (${DB_DICTIONARY[t].columns[c]})` : c;
+             const colLabel = dbDictionary[t]?.columns?.[c] ? `${c} (${dbDictionary[t].columns[c]})` : c;
              return <option key={c} value={c}>{colLabel}</option>;
           })}
         </select>
