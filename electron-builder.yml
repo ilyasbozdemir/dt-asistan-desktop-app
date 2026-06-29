@@ -23,7 +23,6 @@ fileAssociations:
     icon: build/icon.png
 directories:
   buildResources: build
-  output: dist-release
 files:
   - out/**/*
   - package.json
