@@ -8,6 +8,7 @@ import {
   Plus,
   Star,
   Trash2,
+  FileText,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useWorkspaceStore } from "../../store/workspaceStore";
@@ -36,37 +37,6 @@ const parseStatusAndName = (
   }
 
   return { status, cleanName };
-};
-
-const getStatusBadgeClass = (status: string): string => {
-  const lower = status.toLowerCase();
-  if (
-    lower.includes("bakım") ||
-    lower.includes("güncel") ||
-    lower.includes("geliş") ||
-    lower.includes("maint")
-  ) {
-    return "bg-amber-500/20 text-amber-300 border border-amber-500/30";
-  }
-  if (
-    lower.includes("aktif") ||
-    lower.includes("hazır") ||
-    lower.includes("tamam") ||
-    lower.includes("ready") ||
-    lower.includes("active")
-  ) {
-    return "bg-green-500/20 text-green-300 border border-green-500/30";
-  }
-  if (
-    lower.includes("pasif") ||
-    lower.includes("iptal") ||
-    lower.includes("eski") ||
-    lower.includes("disable") ||
-    lower.includes("deprec")
-  ) {
-    return "bg-red-500/20 text-red-300 border border-red-500/30";
-  }
-  return "bg-blue-500/20 text-blue-300 border border-blue-500/30";
 };
 
 const getStatusBadgeLightClass = (status: string): string => {
@@ -101,14 +71,6 @@ const getStatusBadgeLightClass = (status: string): string => {
 };
 
 export default function TaslakYoneticisi(): React.JSX.Element {
-  const [activeTab, setActiveTab] = useState<"kisayollar" | "taslaklar">(
-    "kisayollar",
-  );
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const { activeDosyaId, setActiveDosyaId, setActiveStarredDocs } =
-    useWorkspaceStore();
-
-  // Şablonları çek — route_path DB'den geliyor
   const { data: sablonlar = [] } = useSablonlar();
 
   // Şablon adı → route_path eşleşmesi (tümü DB ve süreç tanımları)
@@ -127,33 +89,7 @@ export default function TaslakYoneticisi(): React.JSX.Element {
     return map;
   }, [sablonlar]);
 
-  // Tüm aktif temin dosyalarını çekelim
-  const {
-    data: dosyalar = [],
-    isLoading: dosyalarLoading,
-    refetch: refetchDosyalar,
-  } = useQuery({
-    queryKey: ["dosyalar_all_active_shortcuts"],
-    queryFn: async () => {
-      const res = await window.electron.ipcRenderer.invoke(
-        "db:query",
-        "SELECT id, temin_no, konu, starred_docs FROM DATA_TeminDosyasi WHERE is_deleted = 0 ORDER BY id DESC",
-      );
-      if (!res.success) return [];
-      return res.data.map((d: any) => {
-        try {
-          return {
-            ...d,
-            starred: JSON.parse(d.starred_docs || "[]"),
-          };
-        } catch {
-          return { ...d, starred: [] };
-        }
-      });
-    },
-  });
-
-  // Süreç Taslaklarını bulalım
+  // Süreç Taslaklarını bulalım (TANIM_SurecTaslak)
   const { data: taslaklar = [], isLoading: taslaklarLoading } = useQuery({
     queryKey: ["surec_taslaklar"],
     queryFn: async () => {
@@ -165,66 +101,6 @@ export default function TaslakYoneticisi(): React.JSX.Element {
       return res.data;
     },
   });
-
-  const activeDosya = useMemo(() => {
-    return dosyalar.find((d) => d.id === activeDosyaId);
-  }, [dosyalar, activeDosyaId]);
-
-  // Kısayol Yıldızla / Kaldır
-  const toggleStar = async (
-    dosyaId: number,
-    currentStarred: string[],
-    docName: string,
-  ) => {
-    let updated = [...currentStarred];
-    if (updated.includes(docName)) {
-      updated = updated.filter((d) => d !== docName);
-    } else {
-      updated.push(docName);
-    }
-
-    await window.electron.ipcRenderer.invoke(
-      "db:execute",
-      "UPDATE DATA_TeminDosyasi SET starred_docs = ? WHERE id = ?",
-      JSON.stringify(updated),
-      dosyaId,
-    );
-
-    if (dosyaId === activeDosyaId) {
-      setActiveStarredDocs(updated);
-    }
-
-    refetchDosyalar();
-  };
-
-  // Kısayol sırasını değiştir
-  const moveShortcut = async (
-    dosyaId: number,
-    currentStarred: string[],
-    index: number,
-    direction: "up" | "down",
-  ) => {
-    const updated = [...currentStarred];
-    const targetIndex = direction === "up" ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= updated.length) return;
-
-    const temp = updated[index];
-    updated[index] = updated[targetIndex];
-    updated[targetIndex] = temp;
-
-    await window.electron.ipcRenderer.invoke(
-      "db:execute",
-      "UPDATE DATA_TeminDosyasi SET starred_docs = ? WHERE id = ?",
-      JSON.stringify(updated),
-      dosyaId,
-    );
-
-    if (dosyaId === activeDosyaId) {
-      setActiveStarredDocs(updated);
-    }
-
-    refetchDosyalar();
-  };
 
   // Şablonları kategorilerine göre grupla
   const groupedSablonlar = useMemo(() => {
@@ -296,395 +172,128 @@ export default function TaslakYoneticisi(): React.JSX.Element {
             Kısayol & Taslak Yönetimi
           </h1>
           <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm max-w-2xl">
-            Aktif dosyalarınızda yıldızladığınız evrakları hızlı erişimde görün
-            ve sık kullandığınız belge üretim sıralarını &apos;Taslak&apos;
-            olarak kaydedin.
+            Sistemde tanımlı tüm doğrudan temin belgelerini ve süreç adımlarını kategori bazlı olarak buradan inceleyebilirsiniz.
           </p>
         </div>
       </div>
 
-      <div className="space-y-6">
-        {activeDosya
-          ? (
-            <>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Sol Taraf: Aktif Dosya Bilgisi ve Mevcut Kısayollar (Sıralama ile) */}
-                <div className="lg:col-span-1 space-y-4">
-                  <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white border border-slate-700/50 rounded-2xl p-5 shadow-lg relative overflow-hidden">
-                    <div className="absolute -right-10 -bottom-10 opacity-10">
-                      <Star className="w-40 h-40 fill-white text-white" />
-                    </div>
-                    <div className="relative z-10">
-                      <span className="px-2 py-0.5 bg-amber-500/20 text-amber-300 text-[10px] font-bold rounded border border-amber-500/30 uppercase tracking-wider">
-                        Aktif Çalışma Dosyası
-                      </span>
-                      <h3 className="font-bold text-sm text-slate-100 mt-2 truncate">
-                        {activeDosya.konu}
-                      </h3>
-                      <p className="text-[10px] text-slate-400 font-semibold mt-1">
-                        Kayıt No: {activeDosya.temin_no}
-                      </p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Sol Taraf: Kayıtlı Süreç Taslakları (TANIM_SurecTaslak) */}
+        <div className="lg:col-span-1 space-y-6">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <h3 className="font-bold text-sm text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
+              <FolderOpen className="w-4 h-4 text-blue-500" />
+              Sistem Süreç Taslakları
+            </h3>
 
-                      <div className="mt-5 border-t border-slate-700/50 pt-4">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-3">
-                          Kısayol Belgeler (Hızlı Erişim Sırası)
+            {taslaklarLoading ? (
+              <div className="text-center py-4 text-slate-500 text-xs">Yükleniyor...</div>
+            ) : taslaklar.length === 0 ? (
+              <div className="text-center py-4 text-slate-400 italic text-xs">Kayıtlı taslak bulunmuyor.</div>
+            ) : (
+              <div className="space-y-3">
+                {taslaklar.map((taslak: any) => {
+                  let orderedList: string[] = [];
+                  try {
+                    orderedList = JSON.parse(taslak.ordered_docs || "[]");
+                  } catch {}
+
+                  return (
+                    <div
+                      key={taslak.id}
+                      className="border border-slate-100 dark:border-slate-800/80 p-3 rounded-xl bg-slate-50/50 dark:bg-slate-950/20"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-xs text-slate-800 dark:text-slate-200">
+                          {taslak.taslak_adi}
                         </span>
-                        {activeDosya.starred.length === 0
-                          ? (
-                            <p className="text-xs italic text-slate-400">
-                              Henüz kısayol eklenmemiş. Aşağıdaki butondan yeni
-                              kısayollar ekleyin.
-                            </p>
-                          )
-                          : (
-                            <div className="space-y-2 mb-4">
-                              {activeDosya.starred.map(
-                                (docName: string, idx: number) => {
-                                  const route = routeMap[docName] ||
-                                    FALLBACK_ROUTE;
-                                  const { status, cleanName } =
-                                    parseStatusAndName(docName);
-                                  return (
-                                    <div
-                                      key={idx}
-                                      className="flex items-center justify-between bg-slate-800/80 hover:bg-slate-800 border border-slate-700/50 p-2 rounded-xl"
-                                    >
-                                      <Link
-                                        to={route}
-                                        onClick={() => {
-                                          setActiveDosyaId(activeDosya.id);
-                                        }}
-                                        className="flex items-center gap-2 text-xs font-bold text-amber-400 hover:text-amber-300 truncate flex-1 min-w-0 pr-2"
-                                      >
-                                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400 shrink-0" />
-                                        <span className="truncate">
-                                          {cleanName}
-                                        </span>
-                                        {status && (
-                                          <span
-                                            className={`px-1.5 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wide shrink-0 ${
-                                              getStatusBadgeClass(status)
-                                            }`}
-                                          >
-                                            {status}
-                                          </span>
-                                        )}
-                                      </Link>
-                                      <div className="flex items-center gap-1 shrink-0 ml-2">
-                                        <button
-                                          onClick={() =>
-                                            moveShortcut(
-                                              activeDosya.id,
-                                              activeDosya.starred,
-                                              idx,
-                                              "up",
-                                            )}
-                                          disabled={idx === 0}
-                                          className="p-1 hover:bg-slate-700 rounded text-slate-400 hover:text-slate-200 disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
-                                          title="Yukarı Taşı"
-                                        >
-                                          <ChevronUp className="w-3.5 h-3.5" />
-                                        </button>
-                                        <button
-                                          onClick={() =>
-                                            moveShortcut(
-                                              activeDosya.id,
-                                              activeDosya.starred,
-                                              idx,
-                                              "down",
-                                            )}
-                                          disabled={idx ===
-                                            activeDosya.starred.length - 1}
-                                          className="p-1 hover:bg-slate-700 rounded text-slate-400 hover:text-slate-200 disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
-                                          title="Aşağı Taşı"
-                                        >
-                                          <ChevronDown className="w-3.5 h-3.5" />
-                                        </button>
-                                        <button
-                                          onClick={() =>
-                                            toggleStar(
-                                              activeDosya.id,
-                                              activeDosya.starred,
-                                              docName,
-                                            )}
-                                          className="p-1 hover:bg-red-950/50 rounded text-slate-400 hover:text-red-400 cursor-pointer"
-                                          title="Kısayoldan Kaldır"
-                                        >
-                                          <Trash2 className="w-3.5 h-3.5" />
-                                        </button>
-                                      </div>
-                                    </div>
-                                  );
-                                },
-                              )}
-                            </div>
-                          )}
+                        <span className="text-[9px] bg-slate-200 dark:bg-slate-850 px-1.5 py-0.5 rounded font-semibold text-slate-600 dark:text-slate-400">
+                          {taslak.tur || "Genel"}
+                        </span>
+                      </div>
+                      {orderedList.length > 0 && (
+                        <div className="space-y-1 mt-2">
+                          <span className="text-[9px] text-slate-400 uppercase tracking-wider block font-bold">Aşama Belgeleri:</span>
+                          <div className="flex flex-wrap gap-1 max-h-32 overflow-y-auto custom-scrollbar p-1">
+                            {orderedList.map((doc: string, idx: number) => (
+                              <span
+                                key={idx}
+                                className="text-[9px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 px-1.5 py-0.5 rounded flex items-center gap-1"
+                              >
+                                <FileText className="w-2 h-2 text-slate-400" />
+                                {doc}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
 
-                        <button
-                          onClick={() => setIsAddModalOpen(true)}
-                          className="w-full flex items-center justify-center gap-1.5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-900 rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer"
+        {/* Sağ Taraf: Tüm Süreç Belgeleri Listesi */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-base text-slate-800 dark:text-slate-200 mb-2">
+              Süreç Adımları & Belgeler Listesi
+            </h3>
+            <p className="text-xs text-slate-500 mb-6">
+              Aşağıda doğrudan temin sürecinde üretilen tüm resmi evraklar ve şablonlar aşama bazlı listelenmiştir. İlgili belgeye tıklayarak doğrudan o aşamanın ekranına veya Çıktı Merkezi&apos;ne gidebilirsiniz.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {Object.entries(groupedSablonlar).map(([stageName, list]) => (
+                <div
+                  key={stageName}
+                  className="border border-slate-150 dark:border-slate-800/80 rounded-2xl p-4 bg-slate-50/50 dark:bg-slate-805/20 flex flex-col"
+                >
+                  <h4 className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-3 pb-2 border-b border-slate-200/50 dark:border-slate-800">
+                    {stageName}
+                  </h4>
+                  <div className="space-y-1.5 flex-1">
+                    {list.map((sablon) => {
+                      const route = routeMap[sablon.ad] || FALLBACK_ROUTE;
+                      const { status, cleanName } = parseStatusAndName(
+                        sablon.ad,
+                        sablon.aciklama,
+                      );
+                      return (
+                        <Link
+                          key={sablon.id}
+                          to={route}
+                          className="w-full flex items-center justify-between p-2 rounded-xl text-left text-xs font-bold transition-all border bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-850 cursor-pointer"
                         >
-                          <Plus className="w-4 h-4" />
-                          Kısayol Belgelerini Düzenle
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => setActiveDosyaId(null)}
-                    className="w-full text-center py-2 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 transition-colors cursor-pointer"
-                  >
-                    Başka Bir Dosya Seç
-                  </button>
-                </div>
-
-                {/* Sağ Taraf: Önizleme ve Hızlı Erişim Rehberi */}
-                <div className="lg:col-span-2 space-y-6">
-                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col h-full justify-between">
-                    <div>
-                      <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 mb-1">
-                        Kısayol Önizleme
-                      </h2>
-                      <p className="text-xs text-slate-500 mb-6">
-                        Yıldızladığınız belgeler, temin dosyalarında çalışırken üst
-                        menüdeki Hızlı Erişim altında listelenir. Diğer tüm süreç belgelerinize
-                        ise 1. 2. 3. 4. şeklinde numaralandırılmış aşama menülerinden hızlıca ulaşabilirsiniz:
-                      </p>
-
-                      {/* Mock Toolbar */}
-                      <div className="border border-slate-150 dark:border-slate-800 rounded-2xl p-4 bg-slate-50 dark:bg-slate-950/40 flex items-center gap-2 flex-wrap">
-                        <div className="px-3 py-1.5 bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 rounded-md text-xs font-semibold flex items-center gap-1.5">
-                          <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-                          Hızlı Erişim
-                          <ChevronDown className="w-3 h-3 animate-bounce" />
-                        </div>
-                        <span className="text-slate-300 dark:text-slate-700">
-                          |
-                        </span>
-                        {activeDosya.starred.length === 0
-                          ? (
-                            <span className="text-xs italic text-slate-400">
-                              Henüz eklenmiş kısayol yok.
-                            </span>
-                          )
-                          : (
-                            activeDosya.starred.map(
-                              (docName: string, idx: number) => {
-                                const { status, cleanName } =
-                                  parseStatusAndName(docName);
-                                return (
-                                  <div
-                                    key={idx}
-                                    className="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-md text-xs font-semibold flex items-center gap-1.5"
-                                  >
-                                    <Star className="w-3 h-3 fill-amber-500 text-amber-500 shrink-0" />
-                                    <span>{cleanName}</span>
-                                    {status && (
-                                      <span
-                                        className={`px-1 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wide shrink-0 ${
-                                          getStatusBadgeLightClass(status)
-                                        }`}
-                                      >
-                                        {status}
-                                      </span>
-                                    )}
-                                  </div>
-                                );
-                              },
-                            )
-                          )}
-                      </div>
-                    </div>
-
-                    <div className="mt-8 border-t border-slate-100 dark:border-slate-800 pt-6">
-                      <div className="flex gap-3 items-start text-xs text-slate-500 dark:text-slate-400">
-                        <span className="p-1.5 bg-blue-500/10 text-blue-500 rounded-lg shrink-0">
-                          <Plus className="w-4 h-4" />
-                        </span>
-                        <div>
-                          <span className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                            Pratik Belge Üretimi
-                          </span>
-                          Sol paneldeki &apos;Kısayol Belgelerini Düzenle&apos;
-                          butonuna tıklayarak yeni belgeler ekleyebilir, ok
-                          işaretleriyle çıktı alma sıranızı belirleyebilirsiniz.
-                          Kısayollar her dosyaya özel olarak kaydedilir.
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Kısayol Ekleme/Düzenleme Modalı */}
-              {isAddModalOpen && (
-                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-4xl max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200">
-                    {/* Modal Header */}
-                    <div className="flex items-center justify-between p-6 border-b border-slate-150 dark:border-slate-800 shrink-0">
-                      <div>
-                        <h2 className="text-lg font-black text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                          <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
-                          Kısayol Belgelerini Düzenle
-                        </h2>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                          Aktif temin dosyasında hızlı erişim (kısayol) olarak
-                          göstermek istediğiniz belgeleri seçin.
-                        </p>
-                      </div>
-                      <button
-                        onClick={() =>
-                          setIsAddModalOpen(false)}
-                        className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs font-bold px-3 py-1.5 bg-slate-100 dark:bg-slate-850 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-xl transition-all cursor-pointer"
-                      >
-                        Kapat
-                      </button>
-                    </div>
-
-                    {/* Modal Body - Scrollable */}
-                    <div className="flex-1 min-h-0 overflow-y-auto p-6 custom-scrollbar">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {Object.entries(groupedSablonlar).map((
-                          [stageName, list],
-                        ) => (
-                          <div
-                            key={stageName}
-                            className="border border-slate-150 dark:border-slate-800/80 rounded-2xl p-4 bg-slate-50/50 dark:bg-slate-805/20"
-                          >
-                            <h4 className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">
-                              {stageName}
-                            </h4>
-                            <div className="space-y-1.5">
-                              {list.map((sablon) => {
-                                const isStarred = activeDosya.starred.includes(
-                                  sablon.ad,
-                                );
-                                const { status, cleanName } =
-                                  parseStatusAndName(
-                                    sablon.ad,
-                                    sablon.aciklama,
-                                  );
-                                return (
-                                  <button
-                                    key={sablon.id}
-                                    onClick={() =>
-                                      toggleStar(
-                                        activeDosya.id,
-                                        activeDosya.starred,
-                                        sablon.ad,
-                                      )}
-                                    className={`w-full flex items-center justify-between p-2 rounded-xl text-left text-xs font-bold transition-all border cursor-pointer ${
-                                      isStarred
-                                        ? "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30"
-                                        : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-850"
-                                    }`}
-                                  >
-                                    <div className="flex items-center gap-2 truncate flex-1 min-w-0 pr-2">
-                                      <span className="truncate">
-                                        {cleanName}
-                                      </span>
-                                      {status && (
-                                        <span
-                                          className={`px-1.5 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wide shrink-0 ${
-                                            getStatusBadgeLightClass(status)
-                                          }`}
-                                        >
-                                          {status}
-                                        </span>
-                                      )}
-                                    </div>
-                                    <Star
-                                      className={`w-3.5 h-3.5 shrink-0 ${
-                                        isStarred
-                                          ? "fill-amber-500 text-amber-500"
-                                          : "text-slate-400"
-                                      }`}
-                                    />
-                                  </button>
-                                );
-                              })}
-                              {list.length === 0 && (
-                                <span className="text-xs italic text-slate-400 block py-1">
-                                  Bu aşamada bağlı şablon bulunamadı.
-                                </span>
-                              )}
-                            </div>
+                          <div className="flex items-center gap-2 truncate flex-1 min-w-0 pr-2">
+                            <span className="truncate">{cleanName}</span>
+                            {status && (
+                              <span
+                                className={`px-1.5 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wide shrink-0 ${
+                                  getStatusBadgeLightClass(status)
+                                }`}
+                              >
+                                {status}
+                              </span>
+                            )}
                           </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Modal Footer */}
-                    <div className="p-4 border-t border-slate-150 dark:border-slate-800 flex justify-end shrink-0">
-                      <button
-                        onClick={() => setIsAddModalOpen(false)}
-                        className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md cursor-pointer transition-colors"
-                      >
-                        Tamam
-                      </button>
-                    </div>
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        </Link>
+                      );
+                    })}
+                    {list.length === 0 && (
+                      <span className="text-xs italic text-slate-400 block py-1">
+                        Bu aşamada bağlı şablon bulunamadı.
+                      </span>
+                    )}
                   </div>
                 </div>
-              )}
-            </>
-          )
-          : (
-            // Aktif Dosya Yoksa: Dosya Seçim Listesi Göster
-            <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 max-w-2xl mx-auto">
-              <div className="text-center mb-6">
-                <Star className="w-12 h-12 text-amber-500 fill-amber-500/20 mx-auto mb-4" />
-                <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-2">
-                  Aktif Temin Dosyası Bulunamadı
-                </h3>
-                <p className="text-slate-500 text-xs">
-                  Kısayolları ve hızlı erişim evraklarını yönetebilmek için
-                  lütfen aşağıdaki listeden çalışmak istediğiniz dosyayı
-                  seçiniz.
-                </p>
-              </div>
-
-              {dosyalarLoading
-                ? (
-                  <div className="text-center py-4 text-slate-500 text-xs">
-                    Yükleniyor...
-                  </div>
-                )
-                : dosyalar.length === 0
-                ? (
-                  <div className="text-center py-4 text-slate-400 italic text-xs">
-                    Henüz oluşturulmuş temin dosyası bulunmuyor.
-                  </div>
-                )
-                : (
-                  <div className="space-y-2 mt-4 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
-                    {dosyalar.map((dosya: any) => (
-                      <button
-                        key={dosya.id}
-                        onClick={() => {
-                          setActiveDosyaId(dosya.id);
-                          setActiveStarredDocs(dosya.starred);
-                        }}
-                        className="w-full flex items-center justify-between bg-white dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-850 border border-slate-200 dark:border-slate-800/80 p-3 rounded-xl transition-all cursor-pointer text-left"
-                      >
-                        <div className="flex items-center gap-3">
-                          <FolderOpen className="w-5 h-5 text-blue-500 shrink-0" />
-                          <div>
-                            <div className="font-bold text-xs text-slate-800 dark:text-slate-200">
-                              {dosya.konu}
-                            </div>
-                            <div className="text-[10px] text-slate-500 mt-0.5">
-                              {dosya.temin_no}
-                            </div>
-                          </div>
-                        </div>
-                        <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
-                      </button>
-                    ))}
-                  </div>
-                )}
+              ))}
             </div>
-          )}
+          </div>
+        </div>
       </div>
     </div>
   );
