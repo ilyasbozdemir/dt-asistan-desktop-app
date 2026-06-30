@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Sablon } from '../sablonlar/sablonlar.hooks'
 import { subPagesMapping } from '../../constants/surecler'
-import { getDefaultMappingForProcess, ProcessMapping } from '../../constants/mappings'
+import { getDefaultMappingForProcess, ProcessMapping, processMappingRegistry } from '../../constants/mappings'
 import { buildDocumentContext } from './CiktiMerkezi.contextBuilder'
 
 export function useCiktiMerkeziData(activeDosyaId: number | null) {
@@ -151,9 +151,19 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
 
         // Dynamic mapping resolver (Isolated per path)
         const resolvedMappingsByPath: Record<string, Record<string, any>> = {}
-        for (const process of subPagesMapping) {
-          const defaultMap = getDefaultMappingForProcess(process.path)
-          const overridesKey = `MAPPING_${process.path}_PLACEHOLDERS`
+        const allPathsToResolve = new Set<string>()
+        subPagesMapping.forEach((p) => allPathsToResolve.add(p.path))
+        if (sablonsRes.success && sablonsRes.data) {
+          sablonsRes.data.forEach((s: any) => {
+            if (s.route_path) allPathsToResolve.add(s.route_path)
+            if (s.dosya_adi) allPathsToResolve.add(s.dosya_adi)
+          })
+        }
+        Object.keys(processMappingRegistry).forEach((p) => allPathsToResolve.add(p))
+
+        for (const path of allPathsToResolve) {
+          const defaultMap = getDefaultMappingForProcess(path)
+          const overridesKey = `MAPPING_${path}_PLACEHOLDERS`
           let overriddenMap: ProcessMapping = {}
           if (settings && settings[overridesKey]) {
             try {
@@ -264,7 +274,7 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
               }
             }
           }
-          resolvedMappingsByPath[process.path] = processMappings
+          resolvedMappingsByPath[path] = processMappings
         }
 
         // Master JSON verisini oku
@@ -298,8 +308,8 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
 
         // 2. Her sürecin kendi izole bağlamı
         const pathContexts: Record<string, any> = {}
-        for (const process of subPagesMapping) {
-          const pathMappings = resolvedMappingsByPath[process.path] || {}
+        for (const path of allPathsToResolve) {
+          const pathMappings = resolvedMappingsByPath[path] || {}
           let contextForPath = buildDocumentContext(
             dosyaRes.data?.[0],
             kalemlerRes.data || [],
@@ -312,7 +322,7 @@ export function useCiktiMerkeziData(activeDosyaId: number | null) {
             pathMappings
           )
           contextForPath = { ...mJsonParsed, ...contextForPath }
-          pathContexts[process.path] = contextForPath
+          pathContexts[path] = contextForPath
         }
 
         setContextsByPath(pathContexts)

@@ -219,6 +219,7 @@ export function DocumentPreviewModal({
     'evrakSayisi',
     'tarih',
     'dosyaTarihi',
+    'dosyaKonusu',
     'ihtiyacYeri',
     'kurumIci',
     'olurYazisi',

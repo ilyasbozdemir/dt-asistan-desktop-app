@@ -67,7 +67,7 @@ export function HazirlikVeIhtiyac(): React.JSX.Element {
         setPreviewData({
             title,
             templateHtml: sablon.icerik,
-            processPath: sablon.route_path || "",
+            processPath: sablon.route_path || sablon.dosya_adi || "",
             templateTestVerisi: sablon.test_verisi || "",
         });
         setPreviewModalOpen(true);
