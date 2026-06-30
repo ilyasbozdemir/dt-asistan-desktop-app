@@ -264,44 +264,98 @@ export function ActiveFileToolbar(): React.JSX.Element | null {
         className="flex-1 flex items-center gap-2 flex-wrap"
         ref={dropdownRef}
       >
-        {stagesToUse.map((asama) => {
-          let targetPath = "/dosyalar";
-          let IconComponent = FolderTree;
-
-          if (asama.asama_sira === 1) {
-            targetPath = APP_ROUTES.MALZEME_LISTESI;
-            IconComponent = FolderTree;
-          } else if (asama.asama_sira === 2) {
-            targetPath = APP_ROUTES.KOMISYON_FIYAT_ARASTIRMA;
-            IconComponent = PackageSearch;
-          } else if (asama.asama_sira === 3) {
-            targetPath = APP_ROUTES.KOMISYON_ONAY_EKI;
-            IconComponent = FileCheck;
-          } else if (asama.asama_sira === 4) {
-            targetPath = APP_ROUTES.KOMISYON_MUAYENE_KABUL;
-            IconComponent = CreditCard;
-          }
-
-          return (
-            <Link
-              key={asama.asama_sira}
-              to={targetPath}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors text-slate-650 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+        {activeStarredDocs.length > 0 && (
+          <div className="relative inline-block mr-2">
+            <button
+              onClick={() =>
+                setOpenDropdown(
+                  openDropdown === "hizli_erisim" ? null : "hizli_erisim",
+                )}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${
+                openDropdown === "hizli_erisim"
+                  ? "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
+                  : "text-amber-600 hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-900/20"
+              }`}
             >
-              <IconComponent className="w-3.5 h-3.5" />
-              {asama.asama_sira}. {asama.asama_adi}
-            </Link>
-          );
-        })}
+              <Star
+                className={`w-3.5 h-3.5 ${
+                  openDropdown === "hizli_erisim" ? "fill-current" : ""
+                }`}
+              />
+              Hızlı Erişim
+              <ChevronDown
+                className={`w-3 h-3 transition-transform ${
+                  openDropdown === "hizli_erisim" ? "rotate-180" : ""
+                }`}
+              />
+            </button>
 
-        {/* 5. Aşama: Klasör & Kapaklar (BETA) */}
-        <Link
-          to="/dosya/cikti-merkezi"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors text-slate-650 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-        >
-          <FolderTree className="w-3.5 h-3.5" />
-          5. Klasör & Kapaklar (BETA)
-        </Link>
+            {openDropdown === "hizli_erisim" && (
+              <div className="absolute top-full left-0 mt-1 w-64 bg-white dark:bg-slate-900 border border-amber-200 dark:border-amber-700/50 shadow-xl rounded-lg py-1 z-50">
+                {activeStarredDocs.map((docName, idx) => {
+                  const { status, cleanName } = parseStatusAndName(docName);
+                  return (
+                    <Link
+                      key={idx}
+                      to="/dosya/cikti-merkezi"
+                      search={{ sablonAd: docName }}
+                      onClick={() => setOpenDropdown(null)}
+                      className="flex items-center justify-between px-3 py-2 text-xs text-slate-700 hover:bg-amber-50 hover:text-amber-700 dark:text-slate-300 dark:hover:bg-amber-900/30 dark:hover:text-amber-300"
+                    >
+                      <div className="flex items-center gap-2 truncate flex-1 min-w-0 pr-2">
+                        <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400 shrink-0" />
+                        <span className="truncate">{cleanName}</span>
+                      </div>
+                      {status && (
+                        <span
+                          className={`px-1 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wide shrink-0 ${
+                            getStatusBadgeClass(status)
+                          }`}
+                        >
+                          {status}
+                        </span>
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+        <div className="relative inline-block">
+          <select
+            title="Süreç Aşaması Git"
+            onChange={(e) => {
+              if (e.target.value) {
+                window.location.hash = `#${e.target.value}`
+              }
+            }}
+            value=""
+            className="text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-md px-3 py-1.5 text-slate-700 dark:text-slate-200 font-semibold focus:outline-none focus:ring-1 focus:ring-amber-500"
+          >
+            <option value="">-- Süreç Aşamasına Git --</option>
+            {stagesToUse.map((asama) => {
+              let targetPath = "/dosyalar"
+
+              if (asama.asama_sira === 1) {
+                targetPath = APP_ROUTES.MALZEME_LISTESI
+              } else if (asama.asama_sira === 2) {
+                targetPath = APP_ROUTES.KOMISYON_FIYAT_ARASTIRMA
+              } else if (asama.asama_sira === 3) {
+                targetPath = APP_ROUTES.KOMISYON_ONAY_EKI
+              } else if (asama.asama_sira === 4) {
+                targetPath = APP_ROUTES.KOMISYON_MUAYENE_KABUL
+              }
+
+              return (
+                <option key={asama.asama_sira} value={targetPath}>
+                  {asama.asama_sira}. {asama.asama_adi}
+                </option>
+              )
+            })}
+            <option value="/dosya/cikti-merkezi">5. Klasör & Kapaklar (BETA)</option>
+          </select>
+        </div>
       </div>
 
       <div className="flex items-center gap-2 border-l border-slate-200 dark:border-slate-700 pl-2">
