@@ -6,16 +6,19 @@ import {
   ClipboardList,
   CreditCard,
   FileCheck,
+  FileText,
   FolderTree,
   PackageSearch,
   Printer,
   Star,
 } from "lucide-react";
+import { useCiktiMerkeziData } from "../../screens/dosya/CiktiMerkezi.hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useWorkspaceStore } from "../../store/workspaceStore";
-import { useDosyalarHooks } from "../../screens/dosyalar/dosyalar.hooks";
 import { subPagesMapping } from "../../constants/surecler";
 import { APP_ROUTES } from "../../constants/routeConstants";
+import { checkIsSablonDisabled } from "../../screens/dosya/sub-screens/DosyaAsamalari/useDosyaAsamasiSablons";
+
 
 const parseStatusAndName = (
   name: string,
@@ -63,24 +66,12 @@ const getStatusBadgeClass = (status: string): string => {
   return "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 border border-blue-500/20";
 };
 
-interface SubItem {
-  name: string;
-  path: string;
-  icon: React.ElementType;
-}
 
-interface MenuItem {
-  name: string;
-  path?: string;
-  icon: React.ElementType;
-  children?: SubItem[];
-  onClick?: () => void;
-}
 
 export function ActiveFileToolbar(): React.JSX.Element | null {
   const { activeDosyaId, setActiveDosyaId, activeStarredDocs } =
     useWorkspaceStore();
-  const { dosyalar } = useDosyalarHooks();
+
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -99,91 +90,8 @@ export function ActiveFileToolbar(): React.JSX.Element | null {
     };
   }, []);
 
-  const activeDosya = dosyalar.find((d) => d.id === activeDosyaId);
 
-  // Fetch Alım Türü configs from DB
-  const { data: dbAlimTurleri = [] } = useQuery<any[]>({
-    queryKey: ["alim_turleri_list"],
-    queryFn: async () => {
-      const res = await window.electron.ipcRenderer.invoke(
-        "db:query",
-        "SELECT * FROM TANIM_AlimTuru WHERE aktif_mi = 1",
-      );
-      if (!res.success) return [];
-      return res.data.map((d: any) => {
-        let parsedBelgeler = [];
-        try {
-          parsedBelgeler = typeof d.belgeler === "string"
-            ? JSON.parse(d.belgeler)
-            : d.belgeler || [];
-        } catch (e) {
-          console.error(e);
-        }
-        return {
-          id: d.id.toString(),
-          ad: d.tur_adi,
-          ikon: d.ikon,
-          belgeler: parsedBelgeler,
-          sablonId: d.sablon_id || "",
-        };
-      });
-    },
-  });
 
-  const activeAlimTuru = activeDosya
-    ? dbAlimTurleri.find((t) => {
-      const fileTur = activeDosya.tur?.toLowerCase();
-      const dbTur = t.ad?.toLowerCase() || "";
-      if (fileTur === "mal" && dbTur.includes("mal")) return true;
-      if (fileTur === "hizmet" && dbTur.includes("hizmet")) return true;
-      if (
-        fileTur === "yapim_isi" &&
-        (dbTur.includes("yapım") || dbTur.includes("yapim"))
-      ) {
-        return true;
-      }
-      if (
-        fileTur === "danismanlik" &&
-        (dbTur.includes("danışmanlık") || dbTur.includes("danismanlik"))
-      ) {
-        return true;
-      }
-      return dbTur === fileTur;
-    })
-    : null;
-
-  // Map sidebar item paths to required document keywords
-  const documentPathMapping: Record<string, string[]> = {
-    "/dosya/komisyon/fiyat-arastirma": ["Piyasa Fiyat Araştırması Tutanağı"],
-    "/dosya/komisyon/muayene-kabul": [
-      "Muayene Kabul ve Tespit Komisyonu Tutanağı",
-      "Hizmet İşleri Kabul Tutanağı",
-      "Yapım İşleri Kabul Tutanağı",
-    ],
-    "/dosya/komisyon/fiyat-muayene": [
-      "Piyasa Fiyat Araştırması Tutanağı",
-      "Muayene Kabul ve Tespit Komisyonu Tutanağı",
-    ],
-    "/dosya/komisyon/onay-eki": ["Onay Belgesi"],
-    "/dosya/luzum/belge": ["Onay Belgesi"],
-    "/dosya/luzum/onay-eki": ["Onay Belgesi"],
-    "/dosya/luzum/teslim-tesellum": [
-      "Muayene Kabul ve Tespit Komisyonu Tutanağı",
-      "Hizmet İşleri Kabul Tutanağı",
-      "Yapım İşleri Kabul Tutanağı",
-    ],
-    "/dosya/firmalar-maliyet/istekliler": ["Piyasa Fiyat Araştırması Tutanağı"],
-    "/dosya/firmalar-maliyet/yaklasik": [
-      "Yaklaşık Maliyet Hesap Cetveli",
-      "Piyasa Fiyat Araştırması Tutanağı",
-    ],
-    "/dosya/firmalar-maliyet/tutanak": ["Piyasa Fiyat Araştırması Tutanağı"],
-    "/dosya/onay/dt-onay": ["Onay Belgesi"],
-    "/dosya/onay/ihale-onay": ["Onay Belgesi"],
-    "/dosya/onay/butce-sorgu": ["Onay Belgesi"],
-    "/dosya/harcama/talimat": ["Onay Belgesi", "Fatura / e-Arşiv Fatura"],
-    "/dosya/harcama/pusula": ["Fatura / e-Arşiv Fatura"],
-  };
 
   const { data: dbAsamalar = [] } = useQuery<any[]>({
     queryKey: ["sidebar_asamalar"],
@@ -218,41 +126,33 @@ export function ActiveFileToolbar(): React.JSX.Element | null {
     };
   });
 
-  const dynamicActiveItems: MenuItem[] = stagesToUseMapped
-    .map((asama) => {
-      const stagePages = subPagesMapping.filter(
-        (p) => p.stage === asama.asama_sira && !p.hideFromToolbar,
-      );
 
-      const filteredChildren = stagePages.filter((child) => {
-        if (!activeAlimTuru) return true;
-        const reqDocs = documentPathMapping[child.path];
-        if (!reqDocs) return true;
-        return reqDocs.some((docName) =>
-          activeAlimTuru.belgeler.some((b: any) => {
-            const documentName = typeof b === "string" ? b : b?.ad || "";
-            return (
-              documentName.toLowerCase().includes(docName.toLowerCase()) ||
-              docName.toLowerCase().includes(documentName.toLowerCase())
-            );
-          })
-        );
-      });
 
-      let IconComponent = FolderTree;
-      if (asama.asama_sira === 1) IconComponent = FolderTree;
-      else if (asama.asama_sira === 2) IconComponent = PackageSearch;
-      else if (asama.asama_sira === 3) IconComponent = FileCheck;
-      else if (asama.asama_sira === 4) IconComponent = CreditCard;
-      else if (asama.asama_sira === 5) IconComponent = Printer;
+  // Şablon verileri – aktif dosyanın kategorisine göre süzülecek
+  const { sablons, dosyaContext } = useCiktiMerkeziData(activeDosyaId);
 
-      return {
-        name: `${asama.asama_sira}. ${asama.asama_adi}`,
-        icon: IconComponent,
-        children: filteredChildren,
-      };
-    })
-    .filter((group) => group.children && group.children.length > 0);
+  // asama_sira → kategori slug eşleşmesi
+  const STAGE_KATEGORI: Record<number, string[]> = {
+    1: ["1-ihtiyac-tespiti-ve-baslangic", "1. İhtiyaç Tespiti & Başlangıç"],
+    2: ["2-piyasa-fiyat-arastirmasi", "2. Piyasa Fiyat Araştırması"],
+    3: ["3-siparis-ve-sozlesme", "3. Sipariş & Sözleşme"],
+    4: ["4-kabul-ve-odeme-islemleri", "4. Kabul & Ödeme İşlemleri"],
+    5: ["5-klasor-ve-kapaklar", "5. Klasör & Kapaklar"],
+  };
+
+  // asama_sira → o aşamanın birincil route'u
+  const STAGE_ROUTE: Record<number, string> = {
+    1: APP_ROUTES.HAZIRLIK_VE_IHTIYAC,
+    2: APP_ROUTES.PIYASA_FIYAT_ARASTIRMASI,
+    3: APP_ROUTES.SIPARIS_VE_SOZLESME,
+    4: APP_ROUTES.KABUL_VE_ODEME,
+    5: APP_ROUTES.KLASOR_VE_KAPAKLAR,
+  };
+
+  // Kurallar: Dosya verisine göre şablonun hazır/disabled olup olmadığını kontrol eder
+  const isSablonDisabled = (cleanName: string): boolean => {
+    return checkIsSablonDisabled(cleanName, dosyaContext);
+  };
 
   const searchParams = new URLSearchParams(window.location.search);
   const hashParams = new URLSearchParams(
@@ -309,13 +209,40 @@ export function ActiveFileToolbar(): React.JSX.Element | null {
               <div className="absolute top-full left-0 mt-1 w-64 bg-white dark:bg-slate-900 border border-amber-200 dark:border-amber-700/50 shadow-xl rounded-lg py-1 z-50">
                 {activeStarredDocs.map((docName, idx) => {
                   const { status, cleanName } = parseStatusAndName(docName);
+                  
+                  // find the template to determine its stage
+                  const sablon = sablons.find((s: any) => {
+                    const cleanSName = s.ad.replace(/^\[.*?\]\s*/, "");
+                    return cleanSName === cleanName || s.ad === docName;
+                  });
+                  
+                  let targetRoute = "/dosya/cikti-merkezi";
+                  if (sablon) {
+                    const asamaSira = Object.keys(STAGE_KATEGORI).find(k => STAGE_KATEGORI[Number(k)].includes(sablon.kategori));
+                    if (asamaSira) {
+                      targetRoute = STAGE_ROUTE[Number(asamaSira)];
+                    }
+                  }
+
+                  const disabled = isSablonDisabled(cleanName);
+
                   return (
-                    <Link
+                    <button
                       key={idx}
-                      to="/dosya/cikti-merkezi"
-                      search={{ sablonAd: docName }}
-                      onClick={() => setOpenDropdown(null)}
-                      className="flex items-center justify-between px-3 py-2 text-xs text-slate-700 hover:bg-amber-50 hover:text-amber-700 dark:text-slate-300 dark:hover:bg-amber-900/30 dark:hover:text-amber-300"
+                      onClick={() => {
+                        if (disabled) return;
+                        setOpenDropdown(null);
+                        navigate({
+                          to: targetRoute as any,
+                          search: { sablonAd: docName } as any,
+                        });
+                      }}
+                      disabled={disabled}
+                      className={`w-full flex items-center justify-between px-3 py-2 text-xs transition-colors ${
+                        disabled
+                          ? "opacity-40 cursor-not-allowed text-slate-500 bg-amber-50/50 dark:bg-amber-900/10"
+                          : "text-slate-700 hover:bg-amber-50 hover:text-amber-700 dark:text-slate-300 dark:hover:bg-amber-900/30 dark:hover:text-amber-300 cursor-pointer"
+                      }`}
                     >
                       <div className="flex items-center gap-2 truncate flex-1 min-w-0 pr-2">
                         <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400 shrink-0" />
@@ -330,47 +257,113 @@ export function ActiveFileToolbar(): React.JSX.Element | null {
                           {status}
                         </span>
                       )}
-                    </Link>
+                    </button>
                   );
                 })}
               </div>
             )}
           </div>
         )}
-        <div className="relative inline-block">
-          <select
-            title="Dosya Süreci Git"
-            onChange={(e) => {
-              if (e.target.value) {
-                navigate({ to: e.target.value });
-              }
-            }}
-            value=""
-            className="text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-md px-3 py-1.5 text-slate-700 dark:text-slate-200 font-semibold focus:outline-none focus:ring-1 focus:ring-amber-500"
-          >
-            <option value="">-- Dosya Sürecine Git --</option>
-            {stagesToUseMapped.map((asama) => {
-              let targetPath = "/dosyalar";
+        {/* Aşama bazlı şablon butonları */}
+        <div className="flex items-center gap-1 flex-wrap">
+          {stagesToUseMapped.map((asama) => {
+            const kategoriler = STAGE_KATEGORI[asama.asama_sira] || [];
+            const stageSablons = sablons.filter((s: any) =>
+              kategoriler.includes(s.kategori)
+            );
+            const stageRoute = STAGE_ROUTE[asama.asama_sira];
+            const dropdownKey = `asama_sablon_${asama.asama_sira}`;
 
-              if (asama.asama_sira === 1) {
-                targetPath = APP_ROUTES.HAZIRLIK_VE_IHTIYAC;
-              } else if (asama.asama_sira === 2) {
-                targetPath = APP_ROUTES.PIYASA_FIYAT_ARASTIRMASI;
-              } else if (asama.asama_sira === 3) {
-                targetPath = APP_ROUTES.SIPARIS_VE_SOZLESME;
-              } else if (asama.asama_sira === 4) {
-                targetPath = APP_ROUTES.KABUL_VE_ODEME;
-              } else if (asama.asama_sira === 5) {
-                targetPath = APP_ROUTES.KLASOR_VE_KAPAKLAR;
-              }
+            let IconComponent: React.ElementType = FolderTree;
+            if (asama.asama_sira === 1) IconComponent = FolderTree;
+            else if (asama.asama_sira === 2) IconComponent = PackageSearch;
+            else if (asama.asama_sira === 3) IconComponent = FileCheck;
+            else if (asama.asama_sira === 4) IconComponent = CreditCard;
+            else if (asama.asama_sira === 5) IconComponent = Printer;
 
-              return (
-                <option key={asama.asama_sira} value={targetPath}>
-                  {asama.asama_sira}. {asama.asama_adi}
-                </option>
-              );
-            })}
-          </select>
+            return (
+              <div key={asama.asama_sira} className="relative inline-block">
+                <button
+                  onClick={() => {
+                    if (stageSablons.length === 0) {
+                      navigate({ to: stageRoute as any });
+                    } else {
+                      setOpenDropdown(openDropdown === dropdownKey ? null : dropdownKey);
+                    }
+                  }}
+                  className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-colors ${
+                    openDropdown === dropdownKey
+                      ? "bg-slate-200 text-slate-900 dark:bg-slate-700 dark:text-white"
+                      : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                  }`}
+                  title={`${asama.asama_sira}. ${asama.asama_adi}`}
+                >
+                  <IconComponent className="w-3.5 h-3.5 shrink-0" />
+                  <span className="hidden lg:inline">{asama.asama_sira}.</span>
+                  {stageSablons.length > 0 && (
+                    <ChevronDown
+                      className={`w-3 h-3 transition-transform ${
+                        openDropdown === dropdownKey ? "rotate-180" : ""
+                      }`}
+                    />
+                  )}
+                </button>
+
+                {openDropdown === dropdownKey && stageSablons.length > 0 && (
+                  <div className="absolute top-full left-0 mt-1 w-64 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-xl rounded-lg py-1 z-50">
+                    {/* Aşamaya git linki */}
+                    <Link
+                      to={stageRoute as any}
+                      onClick={() => setOpenDropdown(null)}
+                      className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 border-b border-slate-100 dark:border-slate-800"
+                    >
+                      <IconComponent className="w-3.5 h-3.5" />
+                      {asama.asama_sira}. {asama.asama_adi} →
+                    </Link>
+                    {/* O aşamaya ait şablonlar */}
+                    {stageSablons.map((sablon: any) => {
+                      const { status, cleanName } = parseStatusAndName(sablon.ad);
+                      const disabled = isSablonDisabled(cleanName);
+
+                      return (
+                        <button
+                          key={sablon.id || sablon.ad}
+                          onClick={() => {
+                            if (disabled) return;
+                            setOpenDropdown(null);
+                            navigate({
+                              to: stageRoute as any,
+                              search: { sablonAd: sablon.ad } as any,
+                            });
+                          }}
+                          disabled={disabled}
+                          className={`w-full flex items-center justify-between px-3 py-2 text-xs transition-colors ${
+                            disabled
+                              ? "opacity-40 cursor-not-allowed text-slate-500 bg-slate-50/50 dark:bg-slate-900/50"
+                              : "text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 truncate flex-1 min-w-0 pr-2 text-left">
+                            <FileText className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                            <span className="truncate">{cleanName}</span>
+                          </div>
+                          {status && (
+                            <span
+                              className={`px-1 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wide shrink-0 ${
+                                getStatusBadgeClass(status)
+                              }`}
+                            >
+                              {status}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -390,6 +383,7 @@ export function ActiveFileToolbar(): React.JSX.Element | null {
           Çıktı Merkezi
         </Link>
       </div>
+
     </div>
   );
 }

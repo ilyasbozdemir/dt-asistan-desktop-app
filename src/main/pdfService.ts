@@ -67,8 +67,8 @@ export async function renderPdfBuffer(htmlContent: string): Promise<Buffer> {
       })()
     `)
 
-    // 3. Generate PDF using Electron Native
-    const pdfBuffer = await win.webContents.printToPDF({
+    // 3. Generate initial PDF to determine page count
+    const pdfBufferFirstPass = await win.webContents.printToPDF({
       printBackground: true,
       displayHeaderFooter: true,
       headerTemplate: `<div style="width: 100%; font-size: 10px; padding: 0 1.5cm; margin-top: 15px; -webkit-print-color-adjust: exact;">${extracted.headerHtml}</div>`,
@@ -86,6 +86,30 @@ export async function renderPdfBuffer(htmlContent: string): Promise<Buffer> {
       },
       pageSize: 'A4'
     })
+
+    // Check if it is a single page
+    const isSinglePage = (pdfBufferFirstPass.toString().match(/\/Type\s*\/Page\b/g) || []).length === 1;
+
+    if (isSinglePage) {
+      // Regenerate without the pagination footer
+      return await win.webContents.printToPDF({
+        printBackground: true,
+        displayHeaderFooter: true,
+        headerTemplate: `<div style="width: 100%; font-size: 10px; padding: 0 1.5cm; margin-top: 15px; -webkit-print-color-adjust: exact;">${extracted.headerHtml}</div>`,
+        footerTemplate: `<div style="width: 100%; font-size: 10px; padding: 0 1.5cm; -webkit-print-color-adjust: exact;">
+                           ${extracted.footerHtml}
+                         </div>`,
+        margins: {
+          top: extracted.hasHeader ? 1.6 : 0.98,
+          bottom: 1.2,
+          left: 0.59,
+          right: 0.59
+        },
+        pageSize: 'A4'
+      })
+    }
+
+    return pdfBufferFirstPass
 
     return pdfBuffer
   } finally {

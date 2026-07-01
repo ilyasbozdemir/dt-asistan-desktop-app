@@ -26,6 +26,8 @@ interface DocumentPreviewModalProps {
   onExportPdf: (html: string, filenameTitle?: string) => Promise<void>;
   isInline?: boolean;
   templateTestVerisi?: string;
+  onRefreshSnapshot?: () => Promise<void>;
+  onSaveSnapshot?: (overrideData: any) => Promise<void>;
 }
 
 export function DocumentPreviewModal({
@@ -41,6 +43,8 @@ export function DocumentPreviewModal({
   onExportPdf,
   isInline = false,
   templateTestVerisi = "",
+  onRefreshSnapshot,
+  onSaveSnapshot,
 }: DocumentPreviewModalProps): React.JSX.Element | null {
   const [overrideData, setOverrideData] = useState<Record<string, any>>({});
   const [activeTab, setActiveTab] = useState<"form" | "json">("form");
@@ -168,8 +172,11 @@ export function DocumentPreviewModal({
     setIsProcessingPdf(true);
     try {
       const fileWorkName = mergedContext.isAdi || "";
-      const cleanFileWorkName = fileWorkName.replace(/[\\/:*?"<>|]/g, "").trim();
-      const combinedTitle = cleanFileWorkName ? `${cleanFileWorkName} - ${title}` : title;
+      const cleanFileWorkName = fileWorkName.replace(/[\\/:*?"<>|]/g, "")
+        .trim();
+      const combinedTitle = cleanFileWorkName
+        ? `${cleanFileWorkName} - ${title}`
+        : title;
       await onExportPdf(previewHtml, combinedTitle);
     } finally {
       setIsProcessingPdf(false);
@@ -726,6 +733,18 @@ export function DocumentPreviewModal({
           </button>
 
           <div className="flex items-center gap-3">
+            {onRefreshSnapshot && (
+              <button
+                onClick={async () => {
+                  await onRefreshSnapshot();
+                }}
+                disabled={isProcessingPdf || isProcessingPrint || !!jsonError}
+                className="px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold transition-all flex items-center gap-2 disabled:opacity-50 text-sm shadow-sm"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Güncel Verileri Al
+              </button>
+            )}
             <button
               onClick={handlePdf}
               disabled={isProcessingPdf || isProcessingPrint || !!jsonError}
@@ -1113,6 +1132,43 @@ export function DocumentPreviewModal({
           </button>
 
           <div className="flex items-center gap-3">
+            {Object.keys(overrideData).length > 0 && (
+              <>
+                <button
+                  onClick={() => {
+                    setOverrideData({});
+                    setOverrideJson(JSON.stringify(baseContext, null, 2));
+                    setJsonError("");
+                  }}
+                  className="px-4 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold transition-all text-sm"
+                >
+                  Geri Al
+                </button>
+                {onSaveSnapshot && (
+                  <button
+                    onClick={async () => {
+                      await onSaveSnapshot(overrideData);
+                    }}
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all text-sm shadow-sm"
+                  >
+                    Kaydet
+                  </button>
+                )}
+              </>
+            )}
+
+            {onRefreshSnapshot && (
+              <button
+                onClick={async () => {
+                  await onRefreshSnapshot();
+                }}
+                disabled={isProcessingPdf || isProcessingPrint || !!jsonError}
+                className="px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold transition-all flex items-center gap-2 disabled:opacity-50 text-sm shadow-sm"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Güncel Verileri Al
+              </button>
+            )}
             <button
               onClick={handlePdf}
               disabled={isProcessingPdf || isProcessingPrint || !!jsonError}

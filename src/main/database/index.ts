@@ -31,6 +31,7 @@ import { DATA_TeminKalemTeklif } from './tables/DATA_TeminKalemTeklif'
 import { DATA_TeminKomisyon } from './tables/DATA_TeminKomisyon'
 import { DATA_TeminBelge } from './tables/DATA_TeminBelge'
 import { LOG_SystemLog } from './tables/LOG_SystemLog'
+import { DATA_DosyaSablonVeri } from './tables/DATA_DosyaSablonVeri'
 import { CURRENT_SCHEMA_VERSION } from './migrate'
 
 export const TablePrefixLogic = {
@@ -85,6 +86,7 @@ export const schema = {
     DATA_TeminKalemTeklif,
     DATA_TeminKomisyon,
     DATA_TeminBelge,
+    DATA_DosyaSablonVeri,
     // --- Sistem Logları ---
     LOG_SystemLog
   ]
