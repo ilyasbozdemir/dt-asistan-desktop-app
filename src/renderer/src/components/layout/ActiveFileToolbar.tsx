@@ -271,7 +271,7 @@ export function ActiveFileToolbar(): React.JSX.Element | null {
           className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700 rounded-md transition-colors mr-2"
         >
           <ChevronLeft className="w-3.5 h-3.5" />
-          Teminlere Dön
+          Aktif Dosyadan Çık
         </button>
       )}
 
