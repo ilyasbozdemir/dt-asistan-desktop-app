@@ -45,7 +45,9 @@ export const APP_ROUTES = {
 
   // Diğer Alt Modüller
   YAKLASIK_MALIYET: '/dosya/firmalar-maliyet/yaklasik',
-  DOSYA_CIKTI_MERKEZI: '/dosya/cikti-merkezi'
+  DOSYA_CIKTI_MERKEZI: '/dosya/cikti-merkezi',
+  FATURA_VE_IRSALIYE: '/dosya/fatura-ve-irsaliye',
+  IMZALI_BELGELER: '/dosya/imzali-belgeler'
 } as const
 
 export type AppRoute = (typeof APP_ROUTES)[keyof typeof APP_ROUTES]

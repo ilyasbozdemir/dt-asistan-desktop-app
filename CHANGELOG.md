@@ -2,6 +2,12 @@
 
 Bu dosyada Doğrudan Temin (DT) Masaüstü Uygulaması'nın her sürümünde yapılan önemli değişiklikler listelenmektedir.
 
+## [1.0.0-beta.16] - 2026-07-01
+
+### Düzeltilenler (Fixed)
+
+- **Aktif Dosya Araç Çubuğu Düzeltmesi**: `ActiveFileToolbar` bileşenindeki `dosya_no` / `temin_no` tip uyumsuzluğu giderildi ve geri dönüş butonunun yazısı `"Aktif Dosyadan Çık"` olarak güncellendi.
+
 ## [Unreleased]
 
 ### Planlanan / Gelecek Sürüm (v1.0.0 Backlog)

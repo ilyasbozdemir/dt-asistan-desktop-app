@@ -201,7 +201,9 @@ import {
   KabulVeOdeme,
   KlasorVeKapaklar,
   YaklasikMaliyetCetveli,
-  CiktiMerkezi
+  CiktiMerkezi,
+  FaturaVeIrsaliye,
+  ImzaliBelgeler
 } from './screens/dosya/SubScreens.screen'
 
 const profilRoute = createRoute({
@@ -272,6 +274,18 @@ const yeniMalzemeRoute = createRoute({
   component: YeniMalzemeScreen
 })
 
+const faturaVeIrsaliyeRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: APP_ROUTES.FATURA_VE_IRSALIYE,
+  component: FaturaVeIrsaliye
+})
+
+const imzaliBelgelerRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: APP_ROUTES.IMZALI_BELGELER,
+  component: ImzaliBelgeler
+})
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   dosyalarRoute,
@@ -309,6 +323,8 @@ const routeTree = rootRoute.addChildren([
   klasorVeKapaklarRoute,
   yaklasikMaliyetRoute,
   ciktiMerkeziRoute,
+  faturaVeIrsaliyeRoute,
+  imzaliBelgelerRoute,
   yardimRoute
 ])
 
