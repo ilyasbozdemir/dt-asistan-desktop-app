@@ -190,9 +190,9 @@ export function DocumentPreviewModal({
   // Şablon ve Master HTML içerisinde gerçekten kullanılan değişkenleri tespit et
   const extractUsedVars = (html: string) => {
     const matches = Array.from(
-      html.matchAll(/\{\{([#^\/]?)([a-zA-Z0-9_]+)\}\}/g),
+      html.matchAll(/\{\{(\{?)([#^\/]?)([a-zA-Z0-9_]+)(\}?)\}\}/g),
     );
-    return matches.map((m) => m[2]);
+    return matches.map((m) => m[3]);
   };
 
   const usedVars = new Set([
@@ -1006,6 +1006,29 @@ export function DocumentPreviewModal({
                                 }
                               }}
                               className="w-full p-2.5 h-24 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all resize-none"
+                            />
+                          </div>
+                        );
+                      }
+
+                      if (schemaDef?.tip === 'uzun_metin') {
+                        return (
+                          <div key={key} className="flex flex-col gap-1.5">
+                            <div className="flex flex-col">
+                              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                {label}
+                              </label>
+                              {schemaDef?.aciklama && (
+                                <span className="text-xs text-slate-500">
+                                  {schemaDef.aciklama}
+                                </span>
+                              )}
+                            </div>
+                            <textarea
+                              value={value || ""}
+                              onChange={(e) =>
+                                handleFormChange(key, e.target.value)}
+                              className="w-full p-2.5 min-h-[100px] rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all resize-y"
                             />
                           </div>
                         );
